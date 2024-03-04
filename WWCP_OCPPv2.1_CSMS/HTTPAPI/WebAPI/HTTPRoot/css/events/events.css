@@ -220,6 +220,33 @@
   content: "Unspecified";
 }
 
+.deviceModel .component {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+.deviceModel .component .name {
+  font-weight: bold;
+}
+.deviceModel .component .evses .evse {
+  margin-left: 10px;
+}
+.deviceModel .component .evses .evse .name {
+  font-weight: bold;
+  color: red;
+}
+.deviceModel .component .evses .evse .variables {
+  margin-left: 10px;
+}
+.deviceModel .component .evses .evse .variables .variable .name {
+  color: blue;
+}
+.deviceModel .component .evses .evse .variables .variable .instances {
+  margin-left: 10px;
+}
+.deviceModel .component .evses .evse .variables .variable .instances .instance {
+  color: blueviolet;
+}
+
 /* Comment here */
 /*span.Timestamp {
     display:            inline-block;

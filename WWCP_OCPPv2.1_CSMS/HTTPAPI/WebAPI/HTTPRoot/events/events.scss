@@ -272,6 +272,66 @@
 }
 
 
+.deviceModel {
+
+    .component {
+
+        margin-left:    10px;
+        margin-bottom:  10px;
+
+        .name
+        {
+            font-weight: bold;
+        }
+
+        .evses {
+
+            .evse {
+
+                margin-left: 10px;
+
+                .name {
+                    font-weight: bold;
+                    color:       red;
+                }
+
+                .variables {
+
+                    margin-left: 10px;
+
+                    .variable {
+
+                        .name {
+                            color:    blue;
+                        }
+
+                        .instances {
+
+                            margin-left: 10px;
+
+                            .instance {
+
+                                color:       blueviolet;
+
+                            }
+
+                        }
+
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+    }
+
+}
+
+
 
 /* Comment here */
 

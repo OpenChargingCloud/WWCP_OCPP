@@ -4,6 +4,4630 @@ function StartEventsSSE() {
 
     //MenuHighlight('Events');
 
+    const pionixDeviceModel  = [
+        {
+            "component": {
+                "name": "AlignedDataCtrlr"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AlignedDataCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AlignedDataCtrlr"
+            },
+            "variable": {
+                "name": "Interval"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "900"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "AlignedDataCtrlr"
+            },
+            "variable": {
+                "name": "Measurands"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Energy.Active.Import.Register,Voltage,Frequency"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "Current.Export,Current.Import,Current.Offered,Energy.Active.Export.Register,Energy.Active.Import.Register,Energy.Reactive.Export.Register,Energy.Reactive.Import.Register,Energy.Active.Export.Interval,Energy.Active.Import.Interval,Energy.Reactive.Export.Interval,Energy.Reactive.Import.Interval,Frequency,Power.Active.Export,Power.Active.Import,Power.Factor,Power.Offered,Power.Reactive.Export,Power.Reactive.Import,Voltage"
+            }
+        },
+        {
+            "component": {
+                "name": "AlignedDataCtrlr"
+            },
+            "variable": {
+                "name": "SendDuringIdle"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "false"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AlignedDataCtrlr"
+            },
+            "variable": {
+                "name": "SignReadings"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "false"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AlignedDataCtrlr"
+            },
+            "variable": {
+                "name": "TxEndedInterval"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "60"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "AlignedDataCtrlr"
+            },
+            "variable": {
+                "name": "TxEndedMeasurands"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Energy.Active.Import.Register,Voltage"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "Current.Export,Current.Import,Current.Offered,Energy.Active.Export.Register,Energy.Active.Import.Register,Energy.Reactive.Export.Register,Energy.Reactive.Import.Register,Energy.Active.Export.Interval,Energy.Active.Import.Interval,Energy.Reactive.Export.Interval,Energy.Reactive.Import.Interval,Frequency,Power.Active.Export,Power.Active.Import,Power.Factor,Power.Offered,Power.Reactive.Export,Power.Reactive.Import,Voltage"
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCacheCtrlr"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCacheCtrlr"
+            },
+            "variable": {
+                "name": "DisablePostAuthorize"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCacheCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCacheCtrlr"
+            },
+            "variable": {
+                "name": "LifeTime"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCacheCtrlr"
+            },
+            "variable": {
+                "name": "Policy"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "LRU,LFU,FIFO,CUSTOM"
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCacheCtrlr"
+            },
+            "variable": {
+                "name": "Storage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "20"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "B"
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCtrlr"
+            },
+            "variable": {
+                "name": "AdditionalInfoItemsPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCtrlr"
+            },
+            "variable": {
+                "name": "AuthorizeRemoteStart"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCtrlr"
+            },
+            "variable": {
+                "name": "DisableRemoteAuthorization"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCtrlr"
+            },
+            "variable": {
+                "name": "LocalAuthorizeOffline"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCtrlr"
+            },
+            "variable": {
+                "name": "LocalPreAuthorize"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCtrlr"
+            },
+            "variable": {
+                "name": "MasterPassGroupId"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "123"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "AuthCtrlr"
+            },
+            "variable": {
+                "name": "OfflineTxForUnknownIdEnabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStation"
+            },
+            "variable": {
+                "instance": "BytesPerMessage",
+                "name": "AllowNewSessionsPendingFirmwareUpdate"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStation"
+            },
+            "variable": {
+                "name": "AvailabilityState"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "Available,Occupied,Reserved,Unavailable,Faulted"
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStation"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStation"
+            },
+            "variable": {
+                "name": "Model"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStation"
+            },
+            "variable": {
+                "name": "PhaseRotation"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "RST"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStation"
+            },
+            "variable": {
+                "name": "Problem"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "false"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStation"
+            },
+            "variable": {
+                "name": "SupplyPhases"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "3"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStation"
+            },
+            "variable": {
+                "name": "VendorName"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStatusIndicator"
+            },
+            "variable": {
+                "name": "Active"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "false"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ChargingStatusIndicator"
+            },
+            "variable": {
+                "name": "Color"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "FFFF00"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "name": "DateTime"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "dateTime",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "name": "NextTimeOffsetTransitionDateTime"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "dateTime",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "name": "NtpServerUri"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "name": "NtpSource"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "DHCP,manual"
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "name": "TimeAdjustmentReportingThreshold"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "name": "TimeOffset"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "instance": "NextTransition",
+                "name": "TimeOffset"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "name": "TimeSource"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Heartbeat"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "SequenceList",
+                "supportsMonitoring": true,
+                "valuesList": "Heartbeat,NTP,GPS,RealTimeClock,MobileNetwork,RadioTimeTransmitter"
+            }
+        },
+        {
+            "component": {
+                "name": "ClockCtrlr"
+            },
+            "variable": {
+                "name": "TimeZone"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 1
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "AvailabilityState"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "Available,Occupied,Reserved,Unavailable,Faulted"
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 1
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 1
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "ChargeProtocol"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 1
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "ConnectorType"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "cType2"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 1
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "SupplyPhases"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "3"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 2
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "AvailabilityState"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "Available,Occupied,Reserved,Unavailable,Faulted"
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 2
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 2
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "ChargeProtocol"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 2
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "ConnectorType"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "cType2"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "connectorId": 1,
+                    "id": 2
+                },
+                "name": "Connector"
+            },
+            "variable": {
+                "name": "SupplyPhases"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "3"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "CustomizationCtrlr"
+            },
+            "variable": {
+                "name": "CustomImplementationEnabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "CustomizationCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "instance": "GetReport",
+                "name": "BytesPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "250"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "instance": "GetVariables",
+                "name": "BytesPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "250"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "instance": "SetVariables",
+                "name": "BytesPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "name": "ConfigurationValueSize"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "instance": "GetReport",
+                "name": "ItemsPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "4"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "instance": "GetVariables",
+                "name": "ItemsPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "2"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "instance": "SetVariables",
+                "name": "ItemsPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "name": "ReportingValueSize"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DeviceDataCtrlr"
+            },
+            "variable": {
+                "name": "ValueSize"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DisplayMessageCtrlr"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DisplayMessageCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DisplayMessageCtrlr"
+            },
+            "variable": {
+                "name": "NumberOfDisplayMessages"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DisplayMessageCtrlr"
+            },
+            "variable": {
+                "name": "PersonalMessageSize"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "DisplayMessageCtrlr"
+            },
+            "variable": {
+                "name": "SupportedFormats"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "FTP"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "ASCII,HTML,URI,UTF8"
+            }
+        },
+        {
+            "component": {
+                "name": "DisplayMessageCtrlr"
+            },
+            "variable": {
+                "name": "SupportedPriorities"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "AlwaysFront,InFront,NormalCycle"
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 1
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "AllowReset"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 1
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "AvailabilityState"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Unavailable"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "Available,Occupied,Reserved,Unavailable,Faulted"
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 1
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 1
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "EvseId"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 1
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "ISO15118EvseId"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 1
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "Power"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "22"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "decimal",
+                "maxLimit": 22000.0,
+                "supportsMonitoring": true,
+                "unit": "W"
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 1
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "SupplyPhases"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "3"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 2
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "AllowReset"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 2
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "AvailabilityState"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Unavailable"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "Available,Occupied,Reserved,Unavailable,Faulted"
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 2
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 2
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "EvseId"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 2
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "ISO15118EvseId"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 2
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "Power"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "22"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "decimal",
+                "maxLimit": 22000.0,
+                "supportsMonitoring": true,
+                "unit": "W"
+            }
+        },
+        {
+            "component": {
+                "evse": {
+                    "id": 2
+                },
+                "name": "EVSE"
+            },
+            "variable": {
+                "name": "SupplyPhases"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "3"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "CentralContractValidationAllowed"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "ContractCertificateInstallationEnabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "ContractValidationOffline"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "CountryName"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "MaxScheduleEntries"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "OrganizationName"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "PnCEnabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "RequestMeteringReceipt"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "RequestedEnergyTransferMode"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "DC,AC_single_phase,AC_two_phase,AC_three_phase"
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "SeccId"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ISO15118Ctrlr"
+            },
+            "variable": {
+                "name": "V2GCertificateInstallationEnabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "AuthorizeConnectorZeroOnConnectorOne"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "ChargeBoxSerialNumber"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "ChargePointId"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "belaybox"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "ChargePointModel"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "ChargePointSerialNumber"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "ChargePointVendor"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "ClientCertificateExpireCheckInitialDelaySeconds"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "60"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "ClientCertificateExpireCheckIntervalSeconds"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "43200"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "FirmwareVersion"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "ICCID"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "IMSI"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "LogMessages"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "LogMessagesFormat"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "log,html,security"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "log,html,console,console_detailed,security"
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "MaxCompositeScheduleDuration"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "31536000"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "MaxCustomerInformationDataLength"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "51200"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "minLimit": 512.0,
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "MaxMessageSize"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "32000"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "minLimit": 1.0,
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "MessageQueueSizeThreshold"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "minLimit": 1.0,
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "MeterSerialNumber"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "MeterType"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "NetworkConnectionProfiles"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "[{\"configurationSlot\": 1, \"connectionData\": {\"messageTimeout\": 30, \"ocppCsmsUrl\": \"wss://api1.ocpp.charging.cloud/belaybox\", \"ocppInterface\": \"Wired0\", \"ocppTransport\": \"JSON\", \"ocppVersion\": \"OCPP20\", \"securityProfile\": 2}}]"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "NumberOfConnectors"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "maxLimit": 128.0,
+                "minLimit": 1.0,
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "OcspRequestInterval"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "604800"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "minLimit": 86400.0,
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "RoundClockAlignedTimestamps"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "0"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": false
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "SupportedChargingProfilePurposeTypes"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "ChargePointMaxProfile,TxDefaultProfile,TxProfile"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "ChargePointMaxProfile,TxDefaultProfile,TxProfile"
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "SupportedCiphers12"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-GCM-SHA384"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-GCM-SHA384"
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "SupportedCiphers13"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "TLS_AES_256_GCM_SHA384:TLS_AES_128_GCM_SHA256"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "TLS_AES_256_GCM_SHA384:TLS_AES_128_GCM_SHA256"
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "SupportedCriteria"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Enabled,Active,Available,Problem"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "Enabled,Active,Problem,Available"
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "UpdateCertificateSymlinks"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "0"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": false
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "UseSslDefaultVerifyPaths"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "V2GCertificateExpireCheckInitialDelaySeconds"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "60"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "V2GCertificateExpireCheckIntervalSeconds"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "43200"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "WebsocketPingPayload"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "hello there"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "InternalCtrlr"
+            },
+            "variable": {
+                "name": "WebsocketPongTimeout"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "5"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "LocalAuthListCtrlr"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "LocalAuthListCtrlr"
+            },
+            "variable": {
+                "name": "BytesPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1024"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "LocalAuthListCtrlr"
+            },
+            "variable": {
+                "name": "DisablePostAuthorize"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "LocalAuthListCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "LocalAuthListCtrlr"
+            },
+            "variable": {
+                "name": "Entries"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "LocalAuthListCtrlr"
+            },
+            "variable": {
+                "name": "ItemsPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "LocalAuthListCtrlr"
+            },
+            "variable": {
+                "name": "Storage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "B"
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "name": "ActiveMonitoringBase"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "All,FactoryDefault,HardwiredOnly"
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "name": "ActiveMonitoringLevel"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "instance": "ClearVariableMonitoring",
+                "name": "BytesPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "instance": "SetVariableMonitoring",
+                "name": "BytesPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "false"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "instance": "ClearVariableMonitoring",
+                "name": "ItemsPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "instance": "SetVariableMonitoring",
+                "name": "ItemsPerMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "name": "MonitoringBase"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "All,FactoryDefault,HardwiredOnly"
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "name": "MonitoringLevel"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "MonitoringCtrlr"
+            },
+            "variable": {
+                "name": "OfflineQueuingSeverity"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "ActiveNetworkProfile"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "FieldLength"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "FileTransferProtocols"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "FTP,FTPS,HTTP,HTTPS,SFTP"
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "HeartbeatInterval"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1800"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "instance": "TransactionEvent",
+                "name": "MessageAttemptInterval"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "10"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "instance": "TransactionEvent",
+                "name": "MessageAttempts"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "5"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "instance": "Default",
+                "name": "MessageTimeout"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "60"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "NetworkConfigurationPriority"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "SequenceList",
+                "supportsMonitoring": true,
+                "valuesList": "1,2"
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "NetworkProfileConnectionAttempts"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "3"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "OfflineThreshold"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "60"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "PublicKeyWithSignedMeterValue"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "OptionList",
+                "supportsMonitoring": true,
+                "valuesList": "Never,OncePerTransaction,EveryMeterValue"
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "QueueAllMessages"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "ResetRetries"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "3"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "RetryBackOffRandomRange"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "2"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "RetryBackOffRepeatTimes"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "2"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "RetryBackOffWaitMinimum"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "UnlockOnEVSideDisconnect"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "OCPPCommCtrlr"
+            },
+            "variable": {
+                "name": "WebSocketPingInterval"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "30"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "ReservationCtrlr"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ReservationCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "ReservationCtrlr"
+            },
+            "variable": {
+                "name": "NonEvseSpecific"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SampledDataCtrlr"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SampledDataCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SampledDataCtrlr"
+            },
+            "variable": {
+                "name": "RegisterValuesWithoutPhases"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SampledDataCtrlr"
+            },
+            "variable": {
+                "name": "SignReadings"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SampledDataCtrlr"
+            },
+            "variable": {
+                "name": "TxEndedInterval"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "60"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "SampledDataCtrlr"
+            },
+            "variable": {
+                "name": "TxEndedMeasurands"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Energy.Active.Import.Register,Current.Import"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "Current.Export,Current.Import,Current.Offered,Energy.Active.Export.Register,Energy.Active.Import.Register,Energy.Reactive.Export.Register,Energy.Reactive.Import.Register,Energy.Active.Export.Interval,Energy.Active.Import.Interval,Energy.Reactive.Export.Interval,Energy.Reactive.Import.Interval,Frequency,Power.Active.Export,Power.Active.Import,Power.Factor,Power.Offered,Power.Reactive.Export,Power.Reactive.Import,Voltage"
+            }
+        },
+        {
+            "component": {
+                "name": "SampledDataCtrlr"
+            },
+            "variable": {
+                "name": "TxStartedMeasurands"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Energy.Active.Import.Register,Current.Import"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "Current.Export,Current.Import,Current.Offered,Energy.Active.Export.Register,Energy.Active.Import.Register,Energy.Reactive.Export.Register,Energy.Reactive.Import.Register,Energy.Active.Export.Interval,Energy.Active.Import.Interval,Energy.Reactive.Export.Interval,Energy.Reactive.Import.Interval,Frequency,Power.Active.Export,Power.Active.Import,Power.Factor,Power.Offered,Power.Reactive.Export,Power.Reactive.Import,Voltage"
+            }
+        },
+        {
+            "component": {
+                "name": "SampledDataCtrlr"
+            },
+            "variable": {
+                "name": "TxUpdatedInterval"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "120"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "SampledDataCtrlr"
+            },
+            "variable": {
+                "name": "TxUpdatedMeasurands"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Energy.Active.Import.Register,Current.Import,Voltage,Power.Active.Import,Power.Reactive.Import,Frequency"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "Current.Export,Current.Import,Current.Offered,Energy.Active.Export.Register,Energy.Active.Import.Register,Energy.Reactive.Export.Register,Energy.Reactive.Import.Register,Energy.Active.Export.Interval,Energy.Active.Import.Interval,Energy.Reactive.Export.Interval,Energy.Reactive.Import.Interval,Frequency,Power.Active.Export,Power.Active.Import,Power.Factor,Power.Offered,Power.Reactive.Export,Power.Reactive.Import,Voltage"
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "AdditionalRootCertificateCheck"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "false"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "BasicAuthPassword"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "WriteOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "OTArSenOCOMU"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "maxLimit": 40.0,
+                "minLimit": 16.0,
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "CertSigningRepeatTimes"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "3"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "CertSigningWaitMinimum"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "30"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "CertificateEntries"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "Identity"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "belaybox"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "MaxCertificateChainSize"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "OrganizationName"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "Pionix"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SecurityCtrlr"
+            },
+            "variable": {
+                "name": "SecurityProfile"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "2"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "maxLimit": 3.0,
+                "minLimit": 1.0,
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "ACPhaseSwitchingSupported"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "false"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "instance": "ChargingProfiles",
+                "name": "Entries"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "ExternalControlSignalsEnabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "LimitChangeSignificance"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "decimal",
+                "supportsMonitoring": true,
+                "unit": "Percent"
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "NotifyChargingLimitWithSchedules"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "PeriodsPerSchedule"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "Phases3to1"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "ProfileStackLevel"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "42"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "SmartChargingCtrlr"
+            },
+            "variable": {
+                "name": "RateUnit"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "A,W"
+            }
+        },
+        {
+            "component": {
+                "name": "TariffCostCtrlr"
+            },
+            "variable": {
+                "instance": "Cost",
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TariffCostCtrlr"
+            },
+            "variable": {
+                "instance": "Tariff",
+                "name": "Available"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TariffCostCtrlr"
+            },
+            "variable": {
+                "name": "Currency"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TariffCostCtrlr"
+            },
+            "variable": {
+                "instance": "Cost",
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TariffCostCtrlr"
+            },
+            "variable": {
+                "instance": "Tariff",
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TariffCostCtrlr"
+            },
+            "variable": {
+                "name": "TariffFallbackMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TariffCostCtrlr"
+            },
+            "variable": {
+                "name": "TotalCostFallbackMessage"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": ""
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "string",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TxCtrlr"
+            },
+            "variable": {
+                "name": "ChargingTime"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "decimal",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "TxCtrlr"
+            },
+            "variable": {
+                "name": "EVConnectionTimeOut"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "120"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true,
+                "unit": "s"
+            }
+        },
+        {
+            "component": {
+                "name": "TxCtrlr"
+            },
+            "variable": {
+                "name": "Enabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "true"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TxCtrlr"
+            },
+            "variable": {
+                "name": "MaxEnergyOnInvalidId"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1000"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "integer",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TxCtrlr"
+            },
+            "variable": {
+                "name": "StopTxOnEVSideDisconnect"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TxCtrlr"
+            },
+            "variable": {
+                "name": "StopTxOnInvalidId"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "1"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TxCtrlr"
+            },
+            "variable": {
+                "name": "TxBeforeAcceptedEnabled"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadWrite",
+                    "persistent": true,
+                    "type": "Actual"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "boolean",
+                "supportsMonitoring": true
+            }
+        },
+        {
+            "component": {
+                "name": "TxCtrlr"
+            },
+            "variable": {
+                "name": "TxStartPoint"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "PowerPathClosed"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "ParkingBayOccupancy,EVConnected,Authorized,PowerPathClosed,EnergyTransfer,DataSigned"
+            }
+        },
+        {
+            "component": {
+                "name": "TxCtrlr"
+            },
+            "variable": {
+                "name": "TxStopPoint"
+            },
+            "variableAttribute": [
+                {
+                    "constant": false,
+                    "mutability": "ReadOnly",
+                    "persistent": true,
+                    "type": "Actual",
+                    "value": "EVConnected,Authorized"
+                }
+            ],
+            "variableCharacteristics": {
+                "dataType": "MemberList",
+                "supportsMonitoring": true,
+                "valuesList": "ParkingBayOccupancy,EVConnected,Authorized,PowerPathClosed,EnergyTransfer"
+            }
+        }
+    ];
+
+
     const connectionColors   = {};
     const eventsDiv          = document.getElementById('eventsDiv');
     const streamFilterInput  = document.getElementById('eventsFilterDiv').getElementsByTagName('input')[0] as HTMLInputElement;
@@ -50,26 +4674,46 @@ function StartEventsSSE() {
 
         const connectionColor = GetConnectionColors(connectionColorKey);
 
-        if (typeof message === 'string') {
-            message = [message];
-        }
+        const logEntryDiv = document.createElement('div');
+        logEntryDiv.className         = "logLine";
+        logEntryDiv.style.color       = "#" + connectionColor.textcolor;
+        logEntryDiv.style.background  = "#" + connectionColor.background;
 
-        const div = document.createElement('div');
-        div.className         = "logLine";
-        div.style.color       = "#" + connectionColor.textcolor;
-        div.style.background  = "#" + connectionColor.background;
-        div.innerHTML         = "<div class=\"timestamp\">"       + timestamp       + "</div>" + //  new Date(timestamp).format('dd.mm.yyyy HH:MM:ss') + "</div>" +
-                                "<div class=\"roamingNetwork\">"  + roamingNetwork  + "</div>" +
-                                "<div class=\"eventTrackingId\">" + eventTrackingId + "</div>" +
-                                "<div class=\"command\">"         + command         + "</div>" +
-                                "<div class=\"message\">"         + message.reduce(function (a, b) { return a + "<br />" + b; }); + "</div>";
+        const timestampDiv            = document.createElement('div');
+        timestampDiv.className        = "timestamp";
+        timestampDiv.innerHTML        = timestamp;
+        logEntryDiv.appendChild(timestampDiv);
 
-        if (div.innerHTML.indexOf(streamFilterInput.value) > -1)
-            div.style.display = 'table-row';
+        const commandDiv              = document.createElement('div');
+        commandDiv.className          = "command";
+        commandDiv.innerHTML          = command;
+        logEntryDiv.appendChild(commandDiv);
+
+        const messageDiv              = document.createElement('div');
+        messageDiv.className          = "message";
+        logEntryDiv.appendChild(messageDiv);
+
+        if (Array.isArray(message))
+            message = message.reduce(function (a, b) { return a + "<br />" + b; });
+
+        else if (message instanceof HTMLDivElement)
+            messageDiv.appendChild(message);
+
         else
-            div.style.display = 'none';
+            messageDiv.innerHTML = message;
 
-        eventsDiv.insertBefore(div, eventsDiv.firstChild);
+           // logEntryDiv.innerHTML         = "<div class=\"timestamp\">"       + timestamp       + "</div>" + //  new Date(timestamp).format('dd.mm.yyyy HH:MM:ss') + "</div>" +
+           //                         "<div class=\"roamingNetwork\">"  + roamingNetwork  + "</div>" +
+           //                         "<div class=\"eventTrackingId\">" + eventTrackingId + "</div>" +
+           //                         "<div class=\"command\">"         + command         + "</div>" +
+           //                         "<div class=\"message\">"         + message         + "</div>";
+
+        if (logEntryDiv.innerHTML.indexOf(streamFilterInput.value) > -1)
+            logEntryDiv.style.display = 'table-row';
+        else
+            logEntryDiv.style.display = 'none';
+
+        eventsDiv.insertBefore(logEntryDiv, eventsDiv.firstChild);
 
     }
 
@@ -1365,7 +6009,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyReport",
-                               JSON.stringify(request.data),
+                               OnNotifyReport(request.data),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -1652,6 +6296,262 @@ function StartEventsSSE() {
 
 
     }
+
+
+
+
+
+    CreateLogEntry(
+        "2024-02-26T21:53:54.019Z",
+        "-",
+        "1234",
+        "OnNotifyReport",
+        OnNotifyReport(pionixDeviceModel),
+        "-"
+    );
+
+
+    interface Variable {
+        name:                     string;
+        instance?:                string;
+    }
+
+    interface VariableAttribute {
+        constant:                 boolean;
+        mutability:               string;
+        persistent:               boolean;
+        type:                     string;
+        value:                    string;
+    }
+
+    interface VariableCharacteristics {
+        dataType:                 string;
+        supportsMonitoring:       boolean;
+    }
+
+    interface Component {
+        name:                     string;
+        evse?: {
+            id:                   number;
+        };
+    }
+
+    interface VariableEntry {
+        component?:               Component;
+        instance?:                string;
+        variable:                 Variable;
+        variableAttribute:        VariableAttribute[];
+        variableCharacteristics:  VariableCharacteristics;
+    }
+
+    type ComponentLookup1 = Map<string, Map<number | 'default', VariableEntry[]>>;
+    type ComponentLookup2 = Map<string, Map<number | 'default', Map<string, VariableEntry[]>>>;
+
+
+    function OnNotifyReport(reportData: any): HTMLDivElement
+    {
+
+        const lookup1: ComponentLookup1 = new Map();
+        const lookup2: ComponentLookup2 = new Map();
+
+        for (const entry of reportData)
+        {
+
+            const componentName  = entry.component.name;
+
+            if (!lookup1.has(componentName))
+                lookup1.set(componentName, new Map());
+
+            if (!lookup2.has(componentName))
+                lookup2.set(componentName, new Map());
+
+            const componentMap1 = lookup1.get(componentName);
+            const componentMap2 = lookup2.get(componentName);
+
+
+            const evseId = entry.component.evse?.id || 'default';
+
+            if (!componentMap1?.has(evseId))
+                componentMap1?.set(evseId, []);
+
+            if (!componentMap2?.has(evseId))
+                componentMap2?.set(evseId, new Map());
+
+            const entries = componentMap1?.get(evseId);
+            entries?.push({
+                variable:                 entry.variable,
+                variableAttribute:        entry.variableAttribute,
+                variableCharacteristics:  entry.variableCharacteristics,
+            });
+
+            const variableMap2     = componentMap2.get(evseId);
+            const variableName     = entry.variable.name;
+            const variableInstance = entry.variable.instance || 'default';
+
+            if (!variableMap2.has(variableName))
+                variableMap2.set(variableName, []);
+
+            const entries2 = variableMap2?.get(variableName);
+            entries2?.push({
+                variable:                 entry.variable,
+                instance:                 variableInstance,
+                variableAttribute:        entry.variableAttribute,
+                variableCharacteristics:  entry.variableCharacteristics,
+            });
+
+
+          //  const entries = componentMap1?.get(evseId);
+          //  entries?.push({
+          //      variable: entry.variable,
+          //      variableAttribute: entry.variableAttribute,
+          //      variableCharacteristics: entry.variableCharacteristics,
+          //  });
+
+        }
+
+        const deviceModelDiv = document.createElement('div');
+        deviceModelDiv.className = "deviceModel";
+
+        for (var component of lookup2)
+        {
+
+            const componentDiv         = document.createElement('div');
+            componentDiv.id            = "dmc_" + component[0];
+            componentDiv.className     = "component";
+            deviceModelDiv.appendChild(componentDiv);
+
+            // Component Name
+            const componentNameDiv     = document.createElement('div');
+            componentNameDiv.className = "name";
+            componentNameDiv.innerHTML = component[0];
+            componentDiv.appendChild(componentNameDiv);
+
+            // EVSEs
+            const evsesDiv             = document.createElement('div');
+            evsesDiv.className         = "evses";
+            componentDiv.appendChild(evsesDiv);
+
+            for (var evse of component[1]) {
+
+                const evseDiv              = document.createElement('div');
+                evseDiv.id                 = "dmc_" + component[0] + "_" + evse[0].toString();
+                evseDiv.className          = "evse";
+                evsesDiv.appendChild(evseDiv);
+
+                // EVSE Id or "default"
+                if (evse[0].toString() !== "default") {
+                    const evseNameDiv          = document.createElement('div');
+                    evseNameDiv.className      = "name";
+                    evseNameDiv.innerHTML  = "EVSE #" + evse[0].toString();
+                    evseDiv.appendChild(evseNameDiv);
+                }
+
+                // Variables
+                const variablesDiv         = document.createElement('div');
+                variablesDiv.className     = "variables";
+                evseDiv.appendChild(variablesDiv);
+
+                for (var variable of evse[1]) {
+
+                    const variableDiv          = document.createElement('div');
+                    variableDiv.className     = "variable";
+                    variablesDiv.appendChild(variableDiv);
+
+                    // Variable Name
+                    const variableNameDiv = document.createElement('div');
+                    variableNameDiv.className     = "name";
+                    variableNameDiv.innerHTML = variable[0];
+                    variableDiv.appendChild(variableNameDiv);
+
+                    // Variable Instances
+                    const instancesDiv = document.createElement('div');
+                    instancesDiv.className     = "instances";
+                    variableDiv.appendChild(instancesDiv);
+
+                    for (var instance of variable[1])
+                    {
+
+                        const instanceDiv          = document.createElement('div');
+                        instanceDiv.className      = "instance";
+                        instancesDiv.appendChild(instanceDiv);
+
+                        if (instance.instance !== "default") {
+                            // Instance
+                            const instanceNameDiv      = document.createElement('div');
+                            instanceNameDiv.className  = "name";
+                            instanceNameDiv.innerHTML  = ">>>>>> " + instance.instance;
+                            instancesDiv.appendChild(instanceNameDiv);
+                        }
+
+                        const characteristicsDiv = document.createElement('div');
+                        characteristicsDiv.className = "characteristics";
+                        instancesDiv.appendChild(characteristicsDiv);
+
+                        const dataTypeDiv = document.createElement('div');
+                        dataTypeDiv.className = "dataType";
+                        dataTypeDiv.innerHTML = "Data Type: " + instance.variableCharacteristics.dataType;
+                        characteristicsDiv.appendChild(dataTypeDiv);
+
+                        const supportsMonitoringDiv = document.createElement('div');
+                        supportsMonitoringDiv.className = "supportsMonitoring";
+                        supportsMonitoringDiv.innerHTML = "Supports Monitoring: " + (instance.variableCharacteristics.supportsMonitoring ? "true" : "false");
+                        characteristicsDiv.appendChild(supportsMonitoringDiv);
+
+
+
+//VariableAttribute {
+//                            constant: boolean;
+//                            mutability: string;
+//                            persistent: boolean;
+//                            type: string;
+//                            value: string;
+//                        }
+
+
+                        const attributeDiv = document.createElement('div');
+                        attributeDiv.className = "attribute";
+                        instancesDiv.appendChild(attributeDiv);
+
+                        const constantDiv = document.createElement('div');
+                        constantDiv.className = "constant";
+                        constantDiv.innerHTML = "Constant: " + (instance.variableAttribute[0].constant ? "true" : "false");
+                        characteristicsDiv.appendChild(constantDiv);
+
+                        const mutabilityDiv = document.createElement('div');
+                        mutabilityDiv.className = "mutability";
+                        mutabilityDiv.innerHTML = "Mutability: " + instance.variableAttribute[0].mutability;
+                        characteristicsDiv.appendChild(mutabilityDiv);
+
+                        const persistentDiv = document.createElement('div');
+                        persistentDiv.className = "persistent";
+                        persistentDiv.innerHTML = "Persistent: " + (instance.variableAttribute[0].persistent ? "true" : "false");
+                        characteristicsDiv.appendChild(persistentDiv);
+
+                        const typeDiv = document.createElement('div');
+                        typeDiv.className = "type";
+                        typeDiv.innerHTML = "Type: " + instance.variableAttribute[0].type;
+                        characteristicsDiv.appendChild(typeDiv);
+
+                        const valueDiv = document.createElement('div');
+                        valueDiv.className = "value";
+                        valueDiv.innerHTML = "Value: '" + instance.variableAttribute[0].value + "'";
+                        characteristicsDiv.appendChild(valueDiv);
+
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return deviceModelDiv;
+
+    }
+
+
+
 
 }
 
