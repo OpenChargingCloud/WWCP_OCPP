@@ -19,19 +19,18 @@
 
 using System.Reflection;
 using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-
 
 #endregion
 
@@ -200,7 +199,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// 
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
+        /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public CSMSWSServer(ICSMSWebSocket                       CSMS,
@@ -208,13 +210,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             String                               HTTPServiceName              = DefaultHTTPServiceName,
                             IIPAddress?                          IPAddress                    = null,
                             IPPort?                              TCPPort                      = null,
+                            I18NString?                          Description                  = null,
 
                             Boolean                              RequireAuthentication        = true,
                             Boolean                              DisableWebSocketPings        = false,
                             TimeSpan?                            WebSocketPingEvery           = null,
                             TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                            ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                            Func<X509Certificate2>?              ServerCertificateSelector    = null,
                             RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
                             LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
                             SslProtocols?                        AllowedTLSProtocols          = null,
@@ -239,6 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    HTTPServiceName,
                    IPAddress,
                    TCPPort,
+                   Description,
 
                    RequireAuthentication,
                    DisableWebSocketPings,

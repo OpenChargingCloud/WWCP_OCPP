@@ -34,6 +34,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_0_1.CS;
 using cloud.charging.open.protocols.OCPPv2_0_1.WebSockets;
+using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -1806,19 +1807,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// 
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
+        /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public CSMSWSServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
                             IIPAddress?                          IPAddress                    = null,
                             IPPort?                              TCPPort                      = null,
+                            I18NString?                          Description                  = null,
 
                             Boolean                              RequireAuthentication        = true,
                             Boolean                              DisableWebSocketPings        = false,
                             TimeSpan?                            WebSocketPingEvery           = null,
                             TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                            ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                            Func<X509Certificate2>?              ServerCertificateSelector    = null,
                             RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
                             LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
                             SslProtocols?                        AllowedTLSProtocols          = null,
@@ -1838,6 +1843,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
                    HTTPServiceName,
+                   Description,
 
                    new[] { $"ocpp{Version.Number[1..]}" },
                    DisableWebSocketPings,

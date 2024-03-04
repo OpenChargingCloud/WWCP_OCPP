@@ -18,19 +18,32 @@
 #region Usings
 
 using System.Diagnostics;
+using System.Security.Cryptography;
 
 using Newtonsoft.Json;
+
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Utilities;
+using Org.BouncyCastle.Crypto.Operators;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1;
 using OCPPv1_6 = cloud.charging.open.protocols.OCPPv1_6;
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
-using cloud.charging.open.protocols.OCPPv2_1;
-using cloud.charging.open.protocols.OCPP;
-using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -154,6 +167,108 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                    CancellationToken);
 
 
+        static System.Security.Cryptography.ECDsa ConvertFromPkcs8(byte[] pkcs8)
+        {
+            using (var ms     = new MemoryStream(pkcs8))
+            using (var reader = new BinaryReader(ms))
+            {
+                var ecdsa = System.Security.Cryptography.ECDsa.Create();
+                ecdsa.ImportPkcs8PrivateKey(reader.ReadBytes((int) ms.Length), out _);
+                return ecdsa;
+            }
+        }
+
+        #region ToDotNet(this Certificate, PrivateKey = null)
+
+        static ECDsa ToDotNetECDsa(ECPrivateKeyParameters privateKeyParameters)
+        {
+
+            var domainParameters  = privateKeyParameters.Parameters;
+            var curveParams       = domainParameters.Curve;
+            var q                 = domainParameters.G.Multiply(privateKeyParameters.D).Normalize();
+
+            var ecdsa             = ECDsa.Create(new ECParameters() {
+                                        Curve = ECCurve.CreateFromOid(new Oid(curveParams.ToString())),
+                                        D     = privateKeyParameters.D.ToByteArrayUnsigned(),
+                                        Q     = new ECPoint {
+                                                    X = q.AffineXCoord.GetEncoded(),
+                                                    Y = q.AffineYCoord.GetEncoded()
+                                                }
+                                    });
+
+            return ecdsa;
+
+        }
+
+
+        /// <summary>
+        /// Convert the Bouncy Castle certificate to a .NET certificate.
+        /// </summary>
+        /// <param name="Certificate">A Bouncy Castle certificate.</param>
+        /// <param name="PrivateKey">An optional private key to be included.</param>
+        static System.Security.Cryptography.X509Certificates.X509Certificate2? ToDotNet(X509Certificate                Certificate,
+                                                                                        AsymmetricKeyParameter?        PrivateKey       = null,
+                                                                                        IEnumerable<X509Certificate>?  CACertificates   = null)
+        {
+
+            if (PrivateKey is null)
+                return new (Certificate.GetEncoded());
+
+            if (PrivateKey is RsaPrivateCrtKeyParameters rsaPrivateKey)
+            {
+
+                var store             = new Pkcs12StoreBuilder().Build();
+                var certificateEntry  = new X509CertificateEntry(Certificate);
+
+                store.SetCertificateEntry(Certificate.SubjectDN.ToString(),
+                                          certificateEntry);
+
+                store.SetKeyEntry        (Certificate.SubjectDN.ToString(),
+                                          new AsymmetricKeyEntry(rsaPrivateKey),
+                                          [ certificateEntry ]);
+
+                foreach (var caCertificate in (CACertificates ?? []))
+                {
+                    store.SetCertificateEntry(caCertificate.SubjectDN.ToString(),
+                                              new X509CertificateEntry(caCertificate));
+                }
+
+                using (var pfxStream = new MemoryStream())
+                {
+
+                    var password = RandomExtensions.RandomString(10);
+
+                    store.Save(pfxStream,
+                               password.ToCharArray(),
+                               new SecureRandom());
+
+                    return new System.Security.Cryptography.X509Certificates.X509Certificate2(
+                               pfxStream.ToArray(),
+                               password,
+                               System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.Exportable
+                           );
+
+                }
+
+            }
+
+            if (PrivateKey is ECPrivateKeyParameters eccPrivateKey)
+            {
+
+                //var dotNetCertificate = new System.Security.Cryptography.X509Certificates.X509Certificate2(Certificate.GetEncoded());
+                //var ecdsa             = ToDotNetECDsa(eccPrivateKey);
+
+                //return dotNetCertificate.CopyWithPrivateKey(ecdsa);
+
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+
         /// <summary>
         /// Start the OCPP CSMS Test Application.
         /// </summary>
@@ -180,6 +295,849 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             #endregion
 
+
+            #region Setup PKI
+
+            #region Data
+
+            AsymmetricCipherKeyPair? rootCA_ECC_KeyPair           = null;
+            X509Certificate?         rootCA_ECC_Certificate       = null;
+            AsymmetricCipherKeyPair? rootCA_RSA_KeyPair           = null;
+            X509Certificate?         rootCA_RSA_Certificate       = null;
+
+            AsymmetricCipherKeyPair? serverCA_ECC_KeyPair         = null;
+            X509Certificate?         serverCA_ECC_Certificate     = null;
+            AsymmetricCipherKeyPair? serverCA_RSA_KeyPair         = null;
+            X509Certificate?         serverCA_RSA_Certificate     = null;
+
+            AsymmetricCipherKeyPair? clientCA_ECC_KeyPair         = null;
+            X509Certificate?         clientCA_ECC_Certificate     = null;
+            AsymmetricCipherKeyPair? clientCA_RSA_KeyPair         = null;
+            X509Certificate?         clientCA_RSA_Certificate     = null;
+
+            AsymmetricCipherKeyPair? firmwareCA_ECC_KeyPair       = null;
+            X509Certificate?         firmwareCA_ECC_Certificate   = null;
+            AsymmetricCipherKeyPair? firmwareCA_RSA_KeyPair       = null;
+            X509Certificate?         firmwareCA_RSA_Certificate   = null;
+
+
+            AsymmetricCipherKeyPair? server1_ECC_KeyPair          = null;
+            X509Certificate?         server1_ECC_Certificate      = null;
+            AsymmetricCipherKeyPair? server1_RSA_KeyPair          = null;
+            X509Certificate?         server1_RSA_Certificate      = null;
+
+
+            AsymmetricCipherKeyPair? client1_ECC_KeyPair          = null;
+            X509Certificate?         client1_ECC_Certificate      = null;
+            AsymmetricCipherKeyPair? client1_RSA_KeyPair          = null;
+            X509Certificate?         client1_RSA_Certificate      = null;
+
+            #endregion
+
+            #region Crypto defaults
+
+            var secureRandom                    = new SecureRandom();
+            var eccSignatureAlgorithm           = "SHA256withECDSA";
+            var rsaSignatureAlgorithm           = "SHA256WithRSA";
+
+            var eccCurve                        = ECNamedCurveTable.GetByName("secp256r1");
+            var eccDomainParameters             = new ECDomainParameters(eccCurve.Curve, eccCurve.G, eccCurve.N, eccCurve.H, eccCurve.GetSeed());
+            var eccKeyGenParams                 = new ECKeyGenerationParameters(eccDomainParameters, secureRandom);
+
+            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "pki"));
+            var rootCA_ECC_privateKeyFile       = Path.Combine(AppContext.BaseDirectory, "pki", "rootCA_ECC.key");
+            var rootCA_ECC_certificateFile      = Path.Combine(AppContext.BaseDirectory, "pki", "rootCA_ECC.cert");
+            var rootCA_RSA_privateKeyFile       = Path.Combine(AppContext.BaseDirectory, "pki", "rootCA_RSA.key");
+            var rootCA_RSA_certificateFile      = Path.Combine(AppContext.BaseDirectory, "pki", "rootCA_RSA.cert");
+
+            var serverCA_ECC_privateKeyFile     = Path.Combine(AppContext.BaseDirectory, "pki", "serverCA_ECC.key");
+            var serverCA_ECC_certificateFile    = Path.Combine(AppContext.BaseDirectory, "pki", "serverCA_ECC.cert");
+            var serverCA_RSA_privateKeyFile     = Path.Combine(AppContext.BaseDirectory, "pki", "serverCA_RSA.key");
+            var serverCA_RSA_certificateFile    = Path.Combine(AppContext.BaseDirectory, "pki", "serverCA_RSA.cert");
+
+            var clientCA_ECC_privateKeyFile     = Path.Combine(AppContext.BaseDirectory, "pki", "clientCA_ECC.key");
+            var clientCA_ECC_certificateFile    = Path.Combine(AppContext.BaseDirectory, "pki", "clientCA_ECC.cert");
+            var clientCA_RSA_privateKeyFile     = Path.Combine(AppContext.BaseDirectory, "pki", "clientCA_RSA.key");
+            var clientCA_RSA_certificateFile    = Path.Combine(AppContext.BaseDirectory, "pki", "clientCA_RSA.cert");
+
+            var firmwareCA_ECC_privateKeyFile   = Path.Combine(AppContext.BaseDirectory, "pki", "firmwareCA_ECC.key");
+            var firmwareCA_ECC_certificateFile  = Path.Combine(AppContext.BaseDirectory, "pki", "firmwareCA_ECC.cert");
+            var firmwareCA_RSA_privateKeyFile   = Path.Combine(AppContext.BaseDirectory, "pki", "firmwareCA_RSA.key");
+            var firmwareCA_RSA_certificateFile  = Path.Combine(AppContext.BaseDirectory, "pki", "firmwareCA_RSA.cert");
+
+            // ----------------------------------------------------------------------------------------------------
+
+            var server1_ECC_privateKeyFile      = Path.Combine(AppContext.BaseDirectory, "pki", "server1_ECC.key");
+            var server1_ECC_certificateFile     = Path.Combine(AppContext.BaseDirectory, "pki", "server1_ECC.cert");
+            var server1_ECC_pfx                 = Path.Combine(AppContext.BaseDirectory, "pki", "server1_ECC.pfx");
+
+            var server1_RSA_privateKeyFile      = Path.Combine(AppContext.BaseDirectory, "pki", "server1_RSA.key");
+            var server1_RSA_certificateFile     = Path.Combine(AppContext.BaseDirectory, "pki", "server1_RSA.cert");
+            var server1_RSA_pfx                 = Path.Combine(AppContext.BaseDirectory, "pki", "server1_RSA.pfx");
+
+
+            var client1_ECC_privateKeyFile      = Path.Combine(AppContext.BaseDirectory, "pki", "client1_ECC.key");
+            var client1_ECC_certificateFile     = Path.Combine(AppContext.BaseDirectory, "pki", "client1_ECC.cert");
+
+            var client1_RSA_privateKeyFile      = Path.Combine(AppContext.BaseDirectory, "pki", "client1_RSA.key");
+            var client1_RSA_certificateFile     = Path.Combine(AppContext.BaseDirectory, "pki", "client1_RSA.cert");
+
+            #endregion
+
+            #region Try to reload crypto data from disc
+
+            try
+            {
+
+                // Root CA
+                using (var reader = File.OpenText(rootCA_ECC_privateKeyFile))
+                {
+                    rootCA_ECC_KeyPair          = (AsymmetricCipherKeyPair)   new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(rootCA_ECC_certificateFile))
+                {
+                    rootCA_ECC_Certificate      = (X509Certificate)           new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(rootCA_RSA_privateKeyFile))
+                {
+                    rootCA_RSA_KeyPair          = (AsymmetricCipherKeyPair)   new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(rootCA_RSA_certificateFile))
+                {
+                    rootCA_RSA_Certificate      = (X509Certificate)           new PemReader(reader).ReadObject();
+                }
+
+
+                // Server CA
+                using (var reader = File.OpenText(serverCA_ECC_privateKeyFile))
+                {
+                    serverCA_ECC_KeyPair        = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(serverCA_ECC_certificateFile))
+                {
+                    serverCA_ECC_Certificate    = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(serverCA_RSA_privateKeyFile))
+                {
+                    serverCA_RSA_KeyPair        = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(serverCA_RSA_certificateFile))
+                {
+                    serverCA_RSA_Certificate    = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+
+                // Client CA
+                using (var reader = File.OpenText(clientCA_ECC_privateKeyFile))
+                {
+                    clientCA_ECC_KeyPair        = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(clientCA_ECC_certificateFile))
+                {
+                    clientCA_ECC_Certificate    = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(clientCA_RSA_privateKeyFile))
+                {
+                    clientCA_RSA_KeyPair        = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(clientCA_RSA_certificateFile))
+                {
+                    clientCA_RSA_Certificate    = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+
+                // Firmware CA
+                using (var reader = File.OpenText(firmwareCA_ECC_privateKeyFile))
+                {
+                    firmwareCA_ECC_KeyPair      = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(firmwareCA_ECC_certificateFile))
+                {
+                    firmwareCA_ECC_Certificate  = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(firmwareCA_RSA_privateKeyFile))
+                {
+                    firmwareCA_RSA_KeyPair      = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(firmwareCA_RSA_certificateFile))
+                {
+                    firmwareCA_RSA_Certificate  = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+
+                // Server #1
+                using (var reader = File.OpenText(server1_ECC_privateKeyFile))
+                {
+                    server1_ECC_KeyPair         = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(server1_ECC_certificateFile))
+                {
+                    server1_ECC_Certificate     = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(server1_RSA_privateKeyFile))
+                {
+                    server1_RSA_KeyPair         = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(server1_RSA_certificateFile))
+                {
+                    server1_RSA_Certificate     = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+
+                // Client #1
+                using (var reader = File.OpenText(client1_ECC_privateKeyFile))
+                {
+                    client1_ECC_KeyPair         = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(client1_ECC_certificateFile))
+                {
+                    client1_ECC_Certificate     = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(client1_RSA_privateKeyFile))
+                {
+                    client1_RSA_KeyPair         = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(client1_RSA_certificateFile))
+                {
+                    client1_RSA_Certificate     = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+            }
+            catch
+            { }
+
+            #endregion
+
+
+            if (rootCA_ECC_KeyPair         is null)
+            {
+
+                var keyPairGenerator = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                rootCA_ECC_KeyPair = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(rootCA_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(rootCA_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (rootCA_ECC_Certificate     is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+                var subjectDN             = new X509Name("CN=Open Charging Cloud - Root CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany");
+
+                certificateGenerator.SetIssuerDN    (subjectDN); // self-signed
+                certificateGenerator.SetSubjectDN   (subjectDN);
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey   (rootCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     new BasicConstraints(cA: true));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                rootCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(rootCA_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(rootCA_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (rootCA_RSA_KeyPair         is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 4096));
+                rootCA_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(rootCA_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(rootCA_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (rootCA_RSA_Certificate     is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+                var subjectDN             = new X509Name("CN=Open Charging Cloud - Root CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany");
+
+                certificateGenerator.SetIssuerDN    (subjectDN); // self-signed
+                certificateGenerator.SetSubjectDN   (subjectDN);
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey   (rootCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     new BasicConstraints(cA: true));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                rootCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(rootCA_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(rootCA_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            if (serverCA_ECC_KeyPair       is null)
+            {
+
+                var keyPairGenerator = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                serverCA_ECC_KeyPair = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(serverCA_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(serverCA_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (serverCA_ECC_Certificate   is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Server CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-2));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(+5));
+                certificateGenerator.SetPublicKey   (serverCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                serverCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(serverCA_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(serverCA_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (serverCA_RSA_KeyPair       is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 4096));
+                serverCA_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(serverCA_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(serverCA_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (serverCA_RSA_Certificate   is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_RSA_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Server CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey   (serverCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                serverCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(serverCA_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(serverCA_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            if (clientCA_ECC_KeyPair       is null)
+            {
+
+                var keyPairGenerator = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                clientCA_ECC_KeyPair = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(clientCA_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(clientCA_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (clientCA_ECC_Certificate   is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Client CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-2));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(+5));
+                certificateGenerator.SetPublicKey   (clientCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                clientCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(clientCA_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(clientCA_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (clientCA_RSA_KeyPair       is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 4096));
+                clientCA_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(clientCA_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(clientCA_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (clientCA_RSA_Certificate   is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Client CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey   (clientCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                clientCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(clientCA_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(clientCA_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            if (firmwareCA_ECC_KeyPair     is null)
+            {
+
+                var keyPairGenerator = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                firmwareCA_ECC_KeyPair = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(firmwareCA_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(firmwareCA_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (firmwareCA_ECC_Certificate is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Firmware Signing CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-2));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(+5));
+                certificateGenerator.SetPublicKey   (firmwareCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                firmwareCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(firmwareCA_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(firmwareCA_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (firmwareCA_RSA_KeyPair     is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 4096));
+                firmwareCA_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(firmwareCA_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(firmwareCA_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (firmwareCA_RSA_Certificate is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Firmware Signing CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey   (firmwareCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                firmwareCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(firmwareCA_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(firmwareCA_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            // -------------------------------------------
+
+
+            if (server1_ECC_KeyPair        is null)
+            {
+
+                var keyPairGenerator = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                server1_ECC_KeyPair = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(server1_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(server1_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (server1_ECC_Certificate    is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(serverCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=api1.charging.cloud, O=GraphDefined GmbH, OU=ECC, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey   (server1_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_serverAuth));
+
+                certificateGenerator.AddExtension   (X509Extensions.SubjectAlternativeName, critical: false, new GeneralNames([
+                                                                                                                                  new (GeneralName.DnsName,   "api1.charging.cloud"),
+                                                                                                                                  new (GeneralName.IPAddress, "127.0.0.1"),
+                                                                                                                                  new (GeneralName.IPAddress, "172.23.144.1")
+                                                                                                                              ]));
+
+                server1_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, serverCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(server1_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(server1_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (server1_RSA_KeyPair        is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 2048));
+                server1_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(server1_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(server1_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (server1_RSA_Certificate    is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(serverCA_RSA_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=api1.charging.cloud, O=GraphDefined GmbH, OU=RSA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey   (server1_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,               critical: true,  new KeyUsage        (KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage,       critical: true,  new ExtendedKeyUsage(KeyPurposeID.id_kp_serverAuth));
+
+                certificateGenerator.AddExtension   (X509Extensions.SubjectAlternativeName, critical: false, new GeneralNames([
+                                                                                                                                  new (GeneralName.DnsName,   "api1.charging.cloud"),
+                                                                                                                                  new (GeneralName.IPAddress, "127.0.0.1"),
+                                                                                                                                  new (GeneralName.IPAddress, "172.23.144.1")
+                                                                                                                              ]));
+
+                server1_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, serverCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(server1_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(server1_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            if (client1_ECC_KeyPair        is null)
+            {
+
+                var keyPairGenerator = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                client1_ECC_KeyPair = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(client1_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(client1_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (client1_ECC_Certificate    is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(clientCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=client1, O=GraphDefined GmbH, OU=ECC, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey   (client1_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.NonRepudiation | KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_clientAuth));
+
+                client1_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, clientCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(client1_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(client1_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (client1_RSA_KeyPair        is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 2048));
+                client1_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(client1_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(client1_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (client1_RSA_Certificate    is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(clientCA_RSA_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=client1, O=GraphDefined GmbH, OU=RSA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey   (client1_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.NonRepudiation | KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_clientAuth));
+
+                client1_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, clientCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(client1_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(client1_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            #endregion
 
             #region Setup Central System v1.6
 
@@ -388,24 +1346,181 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             #endregion
 
-            #region Setup CSMS v2.1 (compatible with v2.0.1)
+            #region Setup CSMS v2.1 (compatible with v2.0.1, mostly ;) )
+
+            #region 9920 - OCPP v2.1 without internal security, but maybe with external TLS termination
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
                                    Id:                     NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
-                                   RequireAuthentication:  true,
+                                   RequireAuthentication:  false,
                                    DNSClient:              dnsClient
                                );
 
+
             testCSMSv2_1.AttachWebSocketService(
                 TCPPort:                     IPPort.Parse(9920),
+                Description:                 I18NString.Create("OCPP v2.1 without internal security, but maybe with external TLS termination"),
                 DisableWebSocketPings:       false,
                 //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
                 AutoStart:                   true
             );
 
-            //      var webSocketServerV2_1        = testCSMSv2_1.CSMSServers.First() as WebSocketServer;
+            #endregion
 
-            //testCSMSv2_1.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("CP001"), "dummy-dev-password");
+            #region 9921 - OCPP v2.1 with internal TLS termination using a private ECC PKI
+
+            // cat serverCA.cert rootCA.cert > caChain.cert
+            // openssl s_client -connect 127.0.0.1:9921 -CAfile caChain.cert -showcerts
+            // openssl ec   -in server1ECC.key  -pubout 2>/dev/null | openssl dgst -sha256
+            // openssl x509 -in server1ECC.cert -pubkey -noout      | openssl dgst -sha256
+            //
+            // openssl pkcs12 -export -out server1ECC.pfx -inkey server1ECC.key -in server1ECC.cert -certfile caChain.cert
+            // openssl pkcs12 -in server1ECC.pfx - nokeys - passin pass:
+            //
+            // openssl ecparam -name secp256r1 -genkey -out secp256r1key.pem
+            // MSYS_NO_PATHCONV=1 openssl req -new -key secp256r1key.pem -out secp256r1req.pem -subj '/C=US/ST=YourState/L=YourCity/O=YourOrganization/CN=yourname'
+            // openssl x509 -req -in secp256r1req.pem -CA serverCA.cert -CAkey serverCA.key -CAcreateserial -out secp256r1cert.pem -days 365 -sha256
+
+            // https://stackoverflow.com/questions/72096812/loading-x509certificate2-from-pem-file-results-in-no-credentials-are-available
+            // https://www.daimto.com/how-to-use-x509certificate2-with-pem-file/
+            // The TLS layer on Windows requires that the private key be written to disk (in a particular way).
+            // The PEM-based certificate loading doesn't do that, only PFX-loading does.
+            // The easiest way to make the TLS layer happy is to do:
+            //     cert = new X509Certificate2(cert.Export(X509ContentType.Pfx));
+            // That is, export the cert+key to a PFX, then import it again immediately (to get the side effect of the key being (temporarily)
+            // written to disk in a way that SChannel can find it). You shouldn't need to bother with changing the PFX load flags off of the defaults,
+            // though some complicatedly constrained users might need to use MachineKeySet.
+            testCSMSv2_1.AttachWebSocketService(
+                TCPPort:                     IPPort.Parse(9921),
+                Description:                 I18NString.Create("OCPP v2.1 with internal TLS termination using a private ECC PKI"),
+                ServerCertificateSelector:   () => //new System.Security.Cryptography.X509Certificates.X509Certificate2(server1ECC_pfx, "", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet),
+                                                   new System.Security.Cryptography.X509Certificates.X509Certificate2(
+                                                       System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(
+                                                           server1_ECC_certificateFile,
+                                                           server1_ECC_privateKeyFile
+                                                       ).Export(System.Security.Cryptography.X509Certificates.X509ContentType.Pfx)
+                                                   ),
+
+                                                   /// Authentication failed because the platform does not support ephemeral keys.
+                                                   //System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(
+                                                   //    Path.Combine(AppContext.BaseDirectory, "pki", "secp256r1cert.pem"),
+                                                   //    Path.Combine(AppContext.BaseDirectory, "pki", "secp256r1key.pem")
+                                                   //),
+                DisableWebSocketPings:       false,
+
+                //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
+                AutoStart:                   true
+            );
+
+            #endregion
+
+            #region 9922 - OCPP v2.1 with internal TLS termination using a private RSA PKI
+
+            // cat serverCA_RSA.cert rootCA_RSA.cert > caChain_RSA.cert
+            // openssl s_client -connect 127.0.0.1:9922 -CAfile caChain_RSA.cert -showcerts
+            // CONNECTED(00000160)
+            // Can't use SSL_get_servername
+            // depth=2 CN = Open Charging Cloud - Root CA, O = GraphDefined GmbH, L = Jena, C = Germany
+            // verify return:1
+            // depth=1 CN = Open Charging Cloud - Server CA, O = GraphDefined GmbH, L = Jena, C = Germany
+            // verify return:1
+            // depth=0 CN = api1.charging.cloud, O = GraphDefined GmbH, L = Jena, C = Germany
+            // verify return:1
+            // ---
+            // Certificate chain
+            //  0 s:CN = api1.charging.cloud, O = GraphDefined GmbH, L = Jena, C = Germany
+            //    i:CN = Open Charging Cloud - Server CA, O = GraphDefined GmbH, L = Jena, C = Germany
+            //    a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA256
+            //    v:NotBefore: Mar  2 00:34:59 2024 GMT; NotAfter: Jun  3 00:34:59 2024 GMT
+            testCSMSv2_1.AttachWebSocketService(
+                TCPPort:                     IPPort.Parse(9922),
+                Description:                 I18NString.Create("OCPP v2.1 with internal TLS termination using a private RSA PKI"),
+                ServerCertificateSelector:   () => ToDotNet(server1_RSA_Certificate, server1_RSA_KeyPair.Private)!,
+                                                   //NotWorking:  System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(server1RSA_certificateFile, server1RSA_privateKeyFile),
+                                                   //NotWorking:  ConvertToX509Certificate2(server1RSA_Certificate, server1RSA_KeyPair.Private),
+                                                   //IsWorking:   new System.Security.Cryptography.X509Certificates.X509Certificate2(server1RSA_pfx, "", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet),
+                AllowedTLSProtocols:         System.Security.Authentication.SslProtocols.Tls12,
+
+                DisableWebSocketPings:       false,
+                //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
+                AutoStart:                   true
+            );
+
+            #endregion
+
+            #region 9923 - OCPP v2.1 with internal TLS termination using a private RSA PKI enforcing TLS client authentication
+
+            // Show client certificate details: openssl.exe x509 -in client1RSA.cert -text -noout
+            //
+            // cat serverCA_RSA.cert clientCA_RSA.cert rootCA_RSA.cert > caChain_RSA.cert
+            // openssl s_client -connect 127.0.0.1:9923 -cert client1_RSA.cert -key client1_RSA.key -CAfile caChain_RSA.cert -showcerts
+            testCSMSv2_1.AttachWebSocketService(
+                TCPPort:                     IPPort.Parse(9923),
+                Description:                 I18NString.Create("OCPP v2.1 with internal TLS termination using a private RSA PKI enforcing TLS client authentication"),
+                ServerCertificateSelector:   () => ToDotNet(server1_RSA_Certificate, server1_RSA_KeyPair.Private)!,
+                                                   //NotWorking:  System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(server1RSA_certificateFile, server1RSA_privateKeyFile),
+                                                   //NotWorking:  ConvertToX509Certificate2(server1RSA_Certificate, server1RSA_KeyPair.Private),
+                                                   //IsWorking:   new System.Security.Cryptography.X509Certificates.X509Certificate2(server1RSA_pfx, "", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet),
+                AllowedTLSProtocols:         System.Security.Authentication.SslProtocols.Tls12,
+
+                ClientCertificateRequired:    true,
+                ClientCertificateValidator:   (a, b, c, d)    => {
+                                                                     return (true, []);
+                                                                 },
+                ClientCertificateSelector:    (a, b, c, d, e) => {
+                                                                     return d;
+                                                                 },
+
+                DisableWebSocketPings:        false,
+                //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
+                AutoStart:                   true
+            );
+
+            #endregion
+
+
+            #region HowTo test using Win11 + WSL
+
+            // Win11:
+            //  - Import RootCA to "Trusted Root Certification Authorities" for the entire computer
+            //  - Import ServerCA to "Intermediate Certification Authorities" for the entire computer
+            //  - Verify via "certmgr"
+
+            // Win11 WSL (Debian):
+            //  - sudo wget -qO /usr/local/bin/websocat https://github.com/vi/websocat/releases/latest/download/websocat.x86_64-unknown-linux-musl
+            //  - chmod +x /usr/local/bin/websocat
+            //
+            // Note: The IPv4 address of your host (here: 172.23.144.1) might be different!
+
+            // $ websocat --protocol ocpp2.1 --basic-auth a:b -v ws://172.23.144.1:9920
+            // [INFO  websocat::lints] Auto-inserting the line mode
+            // [INFO  websocat::stdio_threaded_peer] get_stdio_peer (threaded)
+            // [INFO  websocat::ws_client_peer] get_ws_client_peer
+            // [INFO  websocat::ws_client_peer] Connected to ws
+            //
+            // Paste the following line:
+            // [2,"100000","BootNotification",{"chargingStation":{"model":"aa","vendorName":"bb"},"reason":"ApplicationReset"}]
+            //
+            // [3,"100000",{"status":"Rejected","currentTime":"2024-03-03T11:46:59.076Z","interval":30}]
+            // [INFO  websocat::ws_peer] Received WebSocket ping
+
+            // $ cat serverCA_RSA.cert rootCA_RSA.cert > caChain_RSA.cert
+            // $ export SSL_CERT_FILE=/home/ahzf/OCPPTests/caChain_RSA.cert
+            // $ websocat --protocol ocpp2.1 --basic-auth a:b -v wss://172.23.144.1:9922
+            // [INFO  websocat::lints] Auto-inserting the line mode
+            // [INFO  websocat::stdio_threaded_peer] get_stdio_peer (threaded)
+            // [INFO  websocat::ws_client_peer] get_ws_client_peer
+            // [INFO  websocat::ws_client_peer] Connected to ws
+            //
+            // Paste the following line:
+            // [2,"100000","BootNotification",{"chargingStation":{"model":"aa","vendorName":"bb"},"reason":"ApplicationReset"}]
+            //
+            // [3,"100000",{"status":"Rejected","currentTime":"2024-03-03T11:43:54.364Z","interval":30}]
+            // [INFO  websocat::ws_peer] Received WebSocket ping
+
+            #endregion
+
+            testCSMSv2_1.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("a"), "b");
 
 
             #region HTTP Web Socket connections
@@ -682,7 +1797,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                             command.Length > 0)
                         {
 
-                            if (command == "q")
+                            if (command.Equals("q"))
                                 quit = true;
 
                             #region SetVersion v1.6 | v2.1
@@ -774,7 +1889,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                    )
                                                                );
 
-                                                DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                                DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                                 DebugX.Log(response.ToJSON().ToString());
 
                                             }
@@ -794,7 +1909,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                    )
                                                                );
 
-                                                DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                                DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                                 DebugX.Log(response.ToJSON().ToString());
 
                                             }
@@ -832,7 +1947,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                    )
                                                                );
 
-                                                DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                                DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                                 DebugX.Log(response.ToJSON().ToString());
 
                                             }
@@ -847,7 +1962,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region UpdateFirmware
 
                                 //   UpdateFirmware https://api2.ocpp.charging.cloud:9901/firmware.bin
-                                if (command == "UpdateFirmware".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("UpdateFirmware", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.UpdateFirmware(
@@ -866,7 +1981,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -881,7 +1996,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 //   GetBaseReport conf
                                 //   GetBaseReport full
-                                if (command == "GetBaseReport".ToLower() && (commandArray.Length == 1 || commandArray.Length == 2))
+                                if (command.Equals("GetBaseReport", StringComparison.OrdinalIgnoreCase) && (commandArray.Length == 1 || commandArray.Length == 2))
                                 {
 
                                     var response = await testCSMSv2_1.GetBaseReport(
@@ -896,7 +2011,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -906,7 +2021,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region GetReport
 
                                 //   GetReport OCPPCommCtrlr
-                                if (command == "GetReport".ToLower() && (commandArray.Length == 2 || commandArray.Length == 3))
+                                if (command.Equals("GetReport", StringComparison.OrdinalIgnoreCase) && (commandArray.Length == 2 || commandArray.Length == 3))
                                 {
 
                                     var response = await testCSMSv2_1.GetReport(
@@ -916,7 +2031,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            //ComponentCriteria:    new[] {
                                                            //                          OCPPv2_1.ComponentCriteria.Active
                                                            //                      },
-                                                           ComponentVariables:   new[] {
+                                                           ComponentVariables:   [
                                                                                      new OCPPv2_1.ComponentVariable(
                                                                                          Component:   new OCPPv2_1.Component(
                                                                                                           Name:       commandArray[1],
@@ -928,12 +2043,12 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                          //                 Instance:   null
                                                                                          //             )
                                                                                      )
-                                                                                 }
+                                                                                 ]
 
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -942,7 +2057,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 #region GetLog
 
-                                if (command == "GetLog".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("GetLog", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -968,7 +2083,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1012,13 +2127,13 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region SetVariables
 
                                 //   SetVariables component variable value
-                                if (command == "SetVariables".ToLower() && commandArray.Length == 4)
+                                if (command.Equals("SetVariables", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 4)
                                 {
 
                                     var response = await testCSMSv2_1.SetVariables(
                                                        new OCPPv2_1.CSMS.SetVariablesRequest(
                                                            NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
-                                                           VariableData:       new[] {
+                                                           VariableData:       [
                                                                                    new OCPPv2_1.SetVariableData(
                                                                                        new OCPPv2_1.Component(
                                                                                            Name:       commandArray[1],
@@ -1032,23 +2147,23 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                        commandArray[3]
                                                                                        //OCPPv2_1.AttributeTypes.Actual
                                                                                    )
-                                                                               }
+                                                                               ]
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
 
                                 //   SetDefaultVariables component variable value
-                                if (command == "SetDefaultVariables".ToLower() && commandArray.Length == 4)
+                                if (command.Equals("SetDefaultVariables", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 4)
                                 {
 
                                     var response = await testCSMSv2_1.SetVariables(
                                                        new OCPPv2_1.CSMS.SetVariablesRequest(
                                                            NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
-                                                           VariableData:       new[] {
+                                                           VariableData:       [
                                                                                    new OCPPv2_1.SetVariableData(
                                                                                        new OCPPv2_1.Component(
                                                                                            Name:       commandArray[1],
@@ -1062,11 +2177,11 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                        commandArray[3]
                                                                                        //OCPPv2_1.AttributeTypes.Actual
                                                                                    )
-                                                                               }
+                                                                               ]
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -1076,29 +2191,29 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region GetVariables
 
                                 //   GetVariables component variable
-                                if (command == "GetVariables".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("GetVariables", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     var response = await testCSMSv2_1.GetVariables(
                                                        new OCPPv2_1.CSMS.GetVariablesRequest(
-                                                           NetworkingNodeId:     NetworkingNode_Id.Parse(chargingStationId),
-                                                           VariableData:   new[] {
-                                                                               new OCPPv2_1.GetVariableData(
-                                                                                   new OCPPv2_1.Component(
-                                                                                       Name:       commandArray[1],
-                                                                                       Instance:   null,
-                                                                                       EVSE:       null
-                                                                                   ),
-                                                                                   new OCPPv2_1.Variable(
-                                                                                       Name:       commandArray[2],
-                                                                                       Instance:   null
+                                                           NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                           VariableData:       [
+                                                                                   new OCPPv2_1.GetVariableData(
+                                                                                       new OCPPv2_1.Component(
+                                                                                           Name:       commandArray[1],
+                                                                                           Instance:   null,
+                                                                                           EVSE:       null
+                                                                                       ),
+                                                                                       new OCPPv2_1.Variable(
+                                                                                           Name:       commandArray[2],
+                                                                                           Instance:   null
+                                                                                       )
                                                                                    )
-                                                                               )
-                                                                           }
+                                                                               ]
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -1110,21 +2225,21 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 //   SetMonitoringBase
                                 //   SetMonitoringBase factory
                                 //   SetMonitoringBase hard
-                                if (command == "SetMonitoringBase".ToLower() && (commandArray.Length == 1 || commandArray.Length == 2))
+                                if (command.Equals("SetMonitoringBase", StringComparison.OrdinalIgnoreCase) && (commandArray.Length == 1 || commandArray.Length == 2))
                                 {
 
                                     var response = await testCSMSv2_1.SetMonitoringBase(
                                                        new OCPPv2_1.CSMS.SetMonitoringBaseRequest(
-                                                           NetworkingNodeId: NetworkingNode_Id.Parse(chargingStationId),
-                                                           MonitoringBase:   commandArray[1] switch {
-                                                                                 "factory"  => OCPPv2_1.MonitoringBase.FactoryDefault,
-                                                                                 "hard"     => OCPPv2_1.MonitoringBase.HardWiredOnly,
-                                                                                 _          => OCPPv2_1.MonitoringBase.All
-                                                                             }
+                                                           NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                           MonitoringBase:     commandArray[1] switch {
+                                                                                   "factory"  => OCPPv2_1.MonitoringBase.FactoryDefault,
+                                                                                   "hard"     => OCPPv2_1.MonitoringBase.HardWiredOnly,
+                                                                                   _          => OCPPv2_1.MonitoringBase.All
+                                                                               }
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -1134,17 +2249,17 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region GetMonitoringReport
 
                                 //   GetMonitoringReport component [variable]
-                                if (command == "GetMonitoringReport".ToLower() && (commandArray.Length == 2 || commandArray.Length == 3))
+                                if (command.Equals("GetMonitoringReport", StringComparison.OrdinalIgnoreCase) && (commandArray.Length == 2 || commandArray.Length == 3))
                                 {
 
                                     var response = await testCSMSv2_1.GetMonitoringReport(
                                                        new OCPPv2_1.CSMS.GetMonitoringReportRequest(
                                                            NetworkingNodeId:               NetworkingNode_Id.Parse(chargingStationId),
                                                            GetMonitoringReportRequestId:   RandomExtensions.RandomInt32(),
-                                                           MonitoringCriteria:             new[] {
+                                                           MonitoringCriteria:             [
                                                                                                OCPPv2_1.MonitoringCriterion.PeriodicMonitoring
-                                                                                           },
-                                                           ComponentVariables:             new[] {
+                                                                                           ],
+                                                           ComponentVariables:             [
                                                                                                new OCPPv2_1.ComponentVariable(
                                                                                                    new OCPPv2_1.Component(
                                                                                                        Name:       commandArray[1],
@@ -1158,11 +2273,11 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                                          )
                                                                                                        : null
                                                                                                )
-                                                                                           }
+                                                                                           ]
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -1180,28 +2295,28 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 //   SetMonitoringLevel systemfailure
                                 //   SetMonitoringLevel hardwarefailure
                                 //   SetMonitoringLevel danger
-                                if (command == "SetMonitoringLevel".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("SetMonitoringLevel", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.SetMonitoringLevel(
                                                        new OCPPv2_1.CSMS.SetMonitoringLevelRequest(
-                                                           NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
-                                                           Severity:      commandArray[1].ToLower() switch {
-                                                                              "danger"           => OCPPv2_1.Severities.Danger,
-                                                                              "hardwarefailure"  => OCPPv2_1.Severities.HardwareFailure,
-                                                                              "systemfailure"    => OCPPv2_1.Severities.SystemFailure,
-                                                                              "critical"         => OCPPv2_1.Severities.Critical,
-                                                                              "alert"            => OCPPv2_1.Severities.Alert,
-                                                                              "warning"          => OCPPv2_1.Severities.Warning,
-                                                                              "notice"           => OCPPv2_1.Severities.Notice,
-                                                                              "informational"    => OCPPv2_1.Severities.Informational,
-                                                                              "debug"            => OCPPv2_1.Severities.Debug,
-                                                                              _                  => OCPPv2_1.Severities.Error
-                                                                          }
+                                                           NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                           Severity:           commandArray[1].ToLower() switch {
+                                                                                   "danger"           => OCPPv2_1.Severities.Danger,
+                                                                                   "hardwarefailure"  => OCPPv2_1.Severities.HardwareFailure,
+                                                                                   "systemfailure"    => OCPPv2_1.Severities.SystemFailure,
+                                                                                   "critical"         => OCPPv2_1.Severities.Critical,
+                                                                                   "alert"            => OCPPv2_1.Severities.Alert,
+                                                                                   "warning"          => OCPPv2_1.Severities.Warning,
+                                                                                   "notice"           => OCPPv2_1.Severities.Notice,
+                                                                                   "informational"    => OCPPv2_1.Severities.Informational,
+                                                                                   "debug"            => OCPPv2_1.Severities.Debug,
+                                                                                   _                  => OCPPv2_1.Severities.Error
+                                                                               }
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -1211,19 +2326,19 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region ClearVariableMonitoring
 
                                 //   ClearVariableMonitoring 1
-                                if (command == "ClearVariableMonitoring".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("ClearVariableMonitoring", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.ClearVariableMonitoring(
                                                        new OCPPv2_1.CSMS.ClearVariableMonitoringRequest(
                                                            NetworkingNodeId:        NetworkingNode_Id.Parse(chargingStationId),
-                                                           VariableMonitoringIds:   new[] {
+                                                           VariableMonitoringIds:   [
                                                                                         OCPPv2_1.VariableMonitoring_Id.Parse(commandArray[1])
-                                                                                    }
+                                                                                    ]
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -1235,7 +2350,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region SetNetworkProfile
 
                                 // SetNetworkProfile
-                                if (command == "SetNetworkProfile".ToLower() && commandArray.Length == 1)
+                                if (command.Equals("SetNetworkProfile", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     var response = await testCSMSv2_1.SetNetworkProfile(
@@ -1253,7 +2368,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -1264,7 +2379,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 //   ChangeAvailability operative
                                 //   ChangeAvailability inoperative
-                                if (command == "ChangeAvailability".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("ChangeAvailability", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.ChangeAvailability(
@@ -1278,7 +2393,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                    );
 
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -1287,7 +2402,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 //   ChangeAvailability 1 operative
                                 //   ChangeAvailability 1 inoperative
-                                if (command == "ChangeAvailability".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("ChangeAvailability", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1304,7 +2419,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1324,7 +2439,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1335,7 +2450,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 //   ChangeAvailability 1 1 operative
                                 //   ChangeAvailability 1 1 inoperative
-                                if (command == "ChangeAvailability".ToLower() && commandArray.Length == 4)
+                                if (command.Equals("ChangeAvailability", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 4)
                                 {
 
                                     var response = await testCSMSv2_1.ChangeAvailability(
@@ -1352,7 +2467,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -1369,7 +2484,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 //   TriggerMessage MeterValues
                                 //   TriggerMessage SignChargingStationCertificate
                                 //   TriggerMessage StatusNotification
-                                if (command == "TriggerMessage".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("TriggerMessage", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1391,7 +2506,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1414,7 +2529,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1430,7 +2545,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 //   TriggerMessage 1 Heartbeat
                                 //   TriggerMessage 1 MeterValues
                                 //   TriggerMessage 1 SignChargePointCertificate
-                                if (command == "TriggerMessage".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("TriggerMessage", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1453,7 +2568,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1479,7 +2594,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1488,7 +2603,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   TriggerMessage 1 1 StatusNotification
-                                if (command == "TriggerMessage".ToLower() && commandArray.Length == 4)
+                                if (command.Equals("TriggerMessage", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 4)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1518,7 +2633,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1530,7 +2645,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region Update Firmware
 
                                 //   UpdateFirmware http://95.89.178.27:9901/firmware.bin
-                                if (command == "UpdateFirmware".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("UpdateFirmware", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1544,7 +2659,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1580,7 +2695,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );;
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1592,7 +2707,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region Transfer Data
 
                                 //   TransferData graphdefined
-                                if (command == "transferdata".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("transferdata", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1605,7 +2720,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1619,7 +2734,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1630,7 +2745,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   TransferData graphdefined message
-                                if (command == "transferdata".ToLower() && (commandArray.Length == 2 || commandArray.Length == 3))
+                                if (command.Equals("transferdata", StringComparison.OrdinalIgnoreCase) && (commandArray.Length == 2 || commandArray.Length == 3))
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1644,7 +2759,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1659,7 +2774,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1670,7 +2785,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   TransferData graphdefined message data
-                                if (command == "transferdata".ToLower() && commandArray.Length == 4)
+                                if (command.Equals("transferdata", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 4)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1685,7 +2800,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1701,7 +2816,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1714,7 +2829,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region SendSignedCertificate
 
                                 //   SendSignedCertificate $Filename
-                                if (command == "SendSignedCertificate".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("SendSignedCertificate", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1729,7 +2844,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1743,7 +2858,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   SendSignedCertificate $Filename v2g|csc
-                                if (command == "SendSignedCertificate".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("SendSignedCertificate", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1766,7 +2881,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1777,7 +2892,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 #region InstallCertificate
 
-                                if (command == "InstallCertificate".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("InstallCertificate", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1797,7 +2912,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1807,21 +2922,21 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                         //   InstallCertificate $FileName oem|mo|csms|manu|v2g
                                         var response = await testCSMSv2_1.InstallCertificate(
                                                            new OCPPv2_1.CSMS.InstallCertificateRequest(
-                                                               NetworkingNodeId:  NetworkingNode_Id.Parse(chargingStationId),
-                                                               CertificateType:   commandArray[2].ToLower() switch {
-                                                                                      "oem"   => OCPPv2_1.InstallCertificateUse.OEMRootCertificate,
-                                                                                      "mo"    => OCPPv2_1.InstallCertificateUse.MORootCertificate,
-                                                                                      "csms"  => OCPPv2_1.InstallCertificateUse.CSMSRootCertificate,
-                                                                                      "manu"  => OCPPv2_1.InstallCertificateUse.ManufacturerRootCertificate,
-                                                                                      _       => OCPPv2_1.InstallCertificateUse.V2GRootCertificate
-                                                               },
-                                                               Certificate:       OCPPv2_1.Certificate.Parse(
-                                                                                      File.ReadAllText(commandArray[1])
-                                                                                  )
+                                                               NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                               CertificateType:    commandArray[2].ToLower() switch {
+                                                                                       "oem"   => OCPPv2_1.InstallCertificateUse.OEMRootCertificate,
+                                                                                       "mo"    => OCPPv2_1.InstallCertificateUse.MORootCertificate,
+                                                                                       "csms"  => OCPPv2_1.InstallCertificateUse.CSMSRootCertificate,
+                                                                                       "manu"  => OCPPv2_1.InstallCertificateUse.ManufacturerRootCertificate,
+                                                                                       _       => OCPPv2_1.InstallCertificateUse.V2GRootCertificate
+                                                               },                 
+                                                               Certificate:        OCPPv2_1.Certificate.Parse(
+                                                                                       File.ReadAllText(commandArray[1])
+                                                                                   )
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1832,7 +2947,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 #region GetInstalledCertificateIds
 
-                                if (command == "GetInstalledCertificateIds".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("GetInstalledCertificateIds", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     //   GetInstalledCertificateIds csrc
@@ -1850,7 +2965,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1864,7 +2979,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                         var response = await testCSMSv2_1.GetInstalledCertificateIds(
                                                            new OCPPv2_1.CSMS.GetInstalledCertificateIdsRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
-                                                               CertificateTypes:   new[] {
+                                                               CertificateTypes:   [
                                                                                        commandArray[1].ToLower() switch {
                                                                                            "v2g"   => OCPPv2_1.GetCertificateIdUse.V2GRootCertificate,
                                                                                            "mo"    => OCPPv2_1.GetCertificateIdUse.MORootCertificate,
@@ -1873,11 +2988,11 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                            "oem"   => OCPPv2_1.GetCertificateIdUse.OEMRootCertificate,
                                                                                            _       => OCPPv2_1.GetCertificateIdUse.V2GCertificateChain
                                                                                        }
-                                                                                   }
+                                                                                   ]
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1889,7 +3004,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region DeleteCertificate
 
                                 //   DeleteCertificate $HashAlgorithm $IssuerNameHash $IssuerPublicKeyHash $SerialNumber
-                                if (command == "DeleteCertificate".ToLower() && commandArray.Length == 5)
+                                if (command.Equals("DeleteCertificate", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 5)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1911,7 +3026,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1934,7 +3049,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1949,7 +3064,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region GetLocalListVersion
 
                                 //   GetLocalListVersion
-                                if (command == "GetLocalListVersion".ToLower() && commandArray.Length == 1)
+                                if (command.Equals("GetLocalListVersion", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1961,7 +3076,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1974,7 +3089,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                             )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -1986,7 +3101,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region SendLocalList
 
                                 //   SendLocalList
-                                if (command == "SendLocalList".ToLower() && commandArray.Length == 1)
+                                if (command.Equals("SendLocalList", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -1997,17 +3112,17 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                NetworkingNode_Id.Parse(chargingStationId),
                                                                2, // 0 is not allowed!
                                                                OCPPv1_6.UpdateTypes.Full,
-                                                               new OCPPv1_6.AuthorizationData[] {
+                                                               [
                                                                    new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("046938f2fc6880"), new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Blocked)),
                                                                    new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("aabbcc11"),       new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Accepted)),
                                                                    new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("aabbcc22"),       new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Accepted)),
                                                                    new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("aabbcc33"),       new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Accepted)),
                                                                    new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("aabbcc44"),       new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Blocked))
-                                                               }
+                                                               ]
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2019,7 +3134,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            NetworkingNode_Id.Parse(chargingStationId),
                                                                  1, // 0 is not allowed!
                                                                  OCPPv2_1.UpdateTypes.Full,
-                                                                 new[] {
+                                                                 [
                                                                      //new OCPPv2_1.AuthorizationData(OCPPv2_1.IdToken.Parse("046938f2fc6880"), new OCPPv2_1.IdTagInfo(OCPPv2_1.AuthorizationStatus.Blocked)),
                                                                      //new OCPPv2_1.AuthorizationData(OCPPv2_1.IdToken.Parse("aabbcc11"),       new OCPPv2_1.IdTagInfo(OCPPv2_1.AuthorizationStatus.Accepted)),
                                                                      //new OCPPv2_1.AuthorizationData(OCPPv2_1.IdToken.Parse("aabbcc22"),       new OCPPv2_1.IdTagInfo(OCPPv2_1.AuthorizationStatus.Accepted)),
@@ -2033,11 +3148,11 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                              OCPPv2_1.AuthorizationStatus.Accepted
                                                                          )
                                                                      )
-                                                                 }
+                                                                 ]
                                                              )
                                                          );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2049,7 +3164,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region ClearCache
 
                                 //   clearcache
-                                if (command == "clearcache"             && commandArray.Length == 1)
+                                if (command.Equals("clearcache", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2061,7 +3176,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2074,7 +3189,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2087,7 +3202,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region ReserveNow
 
                                 //   ReserveNow 1 $ReservationId aabbccdd
-                                if (command == "ReserveNow".ToLower() && commandArray.Length == 4)
+                                if (command.Equals("ReserveNow", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 4)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2103,7 +3218,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2126,7 +3241,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2138,7 +3253,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region Cancel Reservation
 
                                 //   CancelReservation $ReservationId
-                                if (command == "CancelReservation".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("CancelReservation", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2146,12 +3261,12 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                         var response = await testCentralSystemV1_6.CancelReservation(
                                                            new OCPPv1_6.CS.CancelReservationRequest(
-                                                               NetworkingNodeId:     NetworkingNode_Id.  Parse(chargingStationId),
-                                                               ReservationId:   OCPPv1_6.Reservation_Id.Parse(commandArray[1])
+                                                               NetworkingNodeId:   NetworkingNode_Id.      Parse(chargingStationId),
+                                                               ReservationId:      OCPPv1_6.Reservation_Id.Parse(commandArray[1])
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2160,12 +3275,12 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                         var response = await testCSMSv2_1.CancelReservation(
                                                            new OCPPv2_1.CSMS.CancelReservationRequest(
-                                                               NetworkingNodeId:  NetworkingNode_Id.Parse(chargingStationId),
-                                                               ReservationId:     OCPPv2_1.Reservation_Id.   Parse(commandArray[1])
+                                                               NetworkingNodeId:   NetworkingNode_Id.      Parse(chargingStationId),
+                                                               ReservationId:      OCPPv2_1.Reservation_Id.Parse(commandArray[1])
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2177,7 +3292,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region Remote Start Transaction
 
                                 //   RemoteStart 1 $IdToken
-                                if (command == "remotestart".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("remotestart", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2192,7 +3307,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2214,7 +3329,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2226,7 +3341,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region Remote Stop Transaction
 
                                 //   RemoteStop $TransactionId
-                                if (command == "RemoteStop".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("RemoteStop", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2239,7 +3354,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2253,7 +3368,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2265,16 +3380,16 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region GetTransactionStatus
 
                                 //   GetTransactionStatus
-                                if (command == "GetTransactionStatus".ToLower() && commandArray.Length == 1)
+                                if (command.Equals("GetTransactionStatus", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     var response = await testCSMSv2_1.GetTransactionStatus(
                                                        new OCPPv2_1.CSMS.GetTransactionStatusRequest(
-                                                           NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId)
+                                                           NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId)
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2282,17 +3397,17 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   GetTransactionStatus $TransactionId
-                                if (command == "GetTransactionStatus".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("GetTransactionStatus", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.GetTransactionStatus(
                                                        new OCPPv2_1.CSMS.GetTransactionStatusRequest(
-                                                           NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
-                                                           TransactionId:       OCPPv2_1.Transaction_Id.    Parse(commandArray[1])
+                                                           NetworkingNodeId:   NetworkingNode_Id.      Parse(chargingStationId),
+                                                           TransactionId:      OCPPv2_1.Transaction_Id.Parse(commandArray[1])
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2302,7 +3417,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region SetChargingProfile
 
                                 //   setprofile1 1
-                                if (command == "setprofile1"            && commandArray.Length == 2)
+                                if (command.Equals("setprofile1", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2319,7 +3434,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                      OCPPv1_6.ChargingProfileKinds.Recurring,
                                                                                      new OCPPv1_6.ChargingSchedule(
                                                                                          ChargingRateUnit:         OCPPv1_6.ChargingRateUnits.Amperes,
-                                                                                         ChargingSchedulePeriods:  new OCPPv1_6.ChargingSchedulePeriod[] {
+                                                                                         ChargingSchedulePeriods:  [
                                                                                                                        new OCPPv1_6.ChargingSchedulePeriod(
                                                                                                                            StartPeriod:   TimeSpan.FromHours(0),  // == 00:00 Uhr
                                                                                                                            Limit:         16,
@@ -2335,7 +3450,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                                                            Limit:         12,
                                                                                                                            NumberPhases:  3
                                                                                                                        )
-                                                                                                                   },
+                                                                                                                   ],
                                                                                          Duration:                 TimeSpan.FromDays(1),
                                                                                          StartSchedule:            DateTime.Parse("2023-03-29T00:00:00Z").ToUniversalTime()
 
@@ -2348,7 +3463,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2397,7 +3512,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                )
                                                            );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2405,7 +3520,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 }
 
                                 //   setprofile3 1
-                                if (command == "setprofile3"            && commandArray.Length == 2)
+                                if (command.Equals("setprofile3", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                         var response = await testCSMSv2_1.SetChargingProfile(
@@ -2450,7 +3565,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                )
                                                            );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2459,7 +3574,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   setprofile2 GD002 1
-                                if (command == "setprofile2"            && commandArray.Length == 3)
+                                if (command.Equals("setprofile2", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     var response = await testCentralSystemV1_6.SetChargingProfile(
@@ -2502,7 +3617,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2512,7 +3627,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region GetChargingProfiles
 
                                 //   GetChargingProfiles
-                                if (command == "GetChargingProfiles".ToLower() && commandArray.Length == 1)
+                                if (command.Equals("GetChargingProfiles", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     var response = await testCSMSv2_1.GetChargingProfiles(
@@ -2529,7 +3644,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );;
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2537,7 +3652,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   GetChargingProfiles $ChargingProfileId
-                                if (command == "GetChargingProfiles".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("GetChargingProfiles", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.GetChargingProfiles(
@@ -2547,16 +3662,16 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            ChargingProfile:                new OCPPv2_1.ChargingProfileCriterion(
                                                                                                ChargingProfilePurpose:   null,
                                                                                                StackLevel:               null,
-                                                                                               ChargingProfileIds:       new[] {
+                                                                                               ChargingProfileIds:       [
                                                                                                                              OCPPv2_1.ChargingProfile_Id.Parse(commandArray[1])
-                                                                                                                         },
+                                                                                                                         ],
                                                                                                ChargingLimitSources:     null
                                                                                            ),
                                                            EVSEId:                         null
                                                        )
                                                    );;
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2566,7 +3681,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region ClearChargingProfile
 
                                 //   ClearChargingProfile
-                                if (command == "ClearChargingProfile".ToLower() && commandArray.Length == 1)
+                                if (command.Equals("ClearChargingProfile", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2578,7 +3693,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2592,7 +3707,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2602,7 +3717,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   ClearChargingProfile $ChargingProfileId
-                                if (command == "ClearChargingProfile".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("ClearChargingProfile", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2615,7 +3730,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2629,7 +3744,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2639,7 +3754,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   ClearChargingProfile $ConnectorId/EVSEId $ChargingProfileId
-                                if (command == "ClearChargingProfile".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("ClearChargingProfile", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2656,7 +3771,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2676,7 +3791,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2688,7 +3803,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region GetCompositeSchedule
 
                                 //   GetCompositeSchedule 1 3600
-                                if (command == "GetCompositeSchedule".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("GetCompositeSchedule", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2697,12 +3812,12 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                         var response = await testCentralSystemV1_6.GetCompositeSchedule(
                                                            new OCPPv1_6.CS.GetCompositeScheduleRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
-                                                               ConnectorId:   OCPPv1_6.Connector_Id.Parse(commandArray[1]),
-                                                               Duration:      TimeSpan.FromSeconds(UInt32.Parse(commandArray[2]))
+                                                               ConnectorId:        OCPPv1_6.Connector_Id.Parse(commandArray[1]),
+                                                               Duration:           TimeSpan.FromSeconds(UInt32.Parse(commandArray[2]))
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2718,7 +3833,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2736,7 +3851,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region Unlock Connector
 
                                 //   UnlockConnector 1
-                                if (command == "UnlockConnector".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("UnlockConnector", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2744,12 +3859,12 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                         var response = await testCentralSystemV1_6.UnlockConnector(
                                                            new OCPPv1_6.CS.UnlockConnectorRequest(
-                                                               NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                               NetworkingNodeId:   NetworkingNode_Id.    Parse(chargingStationId),
                                                                ConnectorId:        OCPPv1_6.Connector_Id.Parse(commandArray[1])
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2763,7 +3878,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   UnlockConnector 1 1
-                                if (command == "UnlockConnector".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("UnlockConnector", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
@@ -2775,13 +3890,13 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                         var response = await testCSMSv2_1.UnlockConnector(
                                                            new OCPPv2_1.CSMS.UnlockConnectorRequest(
-                                                               NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
-                                                               EVSEId:        OCPPv2_1.EVSE_Id.     Parse(commandArray[1]),
-                                                               ConnectorId:   OCPPv2_1.Connector_Id.Parse(commandArray[2])
+                                                               NetworkingNodeId:   NetworkingNode_Id.    Parse(chargingStationId),
+                                                               EVSEId:             OCPPv2_1.EVSE_Id.     Parse(commandArray[1]),
+                                                               ConnectorId:        OCPPv2_1.Connector_Id.Parse(commandArray[2])
                                                            )
                                                        );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }
@@ -2797,31 +3912,31 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region SetDisplayMessage
 
                                 //   SetDisplayMessage test123
-                                if (command == "SetDisplayMessage".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("SetDisplayMessage", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.SetDisplayMessage(
                                                        new OCPPv2_1.CSMS.SetDisplayMessageRequest(
-                                                           NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
-                                                           Message:             new OCPPv2_1.MessageInfo(
-                                                                                    Id:               OCPPv2_1.DisplayMessage_Id.NewRandom,
-                                                                                    Priority:         OCPPv2_1.MessagePriority.NormalCycle,
-                                                                                    Message:          new OCPPv2_1.MessageContent(
-                                                                                                          Content:      commandArray[1],
-                                                                                                          Language:     OCPPv2_1.Language_Id.EN,
-                                                                                                          Format:       OCPPv2_1.MessageFormat.UTF8,
-                                                                                                          CustomData:   null
-                                                                                                      ),
-                                                                                    State:            OCPPv2_1.MessageState.Idle,
-                                                                                    StartTimestamp:   Timestamp.Now,
-                                                                                    EndTimestamp:     Timestamp.Now + TimeSpan.FromHours(1),
-                                                                                    TransactionId:    null,
-                                                                                    Display:          null
-                                                                                )
+                                                           NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                           Message:            new OCPPv2_1.MessageInfo(
+                                                                                   Id:               OCPPv2_1.DisplayMessage_Id.NewRandom,
+                                                                                   Priority:         OCPPv2_1.MessagePriority.NormalCycle,
+                                                                                   Message:          new OCPPv2_1.MessageContent(
+                                                                                                         Content:      commandArray[1],
+                                                                                                         Language:     OCPPv2_1.Language_Id.EN,
+                                                                                                         Format:       OCPPv2_1.MessageFormat.UTF8,
+                                                                                                         CustomData:   null
+                                                                                                     ),
+                                                                                   State:            OCPPv2_1.MessageState.Idle,
+                                                                                   StartTimestamp:   Timestamp.Now,
+                                                                                   EndTimestamp:     Timestamp.Now + TimeSpan.FromHours(1),
+                                                                                   TransactionId:    null,
+                                                                                   Display:          null
+                                                                               )
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2831,7 +3946,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region GetDisplayMessages
 
                                 //   GetDisplayMessages
-                                if (command == "GetDisplayMessages".ToLower() && commandArray.Length == 1)
+                                if (command.Equals("GetDisplayMessages", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     var response = await testCSMSv2_1.GetDisplayMessages(
@@ -2844,7 +3959,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2852,22 +3967,22 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   GetDisplayMessages 1
-                                if (command == "GetDisplayMessages".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("GetDisplayMessages", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.GetDisplayMessages(
                                                        new OCPPv2_1.CSMS.GetDisplayMessagesRequest(
                                                            NetworkingNodeId:              NetworkingNode_Id.Parse(chargingStationId),
                                                            GetDisplayMessagesRequestId:   RandomExtensions.RandomInt32(),
-                                                           Ids:                           new[] {
+                                                           Ids:                           [
                                                                                               OCPPv2_1.DisplayMessage_Id.Parse(commandArray[1])
-                                                                                          },
+                                                                                          ],
                                                            Priority:                      null,
                                                            State:                         null
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2875,7 +3990,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
                                 //   GetDisplayMessagesByState Idle
-                                if (command == "GetDisplayMessagesByState".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("GetDisplayMessagesByState", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.GetDisplayMessages(
@@ -2892,7 +4007,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2901,18 +4016,18 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region SendCostUpdated
 
                                 //   SendCostUpdate 123.45 ABCDEFG
-                                if (command == "SendCostUpdate".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("SendCostUpdate", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     var response = await testCSMSv2_1.SendCostUpdated(
                                                        new OCPPv2_1.CSMS.CostUpdatedRequest(
-                                                           NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
-                                                           TotalCost:           Decimal.                    Parse(commandArray[1]),
-                                                           TransactionId:       OCPPv2_1.Transaction_Id.    Parse(commandArray[2])
+                                                           NetworkingNodeId:   NetworkingNode_Id.      Parse(chargingStationId),
+                                                           TotalCost:          Decimal.                Parse(commandArray[1]),
+                                                           TransactionId:      OCPPv2_1.Transaction_Id.Parse(commandArray[2])
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2922,7 +4037,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region RequestCustomerInformation
 
                                 //   RequestCustomerInformation $RFIDId
-                                if (command == "RequestCustomerInformation".ToLower() && commandArray.Length == 1)
+                                if (command.Equals("RequestCustomerInformation", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     var response = await testCSMSv2_1.RequestCustomerInformation(
@@ -2941,7 +4056,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2954,25 +4069,25 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region SignedUpdateFirmware (OCPP v1.6)
 
                                 //   SignedUpdateFirmware csrc
-                                if (command == "SignedUpdateFirmware".ToLower() && commandArray.Length == 2 && commandArray[1].ToLower() == "csrc".ToLower())
+                                if (command.Equals("SignedUpdateFirmware", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2 && commandArray[1].ToLower() == "csrc".ToLower())
                                 {
 
                                     var response = await testCentralSystemV1_6.SignedUpdateFirmware(
                                                        new OCPPv1_6.CS.SignedUpdateFirmwareRequest(
-                                                           NetworkingNodeId:       NetworkingNode_Id.Parse(chargingStationId),
-                                                           Firmware:          new OCPPv1_6.FirmwareImage(
-                                                                                  RemoteLocation:      URL.Parse("https://api2.ocpp.charging.cloud:9901/security0001.log"),
-                                                                                  RetrieveTimestamp:   Timestamp.Now,
-                                                                                  SigningCertificate:  "xxx",
-                                                                                  Signature:           "yyy"
-                                                                              ),
-                                                           UpdateRequestId:   1,
-                                                           Retries:           null,
-                                                           RetryInterval:     null
+                                                           NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                           Firmware:           new OCPPv1_6.FirmwareImage(
+                                                                                   RemoteLocation:       URL.Parse("https://api2.ocpp.charging.cloud:9901/security0001.log"),
+                                                                                   RetrieveTimestamp:    Timestamp.Now,
+                                                                                   SigningCertificate:   "xxx",
+                                                                                   Signature:            "yyy"
+                                                                               ),
+                                                           UpdateRequestId:    1,
+                                                           Retries:            null,
+                                                           RetryInterval:      null
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -2982,7 +4097,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region Get Configuration
 
                                 //   getconf GD002
-                                if (command == "getconf"                && commandArray.Length == 2)
+                                if (command.Equals("getconf", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCentralSystemV1_6.GetConfiguration(
@@ -2991,14 +4106,14 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
 
                                 //   getconf GD002 key
                                 //   getconf GD002 key1 key2
-                                if (command == "getconf"                && commandArray.Length > 2)
+                                if (command.Equals("getconf", StringComparison.OrdinalIgnoreCase) && commandArray.Length > 2)
                                 {
 
                                     var response = await testCentralSystemV1_6.GetConfiguration(
@@ -3008,7 +4123,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -3018,7 +4133,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region Change Configuration
 
                                 //   setconf GD002 key value
-                                if (command == "setconf"                && commandArray.Length == 4)
+                                if (command.Equals("setconf", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 4)
                                 {
 
                                     var response = await testCentralSystemV1_6.ChangeConfiguration(
@@ -3029,7 +4144,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -3039,7 +4154,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region Get Diagnostics
 
                                 //   getdiag GD002 http://23.88.66.160:9901/diagnostics/
-                                if (command == "getdiag"                && commandArray.Length == 3)
+                                if (command.Equals("getdiag", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     var response = await testCentralSystemV1_6.GetDiagnostics(
@@ -3053,13 +4168,13 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
 
                                 //   getdiag GD002 http://23.88.66.160:9901/diagnostics/ 2022-11-08T10:00:00Z 2022-11-12T18:00:00Z 3 30
-                                if (command == "getdiag"                && commandArray.Length == 7)
+                                if (command.Equals("getdiag", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 7)
                                 {
 
                                     var response = await testCentralSystemV1_6.GetDiagnostics(
@@ -3073,7 +4188,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -3090,7 +4205,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 //   ExtendedTriggerMessage MeterValues
                                 //   ExtendedTriggerMessage SignChargePointCertificate
                                 //   ExtendedTriggerMessage StatusNotification
-                                if (command == "ExtendedTriggerMessage".ToLower() && commandArray.Length == 2)
+                                if (command.Equals("ExtendedTriggerMessage", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCentralSystemV1_6.ExtendedTriggerMessage(
@@ -3109,7 +4224,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }
@@ -3125,7 +4240,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 //   ExtendedTriggerMessage 1 MeterValues
                                 //   ExtendedTriggerMessage 1 SignChargePointCertificate
                                 //   ExtendedTriggerMessage 1 StatusNotification
-                                if (command == "ExtendedTriggerMessage".ToLower() && commandArray.Length == 3)
+                                if (command.Equals("ExtendedTriggerMessage", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                                 {
 
                                     var response = await testCentralSystemV1_6.ExtendedTriggerMessage(
@@ -3145,7 +4260,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        )
                                                    );
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                     DebugX.Log(response.ToJSON().ToString());
 
                                 }

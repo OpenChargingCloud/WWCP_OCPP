@@ -52,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a BootNotification WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                OnBootNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                 OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a BootNotification request was received.
         /// </summary>
-        public event OnBootNotificationRequestReceivedDelegate?           OnBootNotificationRequestReceived;
+        public event OnBootNotificationRequestReceivedDelegate?    OnBootNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a BootNotification was received.
         /// </summary>
-        public event OnBootNotificationDelegate?                  OnBootNotification;
+        public event OnBootNotificationDelegate?                   OnBootNotification;
 
         /// <summary>
         /// An event sent whenever a response to a BootNotification was sent.
         /// </summary>
-        public event OnBootNotificationResponseSentDelegate?          OnBootNotificationResponseSent;
+        public event OnBootNotificationResponseSentDelegate?       OnBootNotificationResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a BootNotification was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnBootNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?     OnBootNotificationWSResponse;
 
         #endregion
 
@@ -118,8 +118,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?      OCPPResponse        = null;
+            OCPP_JSONRequestErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
@@ -141,9 +141,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     {
 
                         OnBootNotificationRequestReceived?.Invoke(Timestamp.Now,
-                                                          this,
-                                                          Connection,
-                                                          request);
+                                                                  this,
+                                                                  Connection,
+                                                                  request);
 
                     }
                     catch (Exception e)
@@ -182,11 +182,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     {
 
                         OnBootNotificationResponseSent?.Invoke(Timestamp.Now,
-                                                           this,
-                                                           Connection,
-                                                           request,
-                                                           response,
-                                                           response.Runtime);
+                                                               this,
+                                                               Connection,
+                                                               request,
+                                                               response,
+                                                               response.Runtime);
 
                     }
                     catch (Exception e)

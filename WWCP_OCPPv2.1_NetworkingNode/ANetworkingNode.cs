@@ -803,17 +803,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// 
         /// <param name="AutoStart">Start the server immediately.</param>
         public OCPPWebSocketServer AttachWebSocketServer(String?                              HTTPServiceName              = null,
                                                          IIPAddress?                          IPAddress                    = null,
                                                          IPPort?                              TCPPort                      = null,
+                                                         I18NString?                          Description                  = null,
 
                                                          Boolean                              RequireAuthentication        = true,
                                                          Boolean                              DisableWebSocketPings        = false,
                                                          TimeSpan?                            WebSocketPingEvery           = null,
                                                          TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                                         ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                                                         Func<X509Certificate2>?              ServerCertificateSelector    = null,
                                                          RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
                                                          LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
                                                          SslProtocols?                        AllowedTLSProtocols          = null,
@@ -837,6 +840,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           HTTPServiceName,
                                           IPAddress,
                                           TCPPort,
+                                          Description,
 
                                           RequireAuthentication,
                                           DisableWebSocketPings,
