@@ -6331,212 +6331,220 @@ function StartEventsSSE() {
 
     interface Component {
         name:                     string;
+        instance?:                string;
         evse?: {
             id:                   number;
+            ConnectorId?:         number;
         };
     }
 
     interface VariableEntry {
-        component?:               Component;
+        //component?:               Component;
         instance?:                string;
-        variable:                 Variable;
+        //variable:                 Variable;
         variableAttribute:        VariableAttribute[];
         variableCharacteristics:  VariableCharacteristics;
     }
 
-    type ComponentLookup1 = Map<string, Map<number | 'default', VariableEntry[]>>;
-    type ComponentLookup2 = Map<string, Map<number | 'default', Map<string, VariableEntry[]>>>;
+    type ComponentLookup = Map<string, Map<string, Map<number | 'default', Map<string, VariableEntry[]>>>>;
 
 
     function OnNotifyReport(reportData: any): HTMLDivElement
     {
 
-        const lookup1: ComponentLookup1 = new Map();
-        const lookup2: ComponentLookup2 = new Map();
+        const lookup: ComponentLookup = new Map();
 
         for (const entry of reportData)
         {
 
+            // Component Name
             const componentName  = entry.component.name;
 
-            if (!lookup1.has(componentName))
-                lookup1.set(componentName, new Map());
+            if (!lookup.has(componentName))
+                lookup.set(componentName, new Map());
 
-            if (!lookup2.has(componentName))
-                lookup2.set(componentName, new Map());
-
-            const componentMap1 = lookup1.get(componentName);
-            const componentMap2 = lookup2.get(componentName);
+            const componentMap = lookup.get(componentName);
 
 
+            // Component Instance
+            const componentInstance = entry.component.instance || 'default';
+
+            if (!componentMap?.has(componentInstance))
+                componentMap?.set(componentInstance, new Map());
+
+            const componentInstanceMap = componentMap.get(componentInstance);
+
+
+            // Component EVSE
             const evseId = entry.component.evse?.id || 'default';
 
-            if (!componentMap1?.has(evseId))
-                componentMap1?.set(evseId, []);
+            if (!componentInstanceMap?.has(evseId))
+                componentInstanceMap?.set(evseId, new Map());
 
-            if (!componentMap2?.has(evseId))
-                componentMap2?.set(evseId, new Map());
 
-            const entries = componentMap1?.get(evseId);
-            entries?.push({
-                variable:                 entry.variable,
-                variableAttribute:        entry.variableAttribute,
-                variableCharacteristics:  entry.variableCharacteristics,
-            });
-
-            const variableMap2     = componentMap2.get(evseId);
+            // Variable Name
+            const variableMap      = componentInstanceMap.get(evseId);
             const variableName     = entry.variable.name;
+
+            if (!variableMap.has(variableName))
+                variableMap.set(variableName, []);
+
+
+            // Variable Instance
             const variableInstance = entry.variable.instance || 'default';
 
-            if (!variableMap2.has(variableName))
-                variableMap2.set(variableName, []);
-
-            const entries2 = variableMap2?.get(variableName);
-            entries2?.push({
-                variable:                 entry.variable,
+            const entries = variableMap?.get(variableName);
+            entries?.push({
+                //variable:                 entry.variable,
                 instance:                 variableInstance,
                 variableAttribute:        entry.variableAttribute,
                 variableCharacteristics:  entry.variableCharacteristics,
             });
-
-
-          //  const entries = componentMap1?.get(evseId);
-          //  entries?.push({
-          //      variable: entry.variable,
-          //      variableAttribute: entry.variableAttribute,
-          //      variableCharacteristics: entry.variableCharacteristics,
-          //  });
 
         }
 
         const deviceModelDiv = document.createElement('div');
         deviceModelDiv.className = "deviceModel";
 
-        for (var component of lookup2)
+        for (var component of lookup)
         {
 
-            const componentDiv         = document.createElement('div');
-            componentDiv.id            = "dmc_" + component[0];
-            componentDiv.className     = "component";
+            const componentDiv              = document.createElement('div');
+            componentDiv.id                 = "dmc_" + component[0];
+            componentDiv.className          = "component";
             deviceModelDiv.appendChild(componentDiv);
 
             // Component Name
-            const componentNameDiv     = document.createElement('div');
-            componentNameDiv.className = "name";
-            componentNameDiv.innerHTML = component[0];
+            const componentNameDiv          = document.createElement('div');
+            componentNameDiv.className      = "name";
+            componentNameDiv.innerHTML      = component[0];
             componentDiv.appendChild(componentNameDiv);
 
-            // EVSEs
-            const evsesDiv             = document.createElement('div');
-            evsesDiv.className         = "evses";
-            componentDiv.appendChild(evsesDiv);
+            // Component Instances
+            const componentInstancesDiv      = document.createElement('div');
+            componentInstancesDiv.className  = "componentInstances";
+            componentDiv.appendChild(componentInstancesDiv);
 
-            for (var evse of component[1]) {
+            for (var componentInstance of component[1]) {
 
-                const evseDiv              = document.createElement('div');
-                evseDiv.id                 = "dmc_" + component[0] + "_" + evse[0].toString();
-                evseDiv.className          = "evse";
-                evsesDiv.appendChild(evseDiv);
+                // Component Instance
+                const componentInstanceDiv          = document.createElement('div');
+                componentInstanceDiv.id             = "dmc_" + component[0] + "_" + componentInstance[0];
+                componentInstanceDiv.className      = "componentInstance";
+                componentInstancesDiv.appendChild(componentInstanceDiv);
 
-                // EVSE Id or "default"
-                if (evse[0].toString() !== "default") {
-                    const evseNameDiv          = document.createElement('div');
-                    evseNameDiv.className      = "name";
-                    evseNameDiv.innerHTML  = "EVSE #" + evse[0].toString();
-                    evseDiv.appendChild(evseNameDiv);
+                // Component Instance Name
+                if (componentInstance[0].toString() !== "default") {
+                    const componentInstanceNameDiv      = document.createElement('div');
+                    componentInstanceNameDiv.className  = "name";
+                    componentInstanceNameDiv.innerHTML = componentInstance[0] + " (Instance)";
+                    componentInstanceDiv.appendChild(componentInstanceNameDiv);
                 }
 
-                // Variables
-                const variablesDiv         = document.createElement('div');
-                variablesDiv.className     = "variables";
-                evseDiv.appendChild(variablesDiv);
+                // EVSEs
+                const evsesDiv                      = document.createElement('div');
+                evsesDiv.className                  = "evses";
+                componentInstanceDiv.appendChild(evsesDiv);
 
-                for (var variable of evse[1]) {
+                for (var evse of componentInstance[1]) {
 
-                    const variableDiv          = document.createElement('div');
-                    variableDiv.className     = "variable";
-                    variablesDiv.appendChild(variableDiv);
+                    const evseDiv             = document.createElement('div');
+                    evseDiv.id                = "dmc_" + component[0] + "_" + componentInstance[0] + "_" + evse[0].toString();
+                    evseDiv.className         = "evse";
+                    evsesDiv.appendChild(evseDiv);
 
-                    // Variable Name
-                    const variableNameDiv = document.createElement('div');
-                    variableNameDiv.className     = "name";
-                    variableNameDiv.innerHTML = variable[0];
-                    variableDiv.appendChild(variableNameDiv);
+                    // EVSE Id or "default"
+                    if (evse[0].toString() !== "default") {
+                        const evseNameDiv = document.createElement('div');
+                        evseNameDiv.className = "name";
+                        evseNameDiv.innerHTML = "EVSE #" + evse[0].toString();
+                        evseDiv.appendChild(evseNameDiv);
+                    }
 
-                    // Variable Instances
-                    const instancesDiv = document.createElement('div');
-                    instancesDiv.className     = "instances";
-                    variableDiv.appendChild(instancesDiv);
+                    // Variables
+                    const variablesDiv = document.createElement('div');
+                    variablesDiv.className = "variables";
+                    evseDiv.appendChild(variablesDiv);
 
-                    for (var instance of variable[1])
-                    {
+                    for (var variable of evse[1]) {
 
-                        const instanceDiv          = document.createElement('div');
-                        instanceDiv.className      = "instance";
-                        instancesDiv.appendChild(instanceDiv);
+                        const variableDiv = document.createElement('div');
+                        variableDiv.className = "variable";
+                        variablesDiv.appendChild(variableDiv);
 
-                        if (instance.instance !== "default") {
+                        // Variable Name
+                        const variableNameDiv = document.createElement('div');
+                        variableNameDiv.className = "name";
+                        variableNameDiv.innerHTML = variable[0];
+                        variableDiv.appendChild(variableNameDiv);
+
+                        // Variable Instances
+                        const instancesDiv = document.createElement('div');
+                        instancesDiv.className = "instances";
+                        variableDiv.appendChild(instancesDiv);
+
+                        for (var instance of variable[1]) {
+
+                            const instanceDiv = document.createElement('div');
+                            instanceDiv.className = "instance";
+                            instancesDiv.appendChild(instanceDiv);
+
                             // Instance
-                            const instanceNameDiv      = document.createElement('div');
-                            instanceNameDiv.className  = "name";
-                            instanceNameDiv.innerHTML  = ">>>>>> " + instance.instance;
-                            instancesDiv.appendChild(instanceNameDiv);
+                            if (instance.instance !== "default") {
+                                const instanceNameDiv = document.createElement('div');
+                                instanceNameDiv.className = "name";
+                                instanceNameDiv.innerHTML = instance.instance + " (Variable Instance)";
+                                instanceDiv.appendChild(instanceNameDiv);
+                            }
+
+                            // Characteristics
+                            const characteristicsDiv = document.createElement('div');
+                            characteristicsDiv.className = "characteristics";
+                            instanceDiv.appendChild(characteristicsDiv);
+
+                            const dataTypeDiv = document.createElement('div');
+                            dataTypeDiv.className = "dataType";
+                            dataTypeDiv.innerHTML = "Data Type: " + instance.variableCharacteristics.dataType;
+                            characteristicsDiv.appendChild(dataTypeDiv);
+
+                            const supportsMonitoringDiv = document.createElement('div');
+                            supportsMonitoringDiv.className = "supportsMonitoring";
+                            supportsMonitoringDiv.innerHTML = "Supports Monitoring: " + (instance.variableCharacteristics.supportsMonitoring ? "true" : "false");
+                            characteristicsDiv.appendChild(supportsMonitoringDiv);
+
+
+                            // Attribute
+                            const attributeDiv = document.createElement('div');
+                            attributeDiv.className = "attribute";
+                            instanceDiv.appendChild(attributeDiv);
+
+                            const constantDiv = document.createElement('div');
+                            constantDiv.className = "constant";
+                            constantDiv.innerHTML = "Constant: " + (instance.variableAttribute[0].constant ? "true" : "false");
+                            attributeDiv.appendChild(constantDiv);
+
+                            const mutabilityDiv = document.createElement('div');
+                            mutabilityDiv.className = "mutability";
+                            mutabilityDiv.innerHTML = "Mutability: " + instance.variableAttribute[0].mutability;
+                            attributeDiv.appendChild(mutabilityDiv);
+
+                            const persistentDiv = document.createElement('div');
+                            persistentDiv.className = "persistent";
+                            persistentDiv.innerHTML = "Persistent: " + (instance.variableAttribute[0].persistent ? "true" : "false");
+                            attributeDiv.appendChild(persistentDiv);
+
+                            const typeDiv = document.createElement('div');
+                            typeDiv.className = "type";
+                            typeDiv.innerHTML = "Type: " + instance.variableAttribute[0].type;
+                            attributeDiv.appendChild(typeDiv);
+
+                            const valueDiv = document.createElement('div');
+                            valueDiv.className = "value";
+                            valueDiv.innerHTML = "Value: '" + instance.variableAttribute[0].value + "'";
+                            attributeDiv.appendChild(valueDiv);
+
+
                         }
-
-                        const characteristicsDiv = document.createElement('div');
-                        characteristicsDiv.className = "characteristics";
-                        instancesDiv.appendChild(characteristicsDiv);
-
-                        const dataTypeDiv = document.createElement('div');
-                        dataTypeDiv.className = "dataType";
-                        dataTypeDiv.innerHTML = "Data Type: " + instance.variableCharacteristics.dataType;
-                        characteristicsDiv.appendChild(dataTypeDiv);
-
-                        const supportsMonitoringDiv = document.createElement('div');
-                        supportsMonitoringDiv.className = "supportsMonitoring";
-                        supportsMonitoringDiv.innerHTML = "Supports Monitoring: " + (instance.variableCharacteristics.supportsMonitoring ? "true" : "false");
-                        characteristicsDiv.appendChild(supportsMonitoringDiv);
-
-
-
-//VariableAttribute {
-//                            constant: boolean;
-//                            mutability: string;
-//                            persistent: boolean;
-//                            type: string;
-//                            value: string;
-//                        }
-
-
-                        const attributeDiv = document.createElement('div');
-                        attributeDiv.className = "attribute";
-                        instancesDiv.appendChild(attributeDiv);
-
-                        const constantDiv = document.createElement('div');
-                        constantDiv.className = "constant";
-                        constantDiv.innerHTML = "Constant: " + (instance.variableAttribute[0].constant ? "true" : "false");
-                        characteristicsDiv.appendChild(constantDiv);
-
-                        const mutabilityDiv = document.createElement('div');
-                        mutabilityDiv.className = "mutability";
-                        mutabilityDiv.innerHTML = "Mutability: " + instance.variableAttribute[0].mutability;
-                        characteristicsDiv.appendChild(mutabilityDiv);
-
-                        const persistentDiv = document.createElement('div');
-                        persistentDiv.className = "persistent";
-                        persistentDiv.innerHTML = "Persistent: " + (instance.variableAttribute[0].persistent ? "true" : "false");
-                        characteristicsDiv.appendChild(persistentDiv);
-
-                        const typeDiv = document.createElement('div');
-                        typeDiv.className = "type";
-                        typeDiv.innerHTML = "Type: " + instance.variableAttribute[0].type;
-                        characteristicsDiv.appendChild(typeDiv);
-
-                        const valueDiv = document.createElement('div');
-                        valueDiv.className = "value";
-                        valueDiv.innerHTML = "Value: '" + instance.variableAttribute[0].value + "'";
-                        characteristicsDiv.appendChild(valueDiv);
-
 
                     }
 

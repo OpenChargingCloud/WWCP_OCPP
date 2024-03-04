@@ -276,54 +276,88 @@
 
     .component {
 
-        margin-left:    10px;
         margin-bottom:  10px;
+        background:     rgb(192 192 192);
+        border-radius:  6px;
+        padding:        10px 15px;
 
         .name
         {
             font-weight: bold;
         }
 
-        .evses {
+        .componentInstances {
 
-            .evse {
+            margin-left:    10px;
 
-                margin-left: 10px;
+            .componentInstance {
 
                 .name {
-                    font-weight: bold;
-                    color:       red;
+                    font-weight:    bold;
                 }
 
-                .variables {
+                .evses {
 
-                    margin-left: 10px;
+                    margin-left:    10px;
 
-                    .variable {
+                    .evse {
+
+                        padding:        3px 8px;
+                        border-radius:  6px;
 
                         .name {
-                            color:    blue;
+                            font-weight:    bold;
+                            color:          red;
                         }
 
-                        .instances {
+                        .variables {
 
-                            margin-left: 10px;
+                            margin-left:    10px;
 
-                            .instance {
+                            .variable {
 
-                                color:       blueviolet;
+                                padding:        3px 8px;
+                                border-radius:  6px;
 
+                                .name {
+                                    color:          blue;
+                                }
+
+                                .instances {
+
+                                    margin-left: 10px;
+
+                                    .instance {
+                                        color:          blueviolet;
+                                    }
+
+                                    .characteristics {
+                                        margin-left:    10px;
+                                    }
+
+                                    .attribute {
+                                        margin-left:    10px;
+                                    }
+
+                                }
+
+                            }
+
+                            .variable:hover {
+                                background-color: rgb(230 230 230 / 0.50);
                             }
 
                         }
 
+                    }
 
+                    .evse:hover {
+                        background-color: rgb(230 230 230 / 0.50);
                     }
 
                 }
 
             }
-
 
         }
 

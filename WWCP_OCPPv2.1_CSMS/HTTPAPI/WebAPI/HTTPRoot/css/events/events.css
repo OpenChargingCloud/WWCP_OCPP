@@ -221,30 +221,58 @@
 }
 
 .deviceModel .component {
-  margin-left: 10px;
   margin-bottom: 10px;
+  background: rgb(192, 192, 192);
+  border-radius: 6px;
+  padding: 10px 15px;
 }
 .deviceModel .component .name {
   font-weight: bold;
 }
-.deviceModel .component .evses .evse {
+.deviceModel .component .componentInstances {
   margin-left: 10px;
 }
-.deviceModel .component .evses .evse .name {
+.deviceModel .component .componentInstances .componentInstance .name {
+  font-weight: bold;
+}
+.deviceModel .component .componentInstances .componentInstance .evses {
+  margin-left: 10px;
+}
+.deviceModel .component .componentInstances .componentInstance .evses .evse {
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.deviceModel .component .componentInstances .componentInstance .evses .evse .name {
   font-weight: bold;
   color: red;
 }
-.deviceModel .component .evses .evse .variables {
+.deviceModel .component .componentInstances .componentInstance .evses .evse .variables {
   margin-left: 10px;
 }
-.deviceModel .component .evses .evse .variables .variable .name {
+.deviceModel .component .componentInstances .componentInstance .evses .evse .variables .variable {
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.deviceModel .component .componentInstances .componentInstance .evses .evse .variables .variable .name {
   color: blue;
 }
-.deviceModel .component .evses .evse .variables .variable .instances {
+.deviceModel .component .componentInstances .componentInstance .evses .evse .variables .variable .instances {
   margin-left: 10px;
 }
-.deviceModel .component .evses .evse .variables .variable .instances .instance {
+.deviceModel .component .componentInstances .componentInstance .evses .evse .variables .variable .instances .instance {
   color: blueviolet;
+}
+.deviceModel .component .componentInstances .componentInstance .evses .evse .variables .variable .instances .characteristics {
+  margin-left: 10px;
+}
+.deviceModel .component .componentInstances .componentInstance .evses .evse .variables .variable .instances .attribute {
+  margin-left: 10px;
+}
+.deviceModel .component .componentInstances .componentInstance .evses .evse .variables .variable:hover {
+  background-color: rgba(230, 230, 230, 0.5);
+}
+.deviceModel .component .componentInstances .componentInstance .evses .evse:hover {
+  background-color: rgba(230, 230, 230, 0.5);
 }
 
 /* Comment here */
