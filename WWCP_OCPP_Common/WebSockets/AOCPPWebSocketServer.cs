@@ -33,6 +33,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -701,7 +702,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 {
 
                     if (NetworkingNodeLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
-                        basicAuthentication.Password == password)
+                        basicAuthentication.Password.FixedTimeEquals(password))
                     {
                         DebugX.Log(nameof(AOCPPWebSocketServer), $" connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
                         return Task.FromResult<HTTPResponse?>(null);
