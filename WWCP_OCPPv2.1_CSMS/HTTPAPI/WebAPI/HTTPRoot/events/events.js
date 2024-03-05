@@ -5357,7 +5357,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyReportRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyReport", OnNotifyReport(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyReport", OnNotifyReport(request.data.reportData), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5515,6 +5515,8 @@ function StartEventsSSE() {
     CreateLogEntry("2024-02-26T21:53:54.019Z", "-", "1234", "OnNotifyReport", OnNotifyReport(pionixDeviceModel), "-");
     function OnNotifyReport(reportData) {
         var _a;
+        if (!Array.isArray(reportData))
+            return;
         const lookup = new Map();
         for (const entry of reportData) {
             // Component Name
@@ -5616,7 +5618,7 @@ function StartEventsSSE() {
                             if (instance.instance !== "default") {
                                 const instanceNameDiv = document.createElement('div');
                                 instanceNameDiv.className = "name";
-                                instanceNameDiv.innerHTML = instance.instance + " (Instance)";
+                                instanceNameDiv.innerHTML = instance.instance + " (Variable Instance)";
                                 instanceDiv.appendChild(instanceNameDiv);
                             }
                             // Characteristics

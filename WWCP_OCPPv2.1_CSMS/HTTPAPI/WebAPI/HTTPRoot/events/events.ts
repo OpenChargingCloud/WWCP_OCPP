@@ -6009,7 +6009,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyReport",
-                               OnNotifyReport(request.data),
+                               OnNotifyReport(request.data.reportData),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -6351,6 +6351,9 @@ function StartEventsSSE() {
 
     function OnNotifyReport(reportData: any): HTMLDivElement
     {
+
+        if (!Array.isArray(reportData))
+            return;
 
         const lookup: ComponentLookup = new Map();
 

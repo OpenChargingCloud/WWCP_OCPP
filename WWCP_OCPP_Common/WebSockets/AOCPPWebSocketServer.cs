@@ -33,7 +33,6 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
-using System.Security.Cryptography;
 
 #endregion
 
@@ -1535,7 +1534,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         {
 
             if (NetworkingNodeId == NetworkingNode_Id.Zero)
-                return Array.Empty<Tuple<WebSocketServerConnection, NetworkingMode>>();
+                return [];
 
             var lookUpNetworkingNodeId = NetworkingNodeId;
 

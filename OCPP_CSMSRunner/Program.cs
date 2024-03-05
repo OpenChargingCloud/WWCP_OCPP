@@ -1352,7 +1352,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
                                    Id:                     NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
-                                   RequireAuthentication:  false,
+                                   RequireAuthentication:  true,
                                    DNSClient:              dnsClient
                                );
 
@@ -3098,10 +3098,108 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 #endregion
 
-                                #region SendLocalList
+                                #region SendLocalList1/2
 
-                                //   SendLocalList
-                                if (command.Equals("SendLocalList", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
+                                //   SendLocalList1
+                                if (command.Equals("SendLocalList1", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
+                                {
+
+                                    if (ocppVersion == ocppVersion1_6)
+                                    {
+
+                                        var response = await testCentralSystemV1_6.SendLocalList(
+                                                           new OCPPv1_6.CS.SendLocalListRequest(
+                                                               NetworkingNode_Id.Parse(chargingStationId),
+                                                               2, // 0 is not allowed!
+                                                               OCPPv1_6.UpdateTypes.Full,
+                                                               [
+                                                                   new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("046938f2fc6880"), new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Blocked)),
+                                                                   new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("aabbcc11"),       new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Accepted)),
+                                                                   new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("aabbcc22"),       new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Accepted)),
+                                                                   new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("aabbcc33"),       new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Accepted)),
+                                                                   new OCPPv1_6.AuthorizationData(OCPPv1_6.IdToken.Parse("aabbcc44"),       new OCPPv1_6.IdTagInfo(OCPPv1_6.AuthorizationStatus.Blocked))
+                                                               ]
+                                                           )
+                                                       );
+
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
+                                        DebugX.Log(response.ToJSON().ToString());
+
+                                    }
+                                    else
+                                    {
+
+                                        var response = await testCSMSv2_1.SendLocalList(
+                                                           new OCPPv2_1.CSMS.SendLocalListRequest(
+                                                           NetworkingNode_Id.Parse(chargingStationId),
+                                                                 1, // 0 is not allowed!
+                                                                 OCPPv2_1.UpdateTypes.Full,
+                                                                 [
+
+                                                                     new OCPPv2_1.AuthorizationData(
+                                                                         new OCPPv2_1.IdToken(
+                                                                             Value:   "046938f2fc6880",
+                                                                             Type:    OCPPv2_1.IdTokenType.ISO14443
+                                                                         ),
+                                                                         new OCPPv2_1.IdTokenInfo(
+                                                                             OCPPv2_1.AuthorizationStatus.Blocked
+                                                                         )
+                                                                     ),
+
+                                                                     new OCPPv2_1.AuthorizationData(
+                                                                         new OCPPv2_1.IdToken(
+                                                                             Value:   "aabbcc11",
+                                                                             Type:    OCPPv2_1.IdTokenType.ISO14443
+                                                                         ),
+                                                                         new OCPPv2_1.IdTokenInfo(
+                                                                             OCPPv2_1.AuthorizationStatus.Accepted
+                                                                         )
+                                                                     ),
+
+                                                                     new OCPPv2_1.AuthorizationData(
+                                                                         new OCPPv2_1.IdToken(
+                                                                             Value:   "aabbcc22",
+                                                                             Type:    OCPPv2_1.IdTokenType.ISO14443
+                                                                         ),
+                                                                         new OCPPv2_1.IdTokenInfo(
+                                                                             OCPPv2_1.AuthorizationStatus.Accepted
+                                                                         )
+                                                                     ),
+
+                                                                     new OCPPv2_1.AuthorizationData(
+                                                                         new OCPPv2_1.IdToken(
+                                                                             Value:   "aabbcc33",
+                                                                             Type:    OCPPv2_1.IdTokenType.ISO14443
+                                                                         ),
+                                                                         new OCPPv2_1.IdTokenInfo(
+                                                                             OCPPv2_1.AuthorizationStatus.Accepted
+                                                                         )
+                                                                     ),
+
+                                                                     new OCPPv2_1.AuthorizationData(
+                                                                         new OCPPv2_1.IdToken(
+                                                                             Value:   "aabbcc44",
+                                                                             Type:    OCPPv2_1.IdTokenType.ISO14443
+                                                                         ),
+                                                                         new OCPPv2_1.IdTokenInfo(
+                                                                             OCPPv2_1.AuthorizationStatus.Blocked
+                                                                         )
+                                                                     )
+
+                                                                 ]
+                                                             )
+                                                         );
+
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
+                                        DebugX.Log(response.ToJSON().ToString());
+
+                                    }
+
+                                }
+
+
+                                //   SendLocalList2
+                                if (command.Equals("SendLocalList2", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)
