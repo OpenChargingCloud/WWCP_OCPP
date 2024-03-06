@@ -35,6 +35,8 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using System.Security.Cryptography.X509Certificates;
+using cloud.charging.open.protocols.OCPP.CSMS;
+using System.Collections.Generic;
 
 #endregion
 
@@ -50,15 +52,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="NetworkingNodeChannel">The HTTP Web Socket channel.</param>
     /// <param name="NewConnection">The new HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
-    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="SharedSubprotocols">An enumeration of shared HTTP Web Sockets subprotocols.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnNetworkingNodeNewWebSocketConnectionDelegate        (DateTime                           Timestamp,
                                                                                 OCPPWebSocketServer                NetworkingNodeChannel,
                                                                                 WebSocketServerConnection          NewConnection,
                                                                                 NetworkingNode_Id                  NetworkingNodeId,
-                                                                                EventTracking_Id                   EventTrackingId,
                                                                                 IEnumerable<String>                SharedSubprotocols,
+                                                                                EventTracking_Id                   EventTrackingId,
                                                                                 CancellationToken                  CancellationToken);
 
     /// <summary>
@@ -437,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 Connection.HTTPRequest?.SecWebSocketProtocol.Any() == false)
             {
 
-                DebugX.Log("Missing 'Sec-WebSocket-Protocol' HTTP header!");
+                DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket}: Missing 'Sec-WebSocket-Protocol' HTTP header!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
@@ -457,9 +459,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             else if (!SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? Array.Empty<String>()))
             {
 
-                var error = $"This WebSocket service only supports {(SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", "))}!";
+                var error = $"This WebSocket service only supports {SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", ")}!";
 
-                DebugX.Log(error);
+                DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket}: {error}");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
@@ -490,15 +492,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (NetworkingNodeLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
-                        DebugX.Log(nameof(OCPPWebSocketServer), $" connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
+                        DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
                         return Task.FromResult<HTTPResponse?>(null);
                     }
                     else
-                        DebugX.Log(nameof(OCPPWebSocketServer), $" connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'!");
+                        DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'!");
 
                 }
                 else
-                    DebugX.Log(nameof(OCPPWebSocketServer), " connection from " + Connection.RemoteSocket + " missing authorization!");
+                    DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket} missing authorization!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
@@ -506,7 +508,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                Server          = HTTPServiceName,
                                Date            = Timestamp.Now,
                                Connection      = "close"
-                           }.AsImmutable);
+                           }.AsImmutable
+                       );
 
             }
 
@@ -528,85 +531,135 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            CancellationToken          CancellationToken)
         {
 
-            #region Store the networking node/charging station identification within the Web Socket connection
+            if (Connection.HTTPRequest is null)
+                return;
 
-            if (!Connection.TryGetCustomDataAs(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey, out NetworkingNode_Id networkingNodeId) &&
-                 Connection.HTTPRequest is not null)
+            NetworkingNode_Id? networkingNodeId = null;
+
+            #region Parse TLS Client Certificate CommonName, or...
+
+            // We already validated and therefore trust this certificate!
+            if (Connection.HTTPRequest.ClientCertificate is not null)
             {
 
-                //ToDo: TLS certificates
+                var x509CommonName = Connection.HTTPRequest.ClientCertificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false);
 
-                #region HTTP Basic Authentication is used
+                if (NetworkingNode_Id.TryParse(x509CommonName, out var networkingNodeId1))
+                {
+                    networkingNodeId = networkingNodeId1;
+                }
 
-                if (Connection.HTTPRequest.Authorization is HTTPBasicAuthentication httpBasicAuthentication)
+            }
+
+            #endregion
+
+            #region ...check HTTP Basic Authentication, or...
+
+            else if (Connection.HTTPRequest.Authorization is HTTPBasicAuthentication httpBasicAuthentication &&
+                     NetworkingNode_Id.TryParse(httpBasicAuthentication.Username, out var networkingNodeId2))
+            {
+                networkingNodeId = networkingNodeId2;
+            }
+
+            #endregion
+
+            #region ...try to get the NetworkingNodeId from the HTTP request path suffix
+
+            else
+            {
+
+                var path = Connection.HTTPRequest.Path.ToString();
+
+                if (NetworkingNode_Id.TryParse(path[(path.LastIndexOf('/') + 1)..],
+                    out var networkingNodeId3))
+                {
+                    networkingNodeId = networkingNodeId3;
+                }
+
+            }
+
+            #endregion
+
+
+            if (networkingNodeId.HasValue)
+            {
+
+                #region Store the NetworkingNodeId within the HTTP Web Socket connection
+
+                Connection.TryAddCustomData(
+                                NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey,
+                                networkingNodeId.Value
+                            );
+
+                #endregion
+
+                #region Register new Networking Node
+
+                if (!connectedNetworkingNodes.TryAdd(networkingNodeId.Value,
+                                                     new Tuple<WebSocketServerConnection, DateTime>(
+                                                         Connection,
+                                                         Timestamp.Now
+                                                     )))
                 {
 
-                    if (NetworkingNode_Id.TryParse(httpBasicAuthentication.Username, out networkingNodeId))
+                    DebugX.Log($"{nameof(OCPPWebSocketServer)} Duplicate networking node '{networkingNodeId.Value}' detected: Trying to close old one!");
+
+                    if (connectedNetworkingNodes.TryRemove(networkingNodeId.Value, out var oldConnection))
                     {
-
-                        // Add the networking node/charging station identification to the Web Socket connection
-                        Connection.TryAddCustomData(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey, networkingNodeId);
-
-                        if (!connectedNetworkingNodes.TryGetValue(networkingNodeId, out var value))
-                            connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
-
-                        else
+                        try
                         {
-
-                            DebugX.Log($"{nameof(OCPPWebSocketServer)} Duplicate networking node '{networkingNodeId}' detected!");
-
-                            var oldNetworkingNode_WebSocketConnection = value.Item1;
-
-                            connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
-                            connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
-
-                            try
-                            {
-                                oldNetworkingNode_WebSocketConnection.Close();
-                            }
-                            catch (Exception e)
-                            {
-                                DebugX.Log($"{nameof(OCPPWebSocketServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
-                            }
-
+                            await oldConnection.Item1.Close(
+                                      WebSocketFrame.ClosingStatusCode.NormalClosure,
+                                      "Newer connection detected!",
+                                      CancellationToken
+                                  );
                         }
-
+                        catch (Exception e)
+                        {
+                            DebugX.Log($"{nameof(OCPPWebSocketServer)} Closing old HTTP Web Socket connection from {oldConnection.Item1.RemoteSocket} failed: {e.Message}");
+                        }
                     }
+
+                    connectedNetworkingNodes.TryAdd(networkingNodeId.Value,
+                                                    new Tuple<WebSocketServerConnection, DateTime>(
+                                                        Connection,
+                                                        Timestamp.Now
+                                                    ));
 
                 }
 
                 #endregion
 
-                #region No authentication at all...
 
-                else if (NetworkingNode_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out networkingNodeId))
+                #region Send OnNewNetworkingNodeWSConnection event
+
+                var onNetworkingNodeNewWebSocketConnection = OnNetworkingNodeNewWebSocketConnection;
+                if (onNetworkingNodeNewWebSocketConnection is not null)
                 {
-
-                    // Add the charging station identification to the WebSocket connection
-                    Connection.TryAddCustomData(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey, networkingNodeId);
-
-                    if (!connectedNetworkingNodes.TryGetValue(networkingNodeId, out Tuple<WebSocketServerConnection, DateTime>? value))
-                        connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
-
-                    else
+                    try
                     {
 
-                        DebugX.Log($"{nameof(OCPPWebSocketServer)} Duplicate charging station '{networkingNodeId}' detected!");
+                        await Task.WhenAll(onNetworkingNodeNewWebSocketConnection.GetInvocationList().
+                                               OfType<OnNetworkingNodeNewWebSocketConnectionDelegate>().
+                                               Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                             LogTimestamp,
+                                                                             this,
+                                                                             Connection,
+                                                                             networkingNodeId.Value,
+                                                                             SharedSubprotocols,
+                                                                             EventTrackingId,
+                                                                             CancellationToken
+                                                                         )).
+                                               ToArray());
 
-                        var oldChargingStation_WebSocketConnection = value.Item1;
-
-                        connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
-                        connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
-
-                        try
-                        {
-                            oldChargingStation_WebSocketConnection.Close();
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log($"{nameof(OCPPWebSocketServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
-                        }
-
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(OCPPWebSocketServer),
+                                  nameof(OnNetworkingNodeNewWebSocketConnection),
+                                  e
+                              );
                     }
 
                 }
@@ -615,35 +668,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-            #endregion
+            #region Close connection
 
-            #region Send OnNewNetworkingNodeWSConnection event
-
-            var logger = OnNetworkingNodeNewWebSocketConnection;
-            if (logger is not null)
+            else
             {
+
+                DebugX.Log($"{nameof(OCPPWebSocketServer)} Could not get NetworkingNodeId from HTTP Web Socket connection ({Connection.RemoteSocket}): Closing connection!");
+
                 try
                 {
-
-                    await Task.WhenAll(logger.GetInvocationList().
-                                              OfType<OnNetworkingNodeNewWebSocketConnectionDelegate>().
-                                              Select(loggingDelegate => loggingDelegate.Invoke(LogTimestamp,
-                                                                                               this,
-                                                                                               Connection,
-                                                                                               networkingNodeId,
-                                                                                               EventTrackingId,
-                                                                                               SharedSubprotocols,
-                                                                                               CancellationToken)).
-                                              ToArray());
-
+                    await Connection.Close(
+                              WebSocketFrame.ClosingStatusCode.PolicyViolation,
+                              "Could not get NetworkingNodeId from HTTP Web Socket connection!",
+                              CancellationToken
+                          );
                 }
                 catch (Exception e)
                 {
-                    await HandleErrors(
-                              nameof(OCPPWebSocketServer),
-                              nameof(OnNetworkingNodeNewWebSocketConnection),
-                              e
-                          );
+                    DebugX.Log($"{nameof(OCPPWebSocketServer)} Closing HTTP Web Socket connection ({Connection.RemoteSocket}) failed: {e.Message}");
                 }
 
             }

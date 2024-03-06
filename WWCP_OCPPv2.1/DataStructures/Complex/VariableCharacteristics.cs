@@ -118,6 +118,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.MaxLimit            = MaxLimit;
             this.ValuesList          = ValuesList?.Distinct() ?? [];
 
+            unchecked
+            {
+
+                hashCode = this.DataType.          GetHashCode()       * 17 ^
+                           this.SupportsMonitoring.GetHashCode()       * 13 ^
+                          (this.Unit?.             GetHashCode() ?? 0) * 11 ^
+                          (this.MinLimit?.         GetHashCode() ?? 0) *  7 ^
+                          (this.MaxLimit?.         GetHashCode() ?? 0) *  5 ^
+                           this.ValuesList.        CalcHashCode()      *  3 ^
+                           base.                   GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -126,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "VariableCharacteristicsType": {
-        //   "description": "Fixed read-only parameters of a variable.\r\n",
+        //   "description": "Fixed read-only parameters of a variable.",
         //   "javaType": "VariableCharacteristics",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -135,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "unit": {
-        //       "description": "Unit of the variable. When the transmitted value has a unit, this field SHALL be included.\r\n",
+        //       "description": "Unit of the variable. When the transmitted value has a unit, this field SHALL be included.",
         //       "type": "string",
         //       "maxLength": 16
         //     },
@@ -143,20 +156,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/DataEnumType"
         //     },
         //     "minLimit": {
-        //       "description": "Minimum possible value of this variable.\r\n",
+        //       "description": "Minimum possible value of this variable.",
         //       "type": "number"
         //     },
         //     "maxLimit": {
-        //       "description": "Maximum possible value of this variable. When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.\r\n",
+        //       "description": "Maximum possible value of this variable.
+        //                       When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.",
         //       "type": "number"
         //     },
         //     "valuesList": {
-        //       "description": "Allowed values when variable is Option/Member/SequenceList. \r\n\r\n* OptionList: The (Actual) Variable value must be a single value from the reported (CSV) enumeration list.\r\n\r\n* MemberList: The (Actual) Variable value  may be an (unordered) (sub-)set of the reported (CSV) valid values list.\r\n\r\n* SequenceList: The (Actual) Variable value  may be an ordered (priority, etc)  (sub-)set of the reported (CSV) valid values.\r\n\r\nThis is a comma separated list.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList. The max size of these values will always remain equal. \r\n\r\n",
+        //       "description": "Allowed values when variable is Option/Member/SequenceList.
+        //                       * OptionList:   The (Actual) Variable value must be a single value from the reported (CSV) enumeration list.
+        //                       * MemberList:   The (Actual) Variable value  may be an (unordered) (sub-)set of the reported (CSV) valid values list.
+        //                       * SequenceList: The (Actual) Variable value  may be an ordered (priority, etc)  (sub-)set of the reported (CSV) valid values.
+        //                       This is a comma separated list.
+        //                       The Configuration Variable <<configkey-configuration-value-size,ConfigurationValueSize>> can be used to limit SetVariableData.attributeValue
+        //                       and VariableCharacteristics.valueList.
+        //                       The max size of these values will always remain equal.",
         //       "type": "string",
         //       "maxLength": 1000
         //     },
         //     "supportsMonitoring": {
-        //       "description": "Flag indicating if this variable supports monitoring. \r\n",
+        //       "description": "Flag indicating if this variable supports monitoring.",
         //       "type": "boolean"
         //     }
         //   },
@@ -182,8 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var variableCharacteristics,
                          out var errorResponse,
-                         CustomVariableCharacteristicsParser) &&
-                variableCharacteristics is not null)
+                         CustomVariableCharacteristicsParser))
             {
                 return variableCharacteristics;
             }
@@ -304,14 +324,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region ValuesList            [optional]
 
-                if (JSON.ParseOptionalHashSet("valuesList",
-                                              "values list",
-                                              s => s,
-                                              out HashSet<String> ValuesList,
-                                              out ErrorResponse))
+                var ValuesList           = new HashSet<String>();
+                var valuesListJSONToken  = JSON["valuesList"];
+
+                if (valuesListJSONToken is not null)
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+
+                    switch (valuesListJSONToken.Type)
+                    {
+
+                        case JTokenType.String:
+                        {
+
+                            var valueListString = JSON["valuesList"]?.Value<String>()?.Trim();
+
+                        }
+                        break;
+
+                        case JTokenType.Array:
+                        {
+                            if (JSON.ParseOptionalHashSet("valuesList",
+                                                            "values list",
+                                                            s => s,
+                                                            out ValuesList,
+                                                            out ErrorResponse))
+                            {
+                                if (ErrorResponse is not null)
+                                    return false;
+                            }
+                        }
+                        break;
+
+                    }
+
                 }
 
                 #endregion
@@ -521,26 +566,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return DataType.          GetHashCode()       * 17 ^
-                       SupportsMonitoring.GetHashCode()       * 13 ^
-                      (Unit?.             GetHashCode() ?? 0) * 11 ^
-                      (MinLimit?.         GetHashCode() ?? 0) *  7 ^
-                      (MaxLimit?.         GetHashCode() ?? 0) *  5 ^
-                       ValuesList.        CalcHashCode()      *  3 ^
-
-                       base.              GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

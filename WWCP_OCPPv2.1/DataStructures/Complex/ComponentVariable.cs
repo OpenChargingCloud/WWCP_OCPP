@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -70,6 +72,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Component  = Component;
             this.Variable   = Variable;
 
+            unchecked
+            {
+
+                hashCode = this.Component.GetHashCode()       * 5 ^
+                          (this.Variable?.GetHashCode() ?? 0) * 3 ^
+                           base.          GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -114,8 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var componentVariable,
                          out var errorResponse,
-                         CustomComponentVariableParser) &&
-                componentVariable is not null)
+                         CustomComponentVariableParser))
             {
                 return componentVariable;
             }
@@ -137,9 +147,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ComponentVariable">The parsed component variable.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       out ComponentVariable?  ComponentVariable,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(JObject                                      JSON,
+                                       [NotNullWhen(true)]  out ComponentVariable?  ComponentVariable,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
 
             => TryParse(JSON,
                         out ComponentVariable,
@@ -155,8 +165,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomComponentVariableParser">A delegate to parse custom component variable JSON objects.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out ComponentVariable?                           ComponentVariable,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out ComponentVariable?      ComponentVariable,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<ComponentVariable>?  CustomComponentVariableParser)
         {
 
@@ -175,9 +185,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
                     return false;
                 }
-
-                if (Component is null)
-                    return false;
 
                 #endregion
 
@@ -210,9 +217,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ComponentVariable = new ComponentVariable(Component,
-                                                          Variable,
-                                                          CustomData);
+                ComponentVariable = new ComponentVariable(
+                                        Component,
+                                        Variable,
+                                        CustomData
+                                    );
 
                 if (CustomComponentVariableParser is not null)
                     ComponentVariable = CustomComponentVariableParser(JSON,
@@ -358,21 +367,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Component.GetHashCode()       * 5 ^
-                      (Variable?.GetHashCode() ?? 0) * 3 ^
-                       base.     GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

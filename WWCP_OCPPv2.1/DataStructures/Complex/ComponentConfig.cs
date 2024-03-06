@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                       (Instance?.ToLower().GetHashCode() ?? 0) * 5 ^
                       (EVSE?.              GetHashCode() ?? 0) * 3 ^
 
-                       base.             GetHashCode();
+                       base.               GetHashCode();
 
             }
         }

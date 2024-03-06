@@ -121,8 +121,8 @@ namespace cloud.charging.open.protocols.OCPP
         public static NetworkingNode_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out var centralSystemId))
-                return centralSystemId;
+            if (TryParse(Text, out var networkingNodeId))
+                return networkingNodeId;
 
             throw new ArgumentException($"Invalid text representation of a networking node identification: '{Text}'!",
                                         nameof(Text));
@@ -140,8 +140,8 @@ namespace cloud.charging.open.protocols.OCPP
         public static NetworkingNode_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var centralSystemId))
-                return centralSystemId;
+            if (TryParse(Text, out var networkingNodeId))
+                return networkingNodeId;
 
             return null;
 
@@ -309,8 +309,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Object">A networking node identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is NetworkingNode_Id centralSystemId
-                   ? CompareTo(centralSystemId)
+            => Object is NetworkingNode_Id networkingNodeId
+                   ? CompareTo(networkingNodeId)
                    : throw new ArgumentException("The given object is not a networking node identification!",
                                                  nameof(Object));
 
@@ -342,8 +342,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Object">A networking node identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is NetworkingNode_Id centralSystemId &&
-                   Equals(centralSystemId);
+            => Object is NetworkingNode_Id networkingNodeId &&
+                   Equals(networkingNodeId);
 
         #endregion
 

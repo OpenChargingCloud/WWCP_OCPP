@@ -105,6 +105,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Persistent  = Persistent;
             this.Constant    = Constant;
 
+            unchecked
+            {
+
+                hashCode = (this.Type?.      GetHashCode() ?? 0) * 13 ^
+                           (this.Value?.     GetHashCode() ?? 0) * 11 ^
+                           (this.Mutability?.GetHashCode() ?? 0) *  7 ^
+                           (this.Persistent?.GetHashCode() ?? 0) *  5 ^
+                           (this.Constant?.  GetHashCode() ?? 0) *  3 ^
+                            base.            GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -161,8 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var variableAttribute,
                          out var errorResponse,
-                         CustomVariableAttributeParser) &&
-                variableAttribute is not null)
+                         CustomVariableAttributeParser))
             {
                 return variableAttribute;
             }
@@ -473,25 +484,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return (Type?.      GetHashCode() ?? 0) * 13 ^
-                       (Value?.     GetHashCode() ?? 0) * 11 ^
-                       (Mutability?.GetHashCode() ?? 0) *  7 ^
-                       (Persistent?.GetHashCode() ?? 0) *  5 ^
-                       (Constant?.  GetHashCode() ?? 0) *  3 ^
-
-                       base.        GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

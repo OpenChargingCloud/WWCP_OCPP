@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.CertificateTypes = CertificateTypes?.Distinct() ?? Array.Empty<GetCertificateIdUse>();
+            this.CertificateTypes = CertificateTypes?.Distinct() ?? [];
 
             unchecked
             {
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "certificateType": {
-        //       "description": "Indicates the type of certificates requested. When omitted, all certificate types are requested.\r\n",
+        //       "description": "Indicates the type of certificates requested. When omitted, all certificate types are requested.",
         //       "type": "array",
         //       "additionalItems": false,
         //       "items": {

@@ -74,8 +74,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Name      = Name.     Trim();
             this.Instance  = Instance?.Trim();
 
-            if (this.Name.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Name), "The given name must not be null or empty!");
+            unchecked
+            {
+
+                hashCode = this.Name.     ToLower().GetHashCode()       * 5 ^
+                          (this.Instance?.ToLower().GetHashCode() ?? 0) * 3 ^
+                           base.                    GetHashCode();
+
+            }
 
         }
 
@@ -137,8 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var variable,
                          out var errorResponse,
-                         CustomVariableParser) &&
-                variable is not null)
+                         CustomVariableParser))
             {
                 return variable;
             }
@@ -381,22 +386,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Name.     ToLower().GetHashCode()       * 5 ^
-                      (Instance?.ToLower().GetHashCode() ?? 0) * 3 ^
-
-                       base.             GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

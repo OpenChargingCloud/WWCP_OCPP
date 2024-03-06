@@ -2191,6 +2191,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
 
+        public void ClearNetworkingNodes()
+        {
+            reachableViaNetworkingHubs.Clear();
+            connectedNetworkingNodes.  Clear();
+        }
+
+
         public Boolean LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId, out CSMS.ICSMSChannel? CSMSChannel)
         {
 

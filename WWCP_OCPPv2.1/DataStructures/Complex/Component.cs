@@ -162,8 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var component,
                          out var errorResponse,
-                         CustomComponentParser) &&
-                component is not null)
+                         CustomComponentParser))
             {
                 return component;
             }

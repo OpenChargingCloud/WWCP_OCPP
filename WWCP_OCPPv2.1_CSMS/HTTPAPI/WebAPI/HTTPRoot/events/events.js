@@ -5621,7 +5621,7 @@ function StartEventsSSE() {
                                 instanceNameDiv.innerHTML = instance.instance + " (Variable Instance)";
                                 instanceDiv.appendChild(instanceNameDiv);
                             }
-                            // Characteristics
+                            // Variable Characteristics
                             const characteristicsDiv = document.createElement('div');
                             characteristicsDiv.className = "characteristics";
                             instanceDiv.appendChild(characteristicsDiv);
@@ -5633,7 +5633,34 @@ function StartEventsSSE() {
                             supportsMonitoringDiv.className = "supportsMonitoring";
                             supportsMonitoringDiv.innerHTML = "Supports Monitoring: " + (instance.variableCharacteristics.supportsMonitoring ? "true" : "false");
                             characteristicsDiv.appendChild(supportsMonitoringDiv);
-                            // Attribute
+                            if (instance.variableCharacteristics.unit) {
+                                const unitDiv = document.createElement('div');
+                                unitDiv.className = "unit";
+                                unitDiv.innerHTML = "Unit: " + instance.variableCharacteristics.unit;
+                                characteristicsDiv.appendChild(unitDiv);
+                            }
+                            if (instance.variableCharacteristics.minLimit) {
+                                const minLimitDiv = document.createElement('div');
+                                minLimitDiv.className = "minLimit";
+                                minLimitDiv.innerHTML = "Min Limit: " + instance.variableCharacteristics.minLimit;
+                                characteristicsDiv.appendChild(minLimitDiv);
+                            }
+                            if (instance.variableCharacteristics.maxLimit) {
+                                const maxLimitDiv = document.createElement('div');
+                                maxLimitDiv.className = "maxLimit";
+                                maxLimitDiv.innerHTML = "Max Limit: " + instance.variableCharacteristics.maxLimit;
+                                characteristicsDiv.appendChild(maxLimitDiv);
+                            }
+                            if (instance.variableCharacteristics.valueList) {
+                                const valueListDiv = document.createElement('div');
+                                valueListDiv.className = "valueList";
+                                characteristicsDiv.appendChild(valueListDiv);
+                                if (Array.isArray(reportData))
+                                    valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
+                                else
+                                    valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
+                            }
+                            // Variable Attribute(s)
                             const attributeDiv = document.createElement('div');
                             attributeDiv.className = "attribute";
                             instanceDiv.appendChild(attributeDiv);

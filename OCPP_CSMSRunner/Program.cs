@@ -1352,7 +1352,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
                                    Id:                     NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
-                                   RequireAuthentication:  true,
+                                   RequireAuthentication:  false,
                                    DNSClient:              dnsClient
                                );
 
@@ -1823,6 +1823,21 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 chargingStationId = commandArray[1];
 
                                 DebugX.Log($"Now using charging station '{chargingStationId}'!");
+
+                            }
+
+                            #endregion
+
+                            #region ClearConnectedNodes
+
+                            if (command.Equals("ClearConnectedNodes", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
+                            {
+
+                                testCSMSv2_1.ClearNetworkingNodes();
+
+                                //chargingStationId = commandArray[1];
+
+                                //DebugX.Log($"Now using charging station '{chargingStationId}'!");
 
                             }
 
@@ -2946,6 +2961,44 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #endregion
 
                                 #region GetInstalledCertificateIds
+
+                                // GetInstalledCertificateIds
+                                if (command.Equals("GetInstalledCertificateIds", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
+                                {
+
+                                    if (ocppVersion == ocppVersion1_6)
+                                    {
+
+                                        var response = await testCentralSystemV1_6.GetInstalledCertificateIds(
+                                                           new OCPPv1_6.CS.GetInstalledCertificateIdsRequest(
+                                                               NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                               CertificateType:    commandArray[1].ToLower() switch {
+                                                                                       "csrc"  => OCPPv1_6.CertificateUse.CentralSystemRootCertificate,
+                                                                                       _       => OCPPv1_6.CertificateUse.ManufacturerRootCertificate
+                                                                                   }
+                                                           )
+                                                       );
+
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
+                                        DebugX.Log(response.ToJSON().ToString());
+
+                                    }
+                                    else
+                                    {
+
+                                        var response = await testCSMSv2_1.GetInstalledCertificateIds(
+                                                           new OCPPv2_1.CSMS.GetInstalledCertificateIdsRequest(
+                                                               NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId)
+                                                           )
+                                                       );
+
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
+                                        DebugX.Log(response.ToJSON().ToString());
+
+                                    }
+
+                                }
+
 
                                 if (command.Equals("GetInstalledCertificateIds", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
