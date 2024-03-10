@@ -15,6 +15,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="NetworkingNode\OCPPAdapter\Forwarding\CS\BinaryDataStreamsExtensions\.gitkeep" />
+    <None Remove="NetworkingNode\OCPPAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\.gitkeep" />
+    <None Remove="NetworkingNode\OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="NetworkingNode\OCPPAdapter\Forwarding\CS\BinaryDataStreamsExtensions\.gitkeep" />
+    <Compile Include="NetworkingNode\OCPPAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\.gitkeep" />
+    <Compile Include="NetworkingNode\OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>

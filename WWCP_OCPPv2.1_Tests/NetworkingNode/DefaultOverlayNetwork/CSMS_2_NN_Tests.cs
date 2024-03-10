@@ -60,14 +60,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,          Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(localController,          Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
                 Assert.That(CSMS,                    Is.Not.Null);
                 Assert.That(csmsWSServer,            Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
             {
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationNodeId:  networkingNode.Id,
+                                           DestinationNodeId:  localController.Id,
                                            ResetType:          resetType
                                        );
 
@@ -165,14 +165,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,          Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(localController,          Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
                 Assert.That(CSMS,                    Is.Not.Null);
                 Assert.That(csmsWSServer,            Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
             {
@@ -189,22 +189,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN.OnJSONMessageRequestReceived  += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.IN.OnJSONMessageRequestReceived  += (timestamp, sender, jsonRequestMessage) => {
                     nnJSONMessageRequestsReceived.  TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                localController.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
                     nnDataTransferRequestsReceived. TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.OUT.OnDataTransferResponseSent   += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime) => {
+                localController.OCPP.OUT.OnDataTransferResponseSent   += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime) => {
                     nnDataTransferResponsesSent.    TryAdd(dataTransferResponse);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.OUT.OnJSONMessageResponseSent    += (timestamp, sender, jsonResponseMessage) => {
+                localController.OCPP.OUT.OnJSONMessageResponseSent    += (timestamp, sender, jsonResponseMessage) => {
                     nnJSONResponseMessagesSent.     TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!";
                 var response   = await CSMS.TransferData(
-                                           DestinationNodeId:   networkingNode.Id,
+                                           DestinationNodeId:   localController.Id,
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
                                            Data:                data,
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request OUT
                     Assert.That(csmsDataTransferRequestsSent.     Count,                  Is.EqualTo(1), "The DataTransfer request did not leave the CSMS!");
                     var csmsDataTransferRequest = csmsDataTransferRequestsSent.First();
-                    Assert.That(csmsDataTransferRequest.DestinationNodeId,                Is.EqualTo(networkingNode.Id));
+                    Assert.That(csmsDataTransferRequest.DestinationNodeId,                Is.EqualTo(localController.Id));
                     Assert.That(csmsDataTransferRequest.NetworkPath.Length,               Is.EqualTo(1));
                     Assert.That(csmsDataTransferRequest.NetworkPath.Source,               Is.EqualTo(CSMS.Id));
                     Assert.That(csmsDataTransferRequest.VendorId,                         Is.EqualTo(vendorId));
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request IN
                     Assert.That(nnJSONMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The DataTransfer JSON request did not reach the networking node!");
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.DestinationId,                   Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnJSONMessageRequest.DestinationId,                   Is.EqualTo(localController.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request IN
                     Assert.That(nnDataTransferRequestsReceived. Count,                    Is.EqualTo(1), "The DataTransfer request did not reach the networking node!");
                     var nnDataTransferRequestReceived = nnDataTransferRequestsReceived.First();
-                    Assert.That(nnDataTransferRequestReceived.DestinationNodeId,          Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnDataTransferRequestReceived.DestinationNodeId,          Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Length,         Is.EqualTo(1));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
@@ -272,8 +272,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     var nnDataTransferResponseSent = nnDataTransferResponsesSent.First();
                     Assert.That(nnDataTransferResponseSent.DestinationNodeId,             Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Length,            Is.EqualTo(1));
-                    Assert.That(nnDataTransferResponseSent.NetworkPath.Source,            Is.EqualTo(networkingNode.Id));
-                    Assert.That(nnDataTransferResponseSent.NetworkPath.Last,              Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnDataTransferResponseSent.NetworkPath.Source,            Is.EqualTo(localController.Id));
+                    Assert.That(nnDataTransferResponseSent.NetworkPath.Last,              Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferResponseSent.Data?.ToString(),              Is.EqualTo(data.Reverse()));
 
                     Assert.That(nnDataTransferResponseSent.Signatures.Any(),              Is.True, "The DataTransfer response is not signed!");
@@ -317,14 +317,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,          Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(localController,          Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
                 Assert.That(CSMS,                    Is.Not.Null);
                 Assert.That(csmsWSServer,            Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
             {
@@ -341,22 +341,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN.OnBinaryMessageRequestReceived      += (timestamp, sender, binaryRequestMessage) => {
+                localController.OCPP.IN.OnBinaryMessageRequestReceived      += (timestamp, sender, binaryRequestMessage) => {
                     nnBinaryMessageRequestsReceived.  TryAdd(binaryRequestMessage);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN.OnSecureDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                localController.OCPP.IN.OnSecureDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
                     nnSecureDataTransferRequestsReceived. TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.OUT.OnSecureDataTransferResponseSent   += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime) => {
+                localController.OCPP.OUT.OnSecureDataTransferResponseSent   += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime) => {
                     nnSecureDataTransferResponsesSent.    TryAdd(dataTransferResponse);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.OUT.OnBinaryMessageResponseSent        += (timestamp, sender, binaryResponseMessage) => {
+                localController.OCPP.OUT.OnBinaryMessageResponseSent        += (timestamp, sender, binaryResponseMessage) => {
                     nnBinaryResponseMessagesSent.     TryAdd(binaryResponseMessage);
                     return Task.CompletedTask;
                 };
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var data        = "Hello world!";
                 var response    = await CSMS.TransferSecureData(
-                                            DestinationNodeId:  networkingNode.Id,
+                                            DestinationNodeId:  localController.Id,
                                             Parameter:          0,
                                             KeyId:              1,
                                             Payload:            data.ToUTF8Bytes()
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request OUT
                     Assert.That(csmsSecureDataTransferRequestsSent.     Count,                  Is.EqualTo(1), "The SecureDataTransfer request did not leave the CSMS!");
                     var csmsSecureDataTransferRequest = csmsSecureDataTransferRequestsSent.First();
-                    Assert.That(csmsSecureDataTransferRequest.DestinationNodeId,                Is.EqualTo(networkingNode.Id));
+                    Assert.That(csmsSecureDataTransferRequest.DestinationNodeId,                Is.EqualTo(localController.Id));
                     Assert.That(csmsSecureDataTransferRequest.NetworkPath.Length,               Is.EqualTo(1));
                     Assert.That(csmsSecureDataTransferRequest.NetworkPath.Source,               Is.EqualTo(CSMS.Id));
                   //  Assert.That(csmsSecureDataTransferRequest.VendorId,                         Is.EqualTo(vendorId));
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Binary Request IN
                     Assert.That(nnBinaryMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The SecureDataTransfer JSON request did not reach the networking node!");
                     var nnBinaryMessageRequest = nnBinaryMessageRequestsReceived.First();
-                    Assert.That(nnBinaryMessageRequest.DestinationId,                       Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnBinaryMessageRequest.DestinationId,                       Is.EqualTo(localController.Id));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request IN
                     Assert.That(nnSecureDataTransferRequestsReceived. Count,                    Is.EqualTo(1), "The SecureDataTransfer request did not reach the networking node!");
                     var nnSecureDataTransferRequestReceived = nnSecureDataTransferRequestsReceived.First();
-                    Assert.That(nnSecureDataTransferRequestReceived.DestinationNodeId,          Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnSecureDataTransferRequestReceived.DestinationNodeId,          Is.EqualTo(localController.Id));
                     Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Length,         Is.EqualTo(1));
                     Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
@@ -423,8 +423,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     var nnSecureDataTransferResponseSent = nnSecureDataTransferResponsesSent.First();
                     Assert.That(nnSecureDataTransferResponseSent.DestinationNodeId,             Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Length,            Is.EqualTo(1));
-                    Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Source,            Is.EqualTo(networkingNode.Id));
-                    Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Last,              Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Source,            Is.EqualTo(localController.Id));
+                    Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Last,              Is.EqualTo(localController.Id));
                 //    Assert.That(nnSecureDataTransferResponseSent.SecureData?.ToString(),              Is.EqualTo(data.Reverse()));
 
                     Assert.That(nnSecureDataTransferResponseSent.Signatures.Any(),              Is.True, "The SecureDataTransfer response is not signed!");
@@ -469,14 +469,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,          Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(localController,          Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
                 Assert.That(CSMS,                    Is.Not.Null);
                 Assert.That(csmsWSServer,            Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
             {
@@ -513,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 //};
 
                 var reset = new ResetRequest(
-                                networkingNode.Id,
+                                localController.Id,
                                 ResetType.Immediate
                             ).ToJSON(
                                   CSMS.CustomResetRequestSerializer,
@@ -525,7 +525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 new SecureRandom().NextBytes(key);
 
                 var secureDataTransfer = SecureDataTransferRequest.Encrypt(
-                                             networkingNode.Id,
+                                             localController.Id,
                                              0,
                                              1,
                                              key,
@@ -538,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationNodeId:  networkingNode.Id,
+                                           DestinationNodeId:  localController.Id,
                                            ResetType:          resetType
                                        );
 
@@ -597,14 +597,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,          Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(localController,          Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
                 Assert.That(CSMS,                    Is.Not.Null);
                 Assert.That(csmsWSServer,            Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
             {
@@ -643,7 +643,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationNodeId:  networkingNode.Id,
+                                           DestinationNodeId:  localController.Id,
                                            ResetType:          resetType
                                        );
 
@@ -705,14 +705,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,          Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(localController,          Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
                 Assert.That(CSMS,                    Is.Not.Null);
                 Assert.That(csmsWSServer,            Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
             {
@@ -751,7 +751,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.DeleteFile(
-                                           DestinationNodeId:  networkingNode.Id,
+                                           DestinationNodeId:  localController.Id,
                                            FileName:           FilePath.Parse("/test.txt")
                                        );
 
@@ -810,14 +810,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,          Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(localController,          Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
                 Assert.That(CSMS,                    Is.Not.Null);
                 Assert.That(csmsWSServer,            Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
             {
@@ -856,7 +856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.GetFile(
-                                           DestinationNodeId:  networkingNode.Id,
+                                           DestinationNodeId:  localController.Id,
                                            FileName:           FilePath.Parse("/test.txt")
                                        );
 
@@ -915,14 +915,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,          Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(localController,          Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
                 Assert.That(CSMS,                    Is.Not.Null);
                 Assert.That(csmsWSServer,            Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
             {
@@ -961,7 +961,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.SendFile(
-                                           DestinationNodeId:  networkingNode.Id,
+                                           DestinationNodeId:  localController.Id,
                                            FileName:           FilePath.Parse("/test.txt"),
                                            FileContent:        "Hello world!".ToUTF8Bytes(),
                                            FileContentType:    ContentType.Text.Plain

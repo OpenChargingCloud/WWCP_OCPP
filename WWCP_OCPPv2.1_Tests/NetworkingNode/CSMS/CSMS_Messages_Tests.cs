@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
             Assert.Multiple(() => {
                 Assert.That(testCSMS01,                       Is.Not.Null);
                 Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(networkingNode1,                  Is.Not.Null);
+                Assert.That(localController1,                  Is.Not.Null);
 //                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
             if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
-                networkingNode1         is not null &&
+                localController1         is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.OCPP.FORWARD.OnResetRequestLogging += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
+                localController1.OCPP.FORWARD.OnResetRequestLogging += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
                     nnResetRequestsFWD.TryAdd(new Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>(resetRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
                 testCSMS01.AddStaticRouting(chargingStation1.Id,
-                                            networkingNode1.Id);
+                                            localController1.Id);
 
 
                 var resetType  = ResetType.Immediate;
@@ -161,8 +161,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
             Assert.Multiple(() => {
                 Assert.That(testCSMS01,                       Is.Not.Null);
                 Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(networkingNode1,                  Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
+                Assert.That(localController1,                  Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
                 Assert.That(chargingStation3,                 Is.Not.Null);
@@ -170,8 +170,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
             if (testCSMS01                     is not null &&
                 testBackendWebSockets01        is not null &&
-                networkingNode1                is not null &&
-                nnOCPPWebSocketServer01 is not null &&
+                localController1                is not null &&
+                lcOCPPWebSocketServer01 is not null &&
                 chargingStation1               is not null &&
                 chargingStation2               is not null &&
                 chargingStation3               is not null)
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.OCPP.FORWARD.OnDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
+                localController1.OCPP.FORWARD.OnDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
                     nnDataTransferRequestsFWD.TryAdd(new Tuple<DataTransferRequest, ForwardingDecision<DataTransferRequest, DataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
                 testCSMS01.AddStaticRouting(chargingStation1.Id,
-                                            networkingNode1.Id);
+                                            localController1.Id);
 
                 //chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
 
@@ -281,8 +281,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
             Assert.Multiple(() => {
                 Assert.That(testCSMS01,                       Is.Not.Null);
                 Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(networkingNode1,                  Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
+                Assert.That(localController1,                  Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
                 Assert.That(chargingStation3,                 Is.Not.Null);
@@ -290,8 +290,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
             if (testCSMS01                     is not null &&
                 testBackendWebSockets01        is not null &&
-                networkingNode1                is not null &&
-                nnOCPPWebSocketServer01 is not null &&
+                localController1                is not null &&
+                lcOCPPWebSocketServer01 is not null &&
                 chargingStation1               is not null &&
                 chargingStation2               is not null &&
                 chargingStation3               is not null)
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.OCPP.FORWARD.OnBinaryDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
+                localController1.OCPP.FORWARD.OnBinaryDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
                     nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
                 testCSMS01.AddStaticRouting(chargingStation1.Id,
-                                            networkingNode1.Id);
+                                            localController1.Id);
 
                 //chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
 

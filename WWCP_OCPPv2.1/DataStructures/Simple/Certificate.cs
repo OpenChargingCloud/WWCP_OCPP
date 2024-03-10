@@ -19,6 +19,8 @@
 
 using System.Security.Cryptography.X509Certificates;
 
+using Org.BouncyCastle.OpenSsl;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -73,13 +75,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new PEM encoded X.509 certificate based on the given text.
         /// </summary>
-        /// <param name="Text">The text representation of the PEM encoded X.509 certificate.</param>
+        /// <param name="CertificatePEM">The text representation of the PEM encoded X.509 certificate.</param>
         /// <param name="ParsedCertificate">The parsed X.509 certificate.</param>
-        private Certificate(String             Text,
+        private Certificate(String             CertificatePEM,
                             X509Certificate2?  ParsedCertificate   = null)
         {
 
-            this.InternalText  = Text;
+            this.InternalText  = CertificatePEM;
             this.Parsed        = ParsedCertificate;
 
         }
@@ -369,6 +371,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                );
 
         #endregion
+
+
+        /// <summary>
+        /// Create a new PEM encoded X.509 certificate based on the given BouncyCastle X.509 certificate.
+        /// </summary>
+        /// <param name="Certificate">A BouncyCastle X.509 certificate.</param>
+        public static Certificate From(Org.BouncyCastle.X509.X509Certificate Certificate)
+        {
+
+            String? certificatePEM = null;
+
+            using (var textWriter = new StringWriter())
+            {
+
+                var pemWriter = new PemWriter(textWriter);
+                pemWriter.WriteObject(Certificate);
+                pemWriter.Writer.Flush();
+
+                certificatePEM = textWriter.ToString();
+
+            }
+
+            return new Certificate(certificatePEM);
+
+        }
 
 
         #region Operator overloading

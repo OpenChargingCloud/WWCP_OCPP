@@ -1351,9 +1351,11 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
             #region 9920 - OCPP v2.1 without internal security, but maybe with external TLS termination
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
-                                   Id:                     NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
-                                   RequireAuthentication:  false,
-                                   DNSClient:              dnsClient
+                                   Id:                      NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
+                                   RequireAuthentication:   true,
+                                   ClientCAKeyPair:         clientCA_RSA_KeyPair,
+                                   ClientCACertificate:     clientCA_RSA_Certificate,
+                                   DNSClient :              dnsClient
                                );
 
 
@@ -2107,10 +2109,10 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                         var fileUploadAuth  = testCSMSv2_1.HTTPUploadAPI.GenerateNewFileUploadAuthentication();
 
-                                        //   getlog http://172.20.101.28:9921 security
-                                        //   getlog https://api2.ocpp.charging.cloud:9901 diagnostics
-                                        //   getlog https://api2.ocpp.charging.cloud:9901 security
-                                        //   getlog https://api2.ocpp.charging.cloud:9901 datacollector
+                                        //   getlog http://api1.ocpp.charging.cloud:3502/uploads security
+                                        //   getlog http://api1.ocpp.charging.cloud:3502/uploads diagnostics
+                                        //   getlog http://api1.ocpp.charging.cloud:3502/uploads security
+                                        //   getlog http://api1.ocpp.charging.cloud:3502/uploads datacollector
                                         var response        = await testCSMSv2_1.GetLog(
                                                                   new OCPPv2_1.CSMS.GetLogRequest(
                                                                       NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
@@ -2337,6 +2339,37 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 }
 
                                 #endregion
+
+                                #region SetVariableMonitoring
+
+                                //   SetVariableMonitoring
+                                if (command.Equals("SetVariableMonitoring", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
+                                {
+
+                                    var response = await testCSMSv2_1.SetVariableMonitoring(
+                                                       new OCPPv2_1.CSMS.SetVariableMonitoringRequest(
+                                                           NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
+                                                           MonitoringData:      [
+                                                                                    new OCPPv2_1.SetMonitoringData(
+                                                                                        Value:                  1.0M,
+                                                                                        MonitorType:            MonitorType.Delta,
+                                                                                        Severity:               Severities.Debug,
+                                                                                        Component:              new Component("BusinessInfo"),
+                                                                                        Variable:               new Variable("BusinessAddress"),
+                                                                                        VariableMonitoringId:   VariableMonitoring_Id.NewRandom,
+                                                                                        Transaction:            false
+                                                                                    )
+                                                                                ]
+                                                       )
+                                                   );
+
+                                    DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
+                                    DebugX.Log(response.ToJSON().ToString());
+
+                                }
+
+                                #endregion
+
 
                                 #region ClearVariableMonitoring
 
@@ -3188,6 +3221,16 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                  1, // 0 is not allowed!
                                                                  OCPPv2_1.UpdateTypes.Full,
                                                                  [
+
+                                                                     new OCPPv2_1.AuthorizationData(
+                                                                         new OCPPv2_1.IdToken(
+                                                                             Value:   "0412E134BB2A81",
+                                                                             Type:    OCPPv2_1.IdTokenType.ISO14443
+                                                                         ),
+                                                                         new OCPPv2_1.IdTokenInfo(
+                                                                             OCPPv2_1.AuthorizationStatus.Accepted
+                                                                         )
+                                                                     ),
 
                                                                      new OCPPv2_1.AuthorizationData(
                                                                          new OCPPv2_1.IdToken(
@@ -4188,7 +4231,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region RequestCustomerInformation
 
                                 //   RequestCustomerInformation $RFIDId
-                                if (command.Equals("RequestCustomerInformation", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 1)
+                                if (command.Equals("RequestCustomerInformation", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                                 {
 
                                     var response = await testCSMSv2_1.RequestCustomerInformation(

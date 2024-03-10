@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>cloud.charging.open.protocols.OCPPv2_1.LocalController</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="HTTPAPI\DownloadAPI\HTTPRoot\LICENSE.txt" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.js.map" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.html" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
+    <None Remove="TestNetworkingNode.cs~RF349fda6f.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPAPI\DownloadAPI\HTTPRoot\LICENSE.txt" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.js.map" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\template.html" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
+    <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
+    <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="tsc" />
+  </Target>
+
+</Project>

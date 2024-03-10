@@ -59,13 +59,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,         Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,  Is.Not.Null);
+                Assert.That(localController,         Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,  Is.Not.Null);
                 Assert.That(chargingStation,        Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 chargingStation        is not null)
             {
 
@@ -75,12 +75,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesReceived  = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnResetResponsesReceived        = new ConcurrentList<ResetResponse>();
 
-                networkingNode.OCPP.OUT.OnResetRequestSent             += (timestamp, sender, resetRequest) => {
+                localController.OCPP.OUT.OnResetRequestSent             += (timestamp, sender, resetRequest) => {
                     nnResetRequestsSent.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.OUT.OnJSONMessageRequestSent       += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.OUT.OnJSONMessageRequestSent       += (timestamp, sender, jsonRequestMessage) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -90,19 +90,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN. OnJSONMessageResponseReceived  += (timestamp, sender, jsonResponseMessage) => {
+                localController.OCPP.IN. OnJSONMessageResponseReceived  += (timestamp, sender, jsonResponseMessage) => {
                     nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN. OnResetResponseReceived        += (timestamp, sender, resetRequest, resetResponse, runtime) => {
+                localController.OCPP.IN. OnResetResponseReceived        += (timestamp, sender, resetRequest, resetResponse, runtime) => {
                     nnResetResponsesReceived.      TryAdd(resetResponse);
                     return Task.CompletedTask;
                 };
 
 
                 var resetType  = ResetType.Immediate;
-                var response   = await networkingNode.Reset(
+                var response   = await localController.Reset(
                                            DestinationNodeId:  chargingStation.Id,
                                            ResetType:          resetType
                                        );
@@ -115,8 +115,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     var nnResetRequest = nnResetRequestsSent.First();
                     Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
                     Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
-                    Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));
-                    Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(localController.Id));
+                    Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(localController.Id));
                     Assert.That(nnResetRequest.ResetType,               Is.EqualTo(resetType));
 
                     Assert.That(nnResetRequest.Signatures.Any(),        Is.True, "The outgoing Reset request is not signed!");
@@ -172,13 +172,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,         Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,  Is.Not.Null);
+                Assert.That(localController,         Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,  Is.Not.Null);
                 Assert.That(chargingStation,        Is.Not.Null);
             });
 
-            if (networkingNode         is not null &&
-                nnOCPPWebSocketServer  is not null &&
+            if (localController         is not null &&
+                lcOCPPWebSocketServer  is not null &&
                 chargingStation        is not null)
             {
 
@@ -188,12 +188,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesReceived   = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
 
-                networkingNode.OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, dataTransferRequest) => {
+                localController.OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, dataTransferRequest) => {
                     nnDataTransferRequestsSent.     TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.OUT.OnJSONMessageRequestSent       += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.OUT.OnJSONMessageRequestSent       += (timestamp, sender, jsonRequestMessage) => {
                     nnJSONMessageRequestsSent.      TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -203,12 +203,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN. OnJSONMessageResponseReceived  += (timestamp, sender, jsonResponseMessage) => {
+                localController.OCPP.IN. OnJSONMessageResponseReceived  += (timestamp, sender, jsonResponseMessage) => {
                     nnJSONResponseMessagesReceived. TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN. OnDataTransferResponseReceived += (timestamp, sender, dataTransferRequest, resetResponse, runtime) => {
+                localController.OCPP.IN. OnDataTransferResponseReceived += (timestamp, sender, dataTransferRequest, resetResponse, runtime) => {
                     nnDataTransferResponsesReceived.TryAdd(resetResponse);
                     return Task.CompletedTask;
                 };
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var vendorId   = Vendor_Id. GraphDefined;
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!";
-                var response   = await networkingNode.TransferData(
+                var response   = await localController.TransferData(
                                            DestinationNodeId:   chargingStation.Id,
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
@@ -233,8 +233,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     var nnDataTransferRequest = nnDataTransferRequestsSent.First();
                     Assert.That(nnDataTransferRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
                     Assert.That(nnDataTransferRequest.NetworkPath.Length,      Is.EqualTo(1));
-                    Assert.That(nnDataTransferRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));
-                    Assert.That(nnDataTransferRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnDataTransferRequest.NetworkPath.Source,      Is.EqualTo(localController.Id));
+                    Assert.That(nnDataTransferRequest.NetworkPath.Last,        Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferRequest.VendorId,                Is.EqualTo(vendorId));
                     Assert.That(nnDataTransferRequest.MessageId,               Is.EqualTo(messageId));
                     Assert.That(nnDataTransferRequest.Data?.ToString(),        Is.EqualTo(data));

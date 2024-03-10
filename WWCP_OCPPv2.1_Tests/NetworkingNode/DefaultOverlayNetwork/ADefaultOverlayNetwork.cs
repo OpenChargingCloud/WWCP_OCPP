@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.LocalController;
 
 #endregion
 
@@ -35,8 +36,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 {
 
     /// <summary>
-    /// An OCPP Overlay Network consisting of a charging station connected to a networking node using normal networking mode and
-    /// the networking node connected to the CSMS using the networking extensions.
+    /// An OCPP Overlay Network consisting of a charging station connected to a local controller using normal networking mode and
+    /// the local controller connected to the CSMS using the networking extensions.
     /// </summary>
     public abstract class ADefaultOverlayNetwork
     {
@@ -61,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
         // -------------------------------------------------------------------------------------------------------
 
-        protected TestNetworkingNode?           networkingNode;
+        protected TestLocalController?          localController;
 
-        protected OCPPWebSocketServer?          nnOCPPWebSocketServer;
+        protected OCPPWebSocketServer?          lcOCPPWebSocketServer;
 
         protected List<LogJSONRequest>          networkingNodeWebSocketJSONMessagesReceived              = [];
         protected List<LogDataJSONResponse>     networkingNodeWebSocketJSONMessageResponsesSent          = [];
@@ -75,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         protected List<LogBinaryRequest>        networkingNodeWebSocketBinaryMessagesSent                = [];
         protected List<LogDataBinaryResponse>   networkingNodeWebSocketBinaryMessageResponsesReceived    = [];
 
-        protected KeyPair?                      networkingNodeKeyPair;
+        protected KeyPair?                      localControllerKeyPair;
 
         // -------------------------------------------------------------------------------------------------------
 
@@ -182,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             #region Create the Networking Node
 
-            networkingNode = new TestNetworkingNode(
+            localController = new TestLocalController(
                                  Id:                      NetworkingNode_Id.Parse("nn01"),
                                  VendorName:              "GraphDefined OEM #1",
                                  Model:                   "VCP.1",
@@ -199,43 +200,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                                  DNSClient:               dnsClient
                              );
 
-            Assert.That(networkingNode, Is.Not.Null);
+            Assert.That(localController, Is.Not.Null);
 
             #region Define signature policy
 
-            networkingNodeKeyPair = KeyPair.GenerateKeys()!;
+            localControllerKeyPair = KeyPair.GenerateKeys()!;
 
-            networkingNode.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
-                                                                    KeyPair:                 networkingNodeKeyPair!,
+            localController.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
+                                                                    KeyPair:                 localControllerKeyPair!,
                                                                     UserIdGenerator:         (signableMessage) => "nn001",
                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a networking node test!"),
                                                                     TimestampGenerator:      (signableMessage) => Timestamp.Now);
 
-            networkingNode.OCPP.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
+            localController.OCPP.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
                                                                     VerificationRuleActions. VerifyAll);
 
             #endregion
 
             #region Attach HTTP Web Socket Server
 
-            nnOCPPWebSocketServer = networkingNode.AttachWebSocketServer(
+            lcOCPPWebSocketServer = localController.AttachWebSocketServer(
                                         TCPPort:                 IPPort.Parse(9103),
                                         DisableWebSocketPings:   true,
                                         AutoStart:               true
                                     );
 
-            Assert.That(nnOCPPWebSocketServer, Is.Not.Null);
+            Assert.That(lcOCPPWebSocketServer, Is.Not.Null);
 
             #endregion
 
             #region Connect to CSMS
 
-            CSMS.AddOrUpdateHTTPBasicAuth(networkingNode.Id, "1234abcd");
+            CSMS.AddOrUpdateHTTPBasicAuth(localController.Id, "1234abcd");
 
-            var connectionSetupResponse1 = await networkingNode.ConnectWebSocketClient(
+            var connectionSetupResponse1 = await localController.ConnectWebSocketClient(
                                                      NetworkingNodeId:        NetworkingNode_Id.CSMS,
-                                                     RemoteURL:               URL.Parse($"http://127.0.0.1:{csmsWSServer.IPPort}/{networkingNode.Id}"),
-                                                     HTTPAuthentication:      HTTPBasicAuthentication.Create(networkingNode.Id.ToString(), "1234abcd"),
+                                                     RemoteURL:               URL.Parse($"http://127.0.0.1:{csmsWSServer.IPPort}/{localController.Id}"),
+                                                     HTTPAuthentication:      HTTPBasicAuthentication.Create(localController.Id.ToString(), "1234abcd"),
                                                      DisableWebSocketPings:   true,
                                                      NetworkingMode:          OCPP.WebSockets.NetworkingMode.OverlayNetwork
                                                  );
@@ -325,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
             chargingStationKeyPair = KeyPair.GenerateKeys()!;
 
             chargingStation.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
-                                                                KeyPair:                 networkingNodeKeyPair!,
+                                                                KeyPair:                 localControllerKeyPair!,
                                                                 UserIdGenerator:         (signableMessage) => "cs001",
                                                                 DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a networking node test!"),
                                                                 TimestampGenerator:      (signableMessage) => Timestamp.Now);
@@ -337,10 +338,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             #region Connect to networking node
 
-            nnOCPPWebSocketServer.AddOrUpdateHTTPBasicAuth(chargingStation.Id, "1234abcd");
+            lcOCPPWebSocketServer.AddOrUpdateHTTPBasicAuth(chargingStation.Id, "1234abcd");
 
             var connectionSetupResponse2  = await chargingStation.ConnectWebSocket(
-                                                      RemoteURL:               URL.Parse("http://127.0.0.1:" + nnOCPPWebSocketServer.IPPort.ToString() + "/" + chargingStation.Id),
+                                                      RemoteURL:               URL.Parse("http://127.0.0.1:" + lcOCPPWebSocketServer.IPPort.ToString() + "/" + chargingStation.Id),
                                                       HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation.Id.ToString(), "1234abcd"),
                                                       DisableWebSocketPings:   true
                                                   );
@@ -425,12 +426,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
             if (csmsWSServer is not null)
                 await csmsWSServer.  Shutdown();
 
-            if (networkingNode is not null)
-                await networkingNode.Shutdown();
+            if (localController is not null)
+                await localController.Shutdown();
 
             CSMS             = null;
             csmsWSServer     = null;
-            networkingNode   = null;
+            localController   = null;
             chargingStation  = null;
 
         }

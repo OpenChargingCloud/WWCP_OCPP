@@ -37,6 +37,19 @@ namespace cloud.charging.open.protocols.OCPP.NN
         #endregion
 
 
+        // E2E Security Extensions
+
+        #region SecureDataTransfer (Request)
+
+        /// <summary>
+        /// Send the given vendor-specific binary data.
+        /// </summary>
+        /// <param name="Request">A SecureDataTransfer request.</param>
+        Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request);
+
+        #endregion
+
+
         // Networking Overlay Extensions
 
         #region NotifyNetworkTopology        (Request)

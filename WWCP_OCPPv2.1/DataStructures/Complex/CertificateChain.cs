@@ -17,8 +17,9 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using System.Collections;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -258,6 +259,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
+
+
+        public static CertificateChain From(params Certificate[] Certificates)
+            => new (Certificates);
+
+        public static CertificateChain From(params Org.BouncyCastle.X509.X509Certificate[] Certificates)
+            => new(Certificates.Select(Certificate.From));
 
 
 

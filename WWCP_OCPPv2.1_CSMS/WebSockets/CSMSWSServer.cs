@@ -159,33 +159,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectParserDelegate<OCPPv2_1.ChargingStation>?  CustomChargingStationParser    { get; set; }
         public CustomJObjectParserDelegate<OCPP.Signature>?            CustomSignatureParser          { get; set; }
         public CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser         { get; set; }
-        public bool DisableWebSocketPings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public DNSClient? DNSClient => throw new NotImplementedException();
-
-        public string HTTPServiceName => throw new NotImplementedException();
-
-        public IIPAddress IPAddress => throw new NotImplementedException();
-
-        public IPPort IPPort => throw new NotImplementedException();
-
-        public IPSocket IPSocket => throw new NotImplementedException();
-
-        public bool IsRunning => throw new NotImplementedException();
-
-        public HashSet<string> SecWebSocketProtocols => throw new NotImplementedException();
-
-        public bool ServerThreadIsBackground => throw new NotImplementedException();
-
-        public ServerThreadNameCreatorDelegate ServerThreadNameCreator => throw new NotImplementedException();
-
-        public ServerThreadPriorityDelegate ServerThreadPrioritySetter => throw new NotImplementedException();
-
-        public TimeSpan? SlowNetworkSimulationDelay { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public IEnumerable<WebSocketServerConnection> WebSocketConnections => throw new NotImplementedException();
-
-        public TimeSpan WebSocketPingEvery { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         #endregion
 

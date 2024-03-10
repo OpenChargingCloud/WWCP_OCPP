@@ -30,6 +30,7 @@ using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1;
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.LocalController;
 
 #endregion
 
@@ -173,7 +174,7 @@ namespace org.GraphDefined.WWCP.OCPP.LocalController
 
             #region Setup OCPP v2.1 Local Controller
 
-            var testLCv2_1 = new TestNetworkingNode(
+            var testLCv2_1 = new TestLocalController(
 
                                  Id:                      NetworkingNode_Id.Parse("OCPPv2.1-LocalController-01"),
 

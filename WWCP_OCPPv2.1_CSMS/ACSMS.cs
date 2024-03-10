@@ -26,6 +26,7 @@ using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json.Linq;
 
 using Org.BouncyCastle.X509;
+using BCx509 = Org.BouncyCastle.X509;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
@@ -43,7 +44,6 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An abstract Charging Station Management System.
+    /// An abstract Charging Station Management System (CSMS).
     /// </summary>
     public abstract class ACSMS : ICSMS,
                                   ICSMSWebSocket,
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public DNSClient  DNSClient                 { get; }
 
         /// <summary>
-        /// Require a HTTP Basic Authentication of all charging boxes.
+        /// Require a HTTP Basic Authentication of all connecting networking nodes/charging stations.
         /// </summary>
         public Boolean    RequireAuthentication     { get; }
 
@@ -146,6 +146,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         public Dictionary<String, Transaction_Id> TransactionIds = [];
+
+
+
+        public AsymmetricCipherKeyPair?  ClientCAKeyPair        { get; }
+        public BCx509.X509Certificate?   ClientCACertificate    { get; }
+
 
         /// <summary>
         /// The enumeration of all signature policies.
@@ -2024,17 +2030,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new central system for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this central system.</param>
-        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
-        public ACSMS(NetworkingNode_Id  Id,
-                     Boolean            RequireAuthentication   = true,
+        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all connecting networking nodes/charging stations.</param>
+        public ACSMS(NetworkingNode_Id         Id,
+                     Boolean                   RequireAuthentication   = true,
 
-                     IPPort?            HTTPUploadPort          = null,
-                     IPPort?            HTTPDownloadPort        = null,
+                     IPPort?                   HTTPUploadPort          = null,
+                     IPPort?                   HTTPDownloadPort        = null,
 
-                     SignaturePolicy?   SignaturePolicy         = null,
+                     AsymmetricCipherKeyPair?  ClientCAKeyPair         = null,
+                     BCx509.X509Certificate?   ClientCACertificate     = null,
 
-                     TimeSpan?          DefaultRequestTimeout   = null,
-                     DNSClient?         DNSClient               = null)
+                     SignaturePolicy?          SignaturePolicy         = null,
+
+                     TimeSpan?                 DefaultRequestTimeout   = null,
+                     DNSClient?                DNSClient               = null)
 
         {
 
@@ -2044,6 +2053,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Id                      = Id;
             this.RequireAuthentication   = RequireAuthentication;
             this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
+
+            this.ClientCAKeyPair         = ClientCAKeyPair;
+            this.ClientCACertificate     = ClientCACertificate;
+
             this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
 
             this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
@@ -4282,80 +4295,143 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                #endregion
+                                                        #endregion
+
 
                 // CSR
                 // CertificateType
 
                 DebugX.Log("OnSignCertificate: " + request.DestinationNodeId);
 
+                Pkcs10CertificationRequest?  parsedCSR       = null;
+                String?                      errorResponse   = null;
 
-                //Pkcs10CertificationRequest? parsedCSR = null;
-                //String? ErrorResponse = null;
+                if (!request.CertificateType.HasValue ||
+                     request.CertificateType.Value == CertificateSigningUse.ChargingStationCertificate)
+                {
 
-                //try
-                //{
+                    try
+                    {
 
-                //    using (var reader = new StringReader(request.CSR))
-                //    {
-                //        var pemReader = new PemReader(reader);
-                //        parsedCSR = (Pkcs10CertificationRequest)pemReader.ReadObject();
-                //    }
+                        using (var reader = new StringReader(request.CSR))
+                        {
+                            var pemReader = new PemReader(reader);
+                            parsedCSR     = (Pkcs10CertificationRequest) pemReader.ReadObject();
+                        }
 
-                //} catch (Exception e)
-                //{
-                //    ErrorResponse = e.Message;
-                //}
+                    } catch (Exception e)
+                    {
+                        errorResponse = "The certificate signing request could not be parsed: " + e.Message;
+                    }
 
-                //if (!parsedCSR.Verify())
-                //{
-                //    ErrorResponse = "The certificate signing request could not be verified!";
-                //}
+                    if (parsedCSR is null)
+                        errorResponse = "The certificate signing request could not be parsed!";
+
+                    else
+                    {
+
+                        if (!parsedCSR.Verify())
+                            errorResponse = "The certificate signing request could not be verified!";
+
+                        else if (ClientCAKeyPair     is null)
+                            errorResponse = "No ClientCA key pair available!";
+
+                        else if (ClientCACertificate is null)
+                            errorResponse = "No ClientCA certificcate available!";
+
+                        else
+                        {
+
+                            #region Sign the client certificate (background process!)
+
+                            //ToDo: Find better ways to do this!
+                            var delayedResponse = Task.Run(async () => {
+
+                                try
+                                {
+
+                                    await Task.Delay(100);
+
+                                    var secureRandom  = new SecureRandom();
+                                    var now           = Timestamp.Now;
+
+                                    var certificateGenerator = new X509V3CertificateGenerator();
+                                    certificateGenerator.SetIssuerDN    (ClientCACertificate.SubjectDN);
+                                    certificateGenerator.SetSubjectDN   (parsedCSR.GetCertificationRequestInfo().Subject);
+                                    certificateGenerator.SetPublicKey   (parsedCSR.GetPublicKey());
+                                    certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(Int64.MaxValue), secureRandom));
+                                    certificateGenerator.SetNotBefore   (now.AddDays(-1));
+                                    certificateGenerator.SetNotAfter    (now.AddMonths(3));
+
+                                    certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                                         critical: true,
+                                                                         new KeyUsage(
+                                                                             KeyUsage.NonRepudiation |
+                                                                             KeyUsage.DigitalSignature |
+                                                                             KeyUsage.KeyEncipherment
+                                                                         ));
+
+                                    certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage,
+                                                                         critical: true,
+                                                                         new ExtendedKeyUsage(KeyPurposeID.id_kp_clientAuth));
+
+                                    var newClientCertificate = certificateGenerator.Generate(
+                                                                   new Asn1SignatureFactory(
+                                                                       "SHA256WithRSAEncryption",
+                                                                       ClientCAKeyPair.Private,
+                                                                       secureRandom
+                                                                   )
+                                                               );
 
 
-                //var serialNumber  = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(Int64.MaxValue), new SecureRandom());
-                //var issuer        = caCertificate.SubjectDN;
-                //var subject       = parsedCSR.GetCertificationRequestInfo().Subject;
-                //var notBefore     = DateTime.UtcNow.Date;
-                //var notAfter      = notBefore.AddYears(1); // Valid for 1 year
-
-                //X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
-                //certGen.SetSerialNumber(serialNumber);
-                //certGen.SetIssuerDN(issuer);
-                //certGen.SetNotBefore(notBefore);
-                //certGen.SetNotAfter(notAfter);
-                //certGen.SetSubjectDN(subject);
-                //certGen.SetPublicKey(parsedCSR.GetPublicKey());
-                //certGen.SetSignatureAlgorithm("SHA256WithRSAEncryption");
-
-                //// Add extensions here - for example, basic constraints
-                //certGen.AddExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(false));
-
-                //// Sign the certificate using the CA's private key
-                //ISignatureFactory sigGen = new Asn1SignatureFactory("SHA256WithRSAEncryption", caPrivateKey.Private, new SecureRandom());
-
-                //// Sign the CSR and generate a certificate
-                //X509Certificate signedCertificate = certGen.Generate(sigGen);
+                                    await Task.Delay(3000);
 
 
+                                    await SendSignedCertificate(
+                                              new CertificateSignedRequest(
+                                                  request.NetworkPath.Source,
+                                                  CertificateChain.From(ClientCACertificate, newClientCertificate),
+                                                  request.CertificateType ?? CertificateSigningUse.ChargingStationCertificate
+                                              )
+                                          );
 
-                //String? signedCertPem = null;
+                                } catch (Exception e)
+                                {
+                                    DebugX.LogException(e, "The client certificate could not be signed!");
+                                }
 
-                //using (var reader = new StringReader(pem))
-                //{
-                //    var pemReader = new PemReader(reader);
-                //    signedCertPem = (Pkcs10CertificationRequest)pemReader.ReadObject();
-                //}
+                            },
+                            cancellationToken);
 
+                            #endregion
 
-                var response = !SignaturePolicy.VerifyRequestMessage(
+                        }
+
+                    }
+
+                }
+                else
+                    errorResponse = $"Invalid CertificateSigningUse: '{request.CertificateType?.ToString() ?? "-"}'!";
+
+                SignCertificateResponse? response = null;
+
+                if (errorResponse != null)
+                     response = new SignCertificateResponse(
+                                    Request:   request,
+                                    Result:    Result.GenericError(
+                                                   errorResponse
+                                               )
+                                );
+
+                else
+                    response = !SignaturePolicy.VerifyRequestMessage(
                                    request,
                                    request.ToJSON(
                                        CustomSignCertificateRequestSerializer,
                                        CustomSignatureSerializer,
                                        CustomCustomDataSerializer
                                    ),
-                                   out var errorResponse
+                                   out errorResponse
                                )
 
                                    ? new SignCertificateResponse(
@@ -4610,10 +4686,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                )
 
                                    ? new GetCertificateStatusResponse(
-                                         Request:              request,
-                                         Result:               Result.SignatureError(
-                                                                   $"Invalid signature(s): {errorResponse}"
-                                                               )
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
                                      )
 
                                    : new GetCertificateStatusResponse(

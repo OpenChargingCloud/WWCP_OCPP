@@ -21,6 +21,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Crypto;
+
 using cloud.charging.open.protocols.OCPP;
 
 #endregion
@@ -29,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A Charging Station Management System for testing.
+    /// A Charging Station Management System (CSMS) for testing.
     /// </summary>
     public class TestCSMS : ACSMS
     {
@@ -45,21 +48,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new central system for testing.
+        /// Create a new Charging Station Management System (CSMS) for testing.
         /// </summary>
-        /// <param name="Id">The unique identification of this central system.</param>
-        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
-        public TestCSMS(NetworkingNode_Id  Id,
+        /// <param name="Id">The unique identification of this charging station management system.</param>
+        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all connecting networking nodes/charging stations.</param>
+        public TestCSMS(NetworkingNode_Id         Id,
 
-                        Boolean            RequireAuthentication   = true,
+                        Boolean                   RequireAuthentication   = true,
 
-                        IPPort?            HTTPUploadPort          = null,
-                        IPPort?            HTTPDownloadPort        = null,
+                        IPPort?                   HTTPUploadPort          = null,
+                        IPPort?                   HTTPDownloadPort        = null,
 
-                        SignaturePolicy?   SignaturePolicy         = null,
+                        AsymmetricCipherKeyPair?  ClientCAKeyPair         = null,
+                        X509Certificate?          ClientCACertificate     = null,
 
-                        TimeSpan?          DefaultRequestTimeout   = null,
-                        DNSClient?         DNSClient               = null)
+                        SignaturePolicy?          SignaturePolicy         = null,
+
+                        TimeSpan?                 DefaultRequestTimeout   = null,
+                        DNSClient?                DNSClient               = null)
 
             : base(Id,
 
@@ -67,6 +73,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    HTTPUploadPort,
                    HTTPDownloadPort,
+
+                   ClientCAKeyPair,
+                   ClientCACertificate,
 
                    SignaturePolicy,
 

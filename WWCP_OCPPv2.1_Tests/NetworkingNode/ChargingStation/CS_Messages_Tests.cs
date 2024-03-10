@@ -85,8 +85,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
             Assert.Multiple(() => {
                 Assert.That(testCSMS01,                       Is.Not.Null);
                 Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(networkingNode1,                  Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
+                Assert.That(localController1,                  Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
                 Assert.That(chargingStation3,                 Is.Not.Null);
@@ -94,8 +94,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
 
             if (testCSMS01                     is not null &&
                 testBackendWebSockets01        is not null &&
-                networkingNode1                is not null &&
-                nnOCPPWebSocketServer01 is not null &&
+                localController1                is not null &&
+                lcOCPPWebSocketServer01 is not null &&
                 chargingStation1               is not null &&
                 chargingStation2               is not null &&
                 chargingStation3               is not null)
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.OCPP.FORWARD.OnBootNotificationRequestLogging += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
+                localController1.OCPP.FORWARD.OnBootNotificationRequestLogging += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
                     nnBootNotificationRequestsFWD.TryAdd(new Tuple<BootNotificationRequest, ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>(bootNotificationRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     Assert.That(csmsBootNotificationRequests.  First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Length,   Is.EqualTo(2));
                     Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
-                    Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
+                    Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Last,     Is.EqualTo(localController1. Id));
                     Assert.That(csmsBootNotificationRequests.  First().Reason,               Is.EqualTo(reason));
 
                     Assert.That(nnBootNotificationRequestsIN.  First().ChargingStation,      Is.Not.Null);
@@ -213,8 +213,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
             Assert.Multiple(() => {
                 Assert.That(testCSMS01,                       Is.Not.Null);
                 Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(networkingNode1,                  Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
+                Assert.That(localController1,                  Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
                 Assert.That(chargingStation3,                 Is.Not.Null);
@@ -222,8 +222,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
 
             if (testCSMS01                     is not null &&
                 testBackendWebSockets01        is not null &&
-                networkingNode1                is not null &&
-                nnOCPPWebSocketServer01 is not null &&
+                localController1                is not null &&
+                lcOCPPWebSocketServer01 is not null &&
                 chargingStation1               is not null &&
                 chargingStation2               is not null &&
                 chargingStation3               is not null)
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.OCPP.FORWARD.OnBinaryDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
+                localController1.OCPP.FORWARD.OnBinaryDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
                     nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(2));
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
-                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(localController1. Id));
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().VendorId,             Is.EqualTo(vendorId));
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().MessageId,            Is.EqualTo(messageId));
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().Data,                 Is.EqualTo(data));

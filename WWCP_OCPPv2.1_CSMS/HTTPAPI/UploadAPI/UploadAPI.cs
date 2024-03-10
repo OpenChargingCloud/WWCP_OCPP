@@ -351,6 +351,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               URLPathPrefix + "{file}",
                               HTTPDelegate: async request => {
 
+//ToDo: Some charging stations send something like the following...
+
+// POST /uploads/20240306234447AvK8z7hWESrW8Knh8Wv9G2185vAC/ HTTP/1.1
+// Host: api1.ocpp.charging.cloud:3502
+// Accept: */*
+// Accept-Encoding: deflate, gzip
+// Content-Length: 529297
+// Content-Type: multipart/form-data; boundary=------------------------941d61f54d73e8ac
+// 
+// --------------------------941d61f54d73e8ac
+// Content-Disposition: form-data; name=""; filename="AWLU770001T2P1-D2205A796A1-20240306234446.zip"
+// Content-Type: application/zip
+// 
+// PK
+
+
                                   try
                                   {
 

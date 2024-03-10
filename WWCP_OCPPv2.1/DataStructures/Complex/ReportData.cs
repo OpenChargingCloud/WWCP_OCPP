@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -91,6 +93,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.VariableAttributes       = VariableAttributes.Distinct();
             this.VariableCharacteristics  = VariableCharacteristics;
 
+            unchecked
+            {
+
+                hashCode = this.Component.               GetHashCode()       * 11 ^
+                           this.Variable.                GetHashCode()       *  7 ^
+                           this.VariableAttributes.      CalcHashCode()      *  5 ^
+                          (this.VariableCharacteristics?.GetHashCode() ?? 0) *  3 ^
+                           base.                         GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -149,8 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var reportData,
                          out var errorResponse,
-                         CustomReportDataParser) &&
-                reportData is not null)
+                         CustomReportDataParser))
             {
                 return reportData;
             }
@@ -172,9 +184,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ReportData">The parsed report data.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject          JSON,
-                                       out ReportData?  ReportData,
-                                       out String?      ErrorResponse)
+        public static Boolean TryParse(JObject                               JSON,
+                                       [NotNullWhen(true)]  out ReportData?  ReportData,
+                                       [NotNullWhen(false)] out String?      ErrorResponse)
 
             => TryParse(JSON,
                         out ReportData,
@@ -190,8 +202,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomReportDataParser">A delegate to parse custom report data JSON objects.</param>
         public static Boolean TryParse(JObject                                   JSON,
-                                       out ReportData?                           ReportData,
-                                       out String?                               ErrorResponse,
+                                       [NotNullWhen(true)]  out ReportData?      ReportData,
+                                       [NotNullWhen(false)] out String?          ErrorResponse,
                                        CustomJObjectParserDelegate<ReportData>?  CustomReportDataParser)
         {
 
@@ -206,8 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              "component",
                                              OCPPv2_1.Component.TryParse,
                                              out Component? Component,
-                                             out ErrorResponse) ||
-                     Component is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -220,8 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              "variable",
                                              OCPPv2_1.Variable.TryParse,
                                              out Variable? Variable,
-                                             out ErrorResponse) ||
-                     Variable is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -270,11 +280,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ReportData = new ReportData(Component,
-                                            Variable,
-                                            VariableAttributes,
-                                            VariableCharacteristics,
-                                            CustomData);
+                ReportData = new ReportData(
+                                 Component,
+                                 Variable,
+                                 VariableAttributes,
+                                 VariableCharacteristics,
+                                 CustomData
+                             );
 
                 if (CustomReportDataParser is not null)
                     ReportData = CustomReportDataParser(JSON,
@@ -434,24 +446,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Component.               GetHashCode()       * 11 ^
-                       Variable.                GetHashCode()       *  7 ^
-                       VariableAttributes.      CalcHashCode()      *  5 ^
-                      (VariableCharacteristics?.GetHashCode() ?? 0) *  3 ^
-
-                       base.                    GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

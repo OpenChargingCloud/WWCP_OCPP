@@ -52,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyMonitoringReport WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                OnNotifyMonitoringReportWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                       OnNotifyMonitoringReportWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyMonitoringReport request was received.
         /// </summary>
-        public event OnNotifyMonitoringReportRequestReceivedDelegate?     OnNotifyMonitoringReportRequestReceived;
+        public event OnNotifyMonitoringReportRequestReceivedDelegate?    OnNotifyMonitoringReportRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifyMonitoringReport was received.
         /// </summary>
-        public event OnNotifyMonitoringReportDelegate?            OnNotifyMonitoringReport;
+        public event OnNotifyMonitoringReportDelegate?                   OnNotifyMonitoringReport;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyMonitoringReport was sent.
         /// </summary>
-        public event OnNotifyMonitoringReportResponseSentDelegate?    OnNotifyMonitoringReportResponseSent;
+        public event OnNotifyMonitoringReportResponseSentDelegate?       OnNotifyMonitoringReportResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyMonitoringReport was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnNotifyMonitoringReportWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?           OnNotifyMonitoringReportWSResponse;
 
         #endregion
 
@@ -118,8 +118,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?      OCPPResponse        = null;
+            OCPP_JSONRequestErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
@@ -138,9 +138,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     {
 
                         OnNotifyMonitoringReportRequestReceived?.Invoke(Timestamp.Now,
-                                                                this,
-                                                                Connection,
-                                                                request);
+                                                                        this,
+                                                                        Connection,
+                                                                        request);
 
                     }
                     catch (Exception e)
@@ -179,11 +179,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     {
 
                         OnNotifyMonitoringReportResponseSent?.Invoke(Timestamp.Now,
-                                                                 this,
-                                                                 Connection,
-                                                                 request,
-                                                                 response,
-                                                                 response.Runtime);
+                                                                     this,
+                                                                     Connection,
+                                                                     request,
+                                                                     response,
+                                                                     response.Runtime);
 
                     }
                     catch (Exception e)
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             return new Tuple<OCPP_JSONResponseMessage?,
                              OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+                                                            OCPPErrorResponse);
 
         }
 

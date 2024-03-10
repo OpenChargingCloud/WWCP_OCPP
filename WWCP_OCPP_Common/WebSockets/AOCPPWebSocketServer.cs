@@ -773,6 +773,9 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
             #endregion
 
+
+            //ToDo: This might be a DOS attack vector!
+
             #region ...try to get the NetworkingNodeId from the HTTP request path suffix
 
             else

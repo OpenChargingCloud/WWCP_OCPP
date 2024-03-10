@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
     /// <summary>
     /// Charging station test defaults.
     /// </summary>
-    public abstract class AChargingStationTests : ANetworkingNodeTests
+    public abstract class AChargingStationTests : ALocalControllerTests
     {
 
         #region Data
@@ -140,14 +140,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
 
             if (testBackendWebSockets01 is not null ||
-                nnOCPPWebSocketServer01 is not null)
+                lcOCPPWebSocketServer01 is not null)
             {
 
                 testCSMS01.              AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
-                nnOCPPWebSocketServer01?.AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
+                lcOCPPWebSocketServer01?.AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
 
                 var response = chargingStation1.ConnectWebSocket(
-                                   RemoteURL:               URL.Parse("http://127.0.0.1:" + (nnOCPPWebSocketServer01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
+                                   RemoteURL:               URL.Parse("http://127.0.0.1:" + (lcOCPPWebSocketServer01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
                                    HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation1Id.ToString(), "1234abcd"),
                                    DisableWebSocketPings:   true
                                ).Result;
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                     ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                                   response.HTTPStatusCode);
 
-                    if (nnOCPPWebSocketServer01 is not null)
+                    if (lcOCPPWebSocketServer01 is not null)
                         ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API",   response.Server);
                     else
                         ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",              response.Server);

@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.CS2;
+using cloud.charging.open.protocols.OCPPv2_1.LC;
 
 #endregion
 
@@ -55,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.BootNotificationResponse>
 
-            SendBootNotification(this INetworkingNode          NetworkingNode,
+            SendBootNotification(this IChargingStation2        NetworkingNode,
 
                                  BootReason                    BootReason,
 
@@ -124,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(this INetworkingNode          NetworkingNode,
+            SendFirmwareStatusNotification(this IBaseNetworkingNode          NetworkingNode,
 
                                            FirmwareStatus                Status,
                                            Int64?                        UpdateFirmwareRequestId   = null,
@@ -188,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.PublishFirmwareStatusNotificationResponse>
 
-            SendPublishFirmwareStatusNotification(this INetworkingNode          NetworkingNode,
+            SendPublishFirmwareStatusNotification(this IBaseNetworkingNode          NetworkingNode,
 
                                                   PublishFirmwareStatus         Status,
                                                   Int32?                        PublishFirmwareStatusNotificationRequestId,
@@ -251,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.HeartbeatResponse>
 
-            SendHeartbeat(this INetworkingNode          NetworkingNode,
+            SendHeartbeat(this IBaseNetworkingNode          NetworkingNode,
 
                           CustomData?                   CustomData          = null,
 
@@ -310,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyEventResponse>
 
-            NotifyEvent(this INetworkingNode          NetworkingNode,
+            NotifyEvent(this IBaseNetworkingNode          NetworkingNode,
 
                         DateTime                      GeneratedAt,
                         UInt32                        SequenceNumber,
@@ -378,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(this INetworkingNode          NetworkingNode,
+            SendSecurityEventNotification(this IBaseNetworkingNode          NetworkingNode,
 
                                           SecurityEventType             Type,
                                           DateTime                      Timestamp,
@@ -446,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyReportResponse>
 
-            NotifyReport(this INetworkingNode          NetworkingNode,
+            NotifyReport(this IBaseNetworkingNode          NetworkingNode,
 
                          Int32                         NotifyReportRequestId,
                          UInt32                        SequenceNumber,
@@ -518,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyMonitoringReportResponse>
 
-            NotifyMonitoringReport(this INetworkingNode          NetworkingNode,
+            NotifyMonitoringReport(this IBaseNetworkingNode          NetworkingNode,
 
                                    Int32                         NotifyMonitoringReportRequestId,
                                    UInt32                        SequenceNumber,
@@ -587,7 +589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.LogStatusNotificationResponse>
 
-            SendLogStatusNotification(this INetworkingNode          NetworkingNode,
+            SendLogStatusNotification(this IBaseNetworkingNode          NetworkingNode,
 
                                       UploadLogStatus               Status,
                                       Int32?                        LogRequestId        = null,
@@ -652,7 +654,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.SignCertificateResponse>
 
-            SendCertificateSigningRequest(this INetworkingNode          NetworkingNode,
+            SendCertificateSigningRequest(this IBaseNetworkingNode          NetworkingNode,
 
                                           String                        CSR,
                                           Int32                         SignCertificateRequestId,
@@ -720,7 +722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.Get15118EVCertificateResponse>
 
-            Get15118EVCertificate(this INetworkingNode          NetworkingNode,
+            Get15118EVCertificate(this IBaseNetworkingNode          NetworkingNode,
 
                                   ISO15118SchemaVersion         ISO15118SchemaVersion,
                                   CertificateAction             CertificateAction,
@@ -788,7 +790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.GetCertificateStatusResponse>
 
-            GetCertificateStatus(this INetworkingNode          NetworkingNode,
+            GetCertificateStatus(this IBaseNetworkingNode          NetworkingNode,
 
                                  OCSPRequestData               OCSPRequestData,
 
@@ -850,7 +852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.GetCRLResponse>
 
-            GetCRLRequest(this INetworkingNode          NetworkingNode,
+            GetCRLRequest(this IBaseNetworkingNode          NetworkingNode,
 
                           UInt32                        GetCRLRequestId,
                           CertificateHashData           CertificateHashData,
@@ -914,7 +916,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.ReservationStatusUpdateResponse>
 
-            SendReservationStatusUpdate(this INetworkingNode          NetworkingNode,
+            SendReservationStatusUpdate(this IBaseNetworkingNode          NetworkingNode,
 
                                         Reservation_Id                ReservationId,
                                         ReservationUpdateStatus       ReservationUpdateStatus,
@@ -978,7 +980,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.AuthorizeResponse>
 
-            Authorize(this INetworkingNode           NetworkingNode,
+            Authorize(this IBaseNetworkingNode           NetworkingNode,
 
                       IdToken                        IdToken,
                       Certificate?                   Certificate                   = null,
@@ -1045,7 +1047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyEVChargingNeedsResponse>
 
-            NotifyEVChargingNeeds(this INetworkingNode          NetworkingNode,
+            NotifyEVChargingNeeds(this IBaseNetworkingNode          NetworkingNode,
 
                                   EVSE_Id                       EVSEId,
                                   ChargingNeeds                 ChargingNeeds,
@@ -1124,7 +1126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.TransactionEventResponse>
 
-            SendTransactionEvent(this INetworkingNode          NetworkingNode,
+            SendTransactionEvent(this IBaseNetworkingNode          NetworkingNode,
 
                                  TransactionEvents             EventType,
                                  DateTime                      Timestamp,
@@ -1213,7 +1215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.StatusNotificationResponse>
 
-            SendStatusNotification(this INetworkingNode          NetworkingNode,
+            SendStatusNotification(this IBaseNetworkingNode          NetworkingNode,
 
                                    EVSE_Id                       EVSEId,
                                    Connector_Id                  ConnectorId,
@@ -1280,7 +1282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.MeterValuesResponse>
 
-            SendMeterValues(this INetworkingNode          NetworkingNode,
+            SendMeterValues(this IBaseNetworkingNode          NetworkingNode,
 
                             EVSE_Id                       EVSEId, // 0 => main power meter; 1 => first EVSE
                             IEnumerable<MeterValue>       MeterValues,
@@ -1344,7 +1346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyChargingLimitResponse>
 
-            NotifyChargingLimit(this INetworkingNode           NetworkingNode,
+            NotifyChargingLimit(this IBaseNetworkingNode           NetworkingNode,
 
                                 ChargingLimit                  ChargingLimit,
                                 IEnumerable<ChargingSchedule>  ChargingSchedules,
@@ -1409,7 +1411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.ClearedChargingLimitResponse>
 
-            SendClearedChargingLimit(this INetworkingNode          NetworkingNode,
+            SendClearedChargingLimit(this IBaseNetworkingNode          NetworkingNode,
 
                                      ChargingLimitSource           ChargingLimitSource,
                                      EVSE_Id?                      EVSEId,
@@ -1475,7 +1477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.ReportChargingProfilesResponse>
 
-            ReportChargingProfiles(this INetworkingNode          NetworkingNode,
+            ReportChargingProfiles(this IBaseNetworkingNode          NetworkingNode,
 
                                    Int32                         ReportChargingProfilesRequestId,
                                    ChargingLimitSource           ChargingLimitSource,
@@ -1547,7 +1549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyEVChargingScheduleResponse>
 
-            NotifyEVChargingSchedule(this INetworkingNode          NetworkingNode,
+            NotifyEVChargingSchedule(this IBaseNetworkingNode          NetworkingNode,
 
                                      DateTime                      TimeBase,
                                      EVSE_Id                       EVSEId,
@@ -1616,7 +1618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyPriorityChargingResponse>
 
-            NotifyPriorityCharging(this INetworkingNode          NetworkingNode,
+            NotifyPriorityCharging(this IBaseNetworkingNode          NetworkingNode,
 
                                    Transaction_Id                TransactionId,
                                    Boolean                       Activated,
@@ -1678,7 +1680,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.PullDynamicScheduleUpdateResponse>
 
-            PullDynamicScheduleUpdate(this INetworkingNode          NetworkingNode,
+            PullDynamicScheduleUpdate(this IBaseNetworkingNode          NetworkingNode,
 
                                       ChargingProfile_Id            ChargingProfileId,
 
@@ -1741,7 +1743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyDisplayMessagesResponse>
 
-            NotifyDisplayMessages(this INetworkingNode          NetworkingNode,
+            NotifyDisplayMessages(this IBaseNetworkingNode          NetworkingNode,
 
                                   Int32                         NotifyDisplayMessagesRequestId,
                                   IEnumerable<MessageInfo>      MessageInfos,
@@ -1809,7 +1811,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyCustomerInformationResponse>
 
-            NotifyCustomerInformation(this INetworkingNode          NetworkingNode,
+            NotifyCustomerInformation(this IBaseNetworkingNode          NetworkingNode,
 
                                       Int64                         NotifyCustomerInformationRequestId,
                                       String                        Data,
@@ -1885,7 +1887,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ResetResponse>
 
-            Reset(this INetworkingNode          NetworkingNode,
+            Reset(this IBaseNetworkingNode          NetworkingNode,
                   NetworkingNode_Id             DestinationNodeId,
                   ResetType                     ResetType,
                   EVSE_Id?                      EVSEId              = null,
@@ -1951,7 +1953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UpdateFirmwareResponse>
 
-            UpdateFirmware(this INetworkingNode          NetworkingNode,
+            UpdateFirmware(this IBaseNetworkingNode          NetworkingNode,
                            NetworkingNode_Id             DestinationNodeId,
                            Firmware                      Firmware,
                            Int32                         UpdateFirmwareRequestId,
@@ -2020,7 +2022,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.PublishFirmwareResponse>
 
-            PublishFirmware(this INetworkingNode          NetworkingNode,
+            PublishFirmware(this IBaseNetworkingNode          NetworkingNode,
                             NetworkingNode_Id             DestinationNodeId,
                             Int32                         PublishFirmwareRequestId,
                             URL                           DownloadLocation,
@@ -2087,7 +2089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UnpublishFirmwareResponse>
 
-            UnpublishFirmware(this INetworkingNode          NetworkingNode,
+            UnpublishFirmware(this IBaseNetworkingNode          NetworkingNode,
                               NetworkingNode_Id             DestinationNodeId,
                               String                        MD5Checksum,
 
@@ -2147,7 +2149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetBaseReportResponse>
 
-            GetBaseReport(this INetworkingNode          NetworkingNode,
+            GetBaseReport(this IBaseNetworkingNode          NetworkingNode,
                           NetworkingNode_Id             DestinationNodeId,
                           Int64                         GetBaseReportRequestId,
                           ReportBase                    ReportBase,
@@ -2210,7 +2212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetReportResponse>
 
-            GetReport(this INetworkingNode NetworkingNode,
+            GetReport(this IBaseNetworkingNode NetworkingNode,
                       NetworkingNode_Id               DestinationNodeId,
                       Int32                           GetReportRequestId,
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
@@ -2277,7 +2279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetLogResponse>
 
-            GetLog(this INetworkingNode          NetworkingNode,
+            GetLog(this IBaseNetworkingNode          NetworkingNode,
                    NetworkingNode_Id             DestinationNodeId,
                    LogType                       LogType,
                    Int32                         LogRequestId,
@@ -2346,7 +2348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetVariablesResponse>
 
-            SetVariables(this INetworkingNode          NetworkingNode,
+            SetVariables(this IBaseNetworkingNode          NetworkingNode,
                          NetworkingNode_Id             DestinationNodeId,
                          IEnumerable<SetVariableData>  VariableData,
                          DataConsistencyModel?         DataConsistencyModel   = null,
@@ -2407,7 +2409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetVariablesResponse>
 
-            GetVariables(this INetworkingNode          NetworkingNode,
+            GetVariables(this IBaseNetworkingNode          NetworkingNode,
                          NetworkingNode_Id             DestinationNodeId,
                          IEnumerable<GetVariableData>  VariableData,
 
@@ -2466,7 +2468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetMonitoringBaseResponse>
 
-            SetMonitoringBase(this INetworkingNode          NetworkingNode,
+            SetMonitoringBase(this IBaseNetworkingNode          NetworkingNode,
                               NetworkingNode_Id             DestinationNodeId,
                               MonitoringBase                MonitoringBase,
 
@@ -2527,7 +2529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetMonitoringReportResponse>
 
-            GetMonitoringReport(this INetworkingNode              NetworkingNode,
+            GetMonitoringReport(this IBaseNetworkingNode              NetworkingNode,
                                 NetworkingNode_Id                 DestinationNodeId,
                                 Int32                             GetMonitoringReportRequestId,
                                 IEnumerable<MonitoringCriterion>  MonitoringCriteria,
@@ -2590,7 +2592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetMonitoringLevelResponse>
 
-            SetMonitoringLevel(this INetworkingNode          NetworkingNode,
+            SetMonitoringLevel(this IBaseNetworkingNode          NetworkingNode,
                                NetworkingNode_Id             DestinationNodeId,
                                Severities                    Severity,
 
@@ -2649,7 +2651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetVariableMonitoringResponse>
 
-            SetVariableMonitoring(this INetworkingNode            NetworkingNode,
+            SetVariableMonitoring(this IBaseNetworkingNode            NetworkingNode,
                                   NetworkingNode_Id               DestinationNodeId,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
@@ -2708,7 +2710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearVariableMonitoringResponse>
 
-            ClearVariableMonitoring(this INetworkingNode                NetworkingNode,
+            ClearVariableMonitoring(this IBaseNetworkingNode                NetworkingNode,
                                     NetworkingNode_Id                   DestinationNodeId,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
@@ -2768,7 +2770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetNetworkProfileResponse>
 
-            SetNetworkProfile(this INetworkingNode          NetworkingNode,
+            SetNetworkProfile(this IBaseNetworkingNode          NetworkingNode,
                               NetworkingNode_Id             DestinationNodeId,
                               Int32                         ConfigurationSlot,
                               NetworkConnectionProfile      NetworkConnectionProfile,
@@ -2831,7 +2833,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ChangeAvailabilityResponse>
 
-            ChangeAvailability(this INetworkingNode          NetworkingNode,
+            ChangeAvailability(this IBaseNetworkingNode          NetworkingNode,
                                NetworkingNode_Id             DestinationNodeId,
                                OperationalStatus             OperationalStatus,
 
@@ -2895,7 +2897,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.TriggerMessageResponse>
 
-            TriggerMessage(this INetworkingNode          NetworkingNode,
+            TriggerMessage(this IBaseNetworkingNode          NetworkingNode,
                            NetworkingNode_Id             DestinationNodeId,
                            MessageTrigger                RequestedMessage,
                            EVSE?                         EVSE                = null,
@@ -2959,7 +2961,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CertificateSignedResponse>
 
-            SendSignedCertificate(this INetworkingNode          NetworkingNode,
+            SendSignedCertificate(this IBaseNetworkingNode          NetworkingNode,
                                   NetworkingNode_Id             DestinationNodeId,
                                   CertificateChain              CertificateChain,
                                   CertificateSigningUse?        CertificateType     = null,
@@ -3021,7 +3023,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.InstallCertificateResponse>
 
-            InstallCertificate(this INetworkingNode          NetworkingNode,
+            InstallCertificate(this IBaseNetworkingNode          NetworkingNode,
                                NetworkingNode_Id             DestinationNodeId,
                                InstallCertificateUse         CertificateType,
                                Certificate                   Certificate,
@@ -3082,7 +3084,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetInstalledCertificateIdsResponse>
 
-            GetInstalledCertificateIds(this INetworkingNode               NetworkingNode,
+            GetInstalledCertificateIds(this IBaseNetworkingNode               NetworkingNode,
                                        NetworkingNode_Id                  DestinationNodeId,
                                        IEnumerable<GetCertificateIdUse>?  CertificateTypes    = null,
 
@@ -3141,7 +3143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.DeleteCertificateResponse>
 
-            DeleteCertificate(this INetworkingNode          NetworkingNode,
+            DeleteCertificate(this IBaseNetworkingNode          NetworkingNode,
                               NetworkingNode_Id             DestinationNodeId,
                               CertificateHashData           CertificateHashData,
 
@@ -3202,7 +3204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.NotifyCRLResponse>
 
-            NotifyCRLAvailability(this INetworkingNode          NetworkingNode,
+            NotifyCRLAvailability(this IBaseNetworkingNode          NetworkingNode,
                                   NetworkingNode_Id             DestinationNodeId,
                                   Int32                         NotifyCRLRequestId,
                                   NotifyCRLStatus               Availability,
@@ -3265,7 +3267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetLocalListVersionResponse>
 
-            GetLocalListVersion(this INetworkingNode          NetworkingNode,
+            GetLocalListVersion(this IBaseNetworkingNode          NetworkingNode,
                                 NetworkingNode_Id             DestinationNodeId,
 
                                 CustomData?                   CustomData          = null,
@@ -3324,7 +3326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SendLocalListResponse>
 
-            SendLocalList(this INetworkingNode             NetworkingNode,
+            SendLocalList(this IBaseNetworkingNode             NetworkingNode,
                           NetworkingNode_Id                DestinationNodeId,
                           UInt64                           ListVersion,
                           UpdateTypes                      UpdateType,
@@ -3386,7 +3388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearCacheResponse>
 
-            ClearCache(this INetworkingNode          NetworkingNode,
+            ClearCache(this IBaseNetworkingNode          NetworkingNode,
                        NetworkingNode_Id             DestinationNodeId,
 
                        CustomData?                   CustomData          = null,
@@ -3449,7 +3451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ReserveNowResponse>
 
-            ReserveNow(this INetworkingNode          NetworkingNode,
+            ReserveNow(this IBaseNetworkingNode          NetworkingNode,
                        NetworkingNode_Id             DestinationNodeId,
                        Reservation_Id                ReservationId,
                        DateTime                      ExpiryDate,
@@ -3518,7 +3520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CancelReservationResponse>
 
-            CancelReservation(this INetworkingNode          NetworkingNode,
+            CancelReservation(this IBaseNetworkingNode          NetworkingNode,
                               NetworkingNode_Id             DestinationNodeId,
                               Reservation_Id                ReservationId,
 
@@ -3582,7 +3584,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.RequestStartTransactionResponse>
 
-            StartCharging(this INetworkingNode          NetworkingNode,
+            StartCharging(this IBaseNetworkingNode          NetworkingNode,
                           NetworkingNode_Id             DestinationNodeId,
                           RemoteStart_Id                RequestStartTransactionRequestId,
                           IdToken                       IdToken,
@@ -3651,7 +3653,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.RequestStopTransactionResponse>
 
-            StopCharging(this INetworkingNode          NetworkingNode,
+            StopCharging(this IBaseNetworkingNode          NetworkingNode,
                          NetworkingNode_Id             DestinationNodeId,
                          Transaction_Id                TransactionId,
 
@@ -3710,7 +3712,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetTransactionStatusResponse>
 
-            GetTransactionStatus(this INetworkingNode          NetworkingNode,
+            GetTransactionStatus(this IBaseNetworkingNode          NetworkingNode,
                                  NetworkingNode_Id             DestinationNodeId,
                                  Transaction_Id?               TransactionId       = null,
 
@@ -3770,7 +3772,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetChargingProfileResponse>
 
-            SetChargingProfile(this INetworkingNode          NetworkingNode,
+            SetChargingProfile(this IBaseNetworkingNode          NetworkingNode,
                                NetworkingNode_Id             DestinationNodeId,
                                EVSE_Id                       EVSEId,
                                ChargingProfile               ChargingProfile,
@@ -3832,7 +3834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetChargingProfilesResponse>
 
-            GetChargingProfiles(this INetworkingNode          NetworkingNode,
+            GetChargingProfiles(this IBaseNetworkingNode          NetworkingNode,
                                 NetworkingNode_Id             DestinationNodeId,
                                 Int64                         GetChargingProfilesRequestId,
                                 ChargingProfileCriterion      ChargingProfile,
@@ -3896,7 +3898,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearChargingProfileResponse>
 
-            ClearChargingProfile(this INetworkingNode          NetworkingNode,
+            ClearChargingProfile(this IBaseNetworkingNode          NetworkingNode,
                                  NetworkingNode_Id             DestinationNodeId,
                                  ChargingProfile_Id?           ChargingProfileId         = null,
                                  ClearChargingProfile?         ChargingProfileCriteria   = null,
@@ -3959,7 +3961,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetCompositeScheduleResponse>
 
-            GetCompositeSchedule(this INetworkingNode          NetworkingNode,
+            GetCompositeSchedule(this IBaseNetworkingNode          NetworkingNode,
                                  NetworkingNode_Id             DestinationNodeId,
                                  TimeSpan                      Duration,
                                  EVSE_Id                       EVSEId,
@@ -4038,7 +4040,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UpdateDynamicScheduleResponse>
 
-            UpdateDynamicSchedule(this INetworkingNode          NetworkingNode,
+            UpdateDynamicSchedule(this IBaseNetworkingNode          NetworkingNode,
                                   NetworkingNode_Id             DestinationNodeId,
                                   ChargingProfile_Id            ChargingProfileId,
 
@@ -4131,7 +4133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.NotifyAllowedEnergyTransferResponse>
 
-            NotifyAllowedEnergyTransfer(this INetworkingNode             NetworkingNode,
+            NotifyAllowedEnergyTransfer(this IBaseNetworkingNode             NetworkingNode,
                                         NetworkingNode_Id                DestinationNodeId,
                                         IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
@@ -4191,7 +4193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UsePriorityChargingResponse>
 
-            UsePriorityCharging(this INetworkingNode          NetworkingNode,
+            UsePriorityCharging(this IBaseNetworkingNode          NetworkingNode,
                                 NetworkingNode_Id             DestinationNodeId,
                                 Transaction_Id                TransactionId,
                                 Boolean                       Activate,
@@ -4252,7 +4254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UnlockConnectorResponse>
 
-            UnlockConnector(this INetworkingNode          NetworkingNode,
+            UnlockConnector(this IBaseNetworkingNode          NetworkingNode,
                             NetworkingNode_Id             DestinationNodeId,
                             EVSE_Id                       EVSEId,
                             Connector_Id                  ConnectorId,
@@ -4317,7 +4319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.AFRRSignalResponse>
 
-            SendAFRRSignal(this INetworkingNode          NetworkingNode,
+            SendAFRRSignal(this IBaseNetworkingNode          NetworkingNode,
                            NetworkingNode_Id             DestinationNodeId,
                            DateTime                      ActivationTimestamp,
                            AFRR_Signal                   Signal,
@@ -4378,7 +4380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetDisplayMessageResponse>
 
-            SetDisplayMessage(this INetworkingNode          NetworkingNode,
+            SetDisplayMessage(this IBaseNetworkingNode          NetworkingNode,
                               NetworkingNode_Id             DestinationNodeId,
                               MessageInfo                   Message,
 
@@ -4439,7 +4441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetDisplayMessagesResponse>
 
-            GetDisplayMessages(this INetworkingNode             NetworkingNode,
+            GetDisplayMessages(this IBaseNetworkingNode             NetworkingNode,
                                NetworkingNode_Id                DestinationNodeId,
                                Int32                            GetDisplayMessagesRequestId,
                                IEnumerable<DisplayMessage_Id>?  Ids                 = null,
@@ -4503,7 +4505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearDisplayMessageResponse>
 
-            ClearDisplayMessage(this INetworkingNode          NetworkingNode,
+            ClearDisplayMessage(this IBaseNetworkingNode          NetworkingNode,
                                 NetworkingNode_Id             DestinationNodeId,
                                 DisplayMessage_Id             DisplayMessageId,
 
@@ -4562,7 +4564,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CostUpdatedResponse>
 
-            SendCostUpdated(this INetworkingNode          NetworkingNode,
+            SendCostUpdated(this IBaseNetworkingNode          NetworkingNode,
                             NetworkingNode_Id             DestinationNodeId,
                             Decimal                       TotalCost,
                             Transaction_Id                TransactionId,
@@ -4627,7 +4629,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CustomerInformationResponse>
 
-            RequestCustomerInformation(this INetworkingNode          NetworkingNode,
+            RequestCustomerInformation(this IBaseNetworkingNode          NetworkingNode,
                                        NetworkingNode_Id             DestinationNodeId,
                                        Int64                         CustomerInformationRequestId,
                                        Boolean                       Report,
@@ -4701,7 +4703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<DataTransferResponse>
 
-            TransferData(this INetworkingNode          NetworkingNode,
+            TransferData(this IBaseNetworkingNode          NetworkingNode,
 
                          Vendor_Id                     VendorId,
                          Message_Id?                   MessageId           = null,
@@ -4773,7 +4775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<BinaryDataTransferResponse>
 
-            TransferBinaryData(this INetworkingNode          NetworkingNode,
+            TransferBinaryData(this IBaseNetworkingNode          NetworkingNode,
 
                                NetworkingNode_Id             DestinationNodeId,
                                Vendor_Id                     VendorId,
@@ -4835,7 +4837,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPP.CS.GetFileResponse>
 
-            GetFile(this INetworkingNode          NetworkingNode,
+            GetFile(this IBaseNetworkingNode          NetworkingNode,
 
                     NetworkingNode_Id             DestinationNodeId,
                     FilePath                      Filename,
@@ -4902,7 +4904,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPP.CS.SendFileResponse>
 
-            SendFile(this INetworkingNode          NetworkingNode,
+            SendFile(this IBaseNetworkingNode          NetworkingNode,
 
                      NetworkingNode_Id             DestinationNodeId,
                      FilePath                      FileName,
@@ -4976,7 +4978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPP.CS.DeleteFileResponse>
 
-            DeleteFile(this INetworkingNode          NetworkingNode,
+            DeleteFile(this IBaseNetworkingNode          NetworkingNode,
 
                        NetworkingNode_Id             DestinationNodeId,
                        FilePath                      FileName,
@@ -5040,7 +5042,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPP.CS.ListDirectoryResponse>
 
-            ListDirectory(this INetworkingNode          NetworkingNode,
+            ListDirectory(this IBaseNetworkingNode          NetworkingNode,
 
                           NetworkingNode_Id             DestinationNodeId,
                           FilePath                      DirectoryPath,
@@ -5121,7 +5123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetDefaultChargingTariffResponse>
 
-            SetDefaultChargingTariff(this INetworkingNode          NetworkingNode,
+            SetDefaultChargingTariff(this IBaseNetworkingNode          NetworkingNode,
                                      NetworkingNode_Id             DestinationNodeId,
                                      ChargingTariff                ChargingTariff,
                                      IEnumerable<EVSE_Id>?         EVSEIds             = null,
@@ -5181,7 +5183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetDefaultChargingTariffResponse>
 
-            GetDefaultChargingTariff(this INetworkingNode          NetworkingNode,
+            GetDefaultChargingTariff(this IBaseNetworkingNode          NetworkingNode,
                                      NetworkingNode_Id             DestinationNodeId,
                                      IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
@@ -5241,7 +5243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.RemoveDefaultChargingTariffResponse>
 
-            RemoveDefaultChargingTariff(this INetworkingNode          NetworkingNode,
+            RemoveDefaultChargingTariff(this IBaseNetworkingNode          NetworkingNode,
                                         NetworkingNode_Id             DestinationNodeId,
                                         ChargingTariff_Id?            ChargingTariffId    = null,
                                         IEnumerable<EVSE_Id>?         EVSEIds             = null,
@@ -5306,7 +5308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPP.NN.NotifyNetworkTopologyResponse>
 
-            NotifyNetworkTopology(this INetworkingNode          NetworkingNode,
+            NotifyNetworkTopology(this IBaseNetworkingNode          NetworkingNode,
 
                                   NetworkTopologyInformation    NetworkTopologyInformation,
 

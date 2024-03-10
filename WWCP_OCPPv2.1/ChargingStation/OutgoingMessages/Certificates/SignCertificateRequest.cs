@@ -25,11 +25,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 
-using Org.BouncyCastle.Pkcs;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.X509;
-using Org.BouncyCastle.OpenSsl;
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
@@ -280,29 +275,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              out String? CSR,
                                              out ErrorResponse))
                 {
-                    return false;
-                }
-
-                Pkcs10CertificationRequest? parsedCSR = null;
-
-                try
-                {
-
-                    using (var reader = new StringReader(CSR))
-                    {
-                        var pemReader = new PemReader(reader);
-                        parsedCSR = (Pkcs10CertificationRequest)pemReader.ReadObject();
-                    }
-
-                } catch (Exception e)
-                {
-                    ErrorResponse = e.Message;
-                    return false;
-                }
-
-                if (!parsedCSR.Verify())
-                {
-                    ErrorResponse = "The certificate signing request could not be verified!";
                     return false;
                 }
 

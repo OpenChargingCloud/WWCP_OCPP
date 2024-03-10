@@ -34,6 +34,8 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
+using cloud.charging.open.protocols.OCPPv2_1.LC;
+using cloud.charging.open.protocols.OCPPv2_1.LocalController;
 
 #endregion
 
@@ -55,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
         public async Task TestAAA()
         {
 
-            var tn01      = new TestNetworkingNode(
+            var tn01      = new TestLocalController(
                                 NetworkingNode_Id.Parse("NN01"),
                                 "GraphDefined GmbH",
                                 "NN-0001"
@@ -130,21 +132,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
                                                                      ICCID:   "0000",
                                                                      IMSI:    "1111"
                                                                  ),
-                                       EVSEs:                    new[] {
+                                       EVSEs:                    [
                                                                      new ChargingStationEVSE(
                                                                          Id:                  EVSE_Id.Parse(1),
                                                                          AdminStatus:         OperationalStatus.Operative,
                                                                          MeterType:           "MT1",
                                                                          MeterSerialNumber:   "MSN1",
                                                                          MeterPublicKey:      "MPK1",
-                                                                         Connectors:          new[] {
+                                                                         Connectors:          [
                                                                                                   new ChargingStationConnector(
                                                                                                       Id:              Connector_Id.Parse(1),
                                                                                                       ConnectorType:   ConnectorType.sType2
                                                                                                   )
-                                                                                              }
+                                                                                              ]
                                                                      )
-                                                                 },
+                                                                 ],
                                        MeterType:                "Virtual Energy Meter",
                                        MeterSerialNumber:        "SN-EN0001",
                                        MeterPublicKey:           "0xcafebabe",
