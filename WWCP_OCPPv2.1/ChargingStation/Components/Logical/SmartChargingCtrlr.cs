@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Characteristics:  new VariableCharacteristics(
                                           DataType:    DataTypes.MemberList,
-                                          ValuesList:  new[] { "A", "W" }
+                                          ValuesList:  [ "A", "W" ]
                                       ),
 
                     Description:      I18NString.Create("A list of supported quantities for use in a charging schedule.")

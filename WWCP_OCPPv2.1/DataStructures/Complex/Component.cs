@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "ComponentType": {
-        //   "description": "A physical or logical component\r\n",
+        //   "description": "A physical or logical component",
         //   "javaType": "Component",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -131,14 +131,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/EVSEType"
         //     },
         //     "name": {
-        //       "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
-        //       "type": "string",
-        //       "maxLength": 50
+        //       "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //       "type":        "string",
+        //       "maxLength":    50
         //     },
         //     "instance": {
-        //       "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
-        //       "type": "string",
-        //       "maxLength": 50
+        //       "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //       "type":        "string",
+        //       "maxLength":    50
         //     }
         //   },
         //   "required": [
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("name",
                                              "component name",
-                                             out String? Name,
+                                             out var Name,
                                              out ErrorResponse))
                 {
                     return false;

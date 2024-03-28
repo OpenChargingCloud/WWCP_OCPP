@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "ComponentConfigType": {
-        //   "description": "A physical or logical component\r\n",
+        //   "description": "A physical or logical component",
         //   "javaType": "ComponentConfig",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -138,14 +138,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/EVSEType"
         //     },
         //     "name": {
-        //       "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
-        //       "type": "string",
-        //       "maxLength": 50
+        //       "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //       "type":        "string",
+        //       "maxLength":    50
         //     },
         //     "instance": {
-        //       "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
-        //       "type": "string",
-        //       "maxLength": 50
+        //       "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //       "type":        "string",
+        //       "maxLength":    50
         //     }
         //   },
         //   "required": [
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("name",
                                              "component name",
-                                             out String Name,
+                                             out var Name,
                                              out ErrorResponse))
                 {
                     return false;
@@ -336,26 +336,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomComponentConfigSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ComponentConfig>?   CustomComponentConfigSerializer    = null,
-                              CustomJObjectSerializerDelegate<EVSE>?        CustomEVSESerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ComponentConfig>?  CustomComponentConfigSerializer   = null,
+                              CustomJObjectSerializerDelegate<EVSE>?             CustomEVSESerializer              = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer        = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("name",        Name),
+                                 new JProperty("name",         Name),
 
                            Instance is not null
-                               ? new JProperty("instance",    Instance)
+                               ? new JProperty("instance",     Instance)
                                : null,
 
                            EVSE is not null
-                               ? new JProperty("evse",        EVSE.      ToJSON(CustomEVSESerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("evse",         EVSE.      ToJSON(CustomEVSESerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
