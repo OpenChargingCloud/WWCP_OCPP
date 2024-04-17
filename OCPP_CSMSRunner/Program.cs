@@ -1352,7 +1352,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
                                    Id:                      NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
-                                   RequireAuthentication:   true,
+                                   RequireAuthentication:   false,
                                    ClientCAKeyPair:         clientCA_RSA_KeyPair,
                                    ClientCACertificate:     clientCA_RSA_Certificate,
                                    DNSClient :              dnsClient
