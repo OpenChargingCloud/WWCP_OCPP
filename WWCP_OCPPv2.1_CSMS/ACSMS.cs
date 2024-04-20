@@ -2280,31 +2280,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CSMSWSServer AttachWebSocketService(String                               HTTPServerName               = CSMSWSServer.DefaultHTTPServiceName,
-                                                   IIPAddress?                          IPAddress                    = null,
-                                                   IPPort?                              TCPPort                      = null,
-                                                   I18NString?                          Description                  = null,
+        public CSMSWSServer AttachWebSocketService(String                                                          HTTPServerName               = CSMSWSServer.DefaultHTTPServiceName,
+                                                   IIPAddress?                                                     IPAddress                    = null,
+                                                   IPPort?                                                         TCPPort                      = null,
+                                                   I18NString?                                                     Description                  = null,
 
-                                                   Boolean                              DisableWebSocketPings        = false,
-                                                   TimeSpan?                            WebSocketPingEvery           = null,
-                                                   TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                                   Boolean                                                         DisableWebSocketPings        = false,
+                                                   TimeSpan?                                                       WebSocketPingEvery           = null,
+                                                   TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                                   Func<X509Certificate2>?              ServerCertificateSelector    = null,
-                                                   RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
-                                                   LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                                   SslProtocols?                        AllowedTLSProtocols          = null,
-                                                   Boolean?                             ClientCertificateRequired    = null,
-                                                   Boolean?                             CheckCertificateRevocation   = null,
+                                                   Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
+                                                   RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
+                                                   LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
+                                                   SslProtocols?                                                   AllowedTLSProtocols          = null,
+                                                   Boolean?                                                        ClientCertificateRequired    = null,
+                                                   Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                                   ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
-                                                   ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
-                                                   Boolean?                             ServerThreadIsBackground     = null,
-                                                   ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
-                                                   TimeSpan?                            ConnectionTimeout            = null,
-                                                   UInt32?                              MaxClientConnections         = null,
+                                                   ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
+                                                   ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
+                                                   Boolean?                                                        ServerThreadIsBackground     = null,
+                                                   ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
+                                                   TimeSpan?                                                       ConnectionTimeout            = null,
+                                                   UInt32?                                                         MaxClientConnections         = null,
 
-                                                   DNSClient?                           DNSClient                    = null,
-                                                   Boolean                              AutoStart                    = false)
+                                                   DNSClient?                                                      DNSClient                    = null,
+                                                   Boolean                                                         AutoStart                    = false)
         {
 
             var csmsChannelServer = new CSMSWSServer(
@@ -2323,7 +2323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                         ServerCertificateSelector,
                                         ClientCertificateValidator,
-                                        ClientCertificateSelector,
+                                        LocalCertificateSelector,
                                         AllowedTLSProtocols,
                                         ClientCertificateRequired,
                                         CheckCertificateRevocation,
@@ -5353,14 +5353,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                        )
                                      )
 
-                                   : new TransactionEventResponse(
-                                         Request:                  request,
-                                         TotalCost:                null,
-                                         ChargingPriority:         null,
-                                         IdTokenInfo:              null,
-                                         UpdatedPersonalMessage:   null,
-                                         CustomData:               null
-                                     );
+                                     // Plugfest 2024-04 fixes...
+                                   : request.TriggerReason == TriggerReason.Authorized ||
+                                     request.TriggerReason == TriggerReason.RemoteStart
+
+                                         ? new TransactionEventResponse(
+                                               Request:                  request,
+                                               TotalCost:                null,
+                                               ChargingPriority:         null,
+                                               IdTokenInfo:              new IdTokenInfo(
+                                                                             Status:                AuthorizationStatus.Accepted,
+                                                                             CacheExpiryDateTime:   Timestamp.Now + TimeSpan.FromDays(1)
+                                                                         ),
+                                               UpdatedPersonalMessage:   null,
+                                               CustomData:               null
+                                           )
+
+                                         : new TransactionEventResponse(
+                                               Request:                  request,
+                                               TotalCost:                null,
+                                               ChargingPriority:         null,
+                                               IdTokenInfo:              null,
+                                               UpdatedPersonalMessage:   null,
+                                               CustomData:               null
+                                           );
 
                 SignaturePolicy.SignResponseMessage(
                     response,

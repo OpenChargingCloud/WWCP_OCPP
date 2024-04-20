@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -1059,40 +1060,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region InitSOAP(...)
 
-        public async Task InitSOAP(String                               From,
-                                   String                               To,
+        public async Task InitSOAP(String                                                     From,
+                                   String                                                     To,
 
-                                   URL                                  RemoteURL,
-                                   HTTPHostname?                        VirtualHostname              = null,
-                                   String?                              Description                  = null,
-                                   RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
-                                   LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                   X509Certificate?                     ClientCert                   = null,
-                                   SslProtocols?                        TLSProtocol                  = null,
-                                   Boolean?                             PreferIPv4                   = null,
-                                   String?                              HTTPUserAgent                = null,
-                                   HTTPPath?                            URLPathPrefix                = null,
-                                   Tuple<String, String>?               WSSLoginPassword             = null,
-                                   HTTPContentType?                     HTTPContentType              = null,
-                                   TimeSpan?                            RequestTimeout               = null,
-                                   TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
-                                   UInt16?                              MaxNumberOfRetries           = null,
-                                   UInt32?                              InternalBufferSize           = null,
-                                   Boolean                              UseHTTPPipelining            = false,
-                                   String?                              LoggingPath                  = null,
-                                   String?                              LoggingContext               = null,
-                                   LogfileCreatorDelegate?              LogfileCreator               = null,
-                                   Boolean?                             DisableLogging               = false,
-                                   HTTPClientLogger?                    HTTPLogger                   = null,
+                                   URL                                                        RemoteURL,
+                                   HTTPHostname?                                              VirtualHostname              = null,
+                                   String?                                                    Description                  = null,
+                                   RemoteTLSServerCertificateValidationHandler<IHTTPClient>?  RemoteCertificateValidator   = null,
+                                   LocalCertificateSelectionHandler?                          ClientCertificateSelector    = null,
+                                   X509Certificate?                                           ClientCert                   = null,
+                                   SslProtocols?                                              TLSProtocol                  = null,
+                                   Boolean?                                                   PreferIPv4                   = null,
+                                   String?                                                    HTTPUserAgent                = null,
+                                   HTTPPath?                                                  URLPathPrefix                = null,
+                                   Tuple<String, String>?                                     WSSLoginPassword             = null,
+                                   HTTPContentType?                                           HTTPContentType              = null,
+                                   TimeSpan?                                                  RequestTimeout               = null,
+                                   TransmissionRetryDelayDelegate?                            TransmissionRetryDelay       = null,
+                                   UInt16?                                                    MaxNumberOfRetries           = null,
+                                   UInt32?                                                    InternalBufferSize           = null,
+                                   Boolean                                                    UseHTTPPipelining            = false,
+                                   String?                                                    LoggingPath                  = null,
+                                   String?                                                    LoggingContext               = null,
+                                   LogfileCreatorDelegate?                                    LogfileCreator               = null,
+                                   Boolean?                                                   DisableLogging               = false,
+                                   HTTPClientLogger?                                          HTTPLogger                   = null,
 
-                                   String?                              HTTPServerName               = null,
-                                   IPPort?                              TCPPort                      = null,
-                                   String?                              ServiceName                  = null,
-                                   HTTPPath?                            URLPrefix                    = null,
-                                   HTTPContentType?                     ContentType                  = null,
-                                   Boolean                              RegisterHTTPRootService      = true,
-                                   DNSClient?                           DNSClient                    = null,
-                                   Boolean                              AutoStart                    = false)
+                                   String?                                                    HTTPServerName               = null,
+                                   IPPort?                                                    TCPPort                      = null,
+                                   String?                                                    ServiceName                  = null,
+                                   HTTPPath?                                                  URLPrefix                    = null,
+                                   HTTPContentType?                                           ContentType                  = null,
+                                   Boolean                                                    RegisterHTTPRootService      = true,
+                                   DNSClient?                                                 DNSClient                    = null,
+                                   Boolean                                                    AutoStart                    = false)
 
         {
 
@@ -1145,34 +1146,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region ConnectWebSocket(...)
 
-        public async Task<HTTPResponse?> ConnectWebSocket(URL                                  RemoteURL,
-                                                          HTTPHostname?                        VirtualHostname              = null,
-                                                          String?                              Description                  = null,
-                                                          Boolean?                             PreferIPv4                   = null,
-                                                          RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
-                                                          LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                                          X509Certificate?                     ClientCert                   = null,
-                                                          SslProtocols?                        TLSProtocol                  = null,
-                                                          String?                              HTTPUserAgent                = null,
-                                                          IHTTPAuthentication?                 HTTPAuthentication           = null,
-                                                          TimeSpan?                            RequestTimeout               = null,
-                                                          TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
-                                                          UInt16?                              MaxNumberOfRetries           = null,
-                                                          UInt32?                              InternalBufferSize           = null,
+        public async Task<HTTPResponse?> ConnectWebSocket(URL                                                             RemoteURL,
+                                                          HTTPHostname?                                                   VirtualHostname              = null,
+                                                          String?                                                         Description                  = null,
+                                                          Boolean?                                                        PreferIPv4                   = null,
+                                                          RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
+                                                          LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
+                                                          X509Certificate?                                                ClientCert                   = null,
+                                                          SslProtocols?                                                   TLSProtocol                  = null,
+                                                          String?                                                         HTTPUserAgent                = null,
+                                                          IHTTPAuthentication?                                            HTTPAuthentication           = null,
+                                                          TimeSpan?                                                       RequestTimeout               = null,
+                                                          TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay       = null,
+                                                          UInt16?                                                         MaxNumberOfRetries           = null,
+                                                          UInt32?                                                         InternalBufferSize           = null,
 
-                                                          IEnumerable<String>?                 SecWebSocketProtocols        = null,
+                                                          IEnumerable<String>?                                            SecWebSocketProtocols        = null,
 
-                                                          Boolean                              DisableMaintenanceTasks      = false,
-                                                          TimeSpan?                            MaintenanceEvery             = null,
-                                                          Boolean                              DisableWebSocketPings        = false,
-                                                          TimeSpan?                            WebSocketPingEvery           = null,
-                                                          TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                                          Boolean                                                         DisableMaintenanceTasks      = false,
+                                                          TimeSpan?                                                       MaintenanceEvery             = null,
+                                                          Boolean                                                         DisableWebSocketPings        = false,
+                                                          TimeSpan?                                                       WebSocketPingEvery           = null,
+                                                          TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                                          String?                              LoggingPath                  = null,
-                                                          String?                              LoggingContext               = null,
-                                                          LogfileCreatorDelegate?              LogfileCreator               = null,
-                                                          HTTPClientLogger?                    HTTPLogger                   = null,
-                                                          DNSClient?                           DNSClient                    = null)
+                                                          String?                                                         LoggingPath                  = null,
+                                                          String?                                                         LoggingContext               = null,
+                                                          LogfileCreatorDelegate?                                         LogfileCreator               = null,
+                                                          HTTPClientLogger?                                               HTTPLogger                   = null,
+                                                          DNSClient?                                                      DNSClient                    = null)
 
         {
 
@@ -1185,7 +1186,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                             Description,
                                             PreferIPv4,
                                             RemoteCertificateValidator,
-                                            ClientCertificateSelector,
+                                            LocalCertificateSelector,
                                             ClientCert,
                                             TLSProtocol,
                                             HTTPUserAgent,
@@ -1195,7 +1196,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                             MaxNumberOfRetries,
                                             InternalBufferSize,
 
-                                            SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
+                                            SecWebSocketProtocols ?? [ Version.WebSocketSubProtocolId ],
 
                                             DisableMaintenanceTasks,
                                             MaintenanceEvery,
@@ -3012,7 +3013,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
+        public RemoteTLSServerCertificateValidationHandler<IWebSocketClient>? RemoteCertificateValidator => throw new NotImplementedException();
 
         public X509Certificate? ClientCert => throw new NotImplementedException();
 
@@ -3031,6 +3032,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public Boolean UseHTTPPipelining => throw new NotImplementedException();
 
         public HTTPClientLogger? HTTPLogger => throw new NotImplementedException();
+
+        RemoteTLSServerCertificateValidationHandler<IHTTPClient>? IHTTPClient.RemoteCertificateValidator => throw new NotImplementedException();
 
 
 

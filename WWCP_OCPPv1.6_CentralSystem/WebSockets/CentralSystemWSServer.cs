@@ -33,6 +33,7 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using System.Security.Cryptography.X509Certificates;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -120,34 +121,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer(NetworkingNode_Id                    NetworkingNodeId,
+        public CentralSystemWSServer(NetworkingNode_Id                                               NetworkingNodeId,
 
-                                     String                               HTTPServiceName              = DefaultHTTPServiceName,
-                                     IIPAddress?                          IPAddress                    = null,
-                                     IPPort?                              TCPPort                      = null,
-                                     I18NString?                          Description                  = null,
+                                     String                                                          HTTPServiceName              = DefaultHTTPServiceName,
+                                     IIPAddress?                                                     IPAddress                    = null,
+                                     IPPort?                                                         TCPPort                      = null,
+                                     I18NString?                                                     Description                  = null,
 
-                                     Boolean                              RequireAuthentication        = true,
-                                     Boolean                              DisableWebSocketPings        = false,
-                                     TimeSpan?                            WebSocketPingEvery           = null,
-                                     TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                     Boolean                                                         RequireAuthentication        = true,
+                                     Boolean                                                         DisableWebSocketPings        = false,
+                                     TimeSpan?                                                       WebSocketPingEvery           = null,
+                                     TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                     Func<X509Certificate2>?              ServerCertificateSelector    = null,
-                                     RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
-                                     LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                     SslProtocols?                        AllowedTLSProtocols          = null,
-                                     Boolean?                             ClientCertificateRequired    = null,
-                                     Boolean?                             CheckCertificateRevocation   = null,
+                                     Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
+                                     RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
+                                     LocalCertificateSelectionHandler?                               ClientCertificateSelector    = null,
+                                     SslProtocols?                                                   AllowedTLSProtocols          = null,
+                                     Boolean?                                                        ClientCertificateRequired    = null,
+                                     Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                     ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
-                                     ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
-                                     Boolean?                             ServerThreadIsBackground     = null,
-                                     ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
-                                     TimeSpan?                            ConnectionTimeout            = null,
-                                     UInt32?                              MaxClientConnections         = null,
+                                     ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
+                                     ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
+                                     Boolean?                                                        ServerThreadIsBackground     = null,
+                                     ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
+                                     TimeSpan?                                                       ConnectionTimeout            = null,
+                                     UInt32?                                                         MaxClientConnections         = null,
 
-                                     DNSClient?                           DNSClient                    = null,
-                                     Boolean                              AutoStart                    = false)
+                                     DNSClient?                                                      DNSClient                    = null,
+                                     Boolean                                                         AutoStart                    = false)
 
             : base(NetworkingNodeId,
                    [

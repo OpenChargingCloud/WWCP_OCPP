@@ -549,24 +549,24 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                 var certificateGenerator  = new X509V3CertificateGenerator();
                 var subjectDN             = new X509Name("CN=Open Charging Cloud - Root CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany");
 
-                certificateGenerator.SetIssuerDN    (subjectDN); // self-signed
-                certificateGenerator.SetSubjectDN   (subjectDN);
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
-                certificateGenerator.SetPublicKey   (rootCA_ECC_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (subjectDN); // self-signed
+                certificateGenerator.SetSubjectDN    (subjectDN);
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey    (rootCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
-                                                     critical: true,
-                                                     new BasicConstraints(cA: true));
+                certificateGenerator.AddExtension    (X509Extensions.BasicConstraints,
+                                                      critical: true,
+                                                      new BasicConstraints(cA: true));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
-                                                     critical: true,
-                                                     new KeyUsage(
-                                                         KeyUsage.DigitalSignature |
-                                                         KeyUsage.KeyCertSign |
-                                                         KeyUsage.CrlSign
-                                                     ));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,
+                                                      critical: true,
+                                                      new KeyUsage(
+                                                          KeyUsage.DigitalSignature |
+                                                          KeyUsage.KeyCertSign |
+                                                          KeyUsage.CrlSign
+                                                      ));
 
                 rootCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
 
@@ -601,24 +601,24 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                 var certificateGenerator  = new X509V3CertificateGenerator();
                 var subjectDN             = new X509Name("CN=Open Charging Cloud - Root CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany");
 
-                certificateGenerator.SetIssuerDN    (subjectDN); // self-signed
-                certificateGenerator.SetSubjectDN   (subjectDN);
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
-                certificateGenerator.SetPublicKey   (rootCA_RSA_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (subjectDN); // self-signed
+                certificateGenerator.SetSubjectDN    (subjectDN);
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey    (rootCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
-                                                     critical: true,
-                                                     new BasicConstraints(cA: true));
+                certificateGenerator.AddExtension    (X509Extensions.BasicConstraints,
+                                                      critical: true,
+                                                      new BasicConstraints(cA: true));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
-                                                     critical: true,
-                                                     new KeyUsage(
-                                                         KeyUsage.DigitalSignature |
-                                                         KeyUsage.KeyCertSign |
-                                                         KeyUsage.CrlSign
-                                                     ));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,
+                                                      critical: true,
+                                                      new KeyUsage(
+                                                          KeyUsage.DigitalSignature |
+                                                          KeyUsage.KeyCertSign |
+                                                          KeyUsage.CrlSign
+                                                      ));
 
                 rootCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
 
@@ -653,26 +653,26 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Server CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-2));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(+5));
-                certificateGenerator.SetPublicKey   (serverCA_ECC_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=Open Charging Cloud - Server CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays (-2));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddYears(+5));
+                certificateGenerator.SetPublicKey    (serverCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
-                                                     critical: true,
-                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
-                                                     // only end-entity certificates.
-                                                     new BasicConstraints(0));
+                certificateGenerator.AddExtension    (X509Extensions.BasicConstraints,
+                                                      critical: true,
+                                                      // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                      // only end-entity certificates.
+                                                      new BasicConstraints(0));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
-                                                     critical: true,
-                                                     new KeyUsage(
-                                                         KeyUsage.DigitalSignature |
-                                                         KeyUsage.KeyCertSign |
-                                                         KeyUsage.CrlSign
-                                                     ));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,
+                                                      critical: true,
+                                                      new KeyUsage(
+                                                          KeyUsage.DigitalSignature |
+                                                          KeyUsage.KeyCertSign |
+                                                          KeyUsage.CrlSign
+                                                      ));
 
                 serverCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
 
@@ -706,26 +706,26 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_RSA_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Server CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
-                certificateGenerator.SetPublicKey   (serverCA_RSA_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(rootCA_RSA_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=Open Charging Cloud - Server CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey    (serverCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
-                                                     critical: true,
-                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
-                                                     // only end-entity certificates.
-                                                     new BasicConstraints(0));
+                certificateGenerator.AddExtension    (X509Extensions.BasicConstraints,
+                                                      critical: true,
+                                                      // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                      // only end-entity certificates.
+                                                      new BasicConstraints(0));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
-                                                     critical: true,
-                                                     new KeyUsage(
-                                                         KeyUsage.DigitalSignature |
-                                                         KeyUsage.KeyCertSign |
-                                                         KeyUsage.CrlSign
-                                                     ));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,
+                                                      critical: true,
+                                                      new KeyUsage(
+                                                          KeyUsage.DigitalSignature |
+                                                          KeyUsage.KeyCertSign |
+                                                          KeyUsage.CrlSign
+                                                      ));
 
                 serverCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
 
@@ -760,26 +760,26 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Client CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-2));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(+5));
-                certificateGenerator.SetPublicKey   (clientCA_ECC_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=Open Charging Cloud - Client CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays (-2));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddYears(+5));
+                certificateGenerator.SetPublicKey    (clientCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
-                                                     critical: true,
-                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
-                                                     // only end-entity certificates.
-                                                     new BasicConstraints(0));
+                certificateGenerator.AddExtension    (X509Extensions.BasicConstraints,
+                                                      critical: true,
+                                                      // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                      // only end-entity certificates.
+                                                      new BasicConstraints(0));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
-                                                     critical: true,
-                                                     new KeyUsage(
-                                                         KeyUsage.DigitalSignature |
-                                                         KeyUsage.KeyCertSign |
-                                                         KeyUsage.CrlSign
-                                                     ));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,
+                                                      critical: true,
+                                                      new KeyUsage(
+                                                          KeyUsage.DigitalSignature |
+                                                          KeyUsage.KeyCertSign |
+                                                          KeyUsage.CrlSign
+                                                      ));
 
                 clientCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
 
@@ -813,26 +813,26 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Client CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
-                certificateGenerator.SetPublicKey   (clientCA_RSA_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=Open Charging Cloud - Client CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey    (clientCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
-                                                     critical: true,
-                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
-                                                     // only end-entity certificates.
-                                                     new BasicConstraints(0));
+                certificateGenerator.AddExtension    (X509Extensions.BasicConstraints,
+                                                      critical: true,
+                                                      // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                      // only end-entity certificates.
+                                                      new BasicConstraints(0));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
-                                                     critical: true,
-                                                     new KeyUsage(
-                                                         KeyUsage.DigitalSignature |
-                                                         KeyUsage.KeyCertSign |
-                                                         KeyUsage.CrlSign
-                                                     ));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,
+                                                      critical: true,
+                                                      new KeyUsage(
+                                                          KeyUsage.DigitalSignature |
+                                                          KeyUsage.KeyCertSign |
+                                                          KeyUsage.CrlSign
+                                                      ));
 
                 clientCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
 
@@ -867,26 +867,26 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Firmware Signing CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-2));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(+5));
-                certificateGenerator.SetPublicKey   (firmwareCA_ECC_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=Open Charging Cloud - Firmware Signing CA (ECC), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays (-2));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddYears(+5));
+                certificateGenerator.SetPublicKey    (firmwareCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
-                                                     critical: true,
-                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
-                                                     // only end-entity certificates.
-                                                     new BasicConstraints(0));
+                certificateGenerator.AddExtension    (X509Extensions.BasicConstraints,
+                                                      critical: true,
+                                                      // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                      // only end-entity certificates.
+                                                      new BasicConstraints(0));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
-                                                     critical: true,
-                                                     new KeyUsage(
-                                                         KeyUsage.DigitalSignature |
-                                                         KeyUsage.KeyCertSign |
-                                                         KeyUsage.CrlSign
-                                                     ));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,
+                                                      critical: true,
+                                                      new KeyUsage(
+                                                          KeyUsage.DigitalSignature |
+                                                          KeyUsage.KeyCertSign |
+                                                          KeyUsage.CrlSign
+                                                      ));
 
                 firmwareCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
 
@@ -920,26 +920,26 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Firmware Signing CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
-                certificateGenerator.SetPublicKey   (firmwareCA_RSA_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=Open Charging Cloud - Firmware Signing CA (RSA), O=GraphDefined GmbH, OU=TestCA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey    (firmwareCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
-                                                     critical: true,
-                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
-                                                     // only end-entity certificates.
-                                                     new BasicConstraints(0));
+                certificateGenerator.AddExtension    (X509Extensions.BasicConstraints,
+                                                      critical: true,
+                                                      // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                      // only end-entity certificates.
+                                                      new BasicConstraints(0));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
-                                                     critical: true,
-                                                     new KeyUsage(
-                                                         KeyUsage.DigitalSignature |
-                                                         KeyUsage.KeyCertSign |
-                                                         KeyUsage.CrlSign
-                                                     ));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,
+                                                      critical: true,
+                                                      new KeyUsage(
+                                                          KeyUsage.DigitalSignature |
+                                                          KeyUsage.KeyCertSign |
+                                                          KeyUsage.CrlSign
+                                                      ));
 
                 firmwareCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
 
@@ -977,21 +977,21 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(serverCA_ECC_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=api1.charging.cloud, O=GraphDefined GmbH, OU=ECC, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
-                certificateGenerator.SetPublicKey   (server1_ECC_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(serverCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=api1.charging.cloud, O=GraphDefined GmbH, OU=ECC, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey    (server1_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
-                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_serverAuth));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension    (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_serverAuth));
 
-                certificateGenerator.AddExtension   (X509Extensions.SubjectAlternativeName, critical: false, new GeneralNames([
-                                                                                                                                  new (GeneralName.DnsName,   "api1.charging.cloud"),
-                                                                                                                                  new (GeneralName.IPAddress, "127.0.0.1"),
-                                                                                                                                  new (GeneralName.IPAddress, "172.23.144.1")
-                                                                                                                              ]));
+                certificateGenerator.AddExtension    (X509Extensions.SubjectAlternativeName, critical: false, new GeneralNames([
+                                                                                                                                   new (GeneralName.DnsName,   "api1.charging.cloud"),
+                                                                                                                                   new (GeneralName.IPAddress, "127.0.0.1"),
+                                                                                                                                   new (GeneralName.IPAddress, "172.23.144.1")
+                                                                                                                               ]));
 
                 server1_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, serverCA_ECC_KeyPair.Private, secureRandom));
 
@@ -1025,21 +1025,21 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(serverCA_RSA_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=api1.charging.cloud, O=GraphDefined GmbH, OU=RSA, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
-                certificateGenerator.SetPublicKey   (server1_RSA_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(serverCA_RSA_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=api1.charging.cloud, O=GraphDefined GmbH, OU=RSA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey    (server1_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,               critical: true,  new KeyUsage        (KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
-                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage,       critical: true,  new ExtendedKeyUsage(KeyPurposeID.id_kp_serverAuth));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,               critical: true,  new KeyUsage        (KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension    (X509Extensions.ExtendedKeyUsage,       critical: true,  new ExtendedKeyUsage(KeyPurposeID.id_kp_serverAuth));
 
-                certificateGenerator.AddExtension   (X509Extensions.SubjectAlternativeName, critical: false, new GeneralNames([
-                                                                                                                                  new (GeneralName.DnsName,   "api1.charging.cloud"),
-                                                                                                                                  new (GeneralName.IPAddress, "127.0.0.1"),
-                                                                                                                                  new (GeneralName.IPAddress, "172.23.144.1")
-                                                                                                                              ]));
+                certificateGenerator.AddExtension    (X509Extensions.SubjectAlternativeName, critical: false, new GeneralNames([
+                                                                                                                                   new (GeneralName.DnsName,   "api1.charging.cloud"),
+                                                                                                                                   new (GeneralName.IPAddress, "127.0.0.1"),
+                                                                                                                                   new (GeneralName.IPAddress, "172.23.144.1")
+                                                                                                                               ]));
 
                 server1_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, serverCA_RSA_KeyPair.Private, secureRandom));
 
@@ -1074,15 +1074,15 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(clientCA_ECC_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=client1, O=GraphDefined GmbH, OU=ECC, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
-                certificateGenerator.SetPublicKey   (client1_ECC_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(clientCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=client1, O=GraphDefined GmbH, OU=ECC, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey    (client1_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.NonRepudiation | KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
-                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_clientAuth));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.NonRepudiation | KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension    (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_clientAuth));
 
                 client1_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, clientCA_ECC_KeyPair.Private, secureRandom));
 
@@ -1116,15 +1116,15 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 var certificateGenerator  = new X509V3CertificateGenerator();
 
-                certificateGenerator.SetIssuerDN    (new X509Name(clientCA_RSA_Certificate.SubjectDN.ToString()));
-                certificateGenerator.SetSubjectDN   (new X509Name("CN=client1, O=GraphDefined GmbH, OU=RSA, L=Jena, C=Germany"));
-                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
-                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
-                certificateGenerator.SetPublicKey   (client1_RSA_KeyPair.Public);
-                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+                certificateGenerator.SetIssuerDN     (new X509Name(clientCA_RSA_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN    (new X509Name("CN=client1, O=GraphDefined GmbH, OU=RSA, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore    (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter     (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey    (client1_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber (BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
 
-                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.NonRepudiation | KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
-                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_clientAuth));
+                certificateGenerator.AddExtension    (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.NonRepudiation | KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension    (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_clientAuth));
 
                 client1_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, clientCA_RSA_KeyPair.Private, secureRandom));
 
@@ -1352,7 +1352,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
                                    Id:                      NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
-                                   RequireAuthentication:   false,
+                                   RequireAuthentication:   true,
                                    ClientCAKeyPair:         clientCA_RSA_KeyPair,
                                    ClientCACertificate:     clientCA_RSA_Certificate,
                                    DNSClient :              dnsClient
@@ -1457,25 +1457,49 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
             // cat serverCA_RSA.cert clientCA_RSA.cert rootCA_RSA.cert > caChain_RSA.cert
             // openssl s_client -connect 127.0.0.1:9923 -cert client1_RSA.cert -key client1_RSA.key -CAfile caChain_RSA.cert -showcerts
             testCSMSv2_1.AttachWebSocketService(
-                TCPPort:                     IPPort.Parse(9923),
-                Description:                 I18NString.Create("OCPP v2.1 with internal TLS termination using a private RSA PKI enforcing TLS client authentication"),
-                ServerCertificateSelector:   () => ToDotNet(server1_RSA_Certificate, server1_RSA_KeyPair.Private)!,
-                                                   //NotWorking:  System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(server1RSA_certificateFile, server1RSA_privateKeyFile),
-                                                   //NotWorking:  ConvertToX509Certificate2(server1RSA_Certificate, server1RSA_KeyPair.Private),
-                                                   //IsWorking:   new System.Security.Cryptography.X509Certificates.X509Certificate2(server1RSA_pfx, "", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet),
-                AllowedTLSProtocols:         System.Security.Authentication.SslProtocols.Tls12,
+
+                TCPPort:                      IPPort.Parse(9923),
+                Description:                  I18NString.Create("OCPP v2.1 with internal TLS termination using a private RSA PKI enforcing TLS client authentication"),
+                ServerCertificateSelector:    () => ToDotNet(server1_RSA_Certificate, server1_RSA_KeyPair.Private)!,
+                                                    //NotWorking:  System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(server1RSA_certificateFile, server1RSA_privateKeyFile),
+                                                    //NotWorking:  ConvertToX509Certificate2(server1RSA_Certificate, server1RSA_KeyPair.Private),
+                                                    //IsWorking:   new System.Security.Cryptography.X509Certificates.X509Certificate2(server1RSA_pfx, "", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet),
+                AllowedTLSProtocols:          System.Security.Authentication.SslProtocols.Tls12,
 
                 ClientCertificateRequired:    true,
-                ClientCertificateValidator:   (a, b, c, d)    => {
-                                                                     return (true, []);
-                                                                 },
-                ClientCertificateSelector:    (a, b, c, d, e) => {
-                                                                     return d;
-                                                                 },
+                ClientCertificateValidator:   (sender,
+                                               certificate,
+                                               certificateChain,
+                                               webSocketServer,
+                                               policyErrors) => {
+
+                                                   if (certificate      is not null &&
+                                                       certificateChain is not null)
+                                                   {
+
+                                                       if (webSocketServer.TrustedClientCertificates.Contains(certificate))
+                                                           return (true, []);
+
+                                                       return (false, ["Could not validate the received TLS client certificate!"]);
+
+                                                   }
+
+                                                   return (false, ["Missing or invalid TLS client certificate!"]);
+
+                                               },
+
+                LocalCertificateSelector:     (sender,
+                                               targetHost,
+                                               localCertificates,
+                                               remoteCertificate,
+                                               acceptableIssuers) => {
+                                                   return localCertificates.First();
+                                               },
 
                 DisableWebSocketPings:        false,
                 //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
-                AutoStart:                   true
+                AutoStart:                    true
+
             );
 
             #endregion
@@ -1848,10 +1872,10 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                             #region AddHTTPBasicAuth
 
                             //   AddHTTPBasicAuth abcd1234
-                            if (command.Equals("AddHTTPBasicAuth", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
+                            if (command.Equals("AddHTTPBasicAuth", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
                             {
-                                testCentralSystemV1_6.AddHTTPBasicAuth        (NetworkingNode_Id.Parse(chargingStationId), commandArray[2]);
-                                testCSMSv2_1.         AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse(chargingStationId), commandArray[2]);
+                                testCentralSystemV1_6.AddHTTPBasicAuth        (NetworkingNode_Id.Parse(chargingStationId), commandArray[1]);
+                                testCSMSv2_1.         AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse(chargingStationId), commandArray[1]);
                             }
 
                             #endregion

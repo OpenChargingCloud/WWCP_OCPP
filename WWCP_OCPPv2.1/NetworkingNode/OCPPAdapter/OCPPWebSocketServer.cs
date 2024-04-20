@@ -284,34 +284,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public OCPPWebSocketServer(IOCPPAdapter                         OCPPAdapter,
+        public OCPPWebSocketServer(IOCPPAdapter                                                    OCPPAdapter,
 
-                                   String?                              HTTPServiceName              = DefaultHTTPServiceName,
-                                   IIPAddress?                          IPAddress                    = null,
-                                   IPPort?                              TCPPort                      = null,
-                                   I18NString?                          Description                  = null,
+                                   String?                                                         HTTPServiceName              = DefaultHTTPServiceName,
+                                   IIPAddress?                                                     IPAddress                    = null,
+                                   IPPort?                                                         TCPPort                      = null,
+                                   I18NString?                                                     Description                  = null,
 
-                                   Boolean                              RequireAuthentication        = true,
-                                   Boolean                              DisableWebSocketPings        = false,
-                                   TimeSpan?                            WebSocketPingEvery           = null,
-                                   TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                   Boolean                                                         RequireAuthentication        = true,
+                                   Boolean                                                         DisableWebSocketPings        = false,
+                                   TimeSpan?                                                       WebSocketPingEvery           = null,
+                                   TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                   Func<X509Certificate2>?              ServerCertificateSelector    = null,
-                                   RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
-                                   LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                   SslProtocols?                        AllowedTLSProtocols          = null,
-                                   Boolean?                             ClientCertificateRequired    = null,
-                                   Boolean?                             CheckCertificateRevocation   = null,
+                                   Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
+                                   RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
+                                   LocalCertificateSelectionHandler?                               ClientCertificateSelector    = null,
+                                   SslProtocols?                                                   AllowedTLSProtocols          = null,
+                                   Boolean?                                                        ClientCertificateRequired    = null,
+                                   Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                   ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
-                                   ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
-                                   Boolean?                             ServerThreadIsBackground     = null,
-                                   ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
-                                   TimeSpan?                            ConnectionTimeout            = null,
-                                   UInt32?                              MaxClientConnections         = null,
+                                   ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
+                                   ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
+                                   Boolean?                                                        ServerThreadIsBackground     = null,
+                                   ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
+                                   TimeSpan?                                                       ConnectionTimeout            = null,
+                                   UInt32?                                                         MaxClientConnections         = null,
 
-                                   DNSClient?                           DNSClient                    = null,
-                                   Boolean                              AutoStart                    = false)
+                                   DNSClient?                                                      DNSClient                    = null,
+                                   Boolean                                                         AutoStart                    = false)
 
             : base(IPAddress,
                    TCPPort         ?? IPPort.Parse(8000),

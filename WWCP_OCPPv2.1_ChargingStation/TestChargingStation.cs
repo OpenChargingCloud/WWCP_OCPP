@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Reflection;
+using System.Security.Principal;
 using System.Security.Cryptography;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
@@ -26,17 +27,18 @@ using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json.Linq;
 
+using Org.BouncyCastle.Asn1.Cms;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
-using Org.BouncyCastle.Asn1.Cms;
-using System.Security.Principal;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
@@ -348,8 +350,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public URL RemoteURL => throw new NotImplementedException();
 
         public HTTPHostname? VirtualHostname => throw new NotImplementedException();
-
-        public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
 
         public X509Certificate? ClientCert => throw new NotImplementedException();
 
@@ -2233,35 +2233,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region ConnectWebSocket(...)
 
-        public async Task<HTTPResponse> ConnectWebSocket(URL                                  RemoteURL,
-                                                         HTTPHostname?                        VirtualHostname              = null,
-                                                         String?                              Description                  = null,
-                                                         RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
-                                                         LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                                         X509Certificate?                     ClientCert                   = null,
-                                                         SslProtocols?                        TLSProtocol                  = null,
-                                                         Boolean?                             PreferIPv4                   = null,
-                                                         String?                              HTTPUserAgent                = null,
-                                                         IHTTPAuthentication?                 HTTPAuthentication           = null,
-                                                         TimeSpan?                            RequestTimeout               = null,
-                                                         TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
-                                                         UInt16?                              MaxNumberOfRetries           = null,
-                                                         UInt32?                              InternalBufferSize           = null,
+        public async Task<HTTPResponse> ConnectWebSocket(URL                                                             RemoteURL,
+                                                         HTTPHostname?                                                   VirtualHostname              = null,
+                                                         String?                                                         Description                  = null,
+                                                         RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
+                                                         LocalCertificateSelectionHandler?                               ClientCertificateSelector    = null,
+                                                         X509Certificate?                                                ClientCert                   = null,
+                                                         SslProtocols?                                                   TLSProtocol                  = null,
+                                                         Boolean?                                                        PreferIPv4                   = null,
+                                                         String?                                                         HTTPUserAgent                = null,
+                                                         IHTTPAuthentication?                                            HTTPAuthentication           = null,
+                                                         TimeSpan?                                                       RequestTimeout               = null,
+                                                         TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay       = null,
+                                                         UInt16?                                                         MaxNumberOfRetries           = null,
+                                                         UInt32?                                                         InternalBufferSize           = null,
 
-                                                         IEnumerable<String>?                 SecWebSocketProtocols        = null,
-                                                         NetworkingMode?                      NetworkingMode               = null,
+                                                         IEnumerable<String>?                                            SecWebSocketProtocols        = null,
+                                                         NetworkingMode?                                                 NetworkingMode               = null,
 
-                                                         Boolean                              DisableMaintenanceTasks      = false,
-                                                         TimeSpan?                            MaintenanceEvery             = null,
-                                                         Boolean                              DisableWebSocketPings        = false,
-                                                         TimeSpan?                            WebSocketPingEvery           = null,
-                                                         TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                                         Boolean                                                         DisableMaintenanceTasks      = false,
+                                                         TimeSpan?                                                       MaintenanceEvery             = null,
+                                                         Boolean                                                         DisableWebSocketPings        = false,
+                                                         TimeSpan?                                                       WebSocketPingEvery           = null,
+                                                         TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                                         String?                              LoggingPath                  = null,
-                                                         String?                              LoggingContext               = null,
-                                                         LogfileCreatorDelegate?              LogfileCreator               = null,
-                                                         HTTPClientLogger?                    HTTPLogger                   = null,
-                                                         DNSClient?                           DNSClient                    = null)
+                                                         String?                                                         LoggingPath                  = null,
+                                                         String?                                                         LoggingContext               = null,
+                                                         LogfileCreatorDelegate?                                         LogfileCreator               = null,
+                                                         HTTPClientLogger?                                               HTTPLogger                   = null,
+                                                         DNSClient?                                                      DNSClient                    = null)
 
         {
 
@@ -2284,7 +2284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                               MaxNumberOfRetries,
                                               InternalBufferSize,
 
-                                              SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
+                                              SecWebSocketProtocols ?? [ Version.WebSocketSubProtocolId ],
                                               NetworkingMode,
 
                                               DisableWebSocketPings,
@@ -2299,6 +2299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                               LogfileCreator,
                                               HTTPLogger,
                                               DNSClient ?? this.DNSClient
+
                                           );
 
             this.CSClient  = chargingStationWSClient;
@@ -11973,6 +11974,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
         }
+
+        RemoteTLSServerCertificateValidationHandler<IHTTPClient>? IHTTPClient.RemoteCertificateValidator => throw new NotImplementedException();
 
         #endregion
 

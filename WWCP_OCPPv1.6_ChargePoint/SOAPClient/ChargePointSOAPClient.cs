@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="VirtualHostname">An optional HTTP virtual hostname.</param>
         /// <param name="Description">An optional description of this HTTP/SOAP client.</param>
         /// <param name="RemoteCertificateValidator">The remote SSL/TLS certificate validator.</param>
-        /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
+        /// <param name="LocalCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="ClientCert">The SSL/TLS client certificate to use of HTTP authentication.</param>
         /// <param name="HTTPUserAgent">The HTTP user agent identification.</param>
         /// <param name="URLPathPrefix">An optional default URL path prefix.</param>
@@ -372,34 +372,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public ChargePointSOAPClient(NetworkingNode_Id                    ChargeBoxId,
-                                     String                               From,
-                                     String                               To,
+        public ChargePointSOAPClient(NetworkingNode_Id                                          ChargeBoxId,
+                                     String                                                     From,
+                                     String                                                     To,
 
-                                     URL                                  RemoteURL,
-                                     HTTPHostname?                        VirtualHostname              = null,
-                                     String?                              Description                  = null,
-                                     Boolean?                             PreferIPv4                   = null,
-                                     RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
-                                     LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                     X509Certificate?                     ClientCert                   = null,
-                                     SslProtocols?                        TLSProtocol                  = null,
-                                     String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                                     HTTPPath?                            URLPathPrefix                = null,
-                                     Tuple<String, String>?               WSSLoginPassword             = null,
-                                     HTTPContentType?                     HTTPContentType              = null,
-                                     TimeSpan?                            RequestTimeout               = null,
-                                     TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
-                                     UInt16?                              MaxNumberOfRetries           = null,
-                                     UInt32?                              InternalBufferSize           = null,
-                                     Boolean                              UseHTTPPipelining            = false,
+                                     URL                                                        RemoteURL,
+                                     HTTPHostname?                                              VirtualHostname              = null,
+                                     String?                                                    Description                  = null,
+                                     Boolean?                                                   PreferIPv4                   = null,
+                                     RemoteTLSServerCertificateValidationHandler<IHTTPClient>?  RemoteCertificateValidator   = null,
+                                     LocalCertificateSelectionHandler?                          LocalCertificateSelector     = null,
+                                     X509Certificate?                                           ClientCert                   = null,
+                                     SslProtocols?                                              TLSProtocol                  = null,
+                                     String                                                     HTTPUserAgent                = DefaultHTTPUserAgent,
+                                     HTTPPath?                                                  URLPathPrefix                = null,
+                                     Tuple<String, String>?                                     WSSLoginPassword             = null,
+                                     HTTPContentType?                                           HTTPContentType              = null,
+                                     TimeSpan?                                                  RequestTimeout               = null,
+                                     TransmissionRetryDelayDelegate?                            TransmissionRetryDelay       = null,
+                                     UInt16?                                                    MaxNumberOfRetries           = null,
+                                     UInt32?                                                    InternalBufferSize           = null,
+                                     Boolean                                                    UseHTTPPipelining            = false,
 
-                                     String?                              LoggingPath                  = null,
-                                     String                               LoggingContext               = CPClientLogger.DefaultContext,
-                                     LogfileCreatorDelegate?              LogfileCreator               = null,
-                                     Boolean?                             DisableLogging               = false,
-                                     HTTPClientLogger?                    HTTPLogger                   = null,
-                                     DNSClient?                           DNSClient                    = null)
+                                     String?                                                    LoggingPath                  = null,
+                                     String                                                     LoggingContext               = CPClientLogger.DefaultContext,
+                                     LogfileCreatorDelegate?                                    LogfileCreator               = null,
+                                     Boolean?                                                   DisableLogging               = false,
+                                     HTTPClientLogger?                                          HTTPLogger                   = null,
+                                     DNSClient?                                                 DNSClient                    = null)
 
             : base(RemoteURL,
                    VirtualHostname,
@@ -407,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    Description,
                    PreferIPv4,
                    RemoteCertificateValidator,
-                   ClientCertificateSelector,
+                   LocalCertificateSelector,
                    ClientCert,
                    TLSProtocol,
                    HTTPUserAgent,

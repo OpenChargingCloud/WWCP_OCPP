@@ -31,6 +31,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
 using cloud.charging.open.protocols.OCPP.CS;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -170,38 +171,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public ChargingStationWSClient(NetworkingNode_Id                    ChargingStationIdentity,
+        public ChargingStationWSClient(NetworkingNode_Id                                               ChargingStationIdentity,
 
-                                       URL                                  RemoteURL,
-                                       HTTPHostname?                        VirtualHostname              = null,
-                                       String?                              Description                  = null,
-                                       Boolean?                             PreferIPv4                   = null,
-                                       RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
-                                       LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                       X509Certificate?                     ClientCert                   = null,
-                                       SslProtocols?                        TLSProtocol                  = null,
-                                       String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                                       IHTTPAuthentication?                 HTTPAuthentication           = null,
-                                       TimeSpan?                            RequestTimeout               = null,
-                                       TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
-                                       UInt16?                              MaxNumberOfRetries           = 3,
-                                       UInt32?                              InternalBufferSize           = null,
+                                       URL                                                             RemoteURL,
+                                       HTTPHostname?                                                   VirtualHostname              = null,
+                                       String?                                                         Description                  = null,
+                                       Boolean?                                                        PreferIPv4                   = null,
+                                       RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
+                                       LocalCertificateSelectionHandler?                               ClientCertificateSelector    = null,
+                                       X509Certificate?                                                ClientCert                   = null,
+                                       SslProtocols?                                                   TLSProtocol                  = null,
+                                       String                                                          HTTPUserAgent                = DefaultHTTPUserAgent,
+                                       IHTTPAuthentication?                                            HTTPAuthentication           = null,
+                                       TimeSpan?                                                       RequestTimeout               = null,
+                                       TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay       = null,
+                                       UInt16?                                                         MaxNumberOfRetries           = 3,
+                                       UInt32?                                                         InternalBufferSize           = null,
 
-                                       IEnumerable<String>?                 SecWebSocketProtocols        = null,
-                                       NetworkingMode?                      NetworkingMode               = null,
+                                       IEnumerable<String>?                                            SecWebSocketProtocols        = null,
+                                       NetworkingMode?                                                 NetworkingMode               = null,
 
-                                       Boolean                              DisableWebSocketPings        = false,
-                                       TimeSpan?                            WebSocketPingEvery           = null,
-                                       TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                       Boolean                                                         DisableWebSocketPings        = false,
+                                       TimeSpan?                                                       WebSocketPingEvery           = null,
+                                       TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                       Boolean                              DisableMaintenanceTasks      = false,
-                                       TimeSpan?                            MaintenanceEvery             = null,
+                                       Boolean                                                         DisableMaintenanceTasks      = false,
+                                       TimeSpan?                                                       MaintenanceEvery             = null,
 
-                                       String?                              LoggingPath                  = null,
-                                       String                               LoggingContext               = null, //CPClientLogger.DefaultContext,
-                                       LogfileCreatorDelegate?              LogfileCreator               = null,
-                                       HTTPClientLogger?                    HTTPLogger                   = null,
-                                       DNSClient?                           DNSClient                    = null)
+                                       String?                                                         LoggingPath                  = null,
+                                       String                                                          LoggingContext               = null, //CPClientLogger.DefaultContext,
+                                       LogfileCreatorDelegate?                                         LogfileCreator               = null,
+                                       HTTPClientLogger?                                               HTTPLogger                   = null,
+                                       DNSClient?                                                      DNSClient                    = null)
 
             : base(ChargingStationIdentity,
 
