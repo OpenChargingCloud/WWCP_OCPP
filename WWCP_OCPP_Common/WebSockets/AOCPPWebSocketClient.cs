@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="VirtualHostname">An optional HTTP virtual hostname.</param>
         /// <param name="Description">An optional description of this HTTP/websocket client.</param>
         /// <param name="RemoteCertificateValidator">The remote SSL/TLS certificate validator.</param>
-        /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
+        /// <param name="LocalCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="ClientCert">The SSL/TLS client certificate to use of HTTP authentication.</param>
         /// <param name="HTTPUserAgent">The HTTP user agent identification.</param>
         /// <param name="URLPathPrefix">An optional default URL path prefix.</param>
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                     String?                                                         Description                  = null,
                                     Boolean?                                                        PreferIPv4                   = null,
                                     RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
-                                    LocalCertificateSelectionHandler?                               ClientCertificateSelector    = null,
+                                    LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                     X509Certificate?                                                ClientCert                   = null,
                                     SslProtocols?                                                   TLSProtocol                  = null,
                                     String                                                          HTTPUserAgent                = DefaultHTTPUserAgent,
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                    Description,
                    PreferIPv4,
                    RemoteCertificateValidator,
-                   ClientCertificateSelector,
+                   LocalCertificateSelector,
                    ClientCert,
                    TLSProtocol,
                    HTTPUserAgent,

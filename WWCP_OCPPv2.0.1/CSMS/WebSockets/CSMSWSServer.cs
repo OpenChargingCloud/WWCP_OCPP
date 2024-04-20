@@ -1825,7 +1825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                             Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
                             RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
-                            LocalCertificateSelectionHandler?                               ClientCertificateSelector    = null,
+                            LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                             SslProtocols?                                                   AllowedTLSProtocols          = null,
                             Boolean?                                                        ClientCertificateRequired    = null,
                             Boolean?                                                        CheckCertificateRevocation   = null,
@@ -1852,7 +1852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                    ServerCertificateSelector,
                    ClientCertificateValidator,
-                   ClientCertificateSelector,
+                   LocalCertificateSelector,
                    AllowedTLSProtocols,
                    ClientCertificateRequired,
                    CheckCertificateRevocation,

@@ -209,7 +209,7 @@ namespace org.GraphDefined.WWCP.OCPP.LocalController
             //var ocppWebSocketServer02 = testLCv2_1.AttachWebSocketServer(
             //                                TCPPort:                         IPPort.Parse(9104),
             //                                ServerCertificateSelector:       null,
-            //                                ClientCertificateSelector:       null,
+            //                                LocalCertificateSelector:        null,
             //                                ClientCertificateValidator:      null,
             //                                RequireAuthentication:           true,
             //                                DisableWebSocketPings:           true,

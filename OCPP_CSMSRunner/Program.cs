@@ -1464,7 +1464,8 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                     //NotWorking:  System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(server1RSA_certificateFile, server1RSA_privateKeyFile),
                                                     //NotWorking:  ConvertToX509Certificate2(server1RSA_Certificate, server1RSA_KeyPair.Private),
                                                     //IsWorking:   new System.Security.Cryptography.X509Certificates.X509Certificate2(server1RSA_pfx, "", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet),
-                AllowedTLSProtocols:          System.Security.Authentication.SslProtocols.Tls12,
+                AllowedTLSProtocols:          System.Security.Authentication.SslProtocols.Tls12 |
+                                              System.Security.Authentication.SslProtocols.Tls13,
 
                 ClientCertificateRequired:    true,
                 ClientCertificateValidator:   (sender,
