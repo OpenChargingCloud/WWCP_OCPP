@@ -1,10 +1,10 @@
 # WWCP OCPP
 
-This software libraries will allow the communication between World Wide Charging Protocol (WWCP) entities and entities implementing the _Open Charge Point Protocol Version 1.6/2.0.1/2.1_, which is defined by the [_Open Charge Alliance (OCA)_](http://www.openchargealliance.org). The focus of the *Open Charge Point Protocol* are all the communication aspects between e-mobility *charging stations*, *local nodes* and *Charging Station Operator Systems/Backends (CSMS)*.
+This software libraries will allow the communication between World Wide Charging Protocol (WWCP) entities and entities implementing the _Open Charge Point Protocol Version 1.6/2.0.1/2.1_, which is defined by the [_Open Charge Alliance (OCA)_](https://www.openchargealliance.org). The focus of the *Open Charge Point Protocol* are all the communication aspects between e-mobility *charging stations*, *local nodes* and *Charging Station Operator Systems/Backends (CSMS)*.
 
 This software also allows you to build standalone OCPP micro services and use case specific gateways between OCPP and your internal microservice architecture.
 
-For more details on the *Open Charge Point Protocol* please visit http://www.openchargealliance.org.
+For more details on the *Open Charge Point Protocol* please visit https://www.openchargealliance.org.
 
 
 ## Versions
