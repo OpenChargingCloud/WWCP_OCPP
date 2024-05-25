@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
                             await HandleErrors(
                                         "NetworkingNode",
-                                        nameof(OnBootNotificationRequestLogging),
+                                        nameof(OnJSONResponseMessageSent),
                                         e
                                     );
                         }
