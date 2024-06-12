@@ -6983,7 +6983,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       Offline:              false,
                                       NumberOfPhasesUsed:   3,
-                                      CableMaxCurrent:      Ampere.Parse(32),
+                                      CableMaxCurrent:      Ampere.ParseA(32),
                                       ReservationId:        evse.ReservationId,
                                       IdToken:              evse.IdToken,
                                       EVSE:                 new EVSE(
@@ -7201,7 +7201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       Offline:              false,
                                       NumberOfPhasesUsed:   3,
-                                      CableMaxCurrent:      Ampere.Parse(32),
+                                      CableMaxCurrent:      Ampere.ParseA(32),
                                       ReservationId:        evse.ReservationId,
                                       IdToken:              evse.IdToken,
                                       EVSE:                 new EVSE(
@@ -7209,10 +7209,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                 ConnectorId:   evse.Connectors.First().Id,
                                                                 CustomData:    null
                                                             ),
-                                      MeterValues:          new[] {
+                                      MeterValues:          [
                                                                 new MeterValue(
                                                                     Timestamp:       evse.StopTimestamp.Value,
-                                                                    SampledValues:   new[] {
+                                                                    SampledValues:   [
                                                                                          new SampledValue(
                                                                                              Value:                 evse.MeterStopValue.Value,
                                                                                              Context:               ReadingContext.TransactionEnd,
@@ -7229,9 +7229,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                              UnitOfMeasure:         null,
                                                                                              CustomData:            null
                                                                                          )
-                                                                                     }
+                                                                                     ]
                                                                 )
-                                                            },
+                                                            ],
                                       CustomData:           null
 
                                   );

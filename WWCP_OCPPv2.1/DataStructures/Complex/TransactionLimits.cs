@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
                 var MaxEnergy = MaxEnergyNumber.HasValue
-                                  ? new WattHour?(WattHour.Parse(MaxEnergyNumber.Value))
+                                  ? WattHour.TryParseKWh(MaxEnergyNumber.Value)
                                   : null;
 
                 #endregion

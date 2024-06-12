@@ -115,17 +115,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                                    "GraphDefined EMP"
                                                                ),
                                              Currency:         Currency.EUR,
-                                             TariffElements:   new[] {
+                                             TariffElements:   [
                                                                    new TariffElement(
-                                                                       new[] {
+                                                                       [
                                                                            PriceComponent.Energy(
                                                                                Price:      0.51M,
                                                                                VAT:        0.02M,
-                                                                               StepSize:   WattHour.Parse(1000)
+                                                                               StepSize:   WattHour.ParseKWh(1)
                                                                            )
-                                                                       }
+                                                                       ]
                                                                    )
-                                                               },
+                                                               ],
 
                                              Created:          timeReference,
                                              Replaces:         null,

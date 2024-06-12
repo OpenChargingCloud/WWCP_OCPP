@@ -115,17 +115,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                    "GraphDefined EMP"
                                                                ),
                                              Currency:         Currency.EUR,
-                                             TariffElements:   new[] {
+                                             TariffElements:   [
                                                                    new TariffElement(
-                                                                       new[] {
+                                                                       [
                                                                            PriceComponent.Energy(
                                                                                Price:      0.51M,
                                                                                VAT:        0.02M,
-                                                                               StepSize:   WattHour.Parse(1000)
+                                                                               StepSize:   WattHour.ParseKWh(1)
                                                                            )
-                                                                       }
+                                                                       ]
                                                                    )
-                                                               },
+                                                               ],
 
                                              Created:          timeReference,
                                              Replaces:         null,
@@ -437,17 +437,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                  "GraphDefined EMP"
                                                              ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   new[] {
+                                           TariffElements:   [
                                                                  new TariffElement(
-                                                                     new[] {
+                                                                     [
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   WattHour.Parse(1000)
+                                                                             StepSize:   WattHour.ParseKWh(1)
                                                                          )
-                                                                     }
+                                                                     ]
                                                                  )
-                                                             },
+                                                             ],
 
                                            Created:          timeReference,
                                            Replaces:         null,
@@ -769,17 +769,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                  "GraphDefined EMP"
                                                              ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   new[] {
+                                           TariffElements:   [
                                                                  new TariffElement(
-                                                                     new[] {
+                                                                     [
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   WattHour.Parse(1000)
+                                                                             StepSize:   WattHour.ParseKWh(1)
                                                                          )
-                                                                     }
+                                                                     ]
                                                                  )
-                                                             },
+                                                             ],
 
                                            Created:          timeReference,
                                            Replaces:         null,
@@ -1101,17 +1101,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                  "GraphDefined EMP"
                                                              ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   new[] {
+                                           TariffElements:   [
                                                                  new TariffElement(
-                                                                     new[] {
+                                                                     [
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   WattHour.Parse(1000)
+                                                                             StepSize:   WattHour.ParseKWh(1)
                                                                          )
-                                                                     }
+                                                                     ]
                                                                  )
-                                                             },
+                                                             ],
 
                                            Created:          timeReference,
                                            Replaces:         null,
@@ -1436,17 +1436,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                  "GraphDefined EMP"
                                                              ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   new[] {
+                                           TariffElements:   [
                                                                  new TariffElement(
-                                                                     new[] {
+                                                                     [
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   WattHour.Parse(1000)
+                                                                             StepSize:   WattHour.ParseKWh(1)
                                                                          )
-                                                                     }
+                                                                     ]
                                                                  )
-                                                             },
+                                                             ],
 
                                            Created:          timeReference,
                                            Replaces:         null,
@@ -1512,17 +1512,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                  "GraphDefined EMP"
                                                              ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   new[] {
+                                           TariffElements:   [
                                                                  new TariffElement(
-                                                                     new[] {
+                                                                     [
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   WattHour.Parse(1000)
+                                                                             StepSize:   WattHour.ParseKWh(1)
                                                                          )
-                                                                     }
+                                                                     ]
                                                                  )
-                                                             },
+                                                             ],
 
                                            Created:          timeReference,
                                            Replaces:         null,
@@ -1581,15 +1581,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 var response1a       = await testCSMS01.SetDefaultChargingTariff(
                                            DestinationNodeId:  chargingStation2.Id,
                                            ChargingTariff:     chargingTariff1,
-                                           EVSEIds:            new[] {
-                                                                   EVSE_Id.Parse(1)
-                                                               },
+                                           EVSEIds:            [ EVSE_Id.Parse(1) ],
                                            CustomData:         null
                                        );
 
                 #region Verify the response
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                                    response1a.Result.ResultCode);
+                ClassicAssert.AreEqual(ResultCode.OK,                                                     response1a.Result.ResultCode);
                 ClassicAssert.AreEqual(SetDefaultChargingTariffStatus.Accepted,                           response1a.Status);
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response1a.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response1a.Signatures.First().Name);
@@ -1626,15 +1624,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 var response1b       = await testCSMS01.SetDefaultChargingTariff(
                                            DestinationNodeId:  chargingStation2.Id,
                                            ChargingTariff:     chargingTariff2,
-                                           EVSEIds:            new[] {
-                                                                   EVSE_Id.Parse(2)
-                                                               },
+                                           EVSEIds:            [ EVSE_Id.Parse(2) ],
                                            CustomData:         null
                                        );
 
                 #region Verify the response
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                                    response1b.Result.ResultCode);
+                ClassicAssert.AreEqual(ResultCode.OK,                                                     response1b.Result.ResultCode);
                 ClassicAssert.AreEqual(SetDefaultChargingTariffStatus.Accepted,                           response1b.Status);
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response1b.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response1b.Signatures.First().Name);
@@ -1675,7 +1671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                                    response2.Result.ResultCode);
+                ClassicAssert.AreEqual(ResultCode.OK,                                                     response2.Result.ResultCode);
                 ClassicAssert.AreEqual(GenericStatus.Accepted,                                            response2.Status);
                 ClassicAssert.AreEqual(2,                                                                 response2.ChargingTariffs.  Count());
                 ClassicAssert.AreEqual(2,                                                                 response2.ChargingTariffMap.Count());                     // 2 Charging tariffs...
@@ -1711,7 +1707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                                    response3.Result.ResultCode);
+                ClassicAssert.AreEqual(ResultCode.OK,                                                     response3.Result.ResultCode);
                 ClassicAssert.AreEqual(RemoveDefaultChargingTariffStatus.Accepted,                        response3.Status);
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response3.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response3.Signatures.First().Name);
@@ -1743,7 +1739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                                    response4.Result.ResultCode);
+                ClassicAssert.AreEqual(ResultCode.OK,                                                     response4.Result.ResultCode);
                 ClassicAssert.AreEqual(GenericStatus.Accepted,                                            response4.Status);
                 ClassicAssert.AreEqual(0,                                                                 response4.ChargingTariffs.  Count());
                 ClassicAssert.AreEqual(0,                                                                 response4.ChargingTariffMap.Count());

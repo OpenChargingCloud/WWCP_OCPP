@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Calculate TotalEnergy
 
-            var totalEnergy = WattHour.Parse(stopMeteringValue.Value - startMeteringValue.Value);
+            var totalEnergy = WattHour.ParseKWh(stopMeteringValue.Value - startMeteringValue.Value);
 
             #endregion
 
@@ -505,12 +505,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var billedEnergySteps           = Math.Ceiling(totalEnergy.Value / energyStepSize);
             var billedEnergy                = energyPriceComponent is not null
-                                                  ? WattHour.Parse(billedEnergySteps * energyStepSize)
+                                                  ? WattHour.ParseWh(billedEnergySteps * energyStepSize)
                                                   : WattHour.Zero;
             var totalEnergyCost             = energyPrice.HasValue
                                                   ? new Price(
-                                                        ExcludingVAT:  billedEnergy.Value / 1000 *  energyPrice.Value,
-                                                        IncludingVAT:  billedEnergy.Value / 1000 * (energyPrice.Value + energyPrice.Value * (energyVAT ?? 0) / 100)
+                                                        ExcludingVAT:  billedEnergy.kWh *  energyPrice.Value,
+                                                        IncludingVAT:  billedEnergy.kWh * (energyPrice.Value + energyPrice.Value * (energyVAT ?? 0) / 100)
                                                     )
                                                   : OCPPv2_1.Price.Zero;
 
@@ -538,10 +538,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                       EVSEId,
                       NetworkPath,
                       ChargingPoolId,
-                      new[] {
+                      [
                           startMeteringValue,
                           stopMeteringValue
-                      },
+                      ],
 
                       totalFixedCost,
                       totalReservationCost,
@@ -1009,8 +1009,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var BilledChargingTime     = TimeSpan.Zero;
             var TotalChargingTimeCost  = new Price(0);
 
-            var TotalEnergy            = WattHour.Parse(0);
-            var BilledEnergy           = WattHour.Parse(0);
+            var TotalEnergy            = WattHour.ParseKWh(0);
+            var BilledEnergy           = WattHour.ParseKWh(0);
             var TotalEnergyCost        = new Price(0);
 
             var TotalParkingTime       = TimeSpan.Zero;

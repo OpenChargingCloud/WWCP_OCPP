@@ -1281,7 +1281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                 )
                                                                             ],
                                                                             new TariffRestrictions(
-                                                                                MinEnergy:   WattHour.Parse(11)
+                                                                                MinEnergy:   WattHour.ParseKWh(11)
                                                                             )
                                                                         ),
 
@@ -1294,7 +1294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                 )
                                                                             ],
                                                                             new TariffRestrictions(
-                                                                                MinEnergy:   WattHour.Parse(11)
+                                                                                MinEnergy:   WattHour.ParseKWh(11)
                                                                             )
                                                                         ),
 
