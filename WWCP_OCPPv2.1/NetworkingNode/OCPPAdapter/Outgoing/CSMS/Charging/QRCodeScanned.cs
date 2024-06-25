@@ -38,53 +38,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<QRCodeScannedRequest>?  CustomQRCodeScannedRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<UsePriorityChargingResponse>?     CustomUsePriorityChargingResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<QRCodeScannedResponse>?     CustomQRCodeScannedResponseParser       { get; set; }
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a UsePriorityCharging request was sent.
+        /// An event sent whenever a QRCodeScanned request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUsePriorityChargingRequestSentDelegate?         OnUsePriorityChargingRequestSent;
+        public event OCPPv2_1.CSMS.OnQRCodeScannedRequestSentDelegate?     OnQRCodeScannedRequestSent;
 
         /// <summary>
-        /// An event sent whenever a response to a UsePriorityCharging request was sent.
+        /// An event sent whenever a response to a QRCodeScanned request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUsePriorityChargingResponseReceivedDelegate?    OnUsePriorityChargingResponseReceived;
+        public event OCPPv2_1.CSMS.OnQRCodeScannedResponseReceivedDelegate?    OnQRCodeScannedResponseReceived;
 
         #endregion
 
 
-        #region UsePriorityCharging(Request)
+        #region QRCodeScanned(Request)
 
 
-        public async Task<UsePriorityChargingResponse> UsePriorityCharging(UsePriorityChargingRequest Request)
+        public async Task<QRCodeScannedResponse> QRCodeScanned(QRCodeScannedRequest Request)
         {
 
-            #region Send OnUsePriorityChargingRequest event
+            #region Send OnQRCodeScannedRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnUsePriorityChargingRequestSent?.Invoke(startTime,
-                                                     parentNetworkingNode,
-                                                     Request);
+                OnQRCodeScannedRequestSent?.Invoke(startTime,
+                                                   parentNetworkingNode,
+                                                   Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUsePriorityChargingRequestSent));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnQRCodeScannedRequestSent));
             }
 
             #endregion
 
 
-            UsePriorityChargingResponse? response = null;
+            QRCodeScannedResponse? response = null;
 
             try
             {
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  OCPP_JSONRequestMessage.FromRequest(
                                                      Request,
                                                      Request.ToJSON(
-                                                         CustomUsePriorityChargingRequestSerializer,
+                                                         CustomQRCodeScannedRequestSerializer,
                                                          parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                          parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                      )
@@ -104,24 +104,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (UsePriorityChargingResponse.TryParse(Request,
-                                                             sendRequestState.JSONResponse.Payload,
-                                                             out var getCompositeScheduleResponse,
-                                                             out var errorResponse,
-                                                             CustomUsePriorityChargingResponseParser) &&
+                    if (QRCodeScannedResponse.TryParse(Request,
+                                                       sendRequestState.JSONResponse.Payload,
+                                                       out var getCompositeScheduleResponse,
+                                                       out var errorResponse,
+                                                       CustomQRCodeScannedResponseParser) &&
                         getCompositeScheduleResponse is not null)
                     {
                         response = getCompositeScheduleResponse;
                     }
 
-                    response ??= new UsePriorityChargingResponse(
+                    response ??= new QRCodeScannedResponse(
                                      Request,
                                      Result.Format(errorResponse)
                                  );
 
                 }
 
-                response ??= new UsePriorityChargingResponse(
+                response ??= new QRCodeScannedResponse(
                                  Request,
                                  Result.FromSendRequestState(sendRequestState)
                              );
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = new UsePriorityChargingResponse(
+                response = new QRCodeScannedResponse(
                                Request,
                                Result.FromException(e)
                            );
@@ -138,23 +138,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            #region Send OnUsePriorityChargingResponse event
+            #region Send OnQRCodeScannedResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnUsePriorityChargingResponseReceived?.Invoke(endTime,
-                                                      parentNetworkingNode,
-                                                      Request,
-                                                      response,
-                                                      endTime - startTime);
+                OnQRCodeScannedResponseReceived?.Invoke(endTime,
+                                                        parentNetworkingNode,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUsePriorityChargingResponseReceived));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnQRCodeScannedResponseReceived));
             }
 
             #endregion
@@ -172,9 +172,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     {
 
         /// <summary>
-        /// An event sent whenever a response to a UsePriorityCharging request was sent.
+        /// An event sent whenever a response to a QRCodeScanned request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUsePriorityChargingResponseReceivedDelegate? OnUsePriorityChargingResponseReceived;
+        public event OCPPv2_1.CSMS.OnQRCodeScannedResponseReceivedDelegate? OnQRCodeScannedResponseReceived;
 
     }
 

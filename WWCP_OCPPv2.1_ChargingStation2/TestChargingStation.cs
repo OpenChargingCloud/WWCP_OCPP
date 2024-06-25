@@ -54,26 +54,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Id">The unique identification of this networking node.</param>
         public TestChargingStation(NetworkingNode_Id  Id,
-                                  String             VendorName,
-                                  String             Model,
-                                  I18NString?        Description                 = null,
-                                  String?            SerialNumber                = null,
-                                  String?            FirmwareVersion             = null,
-                                  Modem?             Modem                       = null,
+                                   String             VendorName,
+                                   String             Model,
+                                   I18NString?        Description                 = null,
+                                   String?            SerialNumber                = null,
+                                   String?            FirmwareVersion             = null,
+                                   Modem?             Modem                       = null,
 
-                                  SignaturePolicy?   SignaturePolicy             = null,
-                                  SignaturePolicy?   ForwardingSignaturePolicy   = null,
+                                   SignaturePolicy?   SignaturePolicy             = null,
+                                   SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
-                                  IPPort?            HTTPUploadPort              = null,
-                                  IPPort?            HTTPDownloadPort            = null,
+                                   IPPort?            HTTPUploadPort              = null,
+                                   IPPort?            HTTPDownloadPort            = null,
 
-                                  Boolean            DisableSendHeartbeats       = false,
-                                  TimeSpan?          SendHeartbeatsEvery         = null,
-                                  TimeSpan?          DefaultRequestTimeout       = null,
+                                   Boolean            DisableSendHeartbeats       = false,
+                                   TimeSpan?          SendHeartbeatsEvery         = null,
+                                   TimeSpan?          DefaultRequestTimeout       = null,
 
-                                  Boolean            DisableMaintenanceTasks     = false,
-                                  TimeSpan?          MaintenanceEvery            = null,
-                                  DNSClient?         DNSClient                   = null)
+                                   Boolean            DisableMaintenanceTasks     = false,
+                                   TimeSpan?          MaintenanceEvery            = null,
+                                   DNSClient?         DNSClient                   = null)
 
             : base(Id,
                    VendorName,

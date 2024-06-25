@@ -452,6 +452,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.SendLocalListRequest>?                           CustomSendLocalListRequestSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.ClearCacheRequest>?                              CustomClearCacheRequestSerializer                            { get; set; }
 
+
+        public CustomJObjectSerializerDelegate<CSMS.QRCodeScannedRequest>?                           CustomQRCodeScannedRequestSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.ReserveNowRequest>?                              CustomReserveNowRequestSerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.CancelReservationRequest>?                       CustomCancelReservationRequestSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.RequestStartTransactionRequest>?                 CustomRequestStartTransactionRequestSerializer               { get; set; }
@@ -610,6 +612,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<SendLocalListResponse>?                               CustomSendLocalListResponseSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<ClearCacheResponse>?                                  CustomClearCacheResponseSerializer                           { get; set; }
 
+
+        public CustomJObjectSerializerDelegate<QRCodeScannedResponse>?                               CustomQRCodeScannedResponseSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<ReserveNowResponse>?                                  CustomReserveNowResponseSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<CancelReservationResponse>?                           CustomCancelReservationResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<RequestStartTransactionResponse>?                     CustomRequestStartTransactionResponseSerializer              { get; set; }
@@ -1573,6 +1577,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region QRCodeScanned
+
+        /// <summary>
+        /// An event fired whenever a QRCodeScanned request was received from the CSMS.
+        /// </summary>
+        public event OnQRCodeScannedRequestReceivedDelegate?   OnQRCodeScannedRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a QRCodeScanned request was sent.
+        /// </summary>
+        public event OnQRCodeScannedResponseSentDelegate?      OnQRCodeScannedResponse;
+
+        #endregion
+
         #region ReserveNow
 
         /// <summary>
@@ -1583,7 +1601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event fired whenever a response to a ReserveNow request was sent.
         /// </summary>
-        public event OnReserveNowResponseSentDelegate?  OnReserveNowResponse;
+        public event OnReserveNowResponseSentDelegate?      OnReserveNowResponse;
 
         #endregion
 
@@ -6538,6 +6556,141 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+
+            #region OnQRCodeScanned
+
+            ChargingStationServer.OnQRCodeScanned += async (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
+
+                #region Send OnQRCodeScannedRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnQRCodeScannedRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnQRCodeScannedRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnQRCodeScannedRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                QRCodeScannedResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomQRCodeScannedRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new QRCodeScannedResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming QRCodeScanned request (EVSE id: {request.EVSEId}, timeout: '{request.Timeout.TotalSeconds} secs)!");
+
+                    response = new QRCodeScannedResponse(
+                                   Request:     request,
+                                   CustomData:  null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomQRCodeScannedResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnQRCodeScannedResponse event
+
+                var responseLogger = OnQRCodeScannedResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnQRCodeScannedResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnQRCodeScannedResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
             #region OnReserveNow
 

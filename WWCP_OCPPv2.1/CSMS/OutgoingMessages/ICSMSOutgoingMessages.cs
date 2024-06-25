@@ -452,6 +452,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+        #region QRCodeScanned               (Request)
+
+        /// <summary>
+        /// Send a QR code scanned notification.
+        /// </summary>
+        /// <param name="Request">A reserve now request.</param>
+        Task<QRCodeScannedResponse> QRCodeScanned(QRCodeScannedRequest  Request);
+
+        #endregion
+
         #region ReserveNow                  (Request)
 
         /// <summary>

@@ -2499,6 +2499,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #endregion
 
 
+        #region QRCodeScanned_Test()
+
+        /// <summary>
+        /// A test for creating a reservation at a charging station.
+        /// </summary>
+        [Test]
+        public async Task QRCodeScanned_Test()
+        {
+
+            ClassicAssert.IsNotNull(testCSMS01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(chargingStation1);
+            ClassicAssert.IsNotNull(chargingStation2);
+            ClassicAssert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var qrCodeScannedRequests = new ConcurrentList<QRCodeScannedRequest>();
+
+                chargingStation1.OnQRCodeScannedRequest += (timestamp, sender, connection, qrCodeScannedRequest) => {
+                    qrCodeScannedRequests.TryAdd(qrCodeScannedRequest);
+                    return Task.CompletedTask;
+                };
+
+
+                var reservationId   = Reservation_Id.NewRandom;
+                var evseId          = EVSE_Id.       Parse(1);
+                var timeout         = TimeSpan.      FromMinutes(1);
+
+                var response        = await testCSMS01.QRCodeScanned(
+                                          DestinationNodeId:   chargingStation1.Id,
+                                          EVSEId:              evseId,
+                                          Timeout:             timeout,
+                                          CustomData:          null
+                                      );
+
+
+                ClassicAssert.AreEqual(ResultCode.OK,                response.Result.ResultCode);
+
+                ClassicAssert.AreEqual(1,                            qrCodeScannedRequests.Count);
+
+            }
+
+        }
+
+        #endregion
+
         #region ReserveNow_Test()
 
         /// <summary>

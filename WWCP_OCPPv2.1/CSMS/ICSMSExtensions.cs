@@ -1610,6 +1610,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+        #region QRCodeScanned               (DestinationNodeId, EVSEId, Timeout, ...)
+
+        /// <summary>
+        /// Send a QR code scanned notification.
+        /// </summary>
+        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="ReservationId">The unique identification of this reservation.</param>
+        /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
+        /// <param name="IdToken">The identifier for which the charging station has to reserve a connector.</param>
+        /// <param name="ConnectorType">An optional connector type to be reserved..</param>
+        /// <param name="EVSEId">The identification of the EVSE to be reserved. A value of 0 means that the reservation is not for a specific EVSE.</param>
+        /// <param name="GroupIdToken">An optional group identifier for which the reservation is being made.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.QRCodeScannedResponse>
+
+            QRCodeScanned(this ICSMS                    CSMS,
+                          NetworkingNode_Id             DestinationNodeId,
+                          EVSE_Id                       EVSEId,
+                          TimeSpan                      Timeout,
+
+                          IEnumerable<KeyPair>?         SignKeys            = null,
+                          IEnumerable<SignInfo>?        SignInfos           = null,
+                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                          CustomData?                   CustomData          = null,
+
+                          Request_Id?                   RequestId           = null,
+                          DateTime?                     RequestTimestamp    = null,
+                          TimeSpan?                     RequestTimeout      = null,
+                          EventTracking_Id?             EventTrackingId     = null,
+                          CancellationToken             CancellationToken   = default)
+
+
+                => CSMS.QRCodeScanned(
+                       new QRCodeScannedRequest(
+                           DestinationNodeId,
+                           EVSEId,
+                           Timeout,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
         #region ReserveNow                  (DestinationNodeId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>

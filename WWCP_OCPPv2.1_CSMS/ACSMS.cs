@@ -1129,12 +1129,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region OnQRCodeScanned               (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a QRCodeScanned request will be sent to the charging station.
+        /// </summary>
+        public event OnQRCodeScannedRequestSentDelegate?       OnQRCodeScannedRequestSent;
+
+        /// <summary>
+        /// An event fired whenever a response to a QRCodeScanned request was received.
+        /// </summary>
+        public event OnQRCodeScannedResponseReceivedDelegate?  OnQRCodeScannedResponseReceived;
+
+        #endregion
+
         #region OnReserveNow                  (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ReserveNow request will be sent to the charging station.
         /// </summary>
-        public event OnReserveNowRequestSentDelegate?   OnReserveNowRequestSent;
+        public event OnReserveNowRequestSentDelegate?       OnReserveNowRequestSent;
 
         /// <summary>
         /// An event fired whenever a response to a ReserveNow request was received.
@@ -1680,6 +1694,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<ClearCacheRequest>?                                   CustomClearCacheRequestSerializer                            { get; set; }
 
 
+        public CustomJObjectSerializerDelegate<QRCodeScannedRequest>?                                CustomQRCodeScannedRequestSerializer                         { get; set; }
+
         public CustomJObjectSerializerDelegate<ReserveNowRequest>?                                   CustomReserveNowRequestSerializer                            { get; set; }
 
         public CustomJObjectSerializerDelegate<CancelReservationRequest>?                            CustomCancelReservationRequestSerializer                     { get; set; }
@@ -1870,6 +1886,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CS.SendLocalListResponse>?                            CustomSendLocalListResponseSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<CS.ClearCacheResponse>?                               CustomClearCacheResponseSerializer                           { get; set; }
 
+
+        public CustomJObjectSerializerDelegate<CS.QRCodeScannedResponse>?                            CustomQRCodeScannedResponseSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<CS.ReserveNowResponse>?                               CustomReserveNowResponseSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<CS.CancelReservationResponse>?                        CustomCancelReservationResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<CS.RequestStartTransactionResponse>?                  CustomRequestStartTransactionResponseSerializer              { get; set; }
@@ -9542,6 +9560,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region QRCodeScanned               (Request)
+
+        /// <summary>
+        /// Send a QR code scanned notification.
+        /// </summary>
+        /// <param name="Request">A QRCodeScanned request.</param>
+        public async Task<CS.QRCodeScannedResponse> QRCodeScanned(QRCodeScannedRequest Request)
+        {
+
+            #region Send OnQRCodeScannedRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnQRCodeScannedRequestSent?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnQRCodeScannedRequestSent));
+            }
+
+            #endregion
+
+
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+                                csmsChannel is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomQRCodeScannedRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await csmsChannel.QRCodeScanned(Request)
+
+                                      : new CS.QRCodeScannedResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.QRCodeScannedResponse(
+                                      Request,
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomQRCodeScannedResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnQRCodeScannedResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnQRCodeScannedResponseReceived?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnQRCodeScannedResponseReceived));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
 
         #region ReserveNow                  (Request)
 

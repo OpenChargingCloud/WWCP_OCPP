@@ -261,6 +261,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
+        #region OnQRCodeScanned
+
+        /// <summary>
+        /// An event sent whenever a QR code scanned request was received.
+        /// </summary>
+        event OnQRCodeScannedDelegate        OnQRCodeScanned;
+
+        #endregion
+
         #region OnReserveNow
 
         /// <summary>
