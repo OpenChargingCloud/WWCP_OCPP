@@ -345,14 +345,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            this.OCPPAdapter = OCPPAdapter;
+            this.OCPPAdapter                     = OCPPAdapter;
 
-            this.RequireAuthentication = RequireAuthentication;
+            this.RequireAuthentication           = RequireAuthentication;
 
-            //this.Logger          = new ChargePointwebsocketClient.CPClientLogger(this,
-            //                                                                LoggingPath,
-            //                                                                LoggingContext,
-            //                                                                LogfileCreator);
+            //this.Logger                          = new ChargePointwebsocketClient.CPClientLogger(this,
+            //                                                                                LoggingPath,
+            //                                                                                LoggingContext,
+            //                                                                                LogfileCreator);
 
             base.OnValidateTCPConnection        += ValidateTCPConnection;
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
