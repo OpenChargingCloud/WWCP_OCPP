@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         public IEnumerable<OCPPWebSocketClient> OCPPWebSocketClients
-            => OCPPWebSocketClients;
+            => ocppWebSocketClients;
 
         public IEnumerable<OCPPWebSocketServer> OCPPWebSocketServers
             => ocppWebSocketServers;

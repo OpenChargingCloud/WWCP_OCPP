@@ -39,6 +39,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Properties
 
         /// <summary>
+        /// The unique identification of the networking node hosting this OCPP adapter.
+        /// </summary>
+        NetworkingNode_Id             Id                             { get; }
+
+        /// <summary>
         /// Incoming OCPP messages.
         /// </summary>
         IOCPPWebSocketAdapterIN       IN                             { get; }

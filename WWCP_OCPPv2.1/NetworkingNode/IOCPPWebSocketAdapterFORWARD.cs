@@ -3475,8 +3475,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Firmware
 
+        event OnBootNotificationRequestReceivedDelegate                     OnBootNotificationRequestReceived;
         event OnBootNotificationRequestFilterDelegate?                      OnBootNotificationRequest;
         event OnBootNotificationRequestFilteredDelegate?                    OnBootNotificationRequestLogging;
+        event OnBootNotificationRequestSentDelegate?                        OnBootNotificationRequestSent;
+        event OnBootNotificationResponseReceivedDelegate?                   OnBootNotificationResponseReceived;
+        event OnBootNotificationResponseSentDelegate?                       OnBootNotificationResponseSent;
 
         event OnFirmwareStatusNotificationRequestFilterDelegate?            OnFirmwareStatusNotificationRequest;
         event OnFirmwareStatusNotificationRequestFilteredDelegate?          OnFirmwareStatusNotificationRequestLogging;

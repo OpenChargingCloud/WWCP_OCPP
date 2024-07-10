@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -64,10 +65,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        void    AddOrUpdateHTTPBasicAuth(NetworkingNode_Id NetworkingNodeId, String Password);
-        void    AddStaticRouting        (NetworkingNode_Id DestinationNodeId, NetworkingNode_Id NetworkingHubId);
-        Boolean RemoveHTTPBasicAuth     (NetworkingNode_Id NetworkingNodeId);
-        void    RemoveStaticRouting     (NetworkingNode_Id DestinationNodeId, NetworkingNode_Id NetworkingHubId);
+        HTTPBasicAuthentication  AddOrUpdateHTTPBasicAuth (NetworkingNode_Id NetworkingNodeId,  String            Password);
+        void                     AddStaticRouting         (NetworkingNode_Id DestinationNodeId, NetworkingNode_Id NetworkingHubId);
+        Boolean                  RemoveHTTPBasicAuth      (NetworkingNode_Id NetworkingNodeId);
+        void                     RemoveStaticRouting      (NetworkingNode_Id DestinationNodeId, NetworkingNode_Id NetworkingHubId);
 
 
         Task<SendOCPPMessageResult> SendJSONRequest       (OCPP_JSONRequestMessage        JSONRequestMessage);
