@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 //    return Task.CompletedTask;
                 //};
 
-                localController1.OCPP.FORWARD.OnBootNotificationRequestLogging += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
+                localController1.OCPP.FORWARD.OnBootNotificationRequestFiltered += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
                     nnBootNotificationRequestsFWD.TryAdd(new Tuple<BootNotificationRequest, ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>(bootNotificationRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };

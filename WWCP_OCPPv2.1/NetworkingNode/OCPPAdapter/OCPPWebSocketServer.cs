@@ -1458,9 +1458,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             if (NetworkingNodeId == NetworkingNode_Id.Zero)
-                return Array.Empty<Tuple<WebSocketServerConnection, NetworkingMode>>();
+                return [];
 
             var lookUpNetworkingNodeId = NetworkingNodeId;
+
+            if (OCPPAdapter.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
+                reachability is not null)
+            {
+                lookUpNetworkingNodeId = reachability.NetworkingNodeId;
+            }
 
             if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
             {
@@ -1470,7 +1476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).
-                                        Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingMode.Standard));
+                                        Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingNodeId == lookUpNetworkingNodeId ? NetworkingMode.Standard : NetworkingMode.OverlayNetwork));
 
         }
 

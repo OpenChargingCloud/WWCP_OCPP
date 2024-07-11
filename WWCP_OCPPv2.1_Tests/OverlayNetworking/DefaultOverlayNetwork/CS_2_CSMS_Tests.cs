@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnBootNotificationRequestLogging += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
+                localController.OCPP.FORWARD.OnBootNotificationRequestFiltered += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
                     nnBootNotificationRequestsForwarded.TryAdd(forwardingDecision);
                     return Task.CompletedTask;
                 };
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 //OnBootNotificationRequest;
 
-                CSMS.           OCPP.FORWARD.OnBootNotificationRequestLogging += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
+                CSMS.           OCPP.FORWARD.OnBootNotificationRequestFiltered += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
                     csmsBootNotificationRequests.       TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };

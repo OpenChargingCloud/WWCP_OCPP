@@ -40,9 +40,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public event OnBootNotificationRequestReceivedDelegate?    OnBootNotificationRequestReceived;
 
-        public event OnBootNotificationRequestFilterDelegate?      OnBootNotificationRequest;
+        public event OnBootNotificationRequestFilterDelegate?      OnBootNotificationRequestFilter;
 
-        public event OnBootNotificationRequestFilteredDelegate?    OnBootNotificationRequestLogging;
+        public event OnBootNotificationRequestFilteredDelegate?    OnBootNotificationRequestFiltered;
 
         public event OnBootNotificationRequestSentDelegate?        OnBootNotificationRequestSent;
 
@@ -109,9 +109,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region Send OnBootNotificationRequest event
+            #region Send OnBootNotificationRequestFilter event
 
-            var requestFilter = OnBootNotificationRequest;
+            var requestFilter = OnBootNotificationRequestFilter;
             if (requestFilter is not null)
             {
                 try
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                                 "NetworkingNode",
-                                nameof(OnBootNotificationRequest),
+                                nameof(OnBootNotificationRequestFilter),
                                 e
                             );
                 }
@@ -142,6 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
 
             #region Default result
 
@@ -178,9 +179,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnBootNotificationRequestLogging event
+            #region Send OnBootNotificationRequestFiltered event
 
-            var logger = OnBootNotificationRequestLogging;
+            var logger = OnBootNotificationRequestFiltered;
             if (logger is not null)
             {
                 try
@@ -200,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnBootNotificationRequestLogging),
+                              nameof(OnBootNotificationRequestFiltered),
                               e
                           );
                 }

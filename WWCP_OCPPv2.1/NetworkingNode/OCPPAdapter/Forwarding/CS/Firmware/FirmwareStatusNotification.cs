@@ -38,9 +38,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnFirmwareStatusNotificationRequestFilterDelegate?      OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestFilterDelegate?      OnFirmwareStatusNotificationRequestFilter;
 
-        public event OnFirmwareStatusNotificationRequestFilteredDelegate?    OnFirmwareStatusNotificationRequestLogging;
+        public event OnFirmwareStatusNotificationRequestFilteredDelegate?    OnFirmwareStatusNotificationRequestFiltered;
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnFirmwareStatusNotificationRequest event
 
-            var requestFilter = OnFirmwareStatusNotificationRequest;
+            var requestFilter = OnFirmwareStatusNotificationRequestFilter;
             if (requestFilter is not null)
             {
                 try
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnFirmwareStatusNotificationRequest),
+                              nameof(OnFirmwareStatusNotificationRequestFilter),
                               e
                           );
                 }
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnFirmwareStatusNotificationRequestLogging event
 
-            var logger = OnFirmwareStatusNotificationRequestLogging;
+            var logger = OnFirmwareStatusNotificationRequestFiltered;
             if (logger is not null)
             {
                 try
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnFirmwareStatusNotificationRequestLogging),
+                              nameof(OnFirmwareStatusNotificationRequestFiltered),
                               e
                           );
                 }

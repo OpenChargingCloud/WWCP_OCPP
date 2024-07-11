@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Send requests...
 
-        #region SendJSONRequest         (JSONRequestMessage)
+        #region SendJSONRequest          (JSONRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON.
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONRequestAndWait  (JSONRequestMessage)
+        #region SendJSONRequestAndWait   (JSONRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON.
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region SendBinaryRequest       (BinaryRequestMessage)
+        #region SendBinaryRequest        (BinaryRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given Binary.
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendBinaryRequestAndWait(BinaryRequestMessage)
+        #region SendBinaryRequestAndWait (BinaryRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given Binary.
@@ -268,9 +268,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Response events...
 
-        #region NotifyJSONMessageResponseSent  (JSONResponseMessage)
+        #region NotifyJSONMessageResponseSent   (JSONResponseMessage,   SendMessageResult)
 
-        public async Task NotifyJSONMessageResponseSent(OCPP_JSONResponseMessage JSONResponseMessage)
+        public async Task NotifyJSONMessageResponseSent(OCPP_JSONResponseMessage  JSONResponseMessage,
+                                                        SendOCPPMessageResult     SendMessageResult)
         {
 
             var logger = OnJSONMessageResponseSent;
@@ -284,7 +285,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
-                                                                         JSONResponseMessage
+                                                                         JSONResponseMessage,
+                                                                         SendMessageResult
                                                                      )).
                                            ToArray());
 
@@ -299,9 +301,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region NotifyJSONErrorResponseSent    (JSONErrorMessage)
+        #region NotifyJSONErrorResponseSent     (JSONErrorMessage,      SendMessageResult)
 
-        public async Task NotifyJSONErrorResponseSent(OCPP_JSONRequestErrorMessage JSONErrorMessage)
+        public async Task NotifyJSONErrorResponseSent(OCPP_JSONRequestErrorMessage  JSONErrorMessage,
+                                                      SendOCPPMessageResult         SendMessageResult)
         {
 
             var logger = OnJSONErrorResponseSent;
@@ -315,7 +318,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
-                                                                         JSONErrorMessage
+                                                                         JSONErrorMessage,
+                                                                         SendMessageResult
                                                                      )).
                                            ToArray());
 
@@ -330,11 +334,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region NotifyBinaryMessageResponseSent (BinaryResponseMessage, SendMessageResult)
 
-        #region NotifyBinaryMessageResponseSent(BinaryResponseMessage)
 
-
-        public async Task NotifyBinaryMessageResponseSent(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public async Task NotifyBinaryMessageResponseSent(OCPP_BinaryResponseMessage  BinaryResponseMessage,
+                                                          SendOCPPMessageResult       SendMessageResult)
         {
 
             var logger = OnBinaryMessageResponseSent;
@@ -348,7 +352,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
-                                                                         BinaryResponseMessage
+                                                                         BinaryResponseMessage,
+                                                                         SendMessageResult
                                                                      )).
                                            ToArray());
 
@@ -379,6 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
 
     }
 
