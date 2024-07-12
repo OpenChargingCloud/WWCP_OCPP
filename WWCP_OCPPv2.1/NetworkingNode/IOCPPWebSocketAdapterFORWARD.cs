@@ -3338,7 +3338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         OnJSONRequestMessageSentLoggingDelegate(DateTime                 Timestamp,
                                                 IEventSender             Sender,
                                                 OCPP_JSONRequestMessage  JSONRequestMessage,
-                                                SendOCPPMessageResult    SendOCPPMessageResult);
+                                                SendMessageResult    SendOCPPMessageResult);
 
     /// <summary>
     /// A filtered JSON response message.
@@ -3352,7 +3352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         OnJSONResponseMessageSentLoggingDelegate(DateTime                  Timestamp,
                                                  IEventSender              Sender,
                                                  OCPP_JSONResponseMessage  JSONResponseMessage,
-                                                 SendOCPPMessageResult     SendOCPPMessageResult);
+                                                 SendMessageResult     SendOCPPMessageResult);
 
 
     /// <summary>
@@ -3367,7 +3367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         OnJSONRequestErrorMessageSentLoggingDelegate(DateTime                      Timestamp,
                                                      IEventSender                  Sender,
                                                      OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
-                                                     SendOCPPMessageResult         SendOCPPMessageResult);
+                                                     SendMessageResult         SendOCPPMessageResult);
 
 
 

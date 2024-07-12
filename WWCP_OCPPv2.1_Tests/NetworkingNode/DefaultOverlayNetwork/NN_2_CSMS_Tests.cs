@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 Assert.That(csmsWSServer,            Is.Not.Null);
             });
 
-            if (localController         is not null &&
+            if (localController        is not null &&
                 lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONMessageRequestSent           += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.OUT.OnJSONRequestMessageSent           += (timestamp, sender, jsonRequestMessage, sendMessageResult) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONMessageRequestSent                += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.OUT.OnJSONRequestMessageSent                += (timestamp, sender, jsonRequestMessage, sendMessageResult) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONMessageRequestSent       += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.OUT.OnJSONRequestMessageSent       += (timestamp, sender, jsonRequestMessage, sendMessageResult) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };

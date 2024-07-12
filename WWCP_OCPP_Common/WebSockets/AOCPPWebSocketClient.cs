@@ -757,7 +757,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                 Timestamp.Now,
                                                 Id,
                                                 Timestamp.Now + RequestTimeout,
-                                                jsonRequestMessage
+                                                jsonRequestMessage,
+                                                SendMessageResult.Success
                                             ));
 
                         else
@@ -880,7 +881,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                 Timestamp.Now,
                                                 Id,
                                                 Timestamp.Now + RequestTimeout,
-                                                binaryRequestMessage
+                                                binaryRequestMessage,
+                                                SendMessageResult.Success
                                             ));
 
                         else
@@ -1000,6 +1002,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                        Id,
                        endTime,
                        JSONRequestMessage,
+                       SendMessageResult.Timeout,
                        Timestamp.Now,
 
                        JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
@@ -1067,6 +1070,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                        Id,
                        endTime,
                        BinaryRequestMessage,
+                       SendMessageResult.Timeout,
+                       Timestamp.Now,
 
                        JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
 

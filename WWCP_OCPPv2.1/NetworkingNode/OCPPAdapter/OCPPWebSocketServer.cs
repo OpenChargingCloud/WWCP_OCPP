@@ -875,7 +875,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send (and forget) the given JSON OCPP request message.
         /// </summary>
         /// <param name="JSONRequestMessage">A JSON OCPP request message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
+        public async Task<SendMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
         {
 
             try
@@ -950,16 +950,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     }
 
-                    return SendOCPPMessageResult.Success;
+                    return SendMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResult.UnknownClient;
+                    return SendMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResult.TransmissionFailed;
+                return SendMessageResult.TransmissionFailed;
             }
 
         }
@@ -972,7 +972,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send (and forget) the given JSON OCPP response message.
         /// </summary>
         /// <param name="JSONResponseMessage">A JSON OCPP response message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        public async Task<SendMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
             try
@@ -1047,16 +1047,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     }
 
-                    return SendOCPPMessageResult.Success;
+                    return SendMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResult.UnknownClient;
+                    return SendMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResult.TransmissionFailed;
+                return SendMessageResult.TransmissionFailed;
             }
 
         }
@@ -1069,7 +1069,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send (and forget) the given JSON OCPP error message.
         /// </summary>
         /// <param name="JSONRequestErrorMessage">A JSON OCPP error message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+        public async Task<SendMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
             try
@@ -1144,16 +1144,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     }
 
-                    return SendOCPPMessageResult.Success;
+                    return SendMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResult.UnknownClient;
+                    return SendMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResult.TransmissionFailed;
+                return SendMessageResult.TransmissionFailed;
             }
 
         }
@@ -1166,7 +1166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send (and forget) the given JSON OCPP error message.
         /// </summary>
         /// <param name="JSONResponseErrorMessage">A JSON OCPP error message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        public async Task<SendMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
         {
 
             try
@@ -1241,16 +1241,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     }
 
-                    return SendOCPPMessageResult.Success;
+                    return SendMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResult.UnknownClient;
+                    return SendMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResult.TransmissionFailed;
+                return SendMessageResult.TransmissionFailed;
             }
 
         }
@@ -1264,7 +1264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send (and forget) the given binary OCPP request message.
         /// </summary>
         /// <param name="BinaryRequestMessage">A binary OCPP request message.</param>
-        public async Task<SendOCPPMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        public async Task<SendMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
 
             try
@@ -1339,16 +1339,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     }
 
-                    return SendOCPPMessageResult.Success;
+                    return SendMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResult.UnknownClient;
+                    return SendMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResult.TransmissionFailed;
+                return SendMessageResult.TransmissionFailed;
             }
 
         }
@@ -1361,7 +1361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send (and forget) the given binary OCPP response message.
         /// </summary>
         /// <param name="BinaryResponseMessage">A binary OCPP response message.</param>
-        public async Task<SendOCPPMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public async Task<SendMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
             try
@@ -1436,16 +1436,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     }
 
-                    return SendOCPPMessageResult.Success;
+                    return SendMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResult.UnknownClient;
+                    return SendMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResult.TransmissionFailed;
+                return SendMessageResult.TransmissionFailed;
             }
 
         }

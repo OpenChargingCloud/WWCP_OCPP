@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     return Task.CompletedTask;
                 };
 
-                localController1.OCPP.OUT.OnJSONMessageRequestSent           += (timestamp, sender, jsonRequestMessage) => {
+                localController1.OCPP.OUT.OnJSONRequestMessageSent           += (timestamp, sender, jsonRequestMessage, sendMessageResult) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     return Task.CompletedTask;
                 };
 
-                localController1.OCPP.OUT.OnJSONMessageRequestSent       += (timestamp, sender, jsonRequestMessage) => {
+                localController1.OCPP.OUT.OnJSONRequestMessageSent       += (timestamp, sender, jsonRequestMessage, sendMessageResult) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };

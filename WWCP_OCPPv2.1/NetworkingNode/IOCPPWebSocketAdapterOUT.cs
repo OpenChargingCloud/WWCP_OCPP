@@ -26,34 +26,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
 
-    public delegate Task OnJSONMessageRequestSentDelegate     (DateTime                      Timestamp,
-                                                               IOCPPWebSocketAdapterOUT      Server,
-                                                               OCPP_JSONRequestMessage       JSONRequestMessage);
+    public delegate Task OnJSONRequestMessageSentDelegate      (DateTime                      Timestamp,
+                                                                IOCPPWebSocketAdapterOUT      Server,
+                                                                OCPP_JSONRequestMessage       JSONRequestMessage,
+                                                                SendMessageResult             SendMessageResult);
 
-    public delegate Task OnJSONMessageResponseSentDelegate    (DateTime                      Timestamp,
-                                                               IOCPPWebSocketAdapterOUT      Server,
-                                                               OCPP_JSONResponseMessage      JSONResponseMessage,
-                                                               SendOCPPMessageResult         SendMessageResult);
+    public delegate Task OnJSONResponseMessageSentDelegate     (DateTime                      Timestamp,
+                                                                IOCPPWebSocketAdapterOUT      Server,
+                                                                OCPP_JSONResponseMessage      JSONResponseMessage,
+                                                                SendMessageResult             SendMessageResult);
 
-    public delegate Task OnJSONRequestErrorMessageSentDelegate(DateTime                      Timestamp,
-                                                               IOCPPWebSocketAdapterOUT      Server,
-                                                               OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
-                                                               SendOCPPMessageResult         SendMessageResult);
+    public delegate Task OnJSONRequestErrorMessageSentDelegate (DateTime                      Timestamp,
+                                                                IOCPPWebSocketAdapterOUT      Server,
+                                                                OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
+                                                                SendMessageResult             SendMessageResult);
 
 
 
-    public delegate Task OnBinaryMessageRequestSentDelegate   (DateTime                      Timestamp,
-                                                               IOCPPWebSocketAdapterOUT      Server,
-                                                               OCPP_BinaryRequestMessage     BinaryRequestMessage);
+    public delegate Task OnBinaryRequestMessageSentDelegate    (DateTime                      Timestamp,
+                                                                IOCPPWebSocketAdapterOUT      Server,
+                                                                OCPP_BinaryRequestMessage     BinaryRequestMessage,
+                                                                SendMessageResult             SendMessageResult);
 
-    public delegate Task OnBinaryMessageResponseSentDelegate  (DateTime                      Timestamp,
-                                                               IOCPPWebSocketAdapterOUT      Server,
-                                                               OCPP_BinaryResponseMessage    BinaryResponseMessage,
-                                                               SendOCPPMessageResult         SendMessageResult);
+    public delegate Task OnBinaryResponseMessageSentDelegate   (DateTime                      Timestamp,
+                                                                IOCPPWebSocketAdapterOUT      Server,
+                                                                OCPP_BinaryResponseMessage    BinaryResponseMessage,
+                                                                SendMessageResult             SendMessageResult);
 
-    //public delegate Task OnBinaryErrorMessageSentDelegate     (DateTime                      Timestamp,
-    //                                                           IOCPPWebSocketAdapterOUT      Server,
-    //                                                           OCPP_BinaryErrorMessage       BinaryErrorMessage);
+    //public delegate Task OnBinaryErrorMessageSentDelegate      (DateTime                      Timestamp,
+    //                                                            IOCPPWebSocketAdapterOUT      Server,
+    //                                                            OCPP_BinaryErrorMessage       BinaryErrorMessage,
+    //                                                            SendMessageResult             SendMessageResult);
 
 
     /// <summary>
@@ -77,14 +80,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Generic JSON Messages
 
         /// <summary>
-        /// An event sent whenever a JSON request was sent.
+        /// An event sent whenever a JSON request message was sent.
         /// </summary>
-        event OnJSONMessageRequestSentDelegate?          OnJSONMessageRequestSent;
+        event OnJSONRequestMessageSentDelegate?          OnJSONRequestMessageSent;
 
         /// <summary>
-        /// An event sent whenever a JSON response was sent.
+        /// An event sent whenever a JSON response message was sent.
         /// </summary>
-        event OnJSONMessageResponseSentDelegate?         OnJSONMessageResponseSent;
+        event OnJSONResponseMessageSentDelegate?         OnJSONResponseMessageSent;
 
         /// <summary>
         /// An event sent whenever a JSON error response was sent.
@@ -98,12 +101,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary request was sent.
         /// </summary>
-        event OnBinaryMessageRequestSentDelegate?        OnBinaryMessageRequestSent;
+        event OnBinaryRequestMessageSentDelegate?        OnBinaryRequestMessageSent;
 
         /// <summary>
         /// An event sent whenever a binary response was sent.
         /// </summary>
-        event OnBinaryMessageResponseSentDelegate?       OnBinaryMessageResponseSent;
+        event OnBinaryResponseMessageSentDelegate?       OnBinaryResponseMessageSent;
 
         ///// <summary>
         ///// An event sent whenever a binary error response was sent.
@@ -118,9 +121,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         Task<DataTransferResponse>           DataTransfer         (          DataTransferRequest           Request);
 
-        Task NotifyJSONMessageResponseSent   (OCPP_JSONResponseMessage     JSONResponseMessage,   SendOCPPMessageResult SendMessageResult);
-        Task NotifyJSONErrorResponseSent     (OCPP_JSONRequestErrorMessage JSONErrorMessage,      SendOCPPMessageResult SendMessageResult);
-        Task NotifyBinaryMessageResponseSent (OCPP_BinaryResponseMessage   BinaryResponseMessage, SendOCPPMessageResult SendMessageResult);
+        Task NotifyJSONMessageResponseSent   (OCPP_JSONResponseMessage     JSONResponseMessage,   SendMessageResult SendMessageResult);
+        Task NotifyJSONErrorResponseSent     (OCPP_JSONRequestErrorMessage JSONErrorMessage,      SendMessageResult SendMessageResult);
+        Task NotifyBinaryMessageResponseSent (OCPP_BinaryResponseMessage   BinaryResponseMessage, SendMessageResult SendMessageResult);
 
 
     }

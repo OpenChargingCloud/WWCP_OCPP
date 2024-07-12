@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    var sendresult      = SendOCPPMessageResult.TransmissionFailed;
+                    var sendresult      = SendMessageResult.TransmissionFailed;
                     var acceptAsAnycast = parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonRequest.DestinationId);
 
                     // When not for this node, send it to the FORWARD processor...
@@ -601,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    var sendresult = SendOCPPMessageResult.TransmissionFailed;
+                    var sendresult = SendMessageResult.TransmissionFailed;
 
                     // When not for this node, send it to the FORWARD processor...
                     if (binaryRequest.DestinationId != parentNetworkingNode.Id)

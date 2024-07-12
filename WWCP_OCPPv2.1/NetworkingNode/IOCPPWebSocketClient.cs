@@ -62,14 +62,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          CancellationToken          CancellationToken);
 
 
-        Task<SendOCPPMessageResult> SendJSONRequest       (OCPP_JSONRequestMessage        JSONRequestMessage);
-        Task<SendOCPPMessageResult> SendJSONResponse      (OCPP_JSONResponseMessage       JSONResponseMessage);
-        Task<SendOCPPMessageResult> SendJSONRequestError  (OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage);
-        Task<SendOCPPMessageResult> SendJSONResponseError (OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage);
+        Task<SendMessageResult> SendJSONRequest       (OCPP_JSONRequestMessage        JSONRequestMessage);
+        Task<SendMessageResult> SendJSONResponse      (OCPP_JSONResponseMessage       JSONResponseMessage);
+        Task<SendMessageResult> SendJSONRequestError  (OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage);
+        Task<SendMessageResult> SendJSONResponseError (OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage);
 
 
-        Task<SendOCPPMessageResult> SendBinaryRequest     (OCPP_BinaryRequestMessage      BinaryRequestMessage);
-        Task<SendOCPPMessageResult> SendBinaryResponse    (OCPP_BinaryResponseMessage     BinaryResponseMessage);
+        Task<SendMessageResult> SendBinaryRequest     (OCPP_BinaryRequestMessage      BinaryRequestMessage);
+        Task<SendMessageResult> SendBinaryResponse    (OCPP_BinaryResponseMessage     BinaryResponseMessage);
 
 
     }

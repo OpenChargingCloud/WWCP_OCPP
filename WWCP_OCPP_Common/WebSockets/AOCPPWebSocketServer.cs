@@ -1612,7 +1612,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="Action">An OCPP action.</param>
         /// <param name="JSONData">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<SendOCPPMessageResult> SendJSONData(EventTracking_Id   EventTrackingId,
+        public async Task<SendMessageResult> SendJSONData(EventTracking_Id   EventTrackingId,
                                                                NetworkingNode_Id  DestinationNodeId,
                                                                NetworkPath        NetworkPath,
                                                                Request_Id         RequestId,
@@ -1662,7 +1662,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                 Timestamp.Now,
                                                 DestinationNodeId,
                                                 RequestTimeout,
-                                                jsonRequestMessage
+                                                jsonRequestMessage,
+                                                SendMessageResult.Success
                                             ));
 
                             #region OnJSONMessageRequestSent
@@ -1702,16 +1703,16 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                     }
 
-                    return SendOCPPMessageResult.Success;
+                    return SendMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResult.UnknownClient;
+                    return SendMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResult.TransmissionFailed;
+                return SendMessageResult.TransmissionFailed;
             }
 
         }
@@ -1730,7 +1731,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="Action">An OCPP action.</param>
         /// <param name="BinaryData">The binary payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<SendOCPPMessageResult> SendBinaryData(EventTracking_Id   EventTrackingId,
+        public async Task<SendMessageResult> SendBinaryData(EventTracking_Id   EventTrackingId,
                                                                  NetworkingNode_Id  DestinationNodeId,
                                                                  NetworkPath        NetworkPath,
                                                                  Request_Id         RequestId,
@@ -1766,7 +1767,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                         Timestamp.Now,
                                         DestinationNodeId,
                                         RequestTimeout,
-                                        binaryRequestMessage
+                                        binaryRequestMessage,
+                                        SendMessageResult.Success
                                     ));
 
                     var ocppBinaryMessage     = binaryRequestMessage.ToByteArray();
@@ -1819,16 +1821,16 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                     }
 
-                    return SendOCPPMessageResult.Success;
+                    return SendMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResult.UnknownClient;
+                    return SendMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResult.TransmissionFailed;
+                return SendMessageResult.TransmissionFailed;
             }
 
         }
@@ -1861,7 +1863,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                             CancellationToken
                                         );
 
-            if (sendJSONResult == SendOCPPMessageResult.Success) {
+            if (sendJSONResult == SendMessageResult.Success) {
 
                 #region Wait for a response... till timeout
 
@@ -1974,6 +1976,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                            OCPPAction,
                            JSONPayload
                        ),
+                       SendMessageResult.Timeout,
                        now,
                        null,
                        null,
@@ -2021,7 +2024,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                             CancellationToken
                                         );
 
-            if (sendJSONResult == SendOCPPMessageResult.Success) {
+            if (sendJSONResult == SendMessageResult.Success) {
 
                 #region Wait for a response... till timeout
 
@@ -2134,6 +2137,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                            OCPPAction,
                            BinaryPayload
                        ),
+                       SendMessageResult.Timeout,
                        now,
                        null,
                        null,

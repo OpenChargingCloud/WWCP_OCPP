@@ -745,14 +745,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        Task<SendOCPPMessageResult> SendJSONRequest          (OCPP_JSONRequestMessage       JSONRequestMessage);
-        Task<SendRequestState>      SendJSONRequestAndWait   (OCPP_JSONRequestMessage       JSONRequestMessage);
-        Task<SendOCPPMessageResult> SendJSONResponse         (OCPP_JSONResponseMessage      JSONResponseMessage);
-        Task<SendOCPPMessageResult> SendJSONRequestError     (OCPP_JSONRequestErrorMessage  JSONErrorMessage);
+        Task<SendMessageResult> SendJSONRequest          (OCPP_JSONRequestMessage       JSONRequestMessage);
+        Task<SendRequestState>  SendJSONRequestAndWait   (OCPP_JSONRequestMessage       JSONRequestMessage,   Action<SendMessageResult>? SendMessageResultDelegate = null);
+        Task<SendMessageResult> SendJSONResponse         (OCPP_JSONResponseMessage      JSONResponseMessage);
+        Task<SendMessageResult> SendJSONRequestError     (OCPP_JSONRequestErrorMessage  JSONErrorMessage);
 
-        Task<SendOCPPMessageResult> SendBinaryRequest        (OCPP_BinaryRequestMessage     BinaryRequestMessage);
-        Task<SendRequestState>      SendBinaryRequestAndWait (OCPP_BinaryRequestMessage     BinaryRequestMessage);
-        Task<SendOCPPMessageResult> SendBinaryResponse       (OCPP_BinaryResponseMessage    BinaryResponseMessage);
+        Task<SendMessageResult> SendBinaryRequest        (OCPP_BinaryRequestMessage     BinaryRequestMessage);
+        Task<SendRequestState>  SendBinaryRequestAndWait (OCPP_BinaryRequestMessage     BinaryRequestMessage, Action<SendMessageResult>? SendMessageResultDelegate = null);
+        Task<SendMessageResult> SendBinaryResponse       (OCPP_BinaryResponseMessage    BinaryResponseMessage);
 
         Boolean ReceiveJSONResponse     (OCPP_JSONResponseMessage      JSONResponseMessage);
         Boolean ReceiveBinaryResponse   (OCPP_BinaryResponseMessage    BinaryResponseMessage);

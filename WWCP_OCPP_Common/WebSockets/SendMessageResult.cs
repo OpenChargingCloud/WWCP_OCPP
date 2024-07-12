@@ -18,11 +18,12 @@
 namespace cloud.charging.open.protocols.OCPP
 {
 
-    public enum SendOCPPMessageResult
+    public enum SendMessageResult
     {
         Success,
         UnknownClient,
-        TransmissionFailed
+        TransmissionFailed,
+        Timeout
     }
 
 }

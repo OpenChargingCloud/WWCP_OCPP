@@ -51,6 +51,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                                   OCPP_JSONRequestMessage?        JSONRequest                = null,
                                   OCPP_BinaryRequestMessage?      BinaryRequest              = null,
+                                  SendMessageResult?              SendMessageResult          = null,
 
                                   DateTime?                       ResponseTimestamp          = null,
                                   OCPP_JSONResponseMessage?       JSONResponse               = null,
@@ -93,6 +94,12 @@ namespace cloud.charging.open.protocols.OCPP
         /// The binary request message.
         /// </summary>
         public OCPP_BinaryRequestMessage?      BinaryRequest               { get; }      = BinaryRequest;
+
+        /// <summary>
+        /// The (optional) SendMessage result.
+        /// Will only be null while (still) waiting for a response!
+        /// </summary>
+        public SendMessageResult?              SendMessageResult           { get; }      = SendMessageResult;
 
 
         /// <summary>
@@ -173,17 +180,19 @@ namespace cloud.charging.open.protocols.OCPP
 
 
         #region (static) FromJSONRequest  (...)
-        public static SendRequestState FromJSONRequest(DateTime                     RequestTimestamp,
-                                                       NetworkingNode_Id            DestinationNodeId,
-                                                       DateTime                     Timeout,
 
-                                                       OCPP_JSONRequestMessage?     JSONRequest         = null,
+        public static SendRequestState FromJSONRequest(DateTime                       RequestTimestamp,
+                                                       NetworkingNode_Id              DestinationNodeId,
+                                                       DateTime                       Timeout,
 
-                                                       DateTime?                    ResponseTimestamp   = null,
-                                                       OCPP_JSONResponseMessage?    JSONResponse        = null,
-                                                       OCPP_BinaryResponseMessage?  BinaryResponse      = null,
+                                                       OCPP_JSONRequestMessage        JSONRequest,
+                                                       SendMessageResult?             SendMessageResult         = null,
 
-                                                       OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage = null)
+                                                       DateTime?                      ResponseTimestamp         = null,
+                                                       OCPP_JSONResponseMessage?      JSONResponse              = null,
+                                                       OCPP_BinaryResponseMessage?    BinaryResponse            = null,
+
+                                                       OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage   = null)
 
             => new (RequestTimestamp,
                     DestinationNodeId,
@@ -192,6 +201,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                     JSONRequest,
                     null,
+                    SendMessageResult,
 
                     ResponseTimestamp,
                     JSONResponse,
@@ -203,17 +213,18 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region (static) FromBinaryRequest(...)
 
-        public static SendRequestState FromBinaryRequest(DateTime                     RequestTimestamp,
-                                                         NetworkingNode_Id            NetworkingNodeId,
-                                                         DateTime                     Timeout,
+        public static SendRequestState FromBinaryRequest(DateTime                       RequestTimestamp,
+                                                         NetworkingNode_Id              NetworkingNodeId,
+                                                         DateTime                       Timeout,
 
-                                                         OCPP_BinaryRequestMessage?   BinaryRequest       = null,
+                                                         OCPP_BinaryRequestMessage      BinaryRequest,
+                                                         SendMessageResult?             SendMessageResult         = null,
 
-                                                         DateTime?                    ResponseTimestamp   = null,
-                                                         OCPP_JSONResponseMessage?    JSONResponse        = null,
-                                                         OCPP_BinaryResponseMessage?  BinaryResponse      = null,
+                                                         DateTime?                      ResponseTimestamp         = null,
+                                                         OCPP_JSONResponseMessage?      JSONResponse              = null,
+                                                         OCPP_BinaryResponseMessage?    BinaryResponse            = null,
 
-                                                         OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage = null)
+                                                         OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage   = null)
 
             => new (RequestTimestamp,
                     NetworkingNodeId,
@@ -222,6 +233,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                     null,
                     BinaryRequest,
+                    SendMessageResult,
 
                     ResponseTimestamp,
                     JSONResponse,
