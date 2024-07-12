@@ -245,44 +245,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             #region HTML
 
-            // --------------------------------------------------------------------
-            // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
-            // --------------------------------------------------------------------
-            HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "events",
-                                      HTTPContentType.Text.HTML_UTF8,
-                                      HTTPDelegate: Request => {
+            //// --------------------------------------------------------------------
+            //// curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
+            //// --------------------------------------------------------------------
+            //HTTPBaseAPI.AddMethodCallback(
+            //                HTTPHostname.Any,
+            //                HTTPMethod.GET,
+            //                URLPathPrefix + "events",
+            //                HTTPContentType.Text.HTML_UTF8,
+            //                HTTPDelegate: Request => {
 
-                                          #region Get HTTP user and its organizations
+            //                    #region Get HTTP user and its organizations
 
-                                          //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                          //if (!TryGetHTTPUser(Request,
-                                          //                    out User                   HTTPUser,
-                                          //                    out HashSet<Organization>  HTTPOrganizations,
-                                          //                    out HTTPResponse.Builder   Response,
-                                          //                    Recursive:                 true))
-                                          //{
-                                          //    return Task.FromResult(Response.AsImmutable);
-                                          //}
+            //                    //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+            //                    //if (!TryGetHTTPUser(Request,
+            //                    //                    out User                   HTTPUser,
+            //                    //                    out HashSet<Organization>  HTTPOrganizations,
+            //                    //                    out HTTPResponse.Builder   Response,
+            //                    //                    Recursive:                 true))
+            //                    //{
+            //                    //    return Task.FromResult(Response.AsImmutable);
+            //                    //}
 
-                                          #endregion
+            //                    #endregion
 
-                                          return Task.FromResult(
-                                                     new HTTPResponse.Builder(Request) {
-                                                         HTTPStatusCode             = HTTPStatusCode.OK,
-                                                         Server                     = HTTPServiceName,
-                                                         Date                       = Timestamp.Now,
-                                                         AccessControlAllowOrigin   = "*",
-                                                         AccessControlAllowMethods  = [ "GET" ],
-                                                         AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
-                                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
-                                                         Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-                                                         Connection                 = "close",
-                                                         Vary                       = "Accept"
-                                                     }.AsImmutable);
+            //                    return Task.FromResult(
+            //                               new HTTPResponse.Builder(Request) {
+            //                                   HTTPStatusCode             = HTTPStatusCode.OK,
+            //                                   Server                     = HTTPServiceName,
+            //                                   Date                       = Timestamp.Now,
+            //                                   AccessControlAllowOrigin   = "*",
+            //                                   AccessControlAllowMethods  = [ "GET" ],
+            //                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+            //                                   ContentType                = HTTPContentType.Text.HTML_UTF8,
+            //                                   Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
+            //                                   Connection                 = "close",
+            //                                   Vary                       = "Accept"
+            //                               }.AsImmutable);
 
-                                      });
+            //                });
 
             #endregion
 

@@ -161,6 +161,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
             #endregion
 
 
+
+            #region OnBootNotification
+
+            OCPP.IN.OnBootNotification += async (timestamp,
+                                                 sender,
+                                                 connection,
+                                                 request,
+                                                 cancellationToken) => {
+
+                OCPPv2_1.CSMS.BootNotificationResponse? response = null;
+
+                // ChargingStation
+                // Reason
+
+                if (request.ChargingStation.VendorName == "GraphDefined")
+                {
+
+                    response = new OCPPv2_1.CSMS.BootNotificationResponse(
+
+                                       Request:             request,
+                                       Status:              RegistrationStatus.Accepted,
+                                       CurrentTime:         Timestamp.Now,
+                                       Interval:            TimeSpan.FromMinutes(3),
+                                       StatusInfo:          new StatusInfo("0"),
+                                       ResponseTimestamp:   null,
+
+                                       DestinationNodeId:   request.NetworkPath.Source,
+                                       NetworkPath:         NetworkPath.From(Id),
+
+                                       SignKeys:            null,
+                                       SignInfos:           null,
+                                       Signatures:          null,
+
+                                       CustomData:          null
+
+                                   );
+
+                }
+
+                // Unknown charging station
+                else
+                {
+
+                    response = new OCPPv2_1.CSMS.BootNotificationResponse(
+
+                                       Request:             request,
+                                       Status:              RegistrationStatus.Rejected,
+                                       CurrentTime:         Timestamp.Now,
+                                       Interval:            TimeSpan.FromMinutes(3),
+                                       StatusInfo:          new StatusInfo("0"),
+                                       ResponseTimestamp:   null,
+
+                                       DestinationNodeId:   request.NetworkPath.Source,
+                                       NetworkPath:         NetworkPath.From(Id),
+
+                                       SignKeys:            null,
+                                       SignInfos:           null,
+                                       Signatures:          null,
+
+                                       CustomData:          null
+
+                                   );
+
+                }
+
+                return response;
+
+            };
+
+            #endregion
+
+
             #region BinaryDataStreamsExtensions
 
             #region OnDeleteFile
@@ -568,11 +640,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             #endregion
 
-            OCPP.FORWARD.OnBootNotificationRequest += (timestamp,
-                                                       sender,
-                                                       connection,
-                                                       request,
-                                                       cancellationToken) =>
+            OCPP.FORWARD.OnBootNotificationRequestFilter += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             cancellationToken) =>
 
                 Task.FromResult(
                     new ForwardingDecision<OCPPv2_1.CS.BootNotificationRequest, BootNotificationResponse>(
