@@ -211,22 +211,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
             InitNetworkingNode1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,                       Is.Not.Null);
-                Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(localController1,                  Is.Not.Null);
+                Assert.That(testCSMS01,                Is.Not.Null);
+                Assert.That(testBackendWebSockets01,   Is.Not.Null);
+                Assert.That(localController1,          Is.Not.Null);
                 Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
-                Assert.That(chargingStation1,                 Is.Not.Null);
-                Assert.That(chargingStation2,                 Is.Not.Null);
-                Assert.That(chargingStation3,                 Is.Not.Null);
+                Assert.That(chargingStation1,          Is.Not.Null);
+                Assert.That(chargingStation2,          Is.Not.Null);
+                Assert.That(chargingStation3,          Is.Not.Null);
             });
 
-            if (testCSMS01                     is not null &&
-                testBackendWebSockets01        is not null &&
-                localController1                is not null &&
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                localController1        is not null &&
                 lcOCPPWebSocketServer01 is not null &&
-                chargingStation1               is not null &&
-                chargingStation2               is not null &&
-                chargingStation3               is not null)
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
             {
 
                 var csBinaryDataTransferRequestsOUT         = new ConcurrentList<BinaryDataTransferRequest>();
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //    return Task.CompletedTask;
                 //};
 
-                localController1.OCPP.FORWARD.OnBinaryDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
+                localController1.OCPP.FORWARD.OnBinaryDataTransferRequestFiltered += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
                     nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };

@@ -320,11 +320,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             };
 
 
-            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
-                                                         sender,
-                                                         connection,
-                                                         request,
-                                                         cancellationToken) =>
+            OCPP.FORWARD.OnBinaryDataTransferRequestFilter += (timestamp,
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) =>
 
                 Task.FromResult(
                     new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
@@ -418,11 +418,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             };
 
 
-            OCPP.FORWARD.OnDataTransferRequest += (timestamp,
-                                                   sender,
-                                                   connection,
-                                                   request,
-                                                   cancellationToken) => {
+            OCPP.FORWARD.OnDataTransferRequestFilter += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
 
                 if (request.Data?.ToString() == "Please REJECT!")
                 {
@@ -559,11 +559,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             };
 
 
-            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
-                                                         sender,
-                                                         connection,
-                                                         request,
-                                                         cancellationToken) =>
+            OCPP.FORWARD.OnBinaryDataTransferRequestFilter += (timestamp,
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) =>
 
                 Task.FromResult(
                     new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(

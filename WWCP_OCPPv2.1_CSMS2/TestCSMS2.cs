@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
 
 
-            // CS
+            // CSMS -> CS
 
             #region OnReset
 
@@ -385,20 +385,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             };
 
-
-            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
-                                                         sender,
-                                                         connection,
-                                                         request,
-                                                         cancellationToken) =>
-
-                Task.FromResult(
-                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
-                );
-
             #endregion
 
             #region OnDataTransfer
@@ -483,48 +469,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             };
 
-
-            OCPP.FORWARD.OnDataTransferRequest += (timestamp,
-                                                   sender,
-                                                   connection,
-                                                   request,
-                                                   cancellationToken) => {
-
-                if (request.Data?.ToString() == "Please REJECT!")
-                {
-
-                    var response = new DataTransferResponse(
-                                       request,
-                                       Result.Filtered("This message is not allowed!")
-                                   );
-
-                    return Task.FromResult(
-                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
-                                   request,
-                                   ForwardingResult.REJECT,
-                                   response,
-                                   response.ToJSON(
-                                       OCPP.CustomDataTransferResponseSerializer,
-                                       OCPP.CustomStatusInfoSerializer,
-                                       OCPP.CustomSignatureSerializer,
-                                       OCPP.CustomCustomDataSerializer
-                                   ),
-                                   "The message was REJECTED!"
-                               )
-                           );
-
-                }
-
-                else
-                    return Task.FromResult(
-                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
-                                   request,
-                                   ForwardingResult.FORWARD
-                               )
-                           );
-
-            };
-
             #endregion
 
             #region OnSecureDataTransfer
@@ -580,26 +524,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             };
 
-
-            //OCPP.FORWARD.OnSecureDataTransferRequest += (timestamp,
-            //                                             sender,
-            //                                             connection,
-            //                                             request,
-            //                                             cancellationToken) =>
-
-            //    Task.FromResult(
-            //        new ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>(
-            //            request,
-            //            ForwardingResult.FORWARD
-            //        )
-            //    );
-
             #endregion
 
 
-            // CSMS
+            // CS -> CSMS
 
-            #region OnBinaryDataTransfer
+            #region OnBootNotification
 
             OCPP.IN.OnBootNotification += (timestamp,
                                            sender,
@@ -624,34 +554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             };
 
-
-            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
-                                                         sender,
-                                                         connection,
-                                                         request,
-                                                         cancellationToken) =>
-
-                Task.FromResult(
-                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
-                );
-
             #endregion
-
-            OCPP.FORWARD.OnBootNotificationRequestFilter += (timestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             cancellationToken) =>
-
-                Task.FromResult(
-                    new ForwardingDecision<OCPPv2_1.CS.BootNotificationRequest, BootNotificationResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
-                );
 
 
         }

@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN.OnJSONMessageRequestReceived        += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.IN.OnJSONRequestMessageReceived        += (timestamp, sender, jsonRequestMessage) => {
                     nnJSONMessageRequestsReceived.      TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN.OnJSONMessageRequestReceived    += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.IN.OnJSONRequestMessageReceived    += (timestamp, sender, jsonRequestMessage) => {
                     nnJSONMessageRequestsReceived.  TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Response OUT
                     Assert.That(nnDataTransferResponsesSent.    Count,                    Is.EqualTo(1), "The DataTransfer response did not leave the networking node!");
                     var nnDataTransferResponseSent = nnDataTransferResponsesSent.First();
-                    Assert.That(nnDataTransferResponseSent.DestinationNodeId,             Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnDataTransferResponseSent.DestinationId,             Is.EqualTo(chargingStation.Id));
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Length,            Is.EqualTo(1));
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Source,            Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Last,              Is.EqualTo(localController.Id));
@@ -385,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN.OnBinaryMessageRequestReceived        += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.IN.OnBinaryRequestMessageReceived        += (timestamp, sender, jsonRequestMessage) => {
                     nnBinaryMessageRequestsReceived.      TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };

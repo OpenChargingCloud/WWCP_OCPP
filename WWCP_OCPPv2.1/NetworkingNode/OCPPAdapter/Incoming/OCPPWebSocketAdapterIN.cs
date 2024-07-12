@@ -60,12 +60,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a JSON request was received.
         /// </summary>
-        public event OnJSONMessageRequestReceivedDelegate?     OnJSONMessageRequestReceived;
+        public event OnJSONRequestMessageReceivedDelegate?     OnJSONRequestMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON response was received.
         /// </summary>
-        public event OnJSONMessageResponseReceivedDelegate?    OnJSONMessageResponseReceived;
+        public event OnJSONResponseMessageReceivedDelegate?    OnJSONResponseMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON error response was received.
@@ -79,12 +79,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary request was received.
         /// </summary>
-        public event OnBinaryMessageRequestReceivedDelegate?     OnBinaryMessageRequestReceived;
+        public event OnBinaryRequestMessageReceivedDelegate?     OnBinaryRequestMessageReceived;
 
         /// <summary>
         /// An event sent whenever a binary response was received.
         /// </summary>
-        public event OnBinaryMessageResponseReceivedDelegate?    OnBinaryMessageResponseReceived;
+        public event OnBinaryResponseMessageReceivedDelegate?    OnBinaryResponseMessageReceived;
 
         ///// <summary>
         ///// An event sent whenever a binary error response was received.
@@ -193,14 +193,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region OnJSONMessageRequestReceived
 
-                    var logger = OnJSONMessageRequestReceived;
+                    var logger = OnJSONRequestMessageReceived;
                     if (logger is not null)
                     {
                         try
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType <OnJSONMessageRequestReceivedDelegate>().
+                                                   OfType <OnJSONRequestMessageReceivedDelegate>().
                                                    Select (loggingDelegate => loggingDelegate.Invoke(
                                                                                   Timestamp.Now,
                                                                                   this,
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONMessageRequestReceived));
+                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONRequestMessageReceived));
                         }
                     }
 
@@ -371,14 +371,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region OnJSONMessageResponseReceived
 
-                    var logger = OnJSONMessageResponseReceived;
+                    var logger = OnJSONResponseMessageReceived;
                     if (logger is not null)
                     {
                         try
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType <OnJSONMessageResponseReceivedDelegate>().
+                                                   OfType <OnJSONResponseMessageReceivedDelegate>().
                                                    Select (loggingDelegate => loggingDelegate.Invoke(
                                                                                   Timestamp.Now,
                                                                                   this,
@@ -389,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONMessageResponseReceived));
+                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONResponseMessageReceived));
                         }
                     }
 
@@ -576,14 +576,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region OnBinaryMessageRequestReceived
 
-                    var logger = OnBinaryMessageRequestReceived;
+                    var logger = OnBinaryRequestMessageReceived;
                     if (logger is not null)
                     {
                         try
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType <OnBinaryMessageRequestReceivedDelegate>().
+                                                   OfType <OnBinaryRequestMessageReceivedDelegate>().
                                                    Select (loggingDelegate => loggingDelegate.Invoke(
                                                                                   Timestamp.Now,
                                                                                   this,
@@ -594,7 +594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBinaryMessageRequestReceived));
+                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBinaryRequestMessageReceived));
                         }
                     }
 
@@ -725,14 +725,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region OnBinaryMessageResponseReceived
 
-                    var logger = OnBinaryMessageResponseReceived;
+                    var logger = OnBinaryResponseMessageReceived;
                     if (logger is not null)
                     {
                         try
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType <OnBinaryMessageResponseReceivedDelegate>().
+                                                   OfType <OnBinaryResponseMessageReceivedDelegate>().
                                                    Select (loggingDelegate => loggingDelegate.Invoke(
                                                                                   Timestamp.Now,
                                                                                   this,
@@ -743,7 +743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBinaryMessageResponseReceived));
+                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBinaryResponseMessageReceived));
                         }
                     }
 

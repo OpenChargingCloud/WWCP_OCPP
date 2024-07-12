@@ -39,16 +39,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         public event OnBootNotificationRequestReceivedDelegate?    OnBootNotificationRequestReceived;
-
-        public event OnBootNotificationRequestFilter2Delegate?      OnBootNotificationRequestFilter;
-
+        public event OnBootNotificationRequestFilterDelegate?      OnBootNotificationRequestFilter;
         public event OnBootNotificationRequestFilteredDelegate?    OnBootNotificationRequestFiltered;
-
         public event OnBootNotificationRequestSentDelegate?        OnBootNotificationRequestSent;
 
-
         public event OnBootNotificationResponseReceivedDelegate?   OnBootNotificationResponseReceived;
-
         public event OnBootNotificationResponseSentDelegate?       OnBootNotificationResponseSent;
 
         #endregion
@@ -118,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                        OfType <OnBootNotificationRequestFilter2Delegate>().
+                                                        OfType <OnBootNotificationRequestFilterDelegate>().
                                                         Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                         parentNetworkingNode,
                                                                                                         Connection,

@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN. OnJSONMessageResponseReceived      += (timestamp, sender, jsonResponseMessage) => {
+                localController.OCPP.IN. OnJSONResponseMessageReceived      += (timestamp, sender, jsonResponseMessage) => {
                     nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN. OnJSONMessageResponseReceived           += (timestamp, sender, jsonResponseMessage) => {
+                localController.OCPP.IN. OnJSONResponseMessageReceived           += (timestamp, sender, jsonResponseMessage) => {
                     nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN. OnJSONMessageResponseReceived  += (timestamp, sender, jsonResponseMessage) => {
+                localController.OCPP.IN. OnJSONResponseMessageReceived  += (timestamp, sender, jsonResponseMessage) => {
                     nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };

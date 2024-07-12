@@ -36,9 +36,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnBinaryDataTransferRequestFilterDelegate?      OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestReceivedDelegate?    OnBinaryDataTransferRequestReceived;
+        public event OnBinaryDataTransferRequestFilterDelegate?      OnBinaryDataTransferRequestFilter;
+        public event OnBinaryDataTransferRequestFilteredDelegate?    OnBinaryDataTransferRequestFiltered;
+        public event OnBinaryDataTransferRequestSentDelegate?        OnBinaryDataTransferRequestSent;
 
-        public event OnBinaryDataTransferRequestFilteredDelegate?    OnBinaryDataTransferRequestLogging;
+        public event OnBinaryDataTransferResponseReceivedDelegate?   OnBinaryDataTransferResponseReceived;
+        public event OnBinaryDataTransferResponseSentDelegate?       OnBinaryDataTransferResponseSent;
 
         #endregion
 
@@ -63,9 +67,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>? forwardingDecision = null;
 
-            #region Send OnBinaryDataTransferRequest event
+            #region Send OnBinaryDataTransferRequestFilter event
 
-            var requestFilter = OnBinaryDataTransferRequest;
+            var requestFilter = OnBinaryDataTransferRequestFilter;
             if (requestFilter is not null)
             {
                 try
@@ -88,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnBinaryDataTransferRequest),
+                              nameof(OnBinaryDataTransferRequestFilter),
                               e
                           );
                 }
@@ -132,9 +136,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnBinaryDataTransferRequestLogging event
+            #region Send OnBinaryDataTransferRequestFiltered event
 
-            var logger = OnBinaryDataTransferRequestLogging;
+            var logger = OnBinaryDataTransferRequestFiltered;
             if (logger is not null)
             {
                 try
@@ -154,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnBinaryDataTransferRequestLogging),
+                              nameof(OnBinaryDataTransferRequestFiltered),
                               e
                           );
                 }

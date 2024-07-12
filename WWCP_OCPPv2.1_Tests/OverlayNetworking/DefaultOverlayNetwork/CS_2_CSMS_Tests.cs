@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnDataTransferRequestLogging   += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
+                localController.OCPP.FORWARD.OnDataTransferRequestFiltered += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
                     nnDataTransferRequestsForwarded.TryAdd(forwardingDecision);
                     return Task.CompletedTask;
                 };
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.FORWARD.OnDataTransferRequestLogging   += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
+                CSMS.           OCPP.FORWARD.OnDataTransferRequestFiltered += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
                     csmsDataTransferRequests.       TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -383,15 +383,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
         {
 
             Assert.Multiple(() => {
-                Assert.That(chargingStation,         Is.Not.Null);
-                Assert.That(localController,          Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
-                Assert.That(CSMS,                    Is.Not.Null);
-                Assert.That(csmsWSServer,            Is.Not.Null);
+                Assert.That(chargingStation,        Is.Not.Null);
+                Assert.That(localController,        Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,  Is.Not.Null);
+                Assert.That(CSMS,                   Is.Not.Null);
+                Assert.That(csmsWSServer,           Is.Not.Null);
             });
 
             if (chargingStation        is not null &&
-                localController         is not null &&
+                localController        is not null &&
                 lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnDataTransferRequestLogging  += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
+                localController.OCPP.FORWARD.OnDataTransferRequestFiltered += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
                     nnDataTransferRequestsForwarded.TryAdd(forwardingDecision);
                     return Task.CompletedTask;
                 };
@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.FORWARD.OnDataTransferRequestLogging  += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
+                CSMS.           OCPP.FORWARD.OnDataTransferRequestFiltered += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
                     csmsDataTransferRequests.       TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };

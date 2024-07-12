@@ -220,15 +220,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(chargingStation,         Is.Not.Null);
-                Assert.That(localController,          Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
-                Assert.That(CSMS,                    Is.Not.Null);
-                Assert.That(csmsWSServer,            Is.Not.Null);
+                Assert.That(chargingStation,        Is.Not.Null);
+                Assert.That(localController,        Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,  Is.Not.Null);
+                Assert.That(CSMS,                   Is.Not.Null);
+                Assert.That(csmsWSServer,           Is.Not.Null);
             });
 
             if (chargingStation        is not null &&
-                localController         is not null &&
+                localController        is not null &&
                 lcOCPPWebSocketServer  is not null &&
                 CSMS                   is not null &&
                 csmsWSServer           is not null)
@@ -246,12 +246,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnDataTransferRequestLogging   += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
+                localController.OCPP.FORWARD.OnDataTransferRequestFiltered += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
                     nnDataTransferRequestsForwarded.TryAdd(forwardingDecision);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnJSONRequestMessageSent       += (timestamp, sender, jsonRequestMessage, sendOCPPMessageResult) => {
+                localController.OCPP.FORWARD.OnJSONRequestMessageSent      += (timestamp, sender, jsonRequestMessage, sendOCPPMessageResult) => {
                     nnJSONRequestMessagesSent.          TryAdd(new Tuple<OCPP_JSONRequestMessage, SendMessageResult>(jsonRequestMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnJSONResponseMessageSent      += (timestamp, sender, jsonResponseMessage, sendOCPPMessageResult) => {
+                localController.OCPP.FORWARD.OnJSONResponseMessageSent     += (timestamp, sender, jsonResponseMessage, sendOCPPMessageResult) => {
                     nnJSONResponseMessagesSent.         TryAdd(new Tuple<OCPP_JSONResponseMessage, SendMessageResult>(jsonResponseMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
@@ -379,18 +379,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
         {
 
             Assert.Multiple(() => {
-                Assert.That(chargingStation,         Is.Not.Null);
-                Assert.That(localController,          Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer,   Is.Not.Null);
-                Assert.That(CSMS,                    Is.Not.Null);
-                Assert.That(csmsWSServer,            Is.Not.Null);
+                Assert.That(chargingStation,        Is.Not.Null);
+                Assert.That(localController,        Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer,  Is.Not.Null);
+                Assert.That(CSMS,                   Is.Not.Null);
+                Assert.That(csmsWSServer,           Is.Not.Null);
             });
 
-            if (chargingStation        is not null &&
-                localController         is not null &&
-                lcOCPPWebSocketServer  is not null &&
-                CSMS                   is not null &&
-                csmsWSServer           is not null)
+            if (chargingStation       is not null &&
+                localController       is not null &&
+                lcOCPPWebSocketServer is not null &&
+                CSMS                  is not null &&
+                csmsWSServer          is not null)
             {
 
                 var csDataTransferRequestsSent       = new ConcurrentList<DataTransferRequest>();
@@ -405,12 +405,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnDataTransferRequestLogging   += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
+                localController.OCPP.FORWARD.OnDataTransferRequestFiltered += (timestamp, sender, connection, dataTransferRequest, forwardingDecision) => {
                     nnDataTransferRequestsForwarded.TryAdd(forwardingDecision);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnJSONRequestMessageSent       += (timestamp, sender, jsonRequestMessage, sendOCPPMessageResult) => {
+                localController.OCPP.FORWARD.OnJSONRequestMessageSent      += (timestamp, sender, jsonRequestMessage, sendOCPPMessageResult) => {
                     nnJSONRequestMessagesSent.          TryAdd(new Tuple<OCPP_JSONRequestMessage, SendMessageResult>(jsonRequestMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnJSONResponseMessageSent      += (timestamp, sender, jsonResponseMessage, sendOCPPMessageResult) => {
+                localController.OCPP.FORWARD.OnJSONResponseMessageSent     += (timestamp, sender, jsonResponseMessage, sendOCPPMessageResult) => {
                     nnJSONResponseMessagesSent.         TryAdd(new Tuple<OCPP_JSONResponseMessage, SendMessageResult>(jsonResponseMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };

@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// The destination networking node identification.
         /// </summary>
         [Mandatory]
-        public NetworkingNode_Id  DestinationNodeId    { get; }
+        public NetworkingNode_Id  DestinationId    { get; }
 
         /// <summary>
         /// The 
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPP
             this.ResponseTimestamp  = ResponseTimestamp;
             this.Runtime            = Runtime;
 
-            this.DestinationNodeId  = DestinationNodeId;
+            this.DestinationId  = DestinationNodeId;
             this.NetworkPath        = NetworkPath;
 
             unchecked
@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPP
                 hashCode = this.Result.           GetHashCode() * 11 ^
                            this.ResponseTimestamp.GetHashCode() *  7 ^
                            this.Runtime.          GetHashCode() *  5 ^
-                           this.DestinationNodeId.GetHashCode() *  3 ^
+                           this.DestinationId.GetHashCode() *  3 ^
                            this.NetworkPath.      GetHashCode();
 
             }

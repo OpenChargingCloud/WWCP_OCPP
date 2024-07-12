@@ -36,9 +36,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnDataTransferRequestFilterDelegate?      OnDataTransferRequest;
+        public event OnDataTransferRequestReceivedDelegate?    OnDataTransferRequestReceived;
+        public event OnDataTransferRequestFilterDelegate?      OnDataTransferRequestFilter;
+        public event OnDataTransferRequestFilteredDelegate?    OnDataTransferRequestFiltered;
+        public event OnDataTransferRequestSentDelegate?        OnDataTransferRequestSent;
 
-        public event OnDataTransferRequestFilteredDelegate?    OnDataTransferRequestLogging;
+        public event OnDataTransferResponseReceivedDelegate?   OnDataTransferResponseReceived;
+        public event OnDataTransferResponseSentDelegate?       OnDataTransferResponseSent;
 
         #endregion
 
@@ -63,9 +67,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<DataTransferRequest, DataTransferResponse>? forwardingDecision = null;
 
-            #region Send OnDataTransferRequest event
+            #region Send OnDataTransferRequestFilter event
 
-            var requestFilter = OnDataTransferRequest;
+            var requestFilter = OnDataTransferRequestFilter;
             if (requestFilter is not null)
             {
                 try
@@ -88,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnDataTransferRequest),
+                              nameof(OnDataTransferRequestFilter),
                               e
                           );
                 }
@@ -132,9 +136,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnDataTransferRequestLogging event
+            #region Send OnDataTransferRequestFiltered event
 
-            var logger = OnDataTransferRequestLogging;
+            var logger = OnDataTransferRequestFiltered;
             if (logger is not null)
             {
                 try
@@ -154,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnDataTransferRequestLogging),
+                              nameof(OnDataTransferRequestFiltered),
                               e
                           );
                 }

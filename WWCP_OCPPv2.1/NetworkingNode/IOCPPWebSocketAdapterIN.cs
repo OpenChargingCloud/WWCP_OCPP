@@ -30,11 +30,11 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public delegate Task OnJSONMessageRequestReceivedDelegate    (DateTime                      Timestamp,
+    public delegate Task OnJSONRequestMessageReceivedDelegate    (DateTime                      Timestamp,
                                                                   IOCPPWebSocketAdapterIN       Server,
                                                                   OCPP_JSONRequestMessage       JSONRequestMessage);
 
-    public delegate Task OnJSONMessageResponseReceivedDelegate   (DateTime                      Timestamp,
+    public delegate Task OnJSONResponseMessageReceivedDelegate   (DateTime                      Timestamp,
                                                                   IOCPPWebSocketAdapterIN       Server,
                                                                   OCPP_JSONResponseMessage      JSONResponseMessage);
 
@@ -43,11 +43,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OCPP_JSONRequestErrorMessage  JSONErrorMessage);
 
 
-    public delegate Task OnBinaryMessageRequestReceivedDelegate  (DateTime                      Timestamp,
+    public delegate Task OnBinaryRequestMessageReceivedDelegate  (DateTime                      Timestamp,
                                                                   IOCPPWebSocketAdapterIN       Server,
                                                                   OCPP_BinaryRequestMessage     BinaryRequestMessage);
 
-    public delegate Task OnBinaryMessageResponseReceivedDelegate (DateTime                      Timestamp,
+    public delegate Task OnBinaryResponseMessageReceivedDelegate (DateTime                      Timestamp,
                                                                   IOCPPWebSocketAdapterIN       Server,
                                                                   OCPP_BinaryResponseMessage    BinaryResponseMessage);
 
@@ -84,12 +84,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a JSON request was received.
         /// </summary>
-        event OnJSONMessageRequestReceivedDelegate?     OnJSONMessageRequestReceived;
+        event OnJSONRequestMessageReceivedDelegate?     OnJSONRequestMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON response was received.
         /// </summary>
-        event OnJSONMessageResponseReceivedDelegate?    OnJSONMessageResponseReceived;
+        event OnJSONResponseMessageReceivedDelegate?    OnJSONResponseMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON error response was received.
@@ -103,12 +103,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary request was received.
         /// </summary>
-        event OnBinaryMessageRequestReceivedDelegate?     OnBinaryMessageRequestReceived;
+        event OnBinaryRequestMessageReceivedDelegate?     OnBinaryRequestMessageReceived;
 
         /// <summary>
         /// An event sent whenever a binary response was received.
         /// </summary>
-        event OnBinaryMessageResponseReceivedDelegate?    OnBinaryMessageResponseReceived;
+        event OnBinaryResponseMessageReceivedDelegate?    OnBinaryResponseMessageReceived;
 
         ///// <summary>
         ///// An event sent whenever a binary error response was received.

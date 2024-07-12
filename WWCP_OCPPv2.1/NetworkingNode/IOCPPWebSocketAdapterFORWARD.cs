@@ -956,7 +956,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>
 
-        OnBootNotificationRequestFilter2Delegate(DateTime                  Timestamp,
+        OnBootNotificationRequestFilterDelegate(DateTime                  Timestamp,
                                                 IEventSender              Sender,
                                                 IWebSocketConnection      Connection,
                                                 BootNotificationRequest   Request,
@@ -3332,13 +3332,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Timestamp">The timestamp of the request message.</param>
     /// <param name="Sender">The sender of the request message.</param>
     /// <param name="JSONRequestMessage">The JSON request message.</param>
-    /// <param name="SendOCPPMessageResult">The result of the sending attempt.</param>
+    /// <param name="SendMessageResult">The result of the sending attempt.</param>
     public delegate Task
 
         OnJSONRequestMessageSentLoggingDelegate(DateTime                 Timestamp,
                                                 IEventSender             Sender,
                                                 OCPP_JSONRequestMessage  JSONRequestMessage,
-                                                SendMessageResult    SendOCPPMessageResult);
+                                                SendMessageResult        SendMessageResult);
 
     /// <summary>
     /// A filtered JSON response message.
@@ -3346,13 +3346,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Timestamp">The timestamp of the response message.</param>
     /// <param name="Sender">The sender of the response message.</param>
     /// <param name="JSONResponseMessage">The JSON response message.</param>
-    /// <param name="SendOCPPMessageResult">The result of the sending attempt.</param>
+    /// <param name="SendMessageResult">The result of the sending attempt.</param>
     public delegate Task
 
         OnJSONResponseMessageSentLoggingDelegate(DateTime                  Timestamp,
                                                  IEventSender              Sender,
                                                  OCPP_JSONResponseMessage  JSONResponseMessage,
-                                                 SendMessageResult     SendOCPPMessageResult);
+                                                 SendMessageResult         SendMessageResult);
 
 
     /// <summary>
@@ -3361,13 +3361,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Timestamp">The timestamp of the response message.</param>
     /// <param name="Sender">The sender of the response message.</param>
     /// <param name="JSONRequestErrorMessage">The JSON request error message.</param>
-    /// <param name="SendOCPPMessageResult">The result of the sending attempt.</param>
+    /// <param name="SendMessageResult">The result of the sending attempt.</param>
     public delegate Task
 
         OnJSONRequestErrorMessageSentLoggingDelegate(DateTime                      Timestamp,
                                                      IEventSender                  Sender,
                                                      OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
-                                                     SendMessageResult         SendOCPPMessageResult);
+                                                     SendMessageResult             SendMessageResult);
 
 
 
@@ -3381,6 +3381,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         HashSet<NetworkingNode_Id>  AnycastIdsDenied     { get; }
 
         #region Events
+
+        event OnJSONRequestMessageSentLoggingDelegate?                      OnJSONRequestMessageSent;
+        event OnJSONResponseMessageSentLoggingDelegate?                     OnJSONResponseMessageSent;
+        event OnJSONRequestErrorMessageSentLoggingDelegate?                 OnJSONRequestErrorMessageSent;
 
         #region CS
 
@@ -3476,7 +3480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Firmware
 
         event OnBootNotificationRequestReceivedDelegate                     OnBootNotificationRequestReceived;
-        event OnBootNotificationRequestFilter2Delegate?                      OnBootNotificationRequestFilter;
+        event OnBootNotificationRequestFilterDelegate?                      OnBootNotificationRequestFilter;
         event OnBootNotificationRequestFilteredDelegate?                    OnBootNotificationRequestFiltered;
         event OnBootNotificationRequestSentDelegate?                        OnBootNotificationRequestSent;
         event OnBootNotificationResponseReceivedDelegate?                   OnBootNotificationResponseReceived;
@@ -3712,16 +3716,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Bidirectional
 
-        event OnBinaryDataTransferRequestFilterDelegate?                    OnBinaryDataTransferRequest;
-        event OnBinaryDataTransferRequestFilteredDelegate?                  OnBinaryDataTransferRequestLogging;
+        event OnBinaryDataTransferRequestReceivedDelegate                   OnBinaryDataTransferRequestReceived;
+        event OnBinaryDataTransferRequestFilterDelegate?                    OnBinaryDataTransferRequestFilter;
+        event OnBinaryDataTransferRequestFilteredDelegate?                  OnBinaryDataTransferRequestFiltered;
+        event OnBinaryDataTransferRequestSentDelegate?                      OnBinaryDataTransferRequestSent;
+        event OnBinaryDataTransferResponseReceivedDelegate?                 OnBinaryDataTransferResponseReceived;
+        event OnBinaryDataTransferResponseSentDelegate?                     OnBinaryDataTransferResponseSent;
 
-        event OnDataTransferRequestFilterDelegate?                          OnDataTransferRequest;
-        event OnDataTransferRequestFilteredDelegate?                        OnDataTransferRequestLogging;
-
-
-        event OnJSONRequestMessageSentLoggingDelegate?                      OnJSONRequestMessageSent;
-        event OnJSONResponseMessageSentLoggingDelegate?                     OnJSONResponseMessageSent;
-        event OnJSONRequestErrorMessageSentLoggingDelegate?                 OnJSONRequestErrorMessageSent;
+        event OnDataTransferRequestReceivedDelegate                         OnDataTransferRequestReceived;
+        event OnDataTransferRequestFilterDelegate?                          OnDataTransferRequestFilter;
+        event OnDataTransferRequestFilteredDelegate?                        OnDataTransferRequestFiltered;
+        event OnDataTransferRequestSentDelegate?                            OnDataTransferRequestSent;
+        event OnDataTransferResponseReceivedDelegate?                       OnDataTransferResponseReceived;
+        event OnDataTransferResponseSentDelegate?                           OnDataTransferResponseSent;
 
         #endregion
 
