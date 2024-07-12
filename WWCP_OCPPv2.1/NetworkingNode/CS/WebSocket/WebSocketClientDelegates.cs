@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="BinaryResponse">The outgoing binary WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task WebSocketJSONRequestBinaryResponseLogHandler  (DateTime              Timestamp,
+    public delegate Task WebSocketJSONRequestBinaryResponseLogHandler  (DateTime               Timestamp,
                                                                         IWebSocketConnection   Connection,
                                                                         NetworkingNode_Id      NetworkingNodeId,
                                                                         NetworkPath            NetworkPath,
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="JSONResponse">The outgoing JSON WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task WebSocketBinaryRequestJSONResponseLogHandler  (DateTime              Timestamp,
+    public delegate Task WebSocketBinaryRequestJSONResponseLogHandler  (DateTime               Timestamp,
                                                                         IWebSocketConnection   Connection,
                                                                         NetworkingNode_Id      NetworkingNodeId,
                                                                         NetworkPath            NetworkPath,

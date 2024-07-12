@@ -574,11 +574,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #endregion
 
-            OCPP.FORWARD.OnBootNotificationRequest += (timestamp,
-                                                       sender,
-                                                       connection,
-                                                       request,
-                                                       cancellationToken) =>
+            OCPP.FORWARD.OnBootNotificationRequestFilter += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             cancellationToken) =>
 
                 Task.FromResult(
                     new ForwardingDecision<OCPPv2_1.CS.BootNotificationRequest, BootNotificationResponse>(

@@ -956,7 +956,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>
 
-        OnBootNotificationRequestFilterDelegate(DateTime                  Timestamp,
+        OnBootNotificationRequestFilter2Delegate(DateTime                  Timestamp,
                                                 IEventSender              Sender,
                                                 IWebSocketConnection      Connection,
                                                 BootNotificationRequest   Request,
@@ -3476,7 +3476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Firmware
 
         event OnBootNotificationRequestReceivedDelegate                     OnBootNotificationRequestReceived;
-        event OnBootNotificationRequestFilterDelegate?                      OnBootNotificationRequestFilter;
+        event OnBootNotificationRequestFilter2Delegate?                      OnBootNotificationRequestFilter;
         event OnBootNotificationRequestFilteredDelegate?                    OnBootNotificationRequestFiltered;
         event OnBootNotificationRequestSentDelegate?                        OnBootNotificationRequestSent;
         event OnBootNotificationResponseReceivedDelegate?                   OnBootNotificationResponseReceived;
