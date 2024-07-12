@@ -39,6 +39,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Properties
 
         /// <summary>
+        /// The unique identification of the networking node hosting this OCPP adapter.
+        /// </summary>
+        NetworkingNode_Id             Id                             { get; }
+
+        /// <summary>
         /// Incoming OCPP messages.
         /// </summary>
         IOCPPWebSocketAdapterIN       IN                             { get; }
@@ -740,23 +745,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        Task<SendOCPPMessageResult> SendJSONRequest         (OCPP_JSONRequestMessage     JSONRequestMessage);
-        Task<SendRequestState>      SendJSONRequestAndWait  (OCPP_JSONRequestMessage     JSONRequestMessage);
-        Task<SendOCPPMessageResult> SendJSONResponse        (OCPP_JSONResponseMessage    JSONResponseMessage);
-        Task<SendOCPPMessageResult> SendJSONRequestError           (OCPP_JSONRequestErrorMessage       JSONErrorMessage);
+        Task<SendOCPPMessageResult> SendJSONRequest          (OCPP_JSONRequestMessage       JSONRequestMessage);
+        Task<SendRequestState>      SendJSONRequestAndWait   (OCPP_JSONRequestMessage       JSONRequestMessage);
+        Task<SendOCPPMessageResult> SendJSONResponse         (OCPP_JSONResponseMessage      JSONResponseMessage);
+        Task<SendOCPPMessageResult> SendJSONRequestError     (OCPP_JSONRequestErrorMessage  JSONErrorMessage);
 
-        Task<SendOCPPMessageResult> SendBinaryRequest       (OCPP_BinaryRequestMessage   BinaryRequestMessage);
-        Task<SendRequestState>      SendBinaryRequestAndWait(OCPP_BinaryRequestMessage   BinaryRequestMessage);
-        Task<SendOCPPMessageResult> SendBinaryResponse      (OCPP_BinaryResponseMessage  BinaryResponseMessage);
+        Task<SendOCPPMessageResult> SendBinaryRequest        (OCPP_BinaryRequestMessage     BinaryRequestMessage);
+        Task<SendRequestState>      SendBinaryRequestAndWait (OCPP_BinaryRequestMessage     BinaryRequestMessage);
+        Task<SendOCPPMessageResult> SendBinaryResponse       (OCPP_BinaryResponseMessage    BinaryResponseMessage);
 
-        Boolean ReceiveJSONResponse  (OCPP_JSONResponseMessage    JSONResponseMessage);
-        Boolean ReceiveBinaryResponse(OCPP_BinaryResponseMessage  BinaryResponseMessage);
-        Boolean ReceiveJSONRequestError         (OCPP_JSONRequestErrorMessage       JSONErrorMessage);
-
-
+        Boolean ReceiveJSONResponse     (OCPP_JSONResponseMessage      JSONResponseMessage);
+        Boolean ReceiveBinaryResponse   (OCPP_BinaryResponseMessage    BinaryResponseMessage);
+        Boolean ReceiveJSONRequestError (OCPP_JSONRequestErrorMessage  JSONErrorMessage);
 
 
 
+
+
+        Boolean LookupNetworkingNode(NetworkingNode_Id DestinationNodeId, out Reachability? Reachability);
 
         void AddStaticRouting   (NetworkingNode_Id     DestinationNodeId,
                                  IOCPPWebSocketClient  WebSocketClient,

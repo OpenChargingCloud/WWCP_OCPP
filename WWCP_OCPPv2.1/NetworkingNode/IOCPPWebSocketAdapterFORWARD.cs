@@ -3475,17 +3475,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Firmware
 
-        event OnBootNotificationRequestFilterDelegate?                      OnBootNotificationRequest;
-        event OnBootNotificationRequestFilteredDelegate?                    OnBootNotificationRequestLogging;
+        event OnBootNotificationRequestReceivedDelegate                     OnBootNotificationRequestReceived;
+        event OnBootNotificationRequestFilterDelegate?                      OnBootNotificationRequestFilter;
+        event OnBootNotificationRequestFilteredDelegate?                    OnBootNotificationRequestFiltered;
+        event OnBootNotificationRequestSentDelegate?                        OnBootNotificationRequestSent;
+        event OnBootNotificationResponseReceivedDelegate?                   OnBootNotificationResponseReceived;
+        event OnBootNotificationResponseSentDelegate?                       OnBootNotificationResponseSent;
 
-        event OnFirmwareStatusNotificationRequestFilterDelegate?            OnFirmwareStatusNotificationRequest;
-        event OnFirmwareStatusNotificationRequestFilteredDelegate?          OnFirmwareStatusNotificationRequestLogging;
+        event OnFirmwareStatusNotificationRequestFilterDelegate?            OnFirmwareStatusNotificationRequestFilter;
+        event OnFirmwareStatusNotificationRequestFilteredDelegate?          OnFirmwareStatusNotificationRequestFiltered;
 
-        event OnHeartbeatRequestFilterDelegate?                             OnHeartbeatRequest;
-        event OnHeartbeatRequestFilteredDelegate?                           OnHeartbeatRequestLogging;
+        event OnHeartbeatRequestFilterDelegate?                             OnHeartbeatRequestFilter;
+        event OnHeartbeatRequestFilteredDelegate?                           OnHeartbeatRequestFiltered;
 
-        event OnPublishFirmwareStatusNotificationRequestFilterDelegate?     OnPublishFirmwareStatusNotificationRequest;
-        event OnPublishFirmwareStatusNotificationRequestFilteredDelegate?   OnPublishFirmwareStatusNotificationRequestLogging;
+        event OnPublishFirmwareStatusNotificationRequestFilterDelegate?     OnPublishFirmwareStatusNotificationRequestFilter;
+        event OnPublishFirmwareStatusNotificationRequestFilteredDelegate?   OnPublishFirmwareStatusNotificationRequestFiltered;
 
         #endregion
 

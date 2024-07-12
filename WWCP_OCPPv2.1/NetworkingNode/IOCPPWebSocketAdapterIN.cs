@@ -30,30 +30,30 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public delegate Task OnJSONMessageRequestReceivedDelegate   (DateTime                    Timestamp,
-                                                                 IOCPPWebSocketAdapterIN     Server,
-                                                                 OCPP_JSONRequestMessage     JSONRequestMessage);
+    public delegate Task OnJSONMessageRequestReceivedDelegate    (DateTime                      Timestamp,
+                                                                  IOCPPWebSocketAdapterIN       Server,
+                                                                  OCPP_JSONRequestMessage       JSONRequestMessage);
 
-    public delegate Task OnJSONMessageResponseReceivedDelegate  (DateTime                    Timestamp,
-                                                                 IOCPPWebSocketAdapterIN     Server,
-                                                                 OCPP_JSONResponseMessage    JSONResponseMessage);
+    public delegate Task OnJSONMessageResponseReceivedDelegate   (DateTime                      Timestamp,
+                                                                  IOCPPWebSocketAdapterIN       Server,
+                                                                  OCPP_JSONResponseMessage      JSONResponseMessage);
 
-    public delegate Task OnJSONErrorResponseReceivedDelegate    (DateTime                    Timestamp,
-                                                                 IOCPPWebSocketAdapterIN     Server,
-                                                                 OCPP_JSONRequestErrorMessage       JSONErrorMessage);
+    public delegate Task OnJSONErrorResponseReceivedDelegate     (DateTime                      Timestamp,
+                                                                  IOCPPWebSocketAdapterIN       Server,
+                                                                  OCPP_JSONRequestErrorMessage  JSONErrorMessage);
 
 
-    public delegate Task OnBinaryMessageRequestReceivedDelegate (DateTime                    Timestamp,
-                                                                 IOCPPWebSocketAdapterIN     Server,
-                                                                 OCPP_BinaryRequestMessage   BinaryRequestMessage);
+    public delegate Task OnBinaryMessageRequestReceivedDelegate  (DateTime                      Timestamp,
+                                                                  IOCPPWebSocketAdapterIN       Server,
+                                                                  OCPP_BinaryRequestMessage     BinaryRequestMessage);
 
-    public delegate Task OnBinaryMessageResponseReceivedDelegate(DateTime                    Timestamp,
-                                                                 IOCPPWebSocketAdapterIN     Server,
-                                                                 OCPP_BinaryResponseMessage  BinaryResponseMessage);
+    public delegate Task OnBinaryMessageResponseReceivedDelegate (DateTime                      Timestamp,
+                                                                  IOCPPWebSocketAdapterIN       Server,
+                                                                  OCPP_BinaryResponseMessage    BinaryResponseMessage);
 
-    //public delegate Task OnBinaryErrorResponseReceivedDelegate  (DateTime                    Timestamp,
-    //                                                             IOCPPWebSocketAdapterIN     Server,
-    //                                                             OCPP_BinaryErrorMessage     BinaryErrorMessage);
+    //public delegate Task OnBinaryErrorResponseReceivedDelegate   (DateTime                      Timestamp,
+    //                                                              IOCPPWebSocketAdapterIN       Server,
+    //                                                              OCPP_BinaryErrorMessage       BinaryErrorMessage);
 
 
     /// <summary>

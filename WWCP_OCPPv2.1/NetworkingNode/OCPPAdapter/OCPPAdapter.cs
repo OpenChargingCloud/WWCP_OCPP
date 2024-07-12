@@ -28,7 +28,6 @@ using cloud.charging.open.protocols.OCPP.NN;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
 
 #endregion
 
@@ -66,6 +65,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
+        /// <summary>
+        /// The unique identification of the networking node hosting this OCPP adapter.
+        /// </summary>
         public NetworkingNode_Id             Id                       { get; }
 
         /// <summary>
@@ -835,15 +837,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
         {
 
+            var sendOCPPMessageResult = SendOCPPMessageResult.TransmissionFailed;
+
             if (LookupNetworkingNode(JSONRequestMessage.DestinationId, out var reachability) &&
                 reachability is not null)
             {
 
-                if (reachability.OCPPWebSocketClient is not null)
-                    return await reachability.OCPPWebSocketClient.SendJSONRequest(JSONRequestMessage);
+                if      (reachability.OCPPWebSocketClient is not null)
+                    sendOCPPMessageResult = await reachability.OCPPWebSocketClient.SendJSONRequest(JSONRequestMessage);
 
-                if (reachability.OCPPWebSocketServer is not null)
-                    return await reachability.OCPPWebSocketServer.SendJSONRequest(JSONRequestMessage);
+                else if (reachability.OCPPWebSocketServer is not null)
+                    sendOCPPMessageResult = await reachability.OCPPWebSocketServer.SendJSONRequest(JSONRequestMessage);
+
+
+                //if (sendOCPPMessageResult == SendOCPPMessageResult.Success)
+                //    requests.TryAdd(JSONRequestMessage.RequestId,
+                //                    SendRequestState.FromJSONRequest(
+                //                        Timestamp.Now,
+                //                        JSONRequestMessage.DestinationId,
+                //                        JSONRequestMessage.RequestTimeout,
+                //                        JSONRequestMessage
+                //                    ));
+
+                return sendOCPPMessageResult;
 
             }
 
@@ -1040,15 +1056,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SendOCPPMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
 
+            var sendOCPPMessageResult = SendOCPPMessageResult.TransmissionFailed;
+
             if (LookupNetworkingNode(BinaryRequestMessage.DestinationId, out var reachability) &&
                 reachability is not null)
             {
 
-                if (reachability.OCPPWebSocketClient is not null)
-                    return await reachability.OCPPWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
+                if      (reachability.OCPPWebSocketClient is not null)
+                    sendOCPPMessageResult = await reachability.OCPPWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
 
-                if (reachability.OCPPWebSocketServer is not null)
-                    return await reachability.OCPPWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
+                else if (reachability.OCPPWebSocketServer is not null)
+                    sendOCPPMessageResult = await reachability.OCPPWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
+
+
+                //if (sendOCPPMessageResult == SendOCPPMessageResult.Success)
+                //    requests.TryAdd(BinaryRequestMessage.RequestId,
+                //                    SendRequestState.FromBinaryRequest(
+                //                        Timestamp.Now,
+                //                        BinaryRequestMessage.DestinationId,
+                //                        BinaryRequestMessage.RequestTimeout,
+                //                        BinaryRequestMessage
+                //                    ));
+
+                return sendOCPPMessageResult;
 
             }
 

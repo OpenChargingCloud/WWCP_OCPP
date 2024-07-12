@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONMessageResponseSent      += (timestamp, sender, jsonResponseMessage) => {
+                localController.OCPP.OUT.OnJSONMessageResponseSent      += (timestamp, sender, jsonResponseMessage, sendMessageResult) => {
                     nnJSONResponseMessagesSent.     TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnBinaryMessageResponseSent          += (timestamp, sender, binaryResponseMessage) => {
+                localController.OCPP.OUT.OnBinaryMessageResponseSent          += (timestamp, sender, binaryResponseMessage, sendMessageResult) => {
                     nnBinaryResponseMessagesSent.           TryAdd(binaryResponseMessage);
                     return Task.CompletedTask;
                 };

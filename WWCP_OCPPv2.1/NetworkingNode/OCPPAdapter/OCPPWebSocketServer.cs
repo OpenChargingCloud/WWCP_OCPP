@@ -20,6 +20,7 @@
 using System.Reflection;
 using System.Collections.Concurrent;
 using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,13 +31,10 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
-using System.Security.Cryptography.X509Certificates;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using System.Collections.Generic;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -143,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The parent OCPP adapter.
         /// </summary>
-        public IOCPPAdapter                                      OCPPAdapter { get; }
+        public IOCPPAdapter                                      OCPPAdapter              { get; }
 
         /// <summary>
         /// The enumeration of all connected networking nodes.
@@ -345,14 +343,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            this.OCPPAdapter = OCPPAdapter;
+            this.OCPPAdapter                     = OCPPAdapter;
 
-            this.RequireAuthentication = RequireAuthentication;
+            this.RequireAuthentication           = RequireAuthentication;
 
-            //this.Logger          = new ChargePointwebsocketClient.CPClientLogger(this,
-            //                                                                LoggingPath,
-            //                                                                LoggingContext,
-            //                                                                LogfileCreator);
+            //this.Logger                          = new ChargePointwebsocketClient.CPClientLogger(this,
+            //                                                                                LoggingPath,
+            //                                                                                LoggingContext,
+            //                                                                                LogfileCreator);
 
             base.OnValidateTCPConnection        += ValidateTCPConnection;
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
@@ -374,8 +372,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="NetworkingNodeId">The unique identification of the networking node.</param>
         /// <param name="Password">The password of the charging station.</param>
-        public void AddOrUpdateHTTPBasicAuth(NetworkingNode_Id  NetworkingNodeId,
-                                             String             Password)
+        public HTTPBasicAuthentication AddOrUpdateHTTPBasicAuth(NetworkingNode_Id  NetworkingNodeId,
+                                                                String             Password)
         {
 
             NetworkingNodeLogins.AddOrUpdate(
@@ -383,6 +381,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      Password,
                                      (chargingStationId, password) => Password
                                  );
+
+            return HTTPBasicAuthentication.Create(
+                       NetworkingNodeId.ToString(),
+                       Password
+                   );
 
         }
 
@@ -775,8 +778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                     CancellationToken          CancellationToken)
         {
 
-            OCPP_JSONResponseMessage?     OCPPResponse       = null;
-            OCPP_JSONRequestErrorMessage? OCPPErrorResponse  = null;
+            //OCPP_JSONRequestErrorMessage? OCPPErrorResponse  = null;
 
             try
             {
@@ -798,12 +800,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.InternalError(
-                                        nameof(OCPPWebSocketServer),
-                                        EventTrackingId,
-                                        TextMessage,
-                                        e
-                                    );
+                //OCPPErrorResponse = OCPP_JSONRequestErrorMessage.InternalError(
+                //                        nameof(OCPPWebSocketServer),
+                //                        EventTrackingId,
+                //                        TextMessage,
+                //                        e
+                //                    );
 
             }
 
@@ -830,8 +832,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                         CancellationToken CancellationToken)
         {
 
-            OCPP_BinaryResponseMessage? OCPPResponse       = null;
-            OCPP_JSONRequestErrorMessage?      OCPPErrorResponse  = null;
+            //OCPP_JSONRequestErrorMessage? OCPPErrorResponse  = null;
 
             try
             {
@@ -850,12 +851,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.InternalError(
-                                        nameof(OCPPWebSocketServer),
-                                        EventTrackingId,
-                                        BinaryMessage,
-                                        e
-                                    );
+                //OCPPErrorResponse = OCPP_JSONRequestErrorMessage.InternalError(
+                //                        nameof(OCPPWebSocketServer),
+                //                        EventTrackingId,
+                //                        BinaryMessage,
+                //                        e
+                //                    );
 
             }
 
@@ -1457,9 +1458,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             if (NetworkingNodeId == NetworkingNode_Id.Zero)
-                return Array.Empty<Tuple<WebSocketServerConnection, NetworkingMode>>();
+                return [];
 
             var lookUpNetworkingNodeId = NetworkingNodeId;
+
+            if (OCPPAdapter.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
+                reachability is not null)
+            {
+                lookUpNetworkingNodeId = reachability.NetworkingNodeId;
+            }
 
             if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
             {
@@ -1469,7 +1476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).
-                                        Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingMode.Standard));
+                                        Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingNodeId == lookUpNetworkingNodeId ? NetworkingMode.Standard : NetworkingMode.OverlayNetwork));
 
         }
 

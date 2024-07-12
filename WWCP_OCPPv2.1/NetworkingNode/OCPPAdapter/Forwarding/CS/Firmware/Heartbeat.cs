@@ -38,9 +38,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnHeartbeatRequestFilterDelegate?      OnHeartbeatRequest;
+        public event OnHeartbeatRequestFilterDelegate?      OnHeartbeatRequestFilter;
 
-        public event OnHeartbeatRequestFilteredDelegate?    OnHeartbeatRequestLogging;
+        public event OnHeartbeatRequestFilteredDelegate?    OnHeartbeatRequestFiltered;
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnHeartbeatRequest event
 
-            var requestFilter = OnHeartbeatRequest;
+            var requestFilter = OnHeartbeatRequestFilter;
             if (requestFilter is not null)
             {
                 try
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnHeartbeatRequest),
+                              nameof(OnHeartbeatRequestFilter),
                               e
                           );
                 }
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnHeartbeatRequestLogging event
 
-            var logger = OnHeartbeatRequestLogging;
+            var logger = OnHeartbeatRequestFiltered;
             if (logger is not null)
             {
                 try
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnHeartbeatRequestLogging),
+                              nameof(OnHeartbeatRequestFiltered),
                               e
                           );
                 }
