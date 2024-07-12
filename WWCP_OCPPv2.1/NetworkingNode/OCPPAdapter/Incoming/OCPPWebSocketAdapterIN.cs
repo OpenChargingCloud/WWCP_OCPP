@@ -217,15 +217,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    var sendresult = SendOCPPMessageResult.TransmissionFailed;
+                    var sendresult      = SendOCPPMessageResult.TransmissionFailed;
+                    var acceptAsAnycast = parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonRequest.DestinationId);
 
                     // When not for this node, send it to the FORWARD processor...
-                    if (jsonRequest.DestinationId != parentNetworkingNode.Id)
+                    if (jsonRequest.DestinationId != parentNetworkingNode.Id && !acceptAsAnycast)
                         await parentNetworkingNode.OCPP.FORWARD.ProcessJSONRequestMessage(jsonRequest);
 
                     // Directly for this node OR an anycast message for this node...
-                    if (jsonRequest.DestinationId == parentNetworkingNode.Id ||
-                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonRequest.DestinationId))
+                    if (jsonRequest.DestinationId == parentNetworkingNode.Id ||  acceptAsAnycast)
                     {
 
                         #region Try to call the matching 'incoming message processor'...
