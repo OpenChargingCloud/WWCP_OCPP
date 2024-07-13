@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -30,6 +31,44 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Delegates
+
+    /// <summary>
+    /// A SendFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<SendFileRequest, SendFileResponse>>
+
+        OnSendFileRequestFilterDelegate(DateTime               Timestamp,
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        SendFileRequest        Request,
+                                        CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// A filtered SendFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnSendFileRequestFilteredDelegate(DateTime                                                Timestamp,
+                                          IEventSender                                            Sender,
+                                          IWebSocketConnection                                    Connection,
+                                          SendFileRequest                                         Request,
+                                          ForwardingDecision<SendFileRequest, SendFileResponse>   ForwardingDecision);
+
+    #endregion
+
+
     /// <summary>
     /// The OCPP adapter for forwarding messages.
     /// </summary>
@@ -38,43 +77,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnDeleteUserRoleRequestFilterDelegate?      OnDeleteUserRoleRequest;
+        public event OnSendFileRequestFilterDelegate?      OnSendFileRequest;
 
-        public event OnDeleteUserRoleRequestFilteredDelegate?    OnDeleteUserRoleRequestLogging;
+        public event OnSendFileRequestFilteredDelegate?    OnSendFileRequestLogging;
 
         #endregion
 
         public async Task<ForwardingDecision>
 
-            Forward_DeleteUserRole(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                   IWebSocketConnection     Connection,
-                                   CancellationToken        CancellationToken   = default)
+            Forward_SendFile(OCPP_BinaryRequestMessage  BinaryRequestMessage,
+                             IWebSocketConnection       Connection,
+                             CancellationToken          CancellationToken   = default)
 
         {
 
-            if (!DeleteUserRoleRequest.TryParse(JSONRequestMessage.Payload,
-                                                JSONRequestMessage.RequestId,
-                                                JSONRequestMessage.DestinationId,
-                                                JSONRequestMessage.NetworkPath,
-                                                out var Request,
-                                                out var errorResponse,
-                                                parentNetworkingNode.OCPP.CustomDeleteUserRoleRequestParser))
+            if (!SendFileRequest.TryParse(BinaryRequestMessage.Payload,
+                                          BinaryRequestMessage.RequestId,
+                                          BinaryRequestMessage.DestinationId,
+                                          BinaryRequestMessage.NetworkPath,
+                                          out var Request,
+                                          out var errorResponse,
+                                          parentNetworkingNode.OCPP.CustomSendFileRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>? forwardingDecision = null;
+            ForwardingDecision<SendFileRequest, SendFileResponse>? forwardingDecision = null;
 
-            #region Send OnDeleteUserRoleRequest event
+            #region Send OnSendFileRequest event
 
-            var requestFilter = OnDeleteUserRoleRequest;
+            var requestFilter = OnSendFileRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnDeleteUserRoleRequestFilterDelegate>().
+                                                     OfType <OnSendFileRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -90,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnDeleteUserRoleRequest),
+                              nameof(OnSendFileRequest),
                               e
                           );
                 }
@@ -101,28 +140,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
-                forwardingDecision = new ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>(
+            if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
+                forwardingDecision = new ForwardingDecision<SendFileRequest, SendFileResponse>(
                                          Request,
-                                         ForwardingResult.FORWARD
+                                         ForwardingResults.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var response = forwardingDecision?.RejectResponse ??
-                                   new DeleteUserRoleResponse(
+                                   new SendFileResponse(
                                        Request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>(
+                forwardingDecision = new ForwardingDecision<SendFileRequest, SendFileResponse>(
                                          Request,
-                                         ForwardingResult.REJECT,
+                                         ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
-                                             parentNetworkingNode.OCPP.CustomDeleteUserRoleResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomSendFileResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -134,16 +173,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnDeleteUserRoleRequestLogging event
+            #region Send OnSendFileRequestLogging event
 
-            var logger = OnDeleteUserRoleRequestLogging;
+            var logger = OnSendFileRequestLogging;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnDeleteUserRoleRequestFilteredDelegate>().
+                                       OfType <OnSendFileRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -156,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnDeleteUserRoleRequestLogging),
+                              nameof(OnSendFileRequestLogging),
                               e
                           );
                 }

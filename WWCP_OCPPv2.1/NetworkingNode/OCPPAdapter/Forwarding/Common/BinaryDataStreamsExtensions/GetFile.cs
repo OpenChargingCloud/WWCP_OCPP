@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -30,6 +31,44 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Delegates
+
+    /// <summary>
+    /// A GetFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<GetFileRequest, GetFileResponse>>
+
+        OnGetFileRequestFilterDelegate(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       GetFileRequest         Request,
+                                       CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// A filtered GetFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnGetFileRequestFilteredDelegate(DateTime                                              Timestamp,
+                                         IEventSender                                          Sender,
+                                         IWebSocketConnection                                  Connection,
+                                         GetFileRequest                                        Request,
+                                         ForwardingDecision<GetFileRequest, GetFileResponse>   ForwardingDecision);
+
+    #endregion
+
+
     /// <summary>
     /// The OCPP adapter for forwarding messages.
     /// </summary>
@@ -38,43 +77,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnListDirectoryRequestFilterDelegate?      OnListDirectoryRequest;
+        public event OnGetFileRequestFilterDelegate?      OnGetFileRequest;
 
-        public event OnListDirectoryRequestFilteredDelegate?    OnListDirectoryRequestLogging;
+        public event OnGetFileRequestFilteredDelegate?    OnGetFileRequestLogging;
 
         #endregion
 
         public async Task<ForwardingDecision>
 
-            Forward_ListDirectory(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                  IWebSocketConnection     Connection,
-                                  CancellationToken        CancellationToken   = default)
+            Forward_GetFile(OCPP_JSONRequestMessage  JSONRequestMessage,
+                            IWebSocketConnection     Connection,
+                            CancellationToken        CancellationToken   = default)
 
         {
 
-            if (!ListDirectoryRequest.TryParse(JSONRequestMessage.Payload,
-                                               JSONRequestMessage.RequestId,
-                                               JSONRequestMessage.DestinationId,
-                                               JSONRequestMessage.NetworkPath,
-                                               out var Request,
-                                               out var errorResponse,
-                                               parentNetworkingNode.OCPP.CustomListDirectoryRequestParser))
+            if (!GetFileRequest.TryParse(JSONRequestMessage.Payload,
+                                         JSONRequestMessage.RequestId,
+                                         JSONRequestMessage.DestinationId,
+                                         JSONRequestMessage.NetworkPath,
+                                         out var Request,
+                                         out var errorResponse,
+                                         parentNetworkingNode.OCPP.CustomGetFileRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>? forwardingDecision = null;
+            ForwardingDecision<GetFileRequest, GetFileResponse>? forwardingDecision = null;
 
-            #region Send OnListDirectoryRequest event
+            #region Send OnGetFileRequest event
 
-            var requestFilter = OnListDirectoryRequest;
+            var requestFilter = OnGetFileRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnListDirectoryRequestFilterDelegate>().
+                                                     OfType <OnGetFileRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -90,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnListDirectoryRequest),
+                              nameof(OnGetFileRequest),
                               e
                           );
                 }
@@ -101,31 +140,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
-                forwardingDecision = new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
+            if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
+                forwardingDecision = new ForwardingDecision<GetFileRequest, GetFileResponse>(
                                          Request,
-                                         ForwardingResult.FORWARD
+                                         ForwardingResults.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var response = forwardingDecision?.RejectResponse ??
-                                   new ListDirectoryResponse(
+                                   new GetFileResponse(
                                        Request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
+                forwardingDecision = new ForwardingDecision<GetFileRequest, GetFileResponse>(
                                          Request,
-                                         ForwardingResult.REJECT,
+                                         ForwardingResults.REJECT,
                                          response,
-                                         response.ToJSON(
-                                             parentNetworkingNode.OCPP.CustomListDirectoryResponseSerializer,
+                                         response.ToBinary(
+                                             parentNetworkingNode.OCPP.CustomGetFileResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
+                                             IncludeSignatures: true
                                          )
                                      );
 
@@ -134,16 +173,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnListDirectoryRequestLogging event
+            #region Send OnGetFileRequestLogging event
 
-            var logger = OnListDirectoryRequestLogging;
+            var logger = OnGetFileRequestLogging;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnListDirectoryRequestFilteredDelegate>().
+                                       OfType <OnGetFileRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -156,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnListDirectoryRequestLogging),
+                              nameof(OnGetFileRequestLogging),
                               e
                           );
                 }

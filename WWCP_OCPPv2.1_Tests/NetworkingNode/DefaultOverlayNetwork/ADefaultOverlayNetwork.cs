@@ -184,21 +184,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
             #region Create the Networking Node
 
             localController = new TestLocalController(
-                                 Id:                      NetworkingNode_Id.Parse("nn01"),
-                                 VendorName:              "GraphDefined OEM #1",
-                                 Model:                   "VCP.1",
-                                 Description:             I18NString.Create(Languages.en, "Our first virtual networking node!"),
-                                 SerialNumber:            "SN-NN0001",
-                                 FirmwareVersion:         "v0.1",
-                                 Modem:                   new Modem(
-                                                              ICCID:   "0001",
-                                                              IMSI:    "1112"
-                                                          ),
-                                 DisableSendHeartbeats:   true,
+                                  Id:                      NetworkingNode_Id.Parse("nn01"),
+                                  VendorName:              "GraphDefined OEM #1",
+                                  Model:                   "VCP.1",
+                                  Description:             I18NString.Create(Languages.en, "Our first virtual networking node!"),
+                                  SerialNumber:            "SN-NN0001",
+                                  SoftwareVersion:         "v0.1",
+                                  Modem:                   new Modem(
+                                                               ICCID:   "0001",
+                                                               IMSI:    "1112"
+                                                           ),
+                                  DisableSendHeartbeats:   true,
 
-                                 //HTTPBasicAuth:           new Tuple<String, String>("GDNN001", "1234"),
-                                 DNSClient:               dnsClient
-                             );
+                                  //HTTPBasicAuth:           new Tuple<String, String>("GDNN001", "1234"),
+                                  DNSClient:               dnsClient
+                              );
 
             Assert.That(localController, Is.Not.Null);
 

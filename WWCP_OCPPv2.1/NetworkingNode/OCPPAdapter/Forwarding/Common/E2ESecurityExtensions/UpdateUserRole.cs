@@ -17,17 +17,57 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
+
+    #region Delegates
+
+    /// <summary>
+    /// A UpdateUserRole request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>>
+
+        OnUpdateUserRoleRequestFilterDelegate(DateTime                Timestamp,
+                                              IEventSender            Sender,
+                                              IWebSocketConnection    Connection,
+                                              UpdateUserRoleRequest   Request,
+                                              CancellationToken       CancellationToken);
+
+
+    /// <summary>
+    /// A filtered UpdateUserRole request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnUpdateUserRoleRequestFilteredDelegate(DateTime                                                            Timestamp,
+                                                IEventSender                                                        Sender,
+                                                IWebSocketConnection                                                Connection,
+                                                UpdateUserRoleRequest                                               Request,
+                                                ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>   ForwardingDecision);
+
+    #endregion
+
 
     /// <summary>
     /// The OCPP adapter for forwarding messages.
@@ -37,43 +77,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnSendFileRequestFilterDelegate?      OnSendFileRequest;
+        public event OnUpdateUserRoleRequestFilterDelegate?      OnUpdateUserRoleRequest;
 
-        public event OnSendFileRequestFilteredDelegate?    OnSendFileRequestLogging;
+        public event OnUpdateUserRoleRequestFilteredDelegate?    OnUpdateUserRoleRequestLogging;
 
         #endregion
 
         public async Task<ForwardingDecision>
 
-            Forward_SendFile(OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                             IWebSocketConnection       Connection,
-                             CancellationToken          CancellationToken   = default)
+            Forward_UpdateUserRole(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                   IWebSocketConnection     Connection,
+                                   CancellationToken        CancellationToken   = default)
 
         {
 
-            if (!SendFileRequest.TryParse(BinaryRequestMessage.Payload,
-                                          BinaryRequestMessage.RequestId,
-                                          BinaryRequestMessage.DestinationId,
-                                          BinaryRequestMessage.NetworkPath,
-                                          out var Request,
-                                          out var errorResponse,
-                                          parentNetworkingNode.OCPP.CustomSendFileRequestParser))
+            if (!UpdateUserRoleRequest.TryParse(JSONRequestMessage.Payload,
+                                                JSONRequestMessage.RequestId,
+                                                JSONRequestMessage.DestinationId,
+                                                JSONRequestMessage.NetworkPath,
+                                                out var Request,
+                                                out var errorResponse,
+                                                parentNetworkingNode.OCPP.CustomUpdateUserRoleRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<SendFileRequest, SendFileResponse>? forwardingDecision = null;
+            ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>? forwardingDecision = null;
 
-            #region Send OnSendFileRequest event
+            #region Send OnUpdateUserRoleRequest event
 
-            var requestFilter = OnSendFileRequest;
+            var requestFilter = OnUpdateUserRoleRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnSendFileRequestFilterDelegate>().
+                                                     OfType <OnUpdateUserRoleRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -89,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnSendFileRequest),
+                              nameof(OnUpdateUserRoleRequest),
                               e
                           );
                 }
@@ -100,28 +140,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
-                forwardingDecision = new ForwardingDecision<SendFileRequest, SendFileResponse>(
+            if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
+                forwardingDecision = new ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>(
                                          Request,
-                                         ForwardingResult.FORWARD
+                                         ForwardingResults.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var response = forwardingDecision?.RejectResponse ??
-                                   new SendFileResponse(
+                                   new UpdateUserRoleResponse(
                                        Request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<SendFileRequest, SendFileResponse>(
+                forwardingDecision = new ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>(
                                          Request,
-                                         ForwardingResult.REJECT,
+                                         ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
-                                             parentNetworkingNode.OCPP.CustomSendFileResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomUpdateUserRoleResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -133,16 +173,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnSendFileRequestLogging event
+            #region Send OnUpdateUserRoleRequestLogging event
 
-            var logger = OnSendFileRequestLogging;
+            var logger = OnUpdateUserRoleRequestLogging;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnSendFileRequestFilteredDelegate>().
+                                       OfType <OnUpdateUserRoleRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -155,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnSendFileRequestLogging),
+                              nameof(OnUpdateUserRoleRequestLogging),
                               e
                           );
                 }

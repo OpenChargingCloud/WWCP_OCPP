@@ -25,6 +25,8 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Delegates
+
 
     public delegate Task OnJSONRequestMessageSentDelegate       (DateTime                       Timestamp,
                                                                  IOCPPWebSocketAdapterOUT       Server,
@@ -63,10 +65,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //                                                             OCPP_BinaryErrorMessage        BinaryErrorMessage,
     //                                                             SendMessageResult              SendMessageResult);
 
+    #endregion
+
 
     /// <summary>
-    /// The common interface of all central systems channels.
-    /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channel.
+    /// The common interface of all outgoing OCPP messages processors.
     /// </summary>
     public interface IOCPPWebSocketAdapterOUT : OCPP.NN.INetworkingNodeOutgoingMessages,
                                                 OCPP.NN.INetworkingNodeOutgoingMessageEvents,
@@ -82,7 +85,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     {
 
-        #region Generic JSON Messages
+        #region Events
+
+        #region JSON   messages sent
 
         /// <summary>
         /// An event sent whenever a JSON request message was sent.
@@ -95,13 +100,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OnJSONResponseMessageSentDelegate?         OnJSONResponseMessageSent;
 
         /// <summary>
-        /// An event sent whenever a JSON error response was sent.
+        /// An event sent whenever a JSON request error was sent.
         /// </summary>
         event OnJSONRequestErrorMessageSentDelegate?     OnJSONRequestErrorMessageSent;
 
+        /// <summary>
+        /// An event sent whenever a JSON response error was sent.
+        /// </summary>
+        event OnJSONResponseErrorMessageSentDelegate?    OnJSONResponseErrorMessageSent;
+
         #endregion
 
-        #region Generic Binary Messages
+        #region Binary messages sent
 
         /// <summary>
         /// An event sent whenever a binary request was sent.
@@ -121,7 +131,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+
         event OnDataTransferResponseSentDelegate?  OnDataTransferResponseSent;
+
+
+        #endregion
 
 
         Task<SendMessageResult> SendJSONRequest       (OCPP_JSONRequestMessage        JSONRequestMessage);
@@ -133,13 +147,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         Task<SendMessageResult> SendBinaryResponse    (OCPP_BinaryResponseMessage     BinaryResponseMessage);
 
 
-        Task<DataTransferResponse>           DataTransfer         (          DataTransferRequest           Request);
-
         Task NotifyJSONMessageResponseSent   (OCPP_JSONResponseMessage      JSONResponseMessage,      SendMessageResult SendMessageResult);
         Task NotifyJSONRequestErrorSent      (OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,  SendMessageResult SendMessageResult);
         Task NotifyJSONResponseErrorSent     (OCPP_JSONResponseErrorMessage JSONResponseErrorMessage, SendMessageResult SendMessageResult);
 
         Task NotifyBinaryMessageResponseSent (OCPP_BinaryResponseMessage    BinaryResponseMessage,    SendMessageResult SendMessageResult);
+
+
+
+
+        Task<DataTransferResponse>           DataTransfer         (          DataTransferRequest           Request);
+
 
 
     }

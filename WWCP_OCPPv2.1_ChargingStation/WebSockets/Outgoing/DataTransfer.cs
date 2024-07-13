@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                               Request.DestinationNodeId,
+                                               Request.DestinationId,
                                                Request.Action,
                                                Request.RequestId,
                                                Request.ToJSON(

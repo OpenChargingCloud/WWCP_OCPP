@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 Task.FromResult(
                     new ForwardingDecision<OCPPv2_1.CSMS.ResetRequest, OCPPv2_1.CS.ResetResponse>(
                         request,
-                        ForwardingResult.FORWARD
+                        ForwardingResults.FORWARD
                     )
                 );
 
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 Task.FromResult(
                     new ForwardingDecision<DeleteFileRequest, DeleteFileResponse>(
                         request,
-                        ForwardingResult.FORWARD
+                        ForwardingResults.FORWARD
                     )
                 );
 
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 Task.FromResult(
                     new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
                         request,
-                        ForwardingResult.FORWARD
+                        ForwardingResults.FORWARD
                     )
                 );
 
@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     return Task.FromResult(
                                new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                    request,
-                                   ForwardingResult.REJECT,
+                                   ForwardingResults.REJECT,
                                    response,
                                    response.ToJSON(
                                        OCPP.CustomDataTransferResponseSerializer,
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     return Task.FromResult(
                                new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                    request,
-                                   ForwardingResult.FORWARD
+                                   ForwardingResults.FORWARD
                                )
                            );
 
@@ -568,7 +568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 Task.FromResult(
                     new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
                         request,
-                        ForwardingResult.FORWARD
+                        ForwardingResults.FORWARD
                     )
                 );
 
@@ -583,7 +583,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 Task.FromResult(
                     new ForwardingDecision<OCPPv2_1.CS.BootNotificationRequest, BootNotificationResponse>(
                         request,
-                        ForwardingResult.FORWARD
+                        ForwardingResults.FORWARD
                     )
                 );
 

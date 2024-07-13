@@ -79,14 +79,14 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
 
 
-        public static OCPP_Response JSONError(EventTracking_Id   EventTrackingId,
-                                              NetworkingNode_Id  DestinationNodeId,
-                                              NetworkPath        NetworkPath,
-                                              Request_Id         RequestId,
-                                              ResultCode         ErrorCode,
-                                              String?            ErrorDescription    = null,
-                                              JObject?           ErrorDetails        = null,
-                                              CancellationToken  CancellationToken   = default)
+        public static OCPP_Response JSONRequestError(EventTracking_Id   EventTrackingId,
+                                                     NetworkingNode_Id  DestinationNodeId,
+                                                     NetworkPath        NetworkPath,
+                                                     Request_Id         RequestId,
+                                                     ResultCode         ErrorCode,
+                                                     String?            ErrorDescription    = null,
+                                                     JObject?           ErrorDetails        = null,
+                                                     CancellationToken  CancellationToken   = default)
 
             => new (null,
                     new OCPP_JSONRequestErrorMessage(

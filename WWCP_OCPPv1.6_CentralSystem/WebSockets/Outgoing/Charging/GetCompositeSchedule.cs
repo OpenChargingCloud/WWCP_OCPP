@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 var sendRequestState = await SendJSONAndWait(
                                                  Request.EventTrackingId,
-                                                 Request.DestinationNodeId,
+                                                 Request.DestinationId,
                                                  Request.NetworkPath,
                                                  Request.RequestId,
                                                  Request.Action,

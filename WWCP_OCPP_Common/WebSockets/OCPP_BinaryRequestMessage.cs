@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             => new (Timestamp.Now,
                     Request.EventTrackingId,
                     NetworkingMode.Unknown,
-                    Request.DestinationNodeId,
+                    Request.DestinationId,
                     Request.NetworkPath,
                     Request.RequestId,
                     Request.Action,

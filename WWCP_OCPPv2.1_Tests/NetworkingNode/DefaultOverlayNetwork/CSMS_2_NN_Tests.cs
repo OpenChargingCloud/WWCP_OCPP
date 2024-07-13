@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request OUT
                     Assert.That(csmsDataTransferRequestsSent.     Count,                  Is.EqualTo(1), "The DataTransfer request did not leave the CSMS!");
                     var csmsDataTransferRequest = csmsDataTransferRequestsSent.First();
-                    Assert.That(csmsDataTransferRequest.DestinationNodeId,                Is.EqualTo(localController.Id));
+                    Assert.That(csmsDataTransferRequest.DestinationId,                Is.EqualTo(localController.Id));
                     Assert.That(csmsDataTransferRequest.NetworkPath.Length,               Is.EqualTo(1));
                     Assert.That(csmsDataTransferRequest.NetworkPath.Source,               Is.EqualTo(CSMS.Id));
                     Assert.That(csmsDataTransferRequest.VendorId,                         Is.EqualTo(vendorId));
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request IN
                     Assert.That(nnDataTransferRequestsReceived. Count,                    Is.EqualTo(1), "The DataTransfer request did not reach the networking node!");
                     var nnDataTransferRequestReceived = nnDataTransferRequestsReceived.First();
-                    Assert.That(nnDataTransferRequestReceived.DestinationNodeId,          Is.EqualTo(localController.Id));
+                    Assert.That(nnDataTransferRequestReceived.DestinationId,          Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Length,         Is.EqualTo(1));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request OUT
                     Assert.That(csmsSecureDataTransferRequestsSent.     Count,                  Is.EqualTo(1), "The SecureDataTransfer request did not leave the CSMS!");
                     var csmsSecureDataTransferRequest = csmsSecureDataTransferRequestsSent.First();
-                    Assert.That(csmsSecureDataTransferRequest.DestinationNodeId,                Is.EqualTo(localController.Id));
+                    Assert.That(csmsSecureDataTransferRequest.DestinationId,                Is.EqualTo(localController.Id));
                     Assert.That(csmsSecureDataTransferRequest.NetworkPath.Length,               Is.EqualTo(1));
                     Assert.That(csmsSecureDataTransferRequest.NetworkPath.Source,               Is.EqualTo(CSMS.Id));
                   //  Assert.That(csmsSecureDataTransferRequest.VendorId,                         Is.EqualTo(vendorId));
@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request IN
                     Assert.That(nnSecureDataTransferRequestsReceived. Count,                    Is.EqualTo(1), "The SecureDataTransfer request did not reach the networking node!");
                     var nnSecureDataTransferRequestReceived = nnSecureDataTransferRequestsReceived.First();
-                    Assert.That(nnSecureDataTransferRequestReceived.DestinationNodeId,          Is.EqualTo(localController.Id));
+                    Assert.That(nnSecureDataTransferRequestReceived.DestinationId,          Is.EqualTo(localController.Id));
                     Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Length,         Is.EqualTo(1));
                     Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!

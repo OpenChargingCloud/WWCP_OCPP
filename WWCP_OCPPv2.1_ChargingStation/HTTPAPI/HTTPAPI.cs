@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     new JProperty("timestamp",         timestamp.           ToIso8601()),
                                                //     new JProperty("connection",        connection.             ToJSON()),
                                                     new JProperty("request",           request.                ToJSON()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",   request.EventTrackingId.ToString())
                                                 ));
 
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     new JProperty("timestamp",         timestamp.           ToIso8601()),
                                                     new JProperty("eventTrackingId",   request.EventTrackingId.ToString()),
                                           //          new JProperty("connection",        connection.             ToJSON()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",           request.                ToJSON()),
                                                     new JProperty("response",          response.               ToJSON()),
                                                     new JProperty("runtime",           runtime.TotalMilliseconds)
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnHeartbeatRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnHeartbeatResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnAuthorizeRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnAuthorizeResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnStatusNotificationRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnStatusNotificationResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnMeterValuesRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnMeterValuesResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnDataTransferRequestReceived",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.             ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                  ToJSON()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.  ToString())
                                                 ));
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnDataTransferResponseSent",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.             ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.  ToString()),
                                                     new JProperty("request",            request.                  ToJSON()),
                                                     new JProperty("response",           response.                 ToJSON()),
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnFirmwareStatusNotificationRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -408,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnFirmwareStatusNotificationResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnResetRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -447,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnResetResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -466,7 +466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnChangeAvailabilityRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -482,7 +482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnChangeAvailabilityResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -500,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferRequestSent),
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.             ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                  ToJSON()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.  ToString())
                                                 ));
@@ -515,7 +515,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferResponseReceived),
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.             ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.  ToString()),
                                                     new JProperty("request",            request.                  ToJSON()),
                                                     new JProperty("response",           response.                 ToJSON()),
@@ -534,7 +534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnTriggerMessageRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnTriggerMessageResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -569,7 +569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnUpdateFirmwareRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -585,7 +585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnUpdateFirmwareResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -605,7 +605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnReserveNowRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnReserveNowResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -640,7 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnCancelReservationRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -656,7 +656,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnCancelReservationResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -675,7 +675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnSetChargingProfileRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -691,7 +691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnSetChargingProfileResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -710,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnClearChargingProfileRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -726,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnClearChargingProfileResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -745,7 +745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnGetCompositeScheduleRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -761,7 +761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnGetCompositeScheduleResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -780,7 +780,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnUnlockConnectorRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -796,7 +796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnUnlockConnectorResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -816,7 +816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnGetLocalListVersionRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -832,7 +832,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnGetLocalListVersionResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -851,7 +851,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnSendLocalListRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -867,7 +867,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnSendLocalListResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),
@@ -886,7 +886,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnClearCacheRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -902,7 +902,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 EventLog.SubmitEvent("OnClearCacheResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
+                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),

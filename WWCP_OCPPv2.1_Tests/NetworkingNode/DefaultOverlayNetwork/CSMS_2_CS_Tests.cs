@@ -130,18 +130,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request FORWARD
                     Assert.That(nnResetRequestsForwarded.      Count,             Is.EqualTo(1), "The Reset request did not reach the networking node!");
                     var nnResetRequest = nnResetRequestsForwarded.First();
-                    Assert.That(nnResetRequest.Request.DestinationNodeId,         Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnResetRequest.Request.DestinationId,         Is.EqualTo(chargingStation.Id));
                     //Assert.That(nnResetRequest.Request.NetworkPath.Length,        Is.EqualTo(1));
                     //Assert.That(nnResetRequest.Request.NetworkPath.Source,        Is.EqualTo(CSMS.Id));
                     //Assert.That(nnResetRequest.Request.NetworkPath.Last,          Is.EqualTo(CSMS.Id));
                     Assert.That(nnResetRequest.Request.ResetType,                 Is.EqualTo(resetType));
-                    Assert.That(nnResetRequest.Result,                            Is.EqualTo(ForwardingResult.FORWARD));
+                    Assert.That(nnResetRequest.Result,                            Is.EqualTo(ForwardingResults.FORWARD));
 
 
                     // Charging Station Request IN
                     Assert.That(csResetRequests.               Count,             Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     var csResetRequest = csResetRequests.First();
-                    Assert.That(csResetRequest.DestinationNodeId,                 Is.EqualTo(NetworkingNode_Id.Zero));   // Because of "standard" networking mode!
+                    Assert.That(csResetRequest.DestinationId,                 Is.EqualTo(NetworkingNode_Id.Zero));   // Because of "standard" networking mode!
                     Assert.That(csResetRequest.NetworkPath.Length,                Is.EqualTo(0));                        // Because of "standard" networking mode!
                     Assert.That(csResetRequest.ResetType,                         Is.EqualTo(resetType));
 
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // CSMS Request OUT
                     Assert.That(csmsDataTransferRequestsSent.         Count,             Is.EqualTo(1), "The DataTransfer request did not leave the CSMS!");
                     var csmsDataTransferRequest = csmsDataTransferRequestsSent.First();
-                    Assert.That(csmsDataTransferRequest.DestinationNodeId,               Is.EqualTo(chargingStation.Id));
+                    Assert.That(csmsDataTransferRequest.DestinationId,               Is.EqualTo(chargingStation.Id));
                     Assert.That(csmsDataTransferRequest.NetworkPath.Length,              Is.EqualTo(1));
                     Assert.That(csmsDataTransferRequest.NetworkPath.Source,              Is.EqualTo(CSMS.Id));
                     Assert.That(csmsDataTransferRequest.NetworkPath.Last,                Is.EqualTo(CSMS.Id));
@@ -270,20 +270,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request FORWARD
                     Assert.That(nnDataTransferRequestsForwarded.      Count,             Is.EqualTo(1), "The DataTransfer request did not reach the networking node!");
                     var nnDataTransfer = nnDataTransferRequestsForwarded.First();
-                    Assert.That(nnDataTransfer.Request.DestinationNodeId,                Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnDataTransfer.Request.DestinationId,                Is.EqualTo(chargingStation.Id));
                     Assert.That(nnDataTransfer.Request.NetworkPath.Length,               Is.EqualTo(1));
                     Assert.That(nnDataTransfer.Request.NetworkPath.Source,               Is.EqualTo(CSMS.Id));
                     Assert.That(nnDataTransfer.Request.NetworkPath.Last,                 Is.EqualTo(CSMS.Id));
                     Assert.That(nnDataTransfer.Request.VendorId,                         Is.EqualTo(vendorId));
                     Assert.That(nnDataTransfer.Request.MessageId,                        Is.EqualTo(messageId));
                     Assert.That(nnDataTransfer.Request.Data?.ToString(),                 Is.EqualTo(data));
-                    Assert.That(nnDataTransfer.Result,                                   Is.EqualTo(ForwardingResult.FORWARD));
+                    Assert.That(nnDataTransfer.Result,                                   Is.EqualTo(ForwardingResults.FORWARD));
 
 
                     // Charging Station Request IN
                     Assert.That(csDataTransferRequests.               Count,             Is.EqualTo(1), "The DataTransfer request did not reach the charging station!");
                     var csDataTransferRequest = csDataTransferRequests.First();
-                    Assert.That(csDataTransferRequest.DestinationNodeId,                 Is.EqualTo(NetworkingNode_Id.Zero));   // Because of "standard" networking mode!
+                    Assert.That(csDataTransferRequest.DestinationId,                 Is.EqualTo(NetworkingNode_Id.Zero));   // Because of "standard" networking mode!
                     Assert.That(csDataTransferRequest.NetworkPath.Length,                Is.EqualTo(0));                        // Because of "standard" networking mode!
                     Assert.That(csDataTransferRequest.VendorId,                          Is.EqualTo(vendorId));
                     Assert.That(csDataTransferRequest.MessageId,                         Is.EqualTo(messageId));

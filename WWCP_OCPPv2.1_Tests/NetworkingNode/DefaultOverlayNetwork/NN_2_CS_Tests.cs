@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request OUT
                     Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     var nnResetRequest = nnResetRequestsSent.First();
-                    Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
                     Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(localController.Id));
                     Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(localController.Id));
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request OUT
                     Assert.That(nnDataTransferRequestsSent.           Count,   Is.EqualTo(1), "The DataTransfer request did not leave the networking node!");
                     var nnDataTransferRequest = nnDataTransferRequestsSent.First();
-                    Assert.That(nnDataTransferRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnDataTransferRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
                     Assert.That(nnDataTransferRequest.NetworkPath.Length,      Is.EqualTo(1));
                     Assert.That(nnDataTransferRequest.NetworkPath.Source,      Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferRequest.NetworkPath.Last,        Is.EqualTo(localController.Id));

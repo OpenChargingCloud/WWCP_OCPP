@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                     // Networking Node Request OUT
                     Assert.That(nnBootNotificationRequestsSent.     Count,                    Is.EqualTo(1), "The BootNotification request did not leave the networking node!");
                     var nnBootNotificationRequest = nnBootNotificationRequestsSent.First();
-                    Assert.That(nnBootNotificationRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBootNotificationRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(1));
                     Assert.That(nnBootNotificationRequest.NetworkPath.Source,                 Is.EqualTo(localController1.Id));
                     Assert.That(nnBootNotificationRequest.NetworkPath.Last,                   Is.EqualTo(localController1.Id));
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                     // CSMS Request IN
                     Assert.That(csmsBootNotificationRequests.       Count,                    Is.EqualTo(1), "The BootNotification request did not reach the CSMS!");
                     var csmsBootNotificationRequest = csmsBootNotificationRequests.First();
-                    Assert.That(csmsBootNotificationRequest.DestinationNodeId,                Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsBootNotificationRequest.DestinationId,                Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsBootNotificationRequest.NetworkPath.Length,               Is.EqualTo(1));
                     Assert.That(csmsBootNotificationRequest.NetworkPath.Source,               Is.EqualTo(localController1.Id));
                     Assert.That(csmsBootNotificationRequest.NetworkPath.Last,                 Is.EqualTo(localController1.Id));
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                         Assert.That(chargingStation.Model,             Is.EqualTo(localController1.Model));
                         Assert.That(chargingStation.VendorName,        Is.EqualTo(localController1.VendorName));
                         Assert.That(chargingStation.SerialNumber,      Is.EqualTo(localController1.SerialNumber));
-                        Assert.That(chargingStation.FirmwareVersion,   Is.EqualTo(localController1.FirmwareVersion));
+                        Assert.That(chargingStation.FirmwareVersion,   Is.EqualTo(localController1.SoftwareVersion));
                         Assert.That(chargingStation.Modem,             Is.Not.Null);
 
                         if (chargingStation.Modem is not null &&
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                     // Networking Node Request OUT
                     Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     var nnResetRequest = nnResetRequestsSent.First();
-                    Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(localController1.Id));
                     Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(localController1.Id));
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                     Assert.That(csmsNotifyNetworkTopologyRequests.Count,                       Is.EqualTo(1), "The Network Topology Notification did not reach the CSMS!");
                     var csmsNotifyNetworkTopologyRequest = csmsNotifyNetworkTopologyRequests.First();
 
-                    Assert.That(csmsNotifyNetworkTopologyRequest.DestinationNodeId,            Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsNotifyNetworkTopologyRequest.DestinationId,            Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsNotifyNetworkTopologyRequest.NetworkPath.Length,           Is.EqualTo(1));
                     Assert.That(csmsNotifyNetworkTopologyRequest.NetworkPath.Source,           Is.EqualTo(localController1.Id));
                     Assert.That(csmsNotifyNetworkTopologyRequest.NetworkPath.Last,             Is.EqualTo(localController1.Id));
@@ -514,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                     Assert.That(csmsNotifyNetworkTopologyRequests.Count,                       Is.EqualTo(1), "The Network Topology Notification did not reach the CSMS!");
                     var csmsNotifyNetworkTopologyRequest = csmsNotifyNetworkTopologyRequests.First();
 
-                    Assert.That(csmsNotifyNetworkTopologyRequest.DestinationNodeId,            Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsNotifyNetworkTopologyRequest.DestinationId,            Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsNotifyNetworkTopologyRequest.NetworkPath.Length,           Is.EqualTo(1));
                     Assert.That(csmsNotifyNetworkTopologyRequest.NetworkPath.Source,           Is.EqualTo(localController1.Id));
                     Assert.That(csmsNotifyNetworkTopologyRequest.NetworkPath.Last,             Is.EqualTo(localController1.Id));

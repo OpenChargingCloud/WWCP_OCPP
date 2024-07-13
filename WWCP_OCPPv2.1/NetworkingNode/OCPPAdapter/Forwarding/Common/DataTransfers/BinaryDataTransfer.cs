@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -27,6 +28,44 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
+
+    #region Delegates
+
+    /// <summary>
+    /// A BinaryDataTransfer request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>
+
+        OnBinaryDataTransferRequestFilterDelegate(DateTime                    Timestamp,
+                                                  IEventSender                Sender,
+                                                  IWebSocketConnection        Connection,
+                                                  BinaryDataTransferRequest   Request,
+                                                  CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A filtered BinaryDataTransfer request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnBinaryDataTransferRequestFilteredDelegate(DateTime                                                                    Timestamp,
+                                                    IEventSender                                                                Sender,
+                                                    IWebSocketConnection                                                        Connection,
+                                                    BinaryDataTransferRequest                                                   Request,
+                                                    ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>   ForwardingDecision);
+
+    #endregion
+
 
     /// <summary>
     /// The OCPP adapter for forwarding messages.
@@ -103,14 +142,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+            if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
                                          Request,
-                                         ForwardingResult.FORWARD
+                                         ForwardingResults.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.BinaryRejectResponse is null))
+               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.BinaryRejectResponse is null))
             {
 
                 var response = forwardingDecision?.RejectResponse ??
@@ -121,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 forwardingDecision = new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
                                          Request,
-                                         ForwardingResult.REJECT,
+                                         ForwardingResults.REJECT,
                                          response,
                                          response.ToBinary(
                                              parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseSerializer,

@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// The networking node identification of the message destination.
         /// </summary>
         [Mandatory]
-        public NetworkingNode_Id  DestinationNodeId    { get; }
+        public NetworkingNode_Id  DestinationId        { get; }
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         {
 
-            this.DestinationNodeId  = DestinationNodeId;
+            this.DestinationId  = DestinationNodeId;
             this.Action             = Action;
 
             this.RequestId          = RequestId        ?? Request_Id.NewRandom();
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPP
             unchecked
             {
 
-                hashCode = this.DestinationNodeId.GetHashCode() * 17 ^
+                hashCode = this.DestinationId.GetHashCode() * 17 ^
                            this.NetworkPath.      GetHashCode() * 13 ^
                            this.Action.           GetHashCode() * 11 ^
                            this.RequestId.        GetHashCode() *  7 ^
@@ -217,15 +217,15 @@ namespace cloud.charging.open.protocols.OCPP
         {
 
             var json = JSONObject.Create(
-                           new JProperty("id",                  RequestId.       ToString()),
-                           new JProperty("timestamp",           RequestTimestamp.ToIso8601()),
-                           new JProperty("eventTrackingId",     EventTrackingId. ToString()),
-                         //  new JProperty("connection",          Connection?.     ToJSON()),
-                           new JProperty("destinationNodeId",   DestinationNodeId.ToString()),
-                           new JProperty("networkPath",         NetworkPath.     ToJSON()),
-                           new JProperty("timeout",             RequestTimeout.  TotalSeconds),
-                           new JProperty("action",              Action),
-                           new JProperty("data",                RequestData)
+                           new JProperty("id",               RequestId.       ToString()),
+                           new JProperty("timestamp",        RequestTimestamp.ToIso8601()),
+                           new JProperty("eventTrackingId",  EventTrackingId. ToString()),
+                         //  new JProperty("connection",       Connection?.     ToJSON()),
+                           new JProperty("destinationId",    DestinationId.   ToString()),
+                           new JProperty("networkPath",      NetworkPath.     ToJSON()),
+                           new JProperty("timeout",          RequestTimeout.  TotalSeconds),
+                           new JProperty("action",           Action),
+                           new JProperty("data",             RequestData)
                        );
 
             return json;
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         public override String ToString()
 
-            => $"{Action}/{RequestId} '{DestinationNodeId}' via [{NetworkPath}]";
+            => $"{Action}/{RequestId} '{DestinationId}' via [{NetworkPath}]";
 
         #endregion
 

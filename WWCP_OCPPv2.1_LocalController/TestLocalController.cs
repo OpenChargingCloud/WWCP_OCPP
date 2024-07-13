@@ -56,10 +56,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         public TestLocalController(NetworkingNode_Id  Id,
                                    String             VendorName,
                                    String             Model,
-                                   I18NString?        Description                 = null,
                                    String?            SerialNumber                = null,
-                                   String?            FirmwareVersion             = null,
+                                   String?            SoftwareVersion             = null,
                                    Modem?             Modem                       = null,
+                                   I18NString?        Description                 = null,
 
                                    SignaturePolicy?   SignaturePolicy             = null,
                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
@@ -78,10 +78,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             : base(Id,
                    VendorName,
                    Model,
-                   Description,
                    SerialNumber,
-                   FirmwareVersion,
+                   SoftwareVersion,
                    Modem,
+                   Description,
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
@@ -103,69 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
 
-            // CS
-
-            #region OnReset
-
-            OCPP.IN.OnReset += async (timestamp,
-                                      sender,
-                                      connection,
-                                      request,
-                                      cancellationToken) => {
-
-                OCPPv2_1.CS.ResetResponse? response = null;
-
-                DebugX.Log($"Charging Station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
-
-                // ResetType
-
-                // Reset entire charging station
-                if (!request.EVSEId.HasValue)
-                {
-
-                    response = new OCPPv2_1.CS.ResetResponse(
-                                    Request:       request,
-                                    NetworkPath:   NetworkPath.From(Id),
-                                    Status:        ResetStatus.Accepted,
-                                    StatusInfo:    null,
-                                    CustomData:    null
-                                );
-
-                }
-
-                // Unknown EVSE
-                else
-                {
-
-                    response = new OCPPv2_1.CS.ResetResponse(
-                                    Request:      request,
-                                    Status:       ResetStatus.Rejected,
-                                    StatusInfo:   null,
-                                    CustomData:   null
-                                );
-
-                }
-
-                return response;
-
-            };
-
-
-            OCPP.FORWARD.OnResetRequest += (timestamp,
-                                            sender,
-                                            connection,
-                                            request,
-                                            cancellationToken) =>
-
-                Task.FromResult(
-                    new ForwardingDecision<OCPPv2_1.CSMS.ResetRequest, OCPPv2_1.CS.ResetResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
-                );
-
-            #endregion
-
+            // Common
 
             #region BinaryDataStreamsExtensions
 
@@ -196,10 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                  cancellationToken) =>
 
                 Task.FromResult(
-                    new ForwardingDecision<DeleteFileRequest, DeleteFileResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
+                    ForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -229,6 +164,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             };
 
+
+            OCPP.FORWARD.OnGetFileRequest += (timestamp,
+                                              sender,
+                                              connection,
+                                              request,
+                                              cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<GetFileRequest, GetFileResponse>.FORWARD(request)
+                );
+
             #endregion
 
             #region OnListDirectory
@@ -251,6 +197,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             };
 
+
+            OCPP.FORWARD.OnListDirectoryRequest += (timestamp,
+                                                    sender,
+                                                    connection,
+                                                    request,
+                                                    cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request)
+                );
+
             #endregion
 
             #region OnSendFile
@@ -272,68 +229,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             };
 
-            #endregion
 
-            #endregion
-
-            // Bidirectional
-
-            #region OnBinaryDataTransfer
-
-            OCPP.IN.OnBinaryDataTransfer += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
-
-                DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
-
-                // VendorId
-                // MessageId
-                // Data
-
-                var responseBinaryData = request.Data;
-
-                if (request.Data is not null)
-                    responseBinaryData = request.Data.Reverse();
-
-                return Task.FromResult(
-                           request.VendorId == Vendor_Id.GraphDefined
-
-                               ? new BinaryDataTransferResponse(
-                                       Request:                request,
-                                       NetworkPath:            NetworkPath.From(Id),
-                                       Status:                 BinaryDataTransferStatus.Accepted,
-                                       AdditionalStatusInfo:   null,
-                                       Data:                   responseBinaryData
-                                   )
-
-                               : new BinaryDataTransferResponse(
-                                       Request:                request,
-                                       NetworkPath:            NetworkPath.From(Id),
-                                       Status:                 BinaryDataTransferStatus.Rejected,
-                                       AdditionalStatusInfo:   null,
-                                       Data:                   responseBinaryData
-                                   )
-                       );
-
-            };
-
-
-            OCPP.FORWARD.OnBinaryDataTransferRequestFilter += (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request,
-                                                               cancellationToken) =>
+            OCPP.FORWARD.OnSendFileRequest += (timestamp,
+                                               sender,
+                                               connection,
+                                               request,
+                                               cancellationToken) =>
 
                 Task.FromResult(
-                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
+                    ForwardingDecision<SendFileRequest, SendFileResponse>.FORWARD(request)
                 );
 
             #endregion
+
+            #endregion
+
+            #region DataTransfers
 
             #region OnDataTransfer
 
@@ -435,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     return Task.FromResult(
                                new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                    request,
-                                   ForwardingResult.REJECT,
+                                   ForwardingResults.REJECT,
                                    response,
                                    response.ToJSON(
                                        OCPP.CustomDataTransferResponseSerializer,
@@ -451,13 +362,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
                 else
                     return Task.FromResult(
-                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
-                                   request,
-                                   ForwardingResult.FORWARD
-                               )
+                               ForwardingDecision<DataTransferRequest, DataTransferResponse>.FORWARD(request)
                            );
 
             };
+
+            #endregion
+
+            #region OnBinaryDataTransfer
+
+            OCPP.IN.OnBinaryDataTransfer += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"Local Controller '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                var responseBinaryData = request.Data;
+
+                if (request.Data is not null)
+                    responseBinaryData = request.Data.Reverse();
+
+                return Task.FromResult(
+                           request.VendorId == Vendor_Id.GraphDefined
+
+                               ? new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
+                                       Status:                 BinaryDataTransferStatus.Accepted,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+
+                               : new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
+                                       Status:                 BinaryDataTransferStatus.Rejected,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+                       );
+
+            };
+
+
+            OCPP.FORWARD.OnBinaryDataTransferRequestFilter += (timestamp,
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>.FORWARD(request)
+                );
 
             #endregion
 
@@ -469,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                              request,
                                              cancellationToken) => {
 
-                DebugX.Log($"Charging Station '{Id}': Incoming SecureDataTransfer request!");
+                DebugX.Log($"Local Controller '{Id}': Incoming SecureDataTransfer request!");
 
                 // VendorId
                 // MessageId
@@ -515,64 +477,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             };
 
 
-            //OCPP.FORWARD.OnSecureDataTransferRequest += (timestamp,
-            //                                             sender,
-            //                                             connection,
-            //                                             request,
-            //                                             cancellationToken) =>
-
-            //    Task.FromResult(
-            //        new ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>(
-            //            request,
-            //            ForwardingResult.FORWARD
-            //        )
-            //    );
-
-            #endregion
-
-
-            // CSMS
-
-            #region OnBinaryDataTransfer
-
-            OCPP.IN.OnBootNotification += (timestamp,
-                                           sender,
-                                           connection,
-                                           request,
-                                           cancellationToken) => {
-
-                DebugX.Log($"'{Id}': Incoming BootNotification request: {request.ChargingStation.SerialNumber}, {request.Reason}");
-
-                // ChargingStation
-                // Reason
-
-                return Task.FromResult(
-                           new BootNotificationResponse(
-                               Request:       request,
-                               NetworkPath:   NetworkPath.From(Id),
-                               Status:        RegistrationStatus.Accepted,
-                               CurrentTime:   Timestamp.Now,
-                               Interval:      TimeSpan.FromMinutes(5)
-                           )
-                       );
-
-            };
-
-
-            OCPP.FORWARD.OnBinaryDataTransferRequestFilter += (timestamp,
+            OCPP.FORWARD.OnSecureDataTransferRequestFilter += (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
                                                                cancellationToken) =>
 
                 Task.FromResult(
-                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
+                    ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>.FORWARD(request)
                 );
 
             #endregion
+
+            #endregion
+
+
+
+            // CSMS -> CS
+
+            #region OnReset
+
+            OCPP.IN.OnReset += async (timestamp,
+                                      sender,
+                                      connection,
+                                      request,
+                                      cancellationToken) => {
+
+                CS.ResetResponse? response = null;
+
+                DebugX.Log($"Local Controller '{Id}': Incoming '{request.ResetType}' reset request!");
+
+                // ResetType
+
+                // EVSE Id is ignored!
+                response  = new CS.ResetResponse(
+                                Request:      request,
+                                Status:       ResetStatus.Accepted,
+                                StatusInfo:   null,
+                                CustomData:   null
+                            );
+
+                return response;
+
+            };
+
+
+            OCPP.FORWARD.OnResetRequest += (timestamp,
+                                            sender,
+                                            connection,
+                                            request,
+                                            cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(request)
+                );
+
+            #endregion
+
+
+
+            // CS -> CSMS
+
+            #region OnBootNotification
 
             OCPP.FORWARD.OnBootNotificationRequestFilter += (timestamp,
                                                              sender,
@@ -581,11 +547,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                              cancellationToken) =>
 
                 Task.FromResult(
-                    new ForwardingDecision<OCPPv2_1.CS.BootNotificationRequest, BootNotificationResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
+                    ForwardingDecision<CS.BootNotificationRequest, BootNotificationResponse>.FORWARD(request)
                 );
+
+                //Task.FromResult(
+                //    ForwardingDecision<CS.BootNotificationRequest, BootNotificationResponse>.REPLACE(
+                //        request,
+                //        new CS.BootNotificationRequest(
+                //            request.DestinationId,
+                //            request.ChargingStation,
+                //            request.Reason,
+                //            request.SignKeys,
+                //            request.SignInfos,
+                //            request.Signatures,
+                //            request.CustomData,
+                //            request.RequestId,
+                //            request.RequestTimestamp,
+                //            request.RequestTimeout,
+                //            request.EventTrackingId,
+                //            request.NetworkPath,
+                //            request.CancellationToken
+                //        ),
+                //        nameof(CS.BootNotificationRequest)[..^7],
+                //        NetworkingNode_Id.Parse("/dev/null")
+                //    )
+                //);
+
+            #endregion
+
 
 
         }

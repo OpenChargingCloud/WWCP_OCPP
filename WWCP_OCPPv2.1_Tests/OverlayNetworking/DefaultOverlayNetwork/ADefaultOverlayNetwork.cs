@@ -125,6 +125,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             CSMS = new TestCSMS2(
                        Id:                      NetworkingNode_Id.Parse("csms01"),
+                       VendorName:              "GraphDefined",
+                       Model:                   "CSMS M.1",
                        HTTPUploadPort:          IPPort.Parse(9100),
                        DNSClient:               dnsClient
                    );
@@ -190,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                  Model:                   "VCP.1",
                                  Description:             I18NString.Create(Languages.en, "Our first virtual networking node!"),
                                  SerialNumber:            "SN-NN0001",
-                                 FirmwareVersion:         "v0.1",
+                                 SoftwareVersion:         "v0.1",
                                  Modem:                   new Modem(
                                                               ICCID:   "0001",
                                                               IMSI:    "1112"

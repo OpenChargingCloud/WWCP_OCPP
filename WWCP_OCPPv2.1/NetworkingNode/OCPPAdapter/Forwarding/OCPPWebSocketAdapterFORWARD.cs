@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
-        public ForwardingResult            DefaultResult        { get; set; } = ForwardingResult.DROP;
+        public ForwardingResults            DefaultResult        { get; set; } = ForwardingResults.DROP;
 
         public HashSet<NetworkingNode_Id>  AnycastIdsAllowed    { get; }      = [];
 
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkingNode">The parent networking node.</param>
         /// <param name="DefaultResult">The default forwarding result.</param>
         public OCPPWebSocketAdapterFORWARD(NN.IBaseNetworkingNode  NetworkingNode,
-                                           ForwardingResult        DefaultResult = ForwardingResult.DROP)
+                                           ForwardingResults        DefaultResult = ForwardingResults.DROP)
         {
 
             this.parentNetworkingNode  = NetworkingNode;
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region FORWARD
 
-                    if (forwardingDecision.Result == ForwardingResult.FORWARD)
+                    if (forwardingDecision.Result == ForwardingResults.FORWARD)
                     {
 
                         var newJSONRequestMessage = JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
@@ -157,9 +157,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
+                    #region REPLACE
+
+                    if (forwardingDecision.Result == ForwardingResults.REPLACE)
+                    {
+
+                        var newJSONRequestMessage = forwardingDecision.NewJSONRequest is null
+                                                        ? JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id)
+                                                        : new OCPP_JSONRequestMessage(
+                                                              JSONRequestMessage.RequestTimestamp,
+                                                              JSONRequestMessage.EventTrackingId,
+                                                              JSONRequestMessage.NetworkingMode,
+                                                              forwardingDecision.NewDestinationId ?? JSONRequestMessage.DestinationId,
+                                                              JSONRequestMessage.NetworkPath.Append(parentNetworkingNode.Id),
+                                                              JSONRequestMessage.RequestId,
+                                                              forwardingDecision.NewAction        ?? JSONRequestMessage.Action,
+                                                              forwardingDecision.NewJSONRequest, // <-- !!!
+                                                              JSONRequestMessage.RequestTimeout,
+                                                              JSONRequestMessage.ErrorMessage,
+                                                              JSONRequestMessage.CancellationToken
+                                                          );
+
+                        expectedResponses.TryAdd(
+                            newJSONRequestMessage.RequestId,
+                            new ResponseInfo(
+                                newJSONRequestMessage.RequestId,
+                                forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                                newJSONRequestMessage.NetworkPath.Source,
+                                newJSONRequestMessage.RequestTimeout
+                            )
+                        );
+
+                        await parentNetworkingNode.OCPP.OUT.SendJSONRequest(newJSONRequestMessage);
+
+                    }
+
+                    #endregion
+
                     #region REJECT
 
-                    else if (forwardingDecision.Result == ForwardingResult.REJECT &&
+                    else if (forwardingDecision.Result == ForwardingResults.REJECT &&
                              forwardingDecision.JSONRejectResponse is not null)
                     {
 

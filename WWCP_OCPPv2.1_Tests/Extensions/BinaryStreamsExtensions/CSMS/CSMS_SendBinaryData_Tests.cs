@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.Data?.ToUTF8String(),                           Is.EqualTo(data.Reverse().ToUTF8String()));
 
                     Assert.That(binaryDataTransferRequests.Count,                        Is.EqualTo(1), "The BinaryDataTransferRequest did not reach the charging station!");
-                    Assert.That(binaryDataTransferRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(binaryDataTransferRequests.First().DestinationId,    Is.EqualTo(NetworkingNode_Id.Zero));
                     Assert.That(binaryDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(0));
                     Assert.That(binaryDataTransferRequests.First().VendorId,             Is.EqualTo(vendorId));
                     Assert.That(binaryDataTransferRequests.First().MessageId,            Is.EqualTo(messageId));

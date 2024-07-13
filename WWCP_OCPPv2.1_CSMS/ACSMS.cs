@@ -2997,7 +2997,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                DebugX.Log($"OnBootNotification: {request.ChargingStation?.SerialNumber ?? "-"} ({request.DestinationNodeId})");
+                DebugX.Log($"OnBootNotification: {request.ChargingStation?.SerialNumber ?? "-"} ({request.DestinationId})");
 
                 #region Verify request signature(s)
 
@@ -3278,7 +3278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // PublishFirmwareStatusNotificationRequestId
                 // DownloadLocations
 
-                DebugX.Log("OnPublishFirmwareStatusNotification: " + request.DestinationNodeId);
+                DebugX.Log("OnPublishFirmwareStatusNotification: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -3396,7 +3396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                DebugX.Log("OnHeartbeat: " + request.DestinationNodeId);
+                DebugX.Log("OnHeartbeat: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -3519,7 +3519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // EventData
                 // ToBeContinued
 
-                DebugX.Log("OnNotifyEvent: " + request.DestinationNodeId);
+                DebugX.Log("OnNotifyEvent: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -3644,7 +3644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // Timestamp
                 // TechInfo
 
-                DebugX.Log("OnSecurityEventNotification: " + request.DestinationNodeId);
+                DebugX.Log("OnSecurityEventNotification: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -3766,7 +3766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // GeneratedAt
                 // ReportData
 
-                DebugX.Log("OnNotifyReport: " + request.DestinationNodeId);
+                DebugX.Log("OnNotifyReport: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -3895,7 +3895,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // MonitoringData
                 // ToBeContinued
 
-                DebugX.Log("OnNotifyMonitoringReport: " + request.DestinationNodeId);
+                DebugX.Log("OnNotifyMonitoringReport: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -4020,7 +4020,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // Status
                 // LogRquestId
 
-                DebugX.Log("OnLogStatusNotification: " + request.DestinationNodeId);
+                DebugX.Log("OnLogStatusNotification: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -4319,7 +4319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // CSR
                 // CertificateType
 
-                DebugX.Log("OnSignCertificate: " + request.DestinationNodeId);
+                DebugX.Log("OnSignCertificate: " + request.DestinationId);
 
                 Pkcs10CertificationRequest?  parsedCSR       = null;
                 String?                      errorResponse   = null;
@@ -4565,7 +4565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // MaximumContractCertificateChains
                 // PrioritizedEMAIds
 
-                DebugX.Log("OnGet15118EVCertificate: " + request.DestinationNodeId);
+                DebugX.Log("OnGet15118EVCertificate: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -4689,7 +4689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 // OCSPRequestData
 
-                DebugX.Log("OnGetCertificateStatus: " + request.DestinationNodeId);
+                DebugX.Log("OnGetCertificateStatus: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -4814,7 +4814,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // GetCRLRequestId
                 // CertificateHashData
 
-                DebugX.Log("OnGetCRL: " + request.DestinationNodeId);
+                DebugX.Log("OnGetCRL: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -4940,7 +4940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // ReservationId
                 // ReservationUpdateStatus
 
-                DebugX.Log("OnReservationStatusUpdate: " + request.DestinationNodeId);
+                DebugX.Log("OnReservationStatusUpdate: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -5061,7 +5061,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // Certificate
                 // ISO15118CertificateHashData
 
-                DebugX.Log("OnAuthorize: " + request.DestinationNodeId + ", " +
+                DebugX.Log("OnAuthorize: " + request.DestinationId + ", " +
                                              request.IdToken);
 
 
@@ -5196,7 +5196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // ChargingNeeds
                 // MaxScheduleTuples
 
-                DebugX.Log("OnNotifyEVChargingNeeds: " + request.DestinationNodeId);
+                DebugX.Log("OnNotifyEVChargingNeeds: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -5342,7 +5342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // MeterValues
                 // PreconditioningStatus
 
-                DebugX.Log("OnTransactionEvent: " + request.DestinationNodeId + ", " +
+                DebugX.Log("OnTransactionEvent: " + request.DestinationId + ", " +
                                                     request.IdToken);
 
 
@@ -5743,7 +5743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // ChargingSchedules
                 // EVSEId
 
-                DebugX.Log("OnNotifyChargingLimit: " + request.DestinationNodeId);
+                DebugX.Log("OnNotifyChargingLimit: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -5887,7 +5887,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // ChargingLimitSource
                 // EVSEId
 
-                DebugX.Log("OnClearedChargingLimit: " + request.DestinationNodeId);
+                DebugX.Log("OnClearedChargingLimit: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -6010,7 +6010,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // ChargingProfiles
                 // ToBeContinued
 
-                DebugX.Log("OnReportChargingProfiles: " + request.DestinationNodeId);
+                DebugX.Log("OnReportChargingProfiles: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -6158,7 +6158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // SelectedScheduleTupleId
                 // PowerToleranceAcceptance
 
-                DebugX.Log("OnNotifyEVChargingSchedule: " + request.DestinationNodeId);
+                DebugX.Log("OnNotifyEVChargingSchedule: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -6305,7 +6305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // TransactionId
                 // Activated
 
-                DebugX.Log("OnNotifyPriorityCharging: " + request.DestinationNodeId);
+                DebugX.Log("OnNotifyPriorityCharging: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -6424,7 +6424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 // ChargingProfileId
 
-                DebugX.Log("OnPullDynamicScheduleUpdate: " + request.DestinationNodeId);
+                DebugX.Log("OnPullDynamicScheduleUpdate: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -6695,7 +6695,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // GeneratedAt
                 // ToBeContinued
 
-                DebugX.Log("OnNotifyCustomerInformation: " + request.DestinationNodeId);
+                DebugX.Log("OnNotifyCustomerInformation: " + request.DestinationId);
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -7122,7 +7122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7144,7 +7144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.ResetResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -7215,7 +7215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7238,7 +7238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.UpdateFirmwareResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -7309,7 +7309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7331,7 +7331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.PublishFirmwareResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -7402,7 +7402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7424,7 +7424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.UnpublishFirmwareResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -7494,7 +7494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7516,7 +7516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetBaseReportResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -7587,7 +7587,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7613,7 +7613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetReportResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -7684,7 +7684,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7707,7 +7707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetLogResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -7779,7 +7779,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7805,7 +7805,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.SetVariablesResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -7880,7 +7880,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7906,7 +7906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetVariablesResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -7981,7 +7981,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8003,7 +8003,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.SetMonitoringBaseResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8074,7 +8074,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8100,7 +8100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetMonitoringReportResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8171,7 +8171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8193,7 +8193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.SetMonitoringLevelResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8264,7 +8264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8291,7 +8291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.SetVariableMonitoringResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8366,7 +8366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8388,7 +8388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.ClearVariableMonitoringResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8460,7 +8460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8485,7 +8485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.SetNetworkProfileResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8556,7 +8556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8579,7 +8579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.ChangeAvailabilityResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8650,7 +8650,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8673,7 +8673,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.TriggerMessageResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8744,7 +8744,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8766,7 +8766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new DataTransferResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8838,7 +8838,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8860,7 +8860,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.CertificateSignedResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -8931,7 +8931,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8953,7 +8953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.InstallCertificateResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9024,7 +9024,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9046,7 +9046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetInstalledCertificateIdsResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9118,7 +9118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9141,7 +9141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.DeleteCertificateResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9212,7 +9212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9234,7 +9234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.NotifyCRLResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9305,7 +9305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9327,7 +9327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetLocalListVersionResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9397,7 +9397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9424,7 +9424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.SendLocalListResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9495,7 +9495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9517,7 +9517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.ClearCacheResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9589,7 +9589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9611,7 +9611,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.QRCodeScannedResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9681,7 +9681,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9705,7 +9705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.ReserveNowResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9776,7 +9776,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9798,7 +9798,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.CancelReservationResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9869,7 +9869,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9918,7 +9918,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.RequestStartTransactionResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -9989,7 +9989,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10011,7 +10011,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.RequestStopTransactionResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10082,7 +10082,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10104,7 +10104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetTransactionStatusResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10174,7 +10174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10219,7 +10219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.SetChargingProfileResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10290,7 +10290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10313,7 +10313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetChargingProfilesResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10384,7 +10384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10407,7 +10407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.ClearChargingProfileResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10478,7 +10478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10500,7 +10500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetCompositeScheduleResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10573,7 +10573,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10595,7 +10595,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.UpdateDynamicScheduleResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10666,7 +10666,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10688,7 +10688,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.NotifyAllowedEnergyTransferResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10759,7 +10759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10781,7 +10781,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.UsePriorityChargingResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10852,7 +10852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10874,7 +10874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.UnlockConnectorResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -10948,7 +10948,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10970,7 +10970,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.AFRRSignalResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11042,7 +11042,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11068,7 +11068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.SetDisplayMessageResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11139,7 +11139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11161,7 +11161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetDisplayMessagesResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11232,7 +11232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11254,7 +11254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.ClearDisplayMessageResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11326,7 +11326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11348,7 +11348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.CostUpdatedResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11419,7 +11419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11444,7 +11444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.CustomerInformationResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11518,7 +11518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11540,7 +11540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new BinaryDataTransferResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11612,7 +11612,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11634,7 +11634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.GetFileResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11707,7 +11707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11729,7 +11729,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.SendFileResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11799,7 +11799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11821,7 +11821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.DeleteFileResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11891,7 +11891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11913,7 +11913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.ListDirectoryResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -11988,7 +11988,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12014,7 +12014,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.AddSignaturePolicyResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -12087,7 +12087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12113,7 +12113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.UpdateSignaturePolicyResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -12186,7 +12186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12212,7 +12212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.DeleteSignaturePolicyResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -12285,7 +12285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12311,7 +12311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.AddUserRoleResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -12384,7 +12384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12410,7 +12410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.UpdateUserRoleResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -12483,7 +12483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12509,7 +12509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new OCPP.CS.DeleteUserRoleResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -12581,7 +12581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12603,7 +12603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new SecureDataTransferResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -12680,7 +12680,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12713,7 +12713,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.SetDefaultChargingTariffResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -12787,7 +12787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12809,7 +12809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.GetDefaultChargingTariffResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 
@@ -12894,7 +12894,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+            var response  = LookupNetworkingNode(Request.DestinationId, out var csmsChannel) &&
                                 csmsChannel is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12916,7 +12916,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                 : new CS.RemoveDefaultChargingTariffResponse(
                                       Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      Result.UnknownOrUnreachable(Request.DestinationId)
                                   );
 
 

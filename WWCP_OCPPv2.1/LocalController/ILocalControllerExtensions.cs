@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                LocalController.Model,
                                LocalController.VendorName,
                                LocalController.SerialNumber,
-                               LocalController.FirmwareVersion,
+                               LocalController.SoftwareVersion,
                                LocalController.Modem,
                                LocalController.CustomData
                            ),

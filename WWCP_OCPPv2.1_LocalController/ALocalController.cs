@@ -33,7 +33,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -186,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #region Data
 
-        private readonly HTTPExtAPI  NetworkingNodeAPI;
+        private readonly HTTPExtAPI  HTTPAPI;
 
         #endregion
 
@@ -214,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         /// The optional firmware version of the networking node.
         /// </summary>
         [Optional]
-        public String?                     FirmwareVersion            { get; }
+        public String?                     SoftwareVersion            { get; }
 
         /// <summary>
         /// The modem of the networking node.
@@ -461,10 +460,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         public ALocalController(NetworkingNode_Id  Id,
                                 String             VendorName,
                                 String             Model,
-                                I18NString?        Description                 = null,
                                 String?            SerialNumber                = null,
-                                String?            FirmwareVersion             = null,
+                                String?            SoftwareVersion             = null,
                                 Modem?             Modem                       = null,
+                                I18NString?        Description                 = null,
 
                                 SignaturePolicy?   SignaturePolicy             = null,
                                 SignaturePolicy?   ForwardingSignaturePolicy   = null,
@@ -507,12 +506,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             this.VendorName               = VendorName;
             this.Model                    = Model;
             this.SerialNumber             = SerialNumber;
-            this.FirmwareVersion          = FirmwareVersion;
+            this.SoftwareVersion          = SoftwareVersion;
             this.Modem                    = Modem;
 
             #region Setup generic HTTP API
 
-            this.NetworkingNodeAPI  = new HTTPExtAPI(
+            this.HTTPAPI  = new HTTPExtAPI(
                                           HTTPServerPort:         IPPort.Parse(3532),
                                           HTTPServerName:         "GraphDefined OCPP Test Central System",
                                           HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
@@ -533,12 +532,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             var uploadAPIPrefix     = "uploads";
             var downloadAPIPrefix   = "downloads";
 
-            this.NetworkingNodeAPI.HTTPServer.AddAuth(request => {
+            this.HTTPAPI.HTTPServer.AddAuth(request => {
 
                 // Allow some URLs for anonymous access...
-                if (request.Path.StartsWith(NetworkingNodeAPI.URLPathPrefix + webAPIPrefix)    ||
-                    request.Path.StartsWith(NetworkingNodeAPI.URLPathPrefix + uploadAPIPrefix) ||
-                    request.Path.StartsWith(NetworkingNodeAPI.URLPathPrefix + downloadAPIPrefix))
+                if (request.Path.StartsWith(HTTPAPI.URLPathPrefix + webAPIPrefix)    ||
+                    request.Path.StartsWith(HTTPAPI.URLPathPrefix + uploadAPIPrefix) ||
+                    request.Path.StartsWith(HTTPAPI.URLPathPrefix + downloadAPIPrefix))
                 {
                     return HTTPExtAPI.Anonymous;
                 }
@@ -553,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             this.WebAPI             = new WebAPI(
                                           this,
-                                          NetworkingNodeAPI,
+                                          HTTPAPI,
 
                                           URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
 
@@ -569,7 +568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                     UploadAPI.DefaultHTTPServerName,
                                                     UploadAPI.DefaultHTTPServiceName
                                                 )
-                                              : NetworkingNodeAPI.HTTPServer,
+                                              : HTTPAPI.HTTPServer,
 
                                           URLPathPrefix:   HTTPPath.Parse(uploadAPIPrefix),
                                           FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "UploadAPI")
@@ -584,7 +583,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                     DownloadAPI.DefaultHTTPServerName,
                                                     DownloadAPI.DefaultHTTPServiceName
                                                 )
-                                              : NetworkingNodeAPI.HTTPServer,
+                                              : HTTPAPI.HTTPServer,
 
                                           URLPathPrefix:   HTTPPath.Parse(downloadAPIPrefix),
                                           FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "DownloadAPI")

@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -30,6 +31,44 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Delegates
+
+    /// <summary>
+    /// A DeleteFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<DeleteFileRequest, DeleteFileResponse>>
+
+        OnDeleteFileRequestFilterDelegate(DateTime               Timestamp,
+                                          IEventSender           Sender,
+                                          IWebSocketConnection   Connection,
+                                          DeleteFileRequest      Request,
+                                          CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// A filtered DeleteFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnDeleteFileRequestFilteredDelegate(DateTime                                                    Timestamp,
+                                            IEventSender                                                Sender,
+                                            IWebSocketConnection                                        Connection,
+                                            DeleteFileRequest                                           Request,
+                                            ForwardingDecision<DeleteFileRequest, DeleteFileResponse>   ForwardingDecision);
+
+    #endregion
+
+
     /// <summary>
     /// The OCPP adapter for forwarding messages.
     /// </summary>
@@ -38,43 +77,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnAddSignaturePolicyRequestFilterDelegate?      OnAddSignaturePolicyRequest;
+        public event OnDeleteFileRequestFilterDelegate?      OnDeleteFileRequest;
 
-        public event OnAddSignaturePolicyRequestFilteredDelegate?    OnAddSignaturePolicyRequestLogging;
+        public event OnDeleteFileRequestFilteredDelegate?    OnDeleteFileRequestLogging;
 
         #endregion
 
         public async Task<ForwardingDecision>
 
-            Forward_AddSignaturePolicy(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                       IWebSocketConnection     Connection,
-                                       CancellationToken        CancellationToken   = default)
+            Forward_DeleteFile(OCPP_JSONRequestMessage  JSONRequestMessage,
+                               IWebSocketConnection     Connection,
+                               CancellationToken        CancellationToken   = default)
 
         {
 
-            if (!AddSignaturePolicyRequest.TryParse(JSONRequestMessage.Payload,
-                                                    JSONRequestMessage.RequestId,
-                                                    JSONRequestMessage.DestinationId,
-                                                    JSONRequestMessage.NetworkPath,
-                                                    out var Request,
-                                                    out var errorResponse,
-                                                    parentNetworkingNode.OCPP.CustomAddSignaturePolicyRequestParser))
+            if (!DeleteFileRequest.TryParse(JSONRequestMessage.Payload,
+                                            JSONRequestMessage.RequestId,
+                                            JSONRequestMessage.DestinationId,
+                                            JSONRequestMessage.NetworkPath,
+                                            out var Request,
+                                            out var errorResponse,
+                                            parentNetworkingNode.OCPP.CustomDeleteFileRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>? forwardingDecision = null;
+            ForwardingDecision<DeleteFileRequest, DeleteFileResponse>? forwardingDecision = null;
 
-            #region Send OnAddSignaturePolicyRequest event
+            #region Send OnDeleteFileRequest event
 
-            var requestFilter = OnAddSignaturePolicyRequest;
+            var requestFilter = OnDeleteFileRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnAddSignaturePolicyRequestFilterDelegate>().
+                                                     OfType <OnDeleteFileRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -90,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnAddSignaturePolicyRequest),
+                              nameof(OnDeleteFileRequest),
                               e
                           );
                 }
@@ -101,28 +140,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
-                forwardingDecision = new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
+            if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
+                forwardingDecision = new ForwardingDecision<DeleteFileRequest, DeleteFileResponse>(
                                          Request,
-                                         ForwardingResult.FORWARD
+                                         ForwardingResults.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var response = forwardingDecision?.RejectResponse ??
-                                   new AddSignaturePolicyResponse(
+                                   new DeleteFileResponse(
                                        Request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
+                forwardingDecision = new ForwardingDecision<DeleteFileRequest, DeleteFileResponse>(
                                          Request,
-                                         ForwardingResult.REJECT,
+                                         ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
-                                             parentNetworkingNode.OCPP.CustomAddSignaturePolicyResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomDeleteFileResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -134,16 +173,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnAddSignaturePolicyRequestLogging event
+            #region Send OnDeleteFileRequestLogging event
 
-            var logger = OnAddSignaturePolicyRequestLogging;
+            var logger = OnDeleteFileRequestLogging;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnAddSignaturePolicyRequestFilteredDelegate>().
+                                       OfType <OnDeleteFileRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -156,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnAddSignaturePolicyRequestLogging),
+                              nameof(OnDeleteFileRequestLogging),
                               e
                           );
                 }

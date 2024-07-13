@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
                                       Model:                    "VCP.1",
                                       Description:              I18NString.Create(Languages.en, "Our first virtual networking node!"),
                                       SerialNumber:             "SN-NN0001",
-                                      FirmwareVersion:          "v0.1",
+                                      SoftwareVersion:          "v0.1",
                                       Modem:                    new Modem(
                                                                     ICCID:   "0001",
                                                                     IMSI:    "1112"

@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.Data?.ToUTF8String(),                           Is.EqualTo(data.Reverse().ToUTF8String()));
 
                     Assert.That(binaryDataTransferRequests.Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the CSMS!");
-                    Assert.That(binaryDataTransferRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.Zero)); // Because of standard networking mode!
+                    Assert.That(binaryDataTransferRequests.First().DestinationId,    Is.EqualTo(NetworkingNode_Id.Zero)); // Because of standard networking mode!
                     Assert.That(binaryDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(binaryDataTransferRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(binaryDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));

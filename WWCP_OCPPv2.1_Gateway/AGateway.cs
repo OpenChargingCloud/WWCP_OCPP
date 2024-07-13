@@ -190,6 +190,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
         #region Properties
 
+        /// <summary>
+        /// The networking node vendor identification.
+        /// </summary>
+        [Mandatory]
+        public String                      VendorName                 { get; }      = "";
+
+        /// <summary>
+        ///  The networking node model identification.
+        /// </summary>
+        [Mandatory]
+        public String                      Model                      { get; }      = "";
+
+        /// <summary>
+        /// The optional serial number of the networking node.
+        /// </summary>
+        [Optional]
+        public String?                     SerialNumber               { get; }
+
+        /// <summary>
+        /// The optional firmware version of the networking node.
+        /// </summary>
+        [Optional]
+        public String?                     SoftwareVersion            { get; }
+
+
+        /// <summary>
+        /// The time at the CSMS.
+        /// </summary>
+        public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
+
+
+
+        public WebAPI                      WebAPI                     { get; }
+
+        private readonly HashSet<WebAPI> webAPIs = [];
+
+        /// <summary>
+        /// An enumeration of all WebAPIs.
+        /// </summary>
+        public IEnumerable<WebAPI> WebAPIs
+            => webAPIs;
+
         #endregion
 
         #region Events
@@ -383,6 +425,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         /// </summary>
         /// <param name="Id">The unique identification of this gateway.</param>
         public AGateway(NetworkingNode_Id  Id,
+                        String             VendorName,
+                        String             Model,
+                        String?            SerialNumber                = null,
+                        String?            SoftwareVersion             = null,
                         I18NString?        Description                 = null,
 
                         SignaturePolicy?   SignaturePolicy             = null,
@@ -413,6 +459,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                    DNSClient)
 
         {
+
+            if (VendorName.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");
+
+            if (Model.     IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Model),       "The given model must not be null or empty!");
+
+            this.VendorName               = VendorName;
+            this.Model                    = Model;
+            this.SerialNumber             = SerialNumber;
+            this.SoftwareVersion          = SoftwareVersion;
 
             #region Setup generic HTTP API
 
@@ -446,6 +503,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                 return null;
 
             });
+
+            #endregion
+
+            #region Setup WebAPIs
+
+            this.WebAPI             = new WebAPI(
+                                          this,
+                                          HTTPAPI,
+
+                                          URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
+
+                                      );
 
             #endregion
 

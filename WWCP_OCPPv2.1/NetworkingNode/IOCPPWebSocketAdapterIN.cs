@@ -30,6 +30,9 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Delegates
+
+
     public delegate Task OnJSONRequestMessageReceivedDelegate       (DateTime                       Timestamp,
                                                                      IOCPPWebSocketAdapterIN        Server,
                                                                      OCPP_JSONRequestMessage        JSONRequestMessage);
@@ -60,10 +63,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //                                                               IOCPPWebSocketAdapterIN       Server,
     //                                                               OCPP_BinaryErrorMessage       BinaryErrorMessage);
 
+    #endregion
+
 
     /// <summary>
-    /// The common interface of all central systems channels.
-    /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channel.
+    /// The common interface of all incoming OCPP messages processors.
     /// </summary>
     public interface IOCPPWebSocketAdapterIN : OCPP.NN.INetworkingNodeIncomingMessages,
                                                OCPP.NN.INetworkingNodeIncomingMessageEvents,

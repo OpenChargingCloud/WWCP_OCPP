@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -29,6 +30,44 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
+
+    #region Delegates
+
+    /// <summary>
+    /// A PublishFirmwareStatusNotification request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>>
+
+        OnPublishFirmwareStatusNotificationRequestFilterDelegate(DateTime                                   Timestamp,
+                                                                 IEventSender                               Sender,
+                                                                 IWebSocketConnection                       Connection,
+                                                                 PublishFirmwareStatusNotificationRequest   Request,
+                                                                 CancellationToken                          CancellationToken);
+
+
+    /// <summary>
+    /// A filtered PublishFirmwareStatusNotification request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnPublishFirmwareStatusNotificationRequestFilteredDelegate(DateTime                                                                                                  Timestamp,
+                                                                   IEventSender                                                                                              Sender,
+                                                                   IWebSocketConnection                                                                                      Connection,
+                                                                   PublishFirmwareStatusNotificationRequest                                                                  Request,
+                                                                   ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>   ForwardingDecision);
+
+    #endregion
+
 
     /// <summary>
     /// The OCPP adapter for forwarding messages.
@@ -101,14 +140,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+            if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>(
                                          Request,
-                                         ForwardingResult.FORWARD
+                                         ForwardingResults.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var response = forwardingDecision?.RejectResponse ??
@@ -119,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 forwardingDecision = new ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>(
                                          Request,
-                                         ForwardingResult.REJECT,
+                                         ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
                                              parentNetworkingNode.OCPP.CustomPublishFirmwareStatusNotificationResponseSerializer,

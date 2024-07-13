@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -30,6 +31,44 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Delegates
+
+    /// <summary>
+    /// A ListDirectory request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>>
+
+        OnListDirectoryRequestFilterDelegate(DateTime               Timestamp,
+                                             IEventSender           Sender,
+                                             IWebSocketConnection   Connection,
+                                             ListDirectoryRequest   Request,
+                                             CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// A filtered ListDirectory request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnListDirectoryRequestFilteredDelegate(DateTime                                                          Timestamp,
+                                               IEventSender                                                      Sender,
+                                               IWebSocketConnection                                              Connection,
+                                               ListDirectoryRequest                                              Request,
+                                               ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>   ForwardingDecision);
+
+    #endregion
+
+
     /// <summary>
     /// The OCPP adapter for forwarding messages.
     /// </summary>
@@ -38,43 +77,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnUpdateUserRoleRequestFilterDelegate?      OnUpdateUserRoleRequest;
+        public event OnListDirectoryRequestFilterDelegate?      OnListDirectoryRequest;
 
-        public event OnUpdateUserRoleRequestFilteredDelegate?    OnUpdateUserRoleRequestLogging;
+        public event OnListDirectoryRequestFilteredDelegate?    OnListDirectoryRequestLogging;
 
         #endregion
 
         public async Task<ForwardingDecision>
 
-            Forward_UpdateUserRole(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                   IWebSocketConnection     Connection,
-                                   CancellationToken        CancellationToken   = default)
+            Forward_ListDirectory(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                  IWebSocketConnection     Connection,
+                                  CancellationToken        CancellationToken   = default)
 
         {
 
-            if (!UpdateUserRoleRequest.TryParse(JSONRequestMessage.Payload,
-                                                JSONRequestMessage.RequestId,
-                                                JSONRequestMessage.DestinationId,
-                                                JSONRequestMessage.NetworkPath,
-                                                out var Request,
-                                                out var errorResponse,
-                                                parentNetworkingNode.OCPP.CustomUpdateUserRoleRequestParser))
+            if (!ListDirectoryRequest.TryParse(JSONRequestMessage.Payload,
+                                               JSONRequestMessage.RequestId,
+                                               JSONRequestMessage.DestinationId,
+                                               JSONRequestMessage.NetworkPath,
+                                               out var Request,
+                                               out var errorResponse,
+                                               parentNetworkingNode.OCPP.CustomListDirectoryRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>? forwardingDecision = null;
+            ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>? forwardingDecision = null;
 
-            #region Send OnUpdateUserRoleRequest event
+            #region Send OnListDirectoryRequest event
 
-            var requestFilter = OnUpdateUserRoleRequest;
+            var requestFilter = OnListDirectoryRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnUpdateUserRoleRequestFilterDelegate>().
+                                                     OfType <OnListDirectoryRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -90,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnUpdateUserRoleRequest),
+                              nameof(OnListDirectoryRequest),
                               e
                           );
                 }
@@ -101,28 +140,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
-                forwardingDecision = new ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>(
+            if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
+                forwardingDecision = new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
                                          Request,
-                                         ForwardingResult.FORWARD
+                                         ForwardingResults.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var response = forwardingDecision?.RejectResponse ??
-                                   new UpdateUserRoleResponse(
+                                   new ListDirectoryResponse(
                                        Request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>(
+                forwardingDecision = new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
                                          Request,
-                                         ForwardingResult.REJECT,
+                                         ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
-                                             parentNetworkingNode.OCPP.CustomUpdateUserRoleResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomListDirectoryResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -134,16 +173,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnUpdateUserRoleRequestLogging event
+            #region Send OnListDirectoryRequestLogging event
 
-            var logger = OnUpdateUserRoleRequestLogging;
+            var logger = OnListDirectoryRequestLogging;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnUpdateUserRoleRequestFilteredDelegate>().
+                                       OfType <OnListDirectoryRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -156,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnUpdateUserRoleRequestLogging),
+                              nameof(OnListDirectoryRequestLogging),
                               e
                           );
                 }

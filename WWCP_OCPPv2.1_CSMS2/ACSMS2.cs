@@ -185,6 +185,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         #region Properties
 
         /// <summary>
+        /// The networking node vendor identification.
+        /// </summary>
+        [Mandatory]
+        public String                      VendorName                 { get; }      = "";
+
+        /// <summary>
+        ///  The networking node model identification.
+        /// </summary>
+        [Mandatory]
+        public String                      Model                      { get; }      = "";
+
+        /// <summary>
+        /// The optional serial number of the networking node.
+        /// </summary>
+        [Optional]
+        public String?                     SerialNumber               { get; }
+
+        /// <summary>
+        /// The optional firmware version of the networking node.
+        /// </summary>
+        [Optional]
+        public String?                     SoftwareVersion            { get; }
+
+
+        /// <summary>
         /// The time at the CSMS.
         /// </summary>
         public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
@@ -197,9 +222,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public UploadAPI                   HTTPUploadAPI              { get; }
 
         public DownloadAPI                 HTTPDownloadAPI            { get; }
-
-
-
 
 
 
@@ -423,6 +445,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         /// <param name="Id">The unique identification of this Charging Station Management System (CSMS).</param>
         /// <param name="Description">An optional multi-language description of the Charging Station Management System (CSMS).</param>
         public ACSMS2(NetworkingNode_Id  Id,
+                      String             VendorName,
+                      String             Model,
+                      String?            SerialNumber                = null,
+                      String?            SoftwareVersion             = null,
                       I18NString?        Description                 = null,
 
                       SignaturePolicy?   SignaturePolicy             = null,
@@ -457,6 +483,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
                    DNSClient)
 
         {
+
+            if (VendorName.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");
+
+            if (Model.     IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Model),       "The given model must not be null or empty!");
+
+            this.VendorName       = VendorName;
+            this.Model            = Model;
+            this.SerialNumber     = SerialNumber;
+            this.SoftwareVersion  = SoftwareVersion;
 
             OCPP.IN.AnycastIds.Add(NetworkingNode_Id.CSMS);
 

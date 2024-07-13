@@ -1617,12 +1617,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 DataTransferResponse? response = null;
 
-                if (request.DestinationNodeId != Id)
+                if (request.DestinationId != Id)
                 {
                     response = new DataTransferResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.DestinationNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.DestinationId}'!"
                                              )
                                );
                 }
@@ -4056,7 +4056,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                : new BinaryDataTransferResponse(
                                      Request,
-                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                     Result.UnknownOrUnreachable(Request.DestinationId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(

@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -29,6 +30,44 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
+
+    #region Delegates
+
+    /// <summary>
+    /// A BootNotification request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>
+
+        OnBootNotificationRequestFilterDelegate(DateTime                  Timestamp,
+                                                IEventSender              Sender,
+                                                IWebSocketConnection      Connection,
+                                                BootNotificationRequest   Request,
+                                                CancellationToken         CancellationToken);
+
+
+    /// <summary>
+    /// A filtered BootNotification request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnBootNotificationRequestFilteredDelegate(DateTime                                                                Timestamp,
+                                                  IEventSender                                                            Sender,
+                                                  IWebSocketConnection                                                    Connection,
+                                                  BootNotificationRequest                                                 Request,
+                                                  ForwardingDecision<BootNotificationRequest, BootNotificationResponse>   ForwardingDecision);
+
+    #endregion
+
 
     /// <summary>
     /// The OCPP adapter for forwarding messages.
@@ -141,14 +180,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+            if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
                                          request,
-                                         ForwardingResult.FORWARD
+                                         ForwardingResults.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var dataTransferResponse = forwardingDecision?.RejectResponse ??
@@ -159,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
                                          request,
-                                         ForwardingResult.REJECT,
+                                         ForwardingResults.REJECT,
                                          dataTransferResponse,
                                          dataTransferResponse.ToJSON(
                                              parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
@@ -207,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnBootNotificationRequestSent event
 
-            if (forwardingDecision.Result == ForwardingResult.FORWARD)
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
             {
 
                 var sentLogging = OnBootNotificationRequestSent;
@@ -239,6 +278,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             return forwardingDecision;
 

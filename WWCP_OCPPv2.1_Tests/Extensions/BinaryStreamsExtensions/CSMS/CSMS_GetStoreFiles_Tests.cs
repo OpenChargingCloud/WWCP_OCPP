@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.FileSHA512.ToHexString(),            Is.EqualTo(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString()));
 
                     Assert.That(getFileRequests.Count,                        Is.EqualTo(1), "The GetFileRequest did not reach the charging station!");
-                    Assert.That(getFileRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(getFileRequests.First().DestinationId,    Is.EqualTo(NetworkingNode_Id.Zero));
                     Assert.That(getFileRequests.First().NetworkPath.Length,   Is.EqualTo(0));
                     Assert.That(getFileRequests.First().FileName,             Is.EqualTo(filename));
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.FileName,                                     Is.EqualTo(filename));
 
                     Assert.That(sendFileRequests.Count,                                Is.EqualTo(1), "The SendFileRequest did not reach the charging station!");
-                    Assert.That(sendFileRequests.First().DestinationNodeId,            Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(sendFileRequests.First().DestinationId,            Is.EqualTo(NetworkingNode_Id.Zero));
                     Assert.That(sendFileRequests.First().NetworkPath.Length,           Is.EqualTo(0));
                     Assert.That(sendFileRequests.First().FileName,                     Is.EqualTo(filename));
                     Assert.That(sendFileRequests.First().FileContent.ToUTF8String(),   Is.EqualTo("Hello world!"));
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.FileName,                                       Is.EqualTo(filename));
 
                     Assert.That(deleteFileRequests.Count,                                Is.EqualTo(1), "The SendFileRequest did not reach the charging station!");
-                    Assert.That(deleteFileRequests.First().DestinationNodeId,            Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(deleteFileRequests.First().DestinationId,            Is.EqualTo(NetworkingNode_Id.Zero));
                     Assert.That(deleteFileRequests.First().NetworkPath.Length,           Is.EqualTo(0));
                     Assert.That(deleteFileRequests.First().FileName,                     Is.EqualTo(filename));
 

@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request OUT
                     Assert.That(csBootNotificationRequestsSent.     Count,                    Is.EqualTo(1), "The BootNotification request did not leave the charging station!");
                     var csBootNotificationRequest = csBootNotificationRequestsSent.First();
-                    Assert.That(csBootNotificationRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csBootNotificationRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(0)); // Because of "standard" networking mode
                     Assert.That(csBootNotificationRequest.Reason,                             Is.EqualTo(reason));
 
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request IN
                     Assert.That(nnBootNotificationRequestsReceived. Count,                    Is.EqualTo(1), "The BootNotification request did not reach the networking node!");
                     var nnBootNotificationRequest = nnBootNotificationRequestsReceived.First();
-                    Assert.That(nnBootNotificationRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBootNotificationRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(1));
                     Assert.That(nnBootNotificationRequest.NetworkPath.Source,                 Is.EqualTo(chargingStation.Id));
                     Assert.That(nnBootNotificationRequest.NetworkPath.Last,                   Is.EqualTo(chargingStation.Id));
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request OUT
                     Assert.That(csDataTransferRequestsSent.     Count,                    Is.EqualTo(1), "The DataTransfer request did not leave the charging station!");
                     var csDataTransferRequest = csDataTransferRequestsSent.First();
-                    Assert.That(csDataTransferRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csDataTransferRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csDataTransferRequest.NetworkPath.Length,                 Is.EqualTo(0)); // Because of "standard" networking mode
                     Assert.That(csDataTransferRequest.VendorId,                           Is.EqualTo(vendorId));
                     Assert.That(csDataTransferRequest.MessageId,                          Is.EqualTo(messageId));
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request IN
                     Assert.That(nnDataTransferRequestsReceived. Count,                    Is.EqualTo(1), "The DataTransfer request did not reach the networking node!");
                     var nnDataTransferRequestReceived = nnDataTransferRequestsReceived.First();
-                    Assert.That(nnDataTransferRequestReceived.DestinationNodeId,          Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnDataTransferRequestReceived.DestinationId,          Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Length,         Is.EqualTo(1));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(chargingStation.Id));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(chargingStation.Id));
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request OUT
                     Assert.That(csBinaryDataTransferRequestsSent.     Count,                    Is.EqualTo(1), "The BinaryDataTransfer request did not leave the charging station!");
                     var csBinaryDataTransferRequest = csBinaryDataTransferRequestsSent.First();
-                    Assert.That(csBinaryDataTransferRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csBinaryDataTransferRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csBinaryDataTransferRequest.NetworkPath.Length,                 Is.EqualTo(0)); // Because of "standard" networking mode
                     Assert.That(csBinaryDataTransferRequest.VendorId,                           Is.EqualTo(vendorId));
                     Assert.That(csBinaryDataTransferRequest.MessageId,                          Is.EqualTo(messageId));
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request IN
                     Assert.That(nnBinaryDataTransferRequestsReceived. Count,                    Is.EqualTo(1), "The BinaryDataTransfer request did not reach the networking node!");
                     var nnBinaryDataTransferRequest = nnBinaryDataTransferRequestsReceived.First();
-                    Assert.That(nnBinaryDataTransferRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBinaryDataTransferRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBinaryDataTransferRequest.NetworkPath.Length,                 Is.EqualTo(1));
                     Assert.That(nnBinaryDataTransferRequest.NetworkPath.Source,                 Is.EqualTo(chargingStation.Id));
                     Assert.That(nnBinaryDataTransferRequest.NetworkPath.Last,                   Is.EqualTo(chargingStation.Id));

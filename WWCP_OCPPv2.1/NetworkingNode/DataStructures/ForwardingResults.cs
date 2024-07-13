@@ -18,11 +18,32 @@
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public enum ForwardingResult
+    /// <summary>
+    /// Message forwarding results
+    /// </summary>
+    public enum ForwardingResults
     {
+
+        /// <summary>
+        /// DROP the message without any notification.
+        /// </summary>
         DROP,
+
+        /// <summary>
+        /// REJECT the message with a notification.
+        /// </summary>
         REJECT,
-        FORWARD
+
+        /// <summary>
+        /// FORWARD the message.
+        /// </summary>
+        FORWARD,
+
+        /// <summary>
+        /// REPLACE the received message and sent a new message instead.
+        /// </summary>
+        REPLACE
+
     }
 
 }

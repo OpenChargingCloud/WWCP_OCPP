@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     Assert.That(csmsResetRequests. Count,                        Is.EqualTo(1), "The ResetRequest did not leave the CSMS!");
 
                     Assert.That(nnResetRequestsIN. Count,                        Is.EqualTo(1), "The ResetRequest did not reach the INPUT of the networking node!");
-                    Assert.That(nnResetRequestsIN. First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequestsIN. First().DestinationId,    Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id));
@@ -128,14 +128,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     Assert.That(nnResetRequestsFWD.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the FORWARD of the networking node!");
 
                     Assert.That(nnResetRequestsOUT.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the OUTPUT of the networking node!");
-                    Assert.That(nnResetRequestsOUT.First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequestsOUT.First().DestinationId,    Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id));
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id));
 
                     Assert.That(csResetRequests.   Count,                        Is.EqualTo(1), "The ResetRequest did not reach the charging station!");
                     // Because of 'standard' networking mode towards the charging station!
-                    Assert.That(csResetRequests.   First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(csResetRequests.   First().DestinationId,    Is.EqualTo(NetworkingNode_Id.Zero));
                     Assert.That(csResetRequests.   First().NetworkPath.Length,   Is.EqualTo(0));
 
                 });
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     Assert.That(csmsDataTransferRequestsOUT.   Count,                        Is.EqualTo(1), "The DataTransfer did not leave the CSMS!");
 
                     Assert.That(nnDataTransferRequestsIN.      Count,                        Is.EqualTo(1), "The DataTransfer did not reach the networking node!");
-                    Assert.That(nnDataTransferRequestsIN.      First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnDataTransferRequestsIN.      First().DestinationId,    Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Source,   Is.EqualTo(testCSMS01.Id));
                     Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS01.Id));
@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     Assert.That(csmsBinaryDataTransferRequestsOUT.   Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not leave the CSMS!");
 
                     Assert.That(nnBinaryDataTransferRequestsIN.      Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the networking node!");
-                    Assert.That(nnBinaryDataTransferRequestsIN.      First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnBinaryDataTransferRequestsIN.      First().DestinationId,    Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Source,   Is.EqualTo(testCSMS01.Id));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS01.Id));

@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     Assert.That(csBootNotificationRequests.    Count,                        Is.EqualTo(1), "The BootNotification did not leave the charging station!");
 
                     Assert.That(nnBootNotificationRequestsIN.  Count,                        Is.EqualTo(1), "The BootNotification did not reach the INPUT of the networking node!");
-                    Assert.That(nnBootNotificationRequestsIN.  First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBootNotificationRequestsIN.  First().DestinationId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBootNotificationRequestsIN.  First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnBootNotificationRequestsIN.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnBootNotificationRequestsIN.  First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     Assert.That(nnBootNotificationRequestsOUT. Count,                        Is.EqualTo(1), "The BootNotification did not reach the OUTPUT of the networking node!");
 
                     Assert.That(csmsBootNotificationRequests.  Count,                        Is.EqualTo(1), "The BootNotification did not reach the CSMS!");
-                    Assert.That(csmsBootNotificationRequests.  First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsBootNotificationRequests.  First().DestinationId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Length,   Is.EqualTo(2));
                     Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Last,     Is.EqualTo(localController1. Id));
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     Assert.That(csBinaryDataTransferRequestsOUT.       Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not leave the charging station!");
 
                     Assert.That(nnBinaryDataTransferRequestsIN.        Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the INPUT of the networking node!");
-                    Assert.That(nnBinaryDataTransferRequestsIN.        First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBinaryDataTransferRequestsIN.        First().DestinationId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBinaryDataTransferRequestsIN.        First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnBinaryDataTransferRequestsIN.        First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnBinaryDataTransferRequestsIN.        First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     Assert.That(nnBinaryDataTransferRequestsOUT.       Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the OUTPUT of the networking node!");
 
                     Assert.That(csmsIncomingBinaryDataTransferRequests.Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the CSMS!");
-                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().DestinationId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(2));
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(localController1. Id));

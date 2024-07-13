@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 var sendRequestState = await SendBinaryAndWait(
                                                  Request.EventTrackingId,
-                                                 Request.DestinationNodeId,
+                                                 Request.DestinationId,
                                                  Request.NetworkPath.Append(NetworkingNodeId),
                                                  Request.RequestId,
                                                  Request.Action,

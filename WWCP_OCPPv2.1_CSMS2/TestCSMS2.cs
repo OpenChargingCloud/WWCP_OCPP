@@ -54,6 +54,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         /// </summary>
         /// <param name="Id">The unique identification of this charging station management system.</param>
         public TestCSMS2(NetworkingNode_Id  Id,
+                         String             VendorName,
+                         String             Model,
+                         String?            SerialNumber                = null,
+                         String?            SoftwareVersion             = null,
                          I18NString?        Description                 = null,
 
                          SignaturePolicy?   SignaturePolicy             = null,
@@ -73,6 +77,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
                          DNSClient?         DNSClient                   = null)
 
             : base(Id,
+                   VendorName,
+                   Model,
+                   SerialNumber,
+                   SoftwareVersion,
                    Description,
 
                    SignaturePolicy,
@@ -97,141 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
 
 
-            // CSMS -> CS
-
-            #region OnReset
-
-            OCPP.IN.OnReset += async (timestamp,
-                                      sender,
-                                      connection,
-                                      request,
-                                      cancellationToken) => {
-
-                OCPPv2_1.CS.ResetResponse? response = null;
-
-                DebugX.Log($"Charging Station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
-
-                // ResetType
-
-                // Reset entire charging station
-                if (!request.EVSEId.HasValue)
-                {
-
-                    response = new OCPPv2_1.CS.ResetResponse(
-                                    Request:       request,
-                                    NetworkPath:   NetworkPath.From(Id),
-                                    Status:        ResetStatus.Accepted,
-                                    StatusInfo:    null,
-                                    CustomData:    null
-                                );
-
-                }
-
-                // Unknown EVSE
-                else
-                {
-
-                    response = new OCPPv2_1.CS.ResetResponse(
-                                    Request:      request,
-                                    Status:       ResetStatus.Rejected,
-                                    StatusInfo:   null,
-                                    CustomData:   null
-                                );
-
-                }
-
-                return response;
-
-            };
-
-
-            OCPP.FORWARD.OnResetRequest += (timestamp,
-                                            sender,
-                                            connection,
-                                            request,
-                                            cancellationToken) =>
-
-                Task.FromResult(
-                    new ForwardingDecision<OCPPv2_1.CSMS.ResetRequest, OCPPv2_1.CS.ResetResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
-                );
-
-            #endregion
-
-
-
-            #region OnBootNotification
-
-            OCPP.IN.OnBootNotification += async (timestamp,
-                                                 sender,
-                                                 connection,
-                                                 request,
-                                                 cancellationToken) => {
-
-                OCPPv2_1.CSMS.BootNotificationResponse? response = null;
-
-                // ChargingStation
-                // Reason
-
-                if (request.ChargingStation.VendorName == "GraphDefined")
-                {
-
-                    response = new OCPPv2_1.CSMS.BootNotificationResponse(
-
-                                       Request:             request,
-                                       Status:              RegistrationStatus.Accepted,
-                                       CurrentTime:         Timestamp.Now,
-                                       Interval:            TimeSpan.FromMinutes(3),
-                                       StatusInfo:          new StatusInfo("0"),
-                                       ResponseTimestamp:   null,
-
-                                       DestinationNodeId:   request.NetworkPath.Source,
-                                       NetworkPath:         NetworkPath.From(Id),
-
-                                       SignKeys:            null,
-                                       SignInfos:           null,
-                                       Signatures:          null,
-
-                                       CustomData:          null
-
-                                   );
-
-                }
-
-                // Unknown charging station
-                else
-                {
-
-                    response = new OCPPv2_1.CSMS.BootNotificationResponse(
-
-                                       Request:             request,
-                                       Status:              RegistrationStatus.Rejected,
-                                       CurrentTime:         Timestamp.Now,
-                                       Interval:            TimeSpan.FromMinutes(3),
-                                       StatusInfo:          new StatusInfo("0"),
-                                       ResponseTimestamp:   null,
-
-                                       DestinationNodeId:   request.NetworkPath.Source,
-                                       NetworkPath:         NetworkPath.From(Id),
-
-                                       SignKeys:            null,
-                                       SignInfos:           null,
-                                       Signatures:          null,
-
-                                       CustomData:          null
-
-                                   );
-
-                }
-
-                return response;
-
-            };
-
-            #endregion
-
+            // Common
 
             #region BinaryDataStreamsExtensions
 
@@ -253,20 +127,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
                        );
 
             };
-
-
-            OCPP.FORWARD.OnDeleteFileRequest += (timestamp,
-                                                 sender,
-                                                 connection,
-                                                 request,
-                                                 cancellationToken) =>
-
-                Task.FromResult(
-                    new ForwardingDecision<DeleteFileRequest, DeleteFileResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
-                );
 
             #endregion
 
@@ -342,50 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             #endregion
 
-            // Bidirectional
-
-            #region OnBinaryDataTransfer
-
-            OCPP.IN.OnBinaryDataTransfer += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
-
-                DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
-
-                // VendorId
-                // MessageId
-                // Data
-
-                var responseBinaryData = request.Data;
-
-                if (request.Data is not null)
-                    responseBinaryData = request.Data.Reverse();
-
-                return Task.FromResult(
-                           request.VendorId == Vendor_Id.GraphDefined
-
-                               ? new BinaryDataTransferResponse(
-                                       Request:                request,
-                                       NetworkPath:            NetworkPath.From(Id),
-                                       Status:                 BinaryDataTransferStatus.Accepted,
-                                       AdditionalStatusInfo:   null,
-                                       Data:                   responseBinaryData
-                                   )
-
-                               : new BinaryDataTransferResponse(
-                                       Request:                request,
-                                       NetworkPath:            NetworkPath.From(Id),
-                                       Status:                 BinaryDataTransferStatus.Rejected,
-                                       AdditionalStatusInfo:   null,
-                                       Data:                   responseBinaryData
-                                   )
-                       );
-
-            };
-
-            #endregion
+            #region DataTransfers
 
             #region OnDataTransfer
 
@@ -471,6 +288,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             #endregion
 
+            #region OnBinaryDataTransfer
+
+            OCPP.IN.OnBinaryDataTransfer += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"Local Controller '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                var responseBinaryData = request.Data;
+
+                if (request.Data is not null)
+                    responseBinaryData = request.Data.Reverse();
+
+                return Task.FromResult(
+                           request.VendorId == Vendor_Id.GraphDefined
+
+                               ? new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
+                                       Status:                 BinaryDataTransferStatus.Accepted,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+
+                               : new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
+                                       Status:                 BinaryDataTransferStatus.Rejected,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+                       );
+
+            };
+
+            #endregion
+
             #region OnSecureDataTransfer
 
             OCPP.IN.OnSecureDataTransfer += (timestamp,
@@ -479,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
                                              request,
                                              cancellationToken) => {
 
-                DebugX.Log($"Charging Station '{Id}': Incoming SecureDataTransfer request!");
+                DebugX.Log($"Local Controller '{Id}': Incoming SecureDataTransfer request!");
 
                 // VendorId
                 // MessageId
@@ -525,6 +385,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
             };
 
             #endregion
+
+            #endregion
+
+
+
+            // CSMS -> CS
+
+            
+
 
 
             // CS -> CSMS

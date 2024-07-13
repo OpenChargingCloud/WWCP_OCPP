@@ -53,37 +53,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The JSON-LD context of the request.
         /// </summary>
-        public JSONLDContext?    RequestContext          { get; }
+        public JSONLDContext?      RequestContext          { get; }
 
         /// <summary>
         /// The forwarding decision.
         /// </summary>
-        public ForwardingResult  Result                  { get; }
+        public ForwardingResults   Result                  { get; }
+
+        /// <summary>
+        /// The optional new request sent instead of the original request.
+        /// </summary>
+        public JObject?            NewJSONRequest          { get; set; }
+
+        /// <summary>
+        /// The optional new OCPP action.
+        /// </summary>
+        public String?             NewAction               { get; set; }
+
+        /// <summary>
+        /// The optional new destination id.
+        /// </summary>
+        public NetworkingNode_Id?  NewDestinationId        { get; set; }
 
         /// <summary>
         /// The JSON response, when the request was rejected.
         /// </summary>
-        public JObject?          JSONRejectResponse      { get; }
+        public JObject?            JSONRejectResponse      { get; }
 
         /// <summary>
         /// The binary response, when the request was rejected.
         /// </summary>
-        public Byte[]?           BinaryRejectResponse    { get; }
+        public Byte[]?             BinaryRejectResponse    { get; }
 
         /// <summary>
         /// The REJECT message sent back to the sender.
         /// </summary>
-        public String            RejectMessage           { get; }
+        public String              RejectMessage           { get; }
 
         /// <summary>
         /// Optional REJECT details sent back to the sender.
         /// </summary>
-        public JObject?          RejectDetails           { get; }
+        public JObject?            RejectDetails           { get; }
 
         /// <summary>
         /// The log message.
         /// </summary>
-        public String            LogMessage              { get; }
+        public String              LogMessage              { get; }
 
         #endregion
 
@@ -97,16 +112,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        public ForwardingDecision(ForwardingResult  Result,
-                                  JSONLDContext?    RequestContext   = null,
-                                  String?           RejectMessage    = null,
-                                  JObject?          RejectDetails    = null,
-                                  String?           LogMessage       = null)
+        public ForwardingDecision(ForwardingResults  Result,
+                                  JSONLDContext?     RequestContext   = null,
+                                  String?            RejectMessage    = null,
+                                  JObject?           RejectDetails    = null,
+                                  String?            LogMessage       = null)
         {
 
             this.Result                = Result;
             this.RequestContext        = RequestContext;
             this.RejectMessage         = RejectMessage ?? DefaultREJECTMessage;
+            this.RejectDetails         = RejectDetails;
             this.LogMessage            = LogMessage    ?? DefaultLogMessage;
 
         }
@@ -120,12 +136,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        public ForwardingDecision(ForwardingResult  Result,
-                                  JObject           JSONRejectResponse,
-                                  JSONLDContext?    RequestContext   = null,
-                                  String?           RejectMessage    = null,
-                                  JObject?          RejectDetails    = null,
-                                  String?           LogMessage       = null)
+        public ForwardingDecision(ForwardingResults  Result,
+                                  JObject            JSONRejectResponse,
+                                  JSONLDContext?     RequestContext   = null,
+                                  String?            RejectMessage    = null,
+                                  JObject?           RejectDetails    = null,
+                                  String?            LogMessage       = null)
         {
 
             this.Result                = Result;
@@ -145,12 +161,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        public ForwardingDecision(ForwardingResult  Result,
-                                  Byte[]            BinaryRejectResponse,
-                                  JSONLDContext?    RequestContext   = null,
-                                  String?           RejectMessage    = null,
-                                  JObject?          RejectDetails    = null,
-                                  String?           LogMessage       = null)
+        public ForwardingDecision(ForwardingResults  Result,
+                                  Byte[]             BinaryRejectResponse,
+                                  JSONLDContext?     RequestContext   = null,
+                                  String?            RejectMessage    = null,
+                                  JObject?           RejectDetails    = null,
+                                  String?            LogMessage       = null)
         {
 
             this.Result                = Result;
@@ -165,23 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region (static) FORWARD (LogMessage = null, RequestContext = null)
-
-        /// <summary>
-        /// FORWARD the request.
-        /// </summary>
-        /// <param name="LogMessage">An optional log message.</param>
-        /// <param name="RequestContext">The JSON-LD context of the request.</param>
-        public static ForwardingDecision FORWARD(String?         LogMessage       = null,
-                                                 JSONLDContext?  RequestContext   = null)
-
-            => new (ForwardingResult.FORWARD,
-                    RequestContext,
-                    String.Empty,
-                    null,
-                    LogMessage);
-
-        #endregion
+        
 
         #region (static) REJECT  (LogMessage = null, RequestContext = null)
 
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 String?         LogMessage       = null,
                                                 JSONLDContext?  RequestContext   = null)
 
-            => new (ForwardingResult.REJECT,
+            => new (ForwardingResults.REJECT,
                     RequestContext,
                     RejectMessage,
                     RejectDetails,
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public static ForwardingDecision DROP(String?         LogMessage       = null,
                                               JSONLDContext?  RequestContext   = null)
 
-            => new (ForwardingResult.DROP,
+            => new (ForwardingResults.DROP,
                     RequestContext,
                     String.Empty,
                     null,
@@ -252,14 +252,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Properties
 
         /// <summary>
-        /// The request.
+        /// The original request.
         /// </summary>
-        public TRequest    Request           { get; }
+        public TRequest    Request            { get; }
+
+        /// <summary>
+        /// The optional new request sent instead of the original request.
+        /// </summary>
+        public TRequest?   NewRequest         { get; }
 
         /// <summary>
         /// The response, when the request was rejected.
         /// </summary>
-        public TResponse?  RejectResponse    { get; }
+        public TResponse?  RejectResponse     { get; }
 
         #endregion
 
@@ -273,11 +278,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        public ForwardingDecision(TRequest          Request,
-                                  ForwardingResult  Result,
-                                  String?           RejectMessage   = null,
-                                  JObject?          RejectDetails   = null,
-                                  String?           LogMessage      = null)
+        public ForwardingDecision(TRequest            Request,
+                                  ForwardingResults   Result,
+                                  TRequest?           NewRequest         = null,
+                                  String?             NewAction          = null,
+                                  NetworkingNode_Id?  NewDestinationId   = null,
+                                  String?             RejectMessage      = null,
+                                  JObject?            RejectDetails      = null,
+                                  String?             LogMessage         = null)
 
             : base(Result,
                    Request.Context,
@@ -287,7 +295,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            this.Request         = Request;
+            this.Request           = Request;
+            this.NewRequest        = NewRequest;
+            this.NewAction         = NewAction;
+            this.NewDestinationId  = NewDestinationId;
 
         }
 
@@ -301,13 +312,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        public ForwardingDecision(TRequest          Request,
-                                  ForwardingResult  Result,
-                                  TResponse         RejectResponse,
-                                  JObject           JSONRejectResponse,
-                                  String?           RejectMessage   = null,
-                                  JObject?          RejectDetails   = null,
-                                  String?           LogMessage      = null)
+        public ForwardingDecision(TRequest           Request,
+                                  ForwardingResults  Result,
+                                  TResponse          RejectResponse,
+                                  JObject            JSONRejectResponse,
+                                  String?            RejectMessage   = null,
+                                  JObject?           RejectDetails   = null,
+                                  String?            LogMessage      = null)
 
             : base(Result,
                    JSONRejectResponse,
@@ -333,13 +344,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        public ForwardingDecision(TRequest          Request,
-                                  ForwardingResult  Result,
-                                  TResponse         RejectResponse,
-                                  Byte[]            BinaryRejectResponse,
-                                  String?           RejectMessage   = null,
-                                  JObject?          RejectDetails   = null,
-                                  String?           LogMessage      = null)
+        public ForwardingDecision(TRequest           Request,
+                                  ForwardingResults  Result,
+                                  TResponse          RejectResponse,
+                                  Byte[]             BinaryRejectResponse,
+                                  String?            RejectMessage   = null,
+                                  JObject?           RejectDetails   = null,
+                                  String?            LogMessage      = null)
 
             : base(Result,
                    BinaryRejectResponse,
@@ -356,6 +367,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
+
+        #region (static) FORWARD (LogMessage = null, RequestContext = null)
+
+        /// <summary>
+        /// FORWARD the request.
+        /// </summary>
+        /// <param name="LogMessage">An optional log message.</param>
+        /// <param name="RequestContext">The JSON-LD context of the request.</param>
+        public static ForwardingDecision<TRequest, TResponse> FORWARD(TRequest        Request,
+                                                                      String?         LogMessage       = null,
+                                                                      JSONLDContext?  RequestContext   = null)
+
+            => new (
+                   Request,
+                   ForwardingResults.FORWARD,
+                   null,
+                   null,
+                   null,
+                   //RequestContext,
+                   String.Empty,
+                   null,
+                   LogMessage
+               );
+
+        #endregion
+
+        #region (static) REPLACE (Request, NewRequest, NewAction = null, NewDestinationId = null, LogMessage = null, RequestContext = null)
+
+        /// <summary>
+        /// REPLACE the request.
+        /// </summary>
+        /// <param name="LogMessage">An optional log message.</param>
+        /// <param name="RequestContext">The JSON-LD context of the request.</param>
+        public static ForwardingDecision<TRequest, TResponse> REPLACE(TRequest            Request,
+                                                                      TRequest            NewRequest,
+                                                                      String?             NewAction          = null,
+                                                                      NetworkingNode_Id?  NewDestinationId   = null,
+                                                                      String?             LogMessage         = null,
+                                                                      JSONLDContext?      RequestContext     = null)
+
+            => new (
+                   Request,
+                   ForwardingResults.REPLACE,
+                   NewRequest,
+                   NewAction,
+                   NewDestinationId,
+                   String.Empty,
+                   null,
+                   LogMessage
+               );
+
+        #endregion
+
 
     }
 
