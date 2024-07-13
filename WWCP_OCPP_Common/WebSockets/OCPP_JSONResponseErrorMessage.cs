@@ -463,9 +463,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
         /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
-        public static Boolean TryParse(JArray                                          JSONArray,
+        public static Boolean TryParse(JArray                                                  JSONArray,
                                        [NotNullWhen(true)] out OCPP_JSONResponseErrorMessage?  ErrorMessage,
-                                       NetworkingNode_Id?                              ImplicitSourceNodeId   = null)
+                                       NetworkingNode_Id?                                      ImplicitSourceNodeId   = null)
         {
 
             ErrorMessage = null;

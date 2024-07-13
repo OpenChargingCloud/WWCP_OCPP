@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              RequestTimestamp,
                                              RequestBinary,
                                              ocppResponse.JSONResponseMessage?.Payload,
-                                             ocppResponse.JSONErrorMessage?.   ToJSON(),
+                                             ocppResponse.JSONRequestErrorMessage?.   ToJSON(),
                                              endTime - startTime);
 
             }

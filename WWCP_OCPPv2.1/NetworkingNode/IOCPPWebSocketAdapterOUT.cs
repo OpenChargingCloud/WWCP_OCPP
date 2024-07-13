@@ -135,9 +135,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         Task<DataTransferResponse>           DataTransfer         (          DataTransferRequest           Request);
 
-        Task NotifyJSONMessageResponseSent   (OCPP_JSONResponseMessage     JSONResponseMessage,   SendMessageResult SendMessageResult);
-        Task NotifyJSONErrorResponseSent     (OCPP_JSONRequestErrorMessage JSONErrorMessage,      SendMessageResult SendMessageResult);
-        Task NotifyBinaryMessageResponseSent (OCPP_BinaryResponseMessage   BinaryResponseMessage, SendMessageResult SendMessageResult);
+        Task NotifyJSONMessageResponseSent   (OCPP_JSONResponseMessage      JSONResponseMessage,      SendMessageResult SendMessageResult);
+        Task NotifyJSONRequestErrorSent      (OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,  SendMessageResult SendMessageResult);
+        Task NotifyJSONResponseErrorSent     (OCPP_JSONResponseErrorMessage JSONResponseErrorMessage, SendMessageResult SendMessageResult);
+
+        Task NotifyBinaryMessageResponseSent (OCPP_BinaryResponseMessage    BinaryResponseMessage,    SendMessageResult SendMessageResult);
 
 
     }

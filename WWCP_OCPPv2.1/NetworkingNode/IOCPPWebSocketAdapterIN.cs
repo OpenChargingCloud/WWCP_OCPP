@@ -30,30 +30,35 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public delegate Task OnJSONRequestMessageReceivedDelegate    (DateTime                      Timestamp,
-                                                                  IOCPPWebSocketAdapterIN       Server,
-                                                                  OCPP_JSONRequestMessage       JSONRequestMessage);
+    public delegate Task OnJSONRequestMessageReceivedDelegate       (DateTime                       Timestamp,
+                                                                     IOCPPWebSocketAdapterIN        Server,
+                                                                     OCPP_JSONRequestMessage        JSONRequestMessage);
 
-    public delegate Task OnJSONResponseMessageReceivedDelegate   (DateTime                      Timestamp,
-                                                                  IOCPPWebSocketAdapterIN       Server,
-                                                                  OCPP_JSONResponseMessage      JSONResponseMessage);
+    public delegate Task OnJSONResponseMessageReceivedDelegate      (DateTime                       Timestamp,
+                                                                     IOCPPWebSocketAdapterIN        Server,
+                                                                     OCPP_JSONResponseMessage       JSONResponseMessage);
 
-    public delegate Task OnJSONErrorResponseReceivedDelegate     (DateTime                      Timestamp,
-                                                                  IOCPPWebSocketAdapterIN       Server,
-                                                                  OCPP_JSONRequestErrorMessage  JSONErrorMessage);
+    public delegate Task OnJSONRequestErrorMessageReceivedDelegate  (DateTime                       Timestamp,
+                                                                     IOCPPWebSocketAdapterIN        Server,
+                                                                     OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage);
+
+    public delegate Task OnJSONResponseErrorMessageReceivedDelegate (DateTime                       Timestamp,
+                                                                     IOCPPWebSocketAdapterIN        Server,
+                                                                     OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage);
 
 
-    public delegate Task OnBinaryRequestMessageReceivedDelegate  (DateTime                      Timestamp,
-                                                                  IOCPPWebSocketAdapterIN       Server,
-                                                                  OCPP_BinaryRequestMessage     BinaryRequestMessage);
 
-    public delegate Task OnBinaryResponseMessageReceivedDelegate (DateTime                      Timestamp,
-                                                                  IOCPPWebSocketAdapterIN       Server,
-                                                                  OCPP_BinaryResponseMessage    BinaryResponseMessage);
+    public delegate Task OnBinaryRequestMessageReceivedDelegate     (DateTime                       Timestamp,
+                                                                     IOCPPWebSocketAdapterIN        Server,
+                                                                     OCPP_BinaryRequestMessage      BinaryRequestMessage);
 
-    //public delegate Task OnBinaryErrorResponseReceivedDelegate   (DateTime                      Timestamp,
-    //                                                              IOCPPWebSocketAdapterIN       Server,
-    //                                                              OCPP_BinaryErrorMessage       BinaryErrorMessage);
+    public delegate Task OnBinaryResponseMessageReceivedDelegate    (DateTime                       Timestamp,
+                                                                     IOCPPWebSocketAdapterIN        Server,
+                                                                     OCPP_BinaryResponseMessage     BinaryResponseMessage);
+
+    //public delegate Task OnBinaryErrorResponseReceivedDelegate    (DateTime                      Timestamp,
+    //                                                               IOCPPWebSocketAdapterIN       Server,
+    //                                                               OCPP_BinaryErrorMessage       BinaryErrorMessage);
 
 
     /// <summary>
@@ -79,26 +84,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        #region Generic Text Messages
+        #region JSON   messages received
 
         /// <summary>
         /// An event sent whenever a JSON request was received.
         /// </summary>
-        event OnJSONRequestMessageReceivedDelegate?     OnJSONRequestMessageReceived;
+        event OnJSONRequestMessageReceivedDelegate?         OnJSONRequestMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON response was received.
         /// </summary>
-        event OnJSONResponseMessageReceivedDelegate?    OnJSONResponseMessageReceived;
+        event OnJSONResponseMessageReceivedDelegate?        OnJSONResponseMessageReceived;
 
         /// <summary>
-        /// An event sent whenever a JSON error response was received.
+        /// An event sent whenever a JSON request error was received.
         /// </summary>
-        event OnJSONErrorResponseReceivedDelegate?      OnJSONErrorResponseReceived;
+        event OnJSONRequestErrorMessageReceivedDelegate?    OnJSONRequestErrorMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a JSON response error was received.
+        /// </summary>
+        event OnJSONResponseErrorMessageReceivedDelegate?   OnJSONResponseErrorMessageReceived;
 
         #endregion
 
-        #region Generic Binary Messages
+        #region Binary messages received
 
         /// <summary>
         /// An event sent whenever a binary request was received.
@@ -156,17 +166,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        Task<WebSocketTextMessageResponse>   ProcessJSONMessage  (DateTime              RequestTimestamp,
-                                                                  IWebSocketConnection  WebSocketConnection,
-                                                                  JArray                JSONMessage,
-                                                                  EventTracking_Id      EventTrackingId,
-                                                                  CancellationToken     CancellationToken);
+        Task<WebSocketTextMessageResponse>   ProcessJSONMessage   (DateTime              RequestTimestamp,
+                                                                   IWebSocketConnection  WebSocketConnection,
+                                                                   JArray                JSONMessage,
+                                                                   EventTracking_Id      EventTrackingId,
+                                                                   CancellationToken     CancellationToken);
 
-        Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime              RequestTimestamp,
-                                                                  IWebSocketConnection  WebSocketConnection,
-                                                                  Byte[]                BinaryMessage,
-                                                                  EventTracking_Id      EventTrackingId,
-                                                                  CancellationToken     CancellationToken);
+        Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage (DateTime              RequestTimestamp,
+                                                                   IWebSocketConnection  WebSocketConnection,
+                                                                   Byte[]                BinaryMessage,
+                                                                   EventTracking_Id      EventTrackingId,
+                                                                   CancellationToken     CancellationToken);
 
 
     }

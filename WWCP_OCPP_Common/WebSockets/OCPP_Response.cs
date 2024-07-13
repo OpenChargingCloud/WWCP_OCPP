@@ -15,20 +15,25 @@
  * limitations under the License.
  */
 
+#region Usings
+
 using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
 
 namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
-    public class OCPP_Response(OCPP_JSONResponseMessage?    JSONResponseMessage,
-                               OCPP_JSONRequestErrorMessage?       JSONErrorMessage,
-                               OCPP_BinaryResponseMessage?  BinaryResponseMessage) : IEquatable<OCPP_Response>
+    public class OCPP_Response(OCPP_JSONResponseMessage?      JSONResponseMessage,
+                               OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage,
+                               OCPP_BinaryResponseMessage?    BinaryResponseMessage) : IEquatable<OCPP_Response>
     {
 
-        public OCPP_JSONResponseMessage?    JSONResponseMessage      { get; } = JSONResponseMessage;
-        public OCPP_JSONRequestErrorMessage?       JSONErrorMessage         { get; } = JSONErrorMessage;
-        public OCPP_BinaryResponseMessage?  BinaryResponseMessage    { get; } = BinaryResponseMessage;
+        public OCPP_JSONResponseMessage?      JSONResponseMessage        { get; } = JSONResponseMessage;
+        public OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage    { get; } = JSONRequestErrorMessage;
+        public OCPP_BinaryResponseMessage?    BinaryResponseMessage      { get; } = BinaryResponseMessage;
 
 
 
@@ -200,16 +205,16 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         public Boolean Equals(OCPP_Response? OCPPResponse)
 
             => OCPPResponse is not null &&
-               Equals(JSONResponseMessage,   OCPPResponse.JSONResponseMessage) &&
-               Equals(JSONErrorMessage,      OCPPResponse.JSONErrorMessage)    &&
-               Equals(BinaryResponseMessage, OCPPResponse.BinaryResponseMessage);
+               Equals(JSONResponseMessage,     OCPPResponse.JSONResponseMessage)     &&
+               Equals(JSONRequestErrorMessage, OCPPResponse.JSONRequestErrorMessage) &&
+               Equals(BinaryResponseMessage,   OCPPResponse.BinaryResponseMessage);
 
 
         public override Int32 GetHashCode()
 
-            => (JSONResponseMessage?.  GetHashCode() ?? 0) ^
-               (JSONErrorMessage?.     GetHashCode() ?? 0) ^
-               (BinaryResponseMessage?.GetHashCode() ?? 0);
+            => (JSONResponseMessage?.    GetHashCode() ?? 0) ^
+               (JSONRequestErrorMessage?.GetHashCode() ?? 0) ^
+               (BinaryResponseMessage?.  GetHashCode() ?? 0);
 
 
     }
