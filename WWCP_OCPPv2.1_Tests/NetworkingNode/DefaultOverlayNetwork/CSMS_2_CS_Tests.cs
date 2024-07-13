@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 //var nnJSONResponseMessagesReceived  = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var csmsResetResponsesReceived      = new ConcurrentList<ResetResponse>();
 
-                CSMS.                   OnResetRequestSent                 += (timestamp, sender, resetRequest) => {
+                CSMS.                        OnResetRequestSent         += (timestamp, sender, resetRequest) => {
                     csmsResetRequestsSent.     TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -89,22 +89,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnJSONRequestMessageSent   += (timestamp, sender, jsonRequestMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.    OnJSONRequestMessageSent   += (timestamp, sender, jsonRequestMessage, sendOCPPMessageResult) => {
                     nnJSONRequestMessagesSent. TryAdd(new Tuple<OCPP_JSONRequestMessage, SendMessageResult>(jsonRequestMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
 
-                chargingStation.            OnResetRequest             += (timestamp, sender, connection, resetRequest) => {
+                chargingStation.             OnResetRequest             += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.           TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnJSONResponseMessageSent  += (timestamp, sender, jsonResponseMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.    OnJSONResponseMessageSent  += (timestamp, sender, jsonResponseMessage, sendOCPPMessageResult) => {
                     nnJSONResponseMessagesSent.TryAdd(new Tuple<OCPP_JSONResponseMessage, SendMessageResult>(jsonResponseMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
 
-                CSMS.                       OnResetResponseReceived            += (timestamp, sender, resetRequest, resetResponse, runtime) => {
+                CSMS.                        OnResetResponseReceived    += (timestamp, sender, resetRequest, resetResponse, runtime) => {
                     csmsResetResponsesReceived.TryAdd(resetResponse);
                     return Task.CompletedTask;
                 };
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnJSONRequestMessageSent      += (timestamp, sender, jsonRequestMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.OnJSONRequestMessageSent      += (timestamp, sender, jsonRequestMessage, sendOCPPMessageResult) => {
                     nnJSONRequestMessagesSent. TryAdd(new Tuple<OCPP_JSONRequestMessage, SendMessageResult>(jsonRequestMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnJSONResponseMessageSent     += (timestamp, sender, jsonResponseMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.OnJSONResponseMessageSent     += (timestamp, sender, jsonResponseMessage, sendOCPPMessageResult) => {
                     nnJSONResponseMessagesSent.TryAdd(new Tuple<OCPP_JSONResponseMessage, SendMessageResult>(jsonResponseMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };

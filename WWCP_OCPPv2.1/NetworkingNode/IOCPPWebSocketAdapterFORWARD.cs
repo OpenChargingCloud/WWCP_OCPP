@@ -3371,6 +3371,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
+    /// <summary>
+    /// A filtered Binary request message.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request message.</param>
+    /// <param name="Sender">The sender of the request message.</param>
+    /// <param name="BinaryRequestMessage">The Binary request message.</param>
+    /// <param name="SendMessageResult">The result of the sending attempt.</param>
+    public delegate Task
+
+        OnBinaryRequestMessageSentLoggingDelegate(DateTime                   Timestamp,
+                                                  IEventSender               Sender,
+                                                  OCPP_BinaryRequestMessage  BinaryRequestMessage,
+                                                  SendMessageResult          SendMessageResult);
+
+    /// <summary>
+    /// A filtered Binary response message.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the response message.</param>
+    /// <param name="Sender">The sender of the response message.</param>
+    /// <param name="BinaryResponseMessage">The Binary response message.</param>
+    /// <param name="SendMessageResult">The result of the sending attempt.</param>
+    public delegate Task
+
+        OnBinaryResponseMessageSentLoggingDelegate(DateTime                    Timestamp,
+                                                   IEventSender                Sender,
+                                                   OCPP_BinaryResponseMessage  BinaryResponseMessage,
+                                                   SendMessageResult           SendMessageResult);
+
+
+    ///// <summary>
+    ///// A filtered Binary request error message.
+    ///// </summary>
+    ///// <param name="Timestamp">The timestamp of the response message.</param>
+    ///// <param name="Sender">The sender of the response message.</param>
+    ///// <param name="BinaryRequestErrorMessage">The Binary request error message.</param>
+    ///// <param name="SendMessageResult">The result of the sending attempt.</param>
+    //public delegate Task
+
+    //    OnBinaryRequestErrorMessageSentLoggingDelegate(DateTime                        Timestamp,
+    //                                                   IEventSender                    Sender,
+    //                                                   OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,
+    //                                                   SendMessageResult               SendMessageResult);
+
+
+
     public interface IOCPPWebSocketAdapterFORWARD
     {
 
@@ -3382,9 +3427,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        event OnJSONRequestMessageSentLoggingDelegate?                      OnJSONRequestMessageSent;
-        event OnJSONResponseMessageSentLoggingDelegate?                     OnJSONResponseMessageSent;
-        event OnJSONRequestErrorMessageSentLoggingDelegate?                 OnJSONRequestErrorMessageSent;
+        //event OnJSONRequestMessageSentLoggingDelegate?                      OnJSONRequestMessageSent;
+        //event OnJSONResponseMessageSentLoggingDelegate?                     OnJSONResponseMessageSent;
+        //event OnJSONRequestErrorMessageSentLoggingDelegate?                 OnJSONRequestErrorMessageSent;
 
         #region CS
 

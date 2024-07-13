@@ -54,9 +54,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnJSONResponseMessageSentDelegate?       OnJSONResponseMessageSent;
 
         /// <summary>
-        /// An event sent whenever a JSON error response was sent.
+        /// An event sent whenever a JSON request error was sent.
         /// </summary>
-        public event OnJSONRequestErrorMessageSentDelegate?   OnJSONErrorResponseSent;
+        public event OnJSONRequestErrorMessageSentDelegate?   OnJSONRequestErrorMessageSent;
+
+        /// <summary>
+        /// An event sent whenever a JSON response error was sent.
+        /// </summary>
+        public event OnJSONResponseErrorMessageSentDelegate?  OnJSONResponseErrorMessageSent;
 
         #endregion
 
@@ -186,6 +191,139 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region SendJSONResponse         (JSONResponseMessage)
+
+        public async Task<SendMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        {
+
+            var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONResponse(JSONResponseMessage);
+
+            #region Send OnJSONResponseMessageSent event
+
+            var logger = OnJSONResponseMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                        OfType<OnJSONResponseMessageSentDelegate>().
+                                        Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                         this,
+                                                                                         //Connection,
+                                                                                         JSONResponseMessage,
+                                                                                         sendMessageResult)).
+                                        ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnJSONResponseMessageSent),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            return sendMessageResult;
+
+        }
+
+        #endregion
+
+        #region SendJSONRequestError     (JSONRequestErrorMessage)
+
+        public async Task<SendMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+        {
+
+            var sendMessageResult = SendMessageResult.TransmissionFailed;
+
+            #region Send OnJSONRequestErrorMessageSent event
+
+            var logger = OnJSONRequestErrorMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                       OfType<OnJSONRequestErrorMessageSentDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        //Connection,
+                                                                                        JSONRequestErrorMessage,
+                                                                                        sendMessageResult)).
+                                       ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              "NetworkingNode",
+                              nameof(OnJSONRequestErrorMessageSent),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+            return sendMessageResult;
+
+        }
+
+        #endregion
+
+        #region SendJSONResponseError    (JSONResponseErrorMessage)
+
+        public async Task<SendMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        {
+
+            var sendMessageResult = SendMessageResult.TransmissionFailed;
+
+            #region Send OnJSONResponseErrorMessageSent event
+
+            var logger = OnJSONResponseErrorMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                       OfType<OnJSONResponseErrorMessageSentDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        //Connection,
+                                                                                        JSONResponseErrorMessage,
+                                                                                        sendMessageResult)).
+                                       ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              "NetworkingNode",
+                              nameof(OnJSONResponseErrorMessageSent),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            return sendMessageResult;
+
+        }
+
+        #endregion
+
 
         #region SendBinaryRequest        (BinaryRequestMessage)
 
@@ -274,6 +412,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region SendBinaryResponse       (BinaryResponseMessage)
+
+        public async Task<SendMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        {
+
+            var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryResponse(BinaryResponseMessage);
+
+            #region Send OnBinaryResponseMessageSent event
+
+            var logger = OnBinaryResponseMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                        OfType<OnBinaryResponseMessageSentDelegate>().
+                                        Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                         this,
+                                                                                         //Connection,
+                                                                                         BinaryResponseMessage,
+                                                                                         sendMessageResult)).
+                                        ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnBinaryResponseMessageSent),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            return sendMessageResult;
+
+        }
+
+        #endregion
+
+
 
         // Response events...
 
@@ -316,7 +499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       SendMessageResult         SendMessageResult)
         {
 
-            var logger = OnJSONErrorResponseSent;
+            var logger = OnJSONRequestErrorMessageSent;
             if (logger is not null)
             {
                 try

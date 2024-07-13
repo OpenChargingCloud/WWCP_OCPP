@@ -849,16 +849,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 else if (reachability.OCPPWebSocketServer is not null)
                     sendOCPPMessageResult = await reachability.OCPPWebSocketServer.SendJSONRequest(JSONRequestMessage);
 
-
-                //if (sendOCPPMessageResult == SendOCPPMessageResult.Success)
-                //    requests.TryAdd(JSONRequestMessage.RequestId,
-                //                    SendRequestState.FromJSONRequest(
-                //                        Timestamp.Now,
-                //                        JSONRequestMessage.DestinationId,
-                //                        JSONRequestMessage.RequestTimeout,
-                //                        JSONRequestMessage
-                //                    ));
-
                 return sendOCPPMessageResult;
 
             }
@@ -1073,16 +1063,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 else if (reachability.OCPPWebSocketServer is not null)
                     sendOCPPMessageResult = await reachability.OCPPWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
-
-
-                //if (sendOCPPMessageResult == SendOCPPMessageResult.Success)
-                //    requests.TryAdd(BinaryRequestMessage.RequestId,
-                //                    SendRequestState.FromBinaryRequest(
-                //                        Timestamp.Now,
-                //                        BinaryRequestMessage.DestinationId,
-                //                        BinaryRequestMessage.RequestTimeout,
-                //                        BinaryRequestMessage
-                //                    ));
 
                 return sendOCPPMessageResult;
 

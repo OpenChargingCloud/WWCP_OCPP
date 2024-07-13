@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPP
                          Result                   Result,
                          DateTime?                ResponseTimestamp   = null,
 
-                         NetworkingNode_Id?       DestinationNodeId   = null,
+                         NetworkingNode_Id?       DestinationId       = null,
                          NetworkPath?             NetworkPath         = null,
 
                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPP
                    Result,
                    ResponseTimestamp ?? Timestamp.Now,
 
-                   DestinationNodeId,
+                   DestinationId,
                    NetworkPath,
 
                    SignKeys,
@@ -180,21 +180,21 @@ namespace cloud.charging.open.protocols.OCPP
                          Result                   Result,
                          DateTime                 ResponseTimestamp,
 
-                         NetworkingNode_Id?       DestinationNodeId   = null,
-                         NetworkPath?             NetworkPath         = null,
+                         NetworkingNode_Id?       DestinationId   = null,
+                         NetworkPath?             NetworkPath     = null,
 
-                         IEnumerable<KeyPair>?    SignKeys            = null,
-                         IEnumerable<SignInfo>?   SignInfos           = null,
-                         IEnumerable<Signature>?  Signatures          = null,
+                         IEnumerable<KeyPair>?    SignKeys        = null,
+                         IEnumerable<SignInfo>?   SignInfos       = null,
+                         IEnumerable<Signature>?  Signatures      = null,
 
-                         CustomData?              CustomData          = null)
+                         CustomData?              CustomData      = null)
 
             : base(Result,
                    ResponseTimestamp,
                    ResponseTimestamp  - Request.RequestTimestamp,
 
-                   DestinationNodeId ?? Request.NetworkPath.Source,
-                   NetworkPath       ?? NetworkPath.Empty,
+                   DestinationId ?? Request.NetworkPath.Source,
+                   NetworkPath   ?? NetworkPath.Empty,
 
                    SignKeys,
                    SignInfos,
