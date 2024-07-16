@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
+            if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                          request,
                                          ForwardingResults.FORWARD

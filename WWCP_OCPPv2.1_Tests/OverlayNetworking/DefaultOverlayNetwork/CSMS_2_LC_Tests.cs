@@ -26,7 +26,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS2;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 

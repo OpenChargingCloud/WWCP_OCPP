@@ -21,8 +21,8 @@ using System.Reflection;
 using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -48,11 +48,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
-        public ForwardingResults           DefaultResult        { get; set; } = ForwardingResults.DROP;
+        public ForwardingResults           DefaultForwardingResult    { get; set; } = ForwardingResults.DROP;
 
-        public HashSet<NetworkingNode_Id>  AnycastIdsAllowed    { get; }      = [];
+        public HashSet<NetworkingNode_Id>  AnycastIdsAllowed          { get; }      = [];
 
-        public HashSet<NetworkingNode_Id>  AnycastIdsDenied     { get; }      = [];
+        public HashSet<NetworkingNode_Id>  AnycastIdsDenied           { get; }      = [];
 
         #endregion
 
@@ -62,13 +62,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a new OCPP adapter for forwarding messages.
         /// </summary>
         /// <param name="NetworkingNode">The parent networking node.</param>
-        /// <param name="DefaultResult">The default forwarding result.</param>
+        /// <param name="DefaultForwardingResult">The default forwarding result.</param>
         public OCPPWebSocketAdapterFORWARD(IBaseNetworkingNode  NetworkingNode,
-                                           ForwardingResults    DefaultResult = ForwardingResults.DROP)
+                                           ForwardingResults    DefaultForwardingResult = ForwardingResults.DROP)
         {
 
-            this.parentNetworkingNode  = NetworkingNode;
-            this.DefaultResult         = DefaultResult;
+            this.parentNetworkingNode     = NetworkingNode;
+            this.DefaultForwardingResult  = DefaultForwardingResult;
 
             #region Reflect "Forward_XXX" messages and wire them...
 
@@ -105,9 +105,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
 
-        #region ProcessJSONRequestMessage       (JSONRequestMessage)
+        #region ProcessJSONRequestMessage       (JSONRequestMessage,       WebSocketConnection)
 
-        public async Task ProcessJSONRequestMessage(OCPP_JSONRequestMessage JSONRequestMessage)
+        public async Task ProcessJSONRequestMessage(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                                    IWebSocketConnection     WebSocketConnection)
         {
 
             if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONRequestMessage.DestinationId))
@@ -124,10 +125,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 //ToDo: Maybe this could be done via code generation!
-                var result = methodInfo.Invoke(this,
-                                               [ JSONRequestMessage,
-                                                 null, //WebSocketConnection,
-                                                 JSONRequestMessage.CancellationToken ]);
+                var result = methodInfo.Invoke(
+                                 this,
+                                 [
+                                     JSONRequestMessage,
+                                     WebSocketConnection,
+                                     JSONRequestMessage.CancellationToken
+                                 ]
+                             );
 
                 if (result is Task<ForwardingDecision> forwardingProcessor)
                 {
@@ -266,9 +271,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessJSONResponseMessage      (JSONResponseMessage)
+        #region ProcessJSONResponseMessage      (JSONResponseMessage,      WebSocketConnection)
 
-        public async Task ProcessJSONResponseMessage(OCPP_JSONResponseMessage JSONResponseMessage)
+        public async Task ProcessJSONResponseMessage(OCPP_JSONResponseMessage  JSONResponseMessage,
+                                                     IWebSocketConnection      WebSocketConnection)
         {
 
             if (expectedResponses.TryRemove(JSONResponseMessage.RequestId, out var responseInfo))
@@ -299,9 +305,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessJSONRequestErrorMessage  (JSONRequestErrorMessage)
+        #region ProcessJSONRequestErrorMessage  (JSONRequestErrorMessage,  WebSocketConnection)
 
-        public async Task ProcessJSONRequestErrorMessage(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+        public async Task ProcessJSONRequestErrorMessage(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
+                                                         IWebSocketConnection          WebSocketConnection)
         {
 
             if (expectedResponses.TryRemove(JSONRequestErrorMessage.RequestId, out var responseInfo))
@@ -325,9 +332,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessJSONResponseErrorMessage (JSONResponseErrorMessage)
+        #region ProcessJSONResponseErrorMessage (JSONResponseErrorMessage, WebSocketConnection)
 
-        public async Task ProcessJSONResponseErrorMessage(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        public async Task ProcessJSONResponseErrorMessage(OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,
+                                                          IWebSocketConnection           WebSocketConnection)
         {
 
             if (expectedResponses.TryRemove(JSONResponseErrorMessage.RequestId, out var responseInfo))
@@ -352,9 +360,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ProcessBinaryRequestMessage     (BinaryRequestMessage)
+        #region ProcessBinaryRequestMessage     (BinaryRequestMessage,     WebSocketConnection)
 
-        public async Task ProcessBinaryRequestMessage(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        public async Task ProcessBinaryRequestMessage(OCPP_BinaryRequestMessage  BinaryRequestMessage,
+                                                      IWebSocketConnection       WebSocketConnection)
         {
 
             if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinaryRequestMessage.DestinationId))
@@ -369,9 +378,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessBinaryResponseMessage    (BinaryResponseMessage)
+        #region ProcessBinaryResponseMessage    (BinaryResponseMessage,    WebSocketConnection)
 
-        public async Task ProcessBinaryResponseMessage(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public async Task ProcessBinaryResponseMessage(OCPP_BinaryResponseMessage  BinaryResponseMessage,
+                                                       IWebSocketConnection        WebSocketConnection)
         {
 
             if (expectedResponses.TryRemove(BinaryResponseMessage.RequestId, out var responseInfo))

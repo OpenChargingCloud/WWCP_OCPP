@@ -25,7 +25,6 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -158,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var sourceNodeId  = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
+                var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
 
                 if      (OCPP_JSONRequestMessage.      TryParse(JSONMessage, out var jsonRequestMessage,       out var requestParsingError,  MessageTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))
                 {
@@ -227,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // When not for this node, send it to the FORWARD processor...
                     if (jsonRequestMessage.DestinationId != parentNetworkingNode.Id && !acceptAsAnycast)
-                        await parentNetworkingNode.OCPP.FORWARD.ProcessJSONRequestMessage(jsonRequestMessage);
+                        await parentNetworkingNode.OCPP.FORWARD.ProcessJSONRequestMessage(jsonRequestMessage, WebSocketConnection);
 
                     // Directly for this node OR an anycast message for this node...
                     if (jsonRequestMessage.DestinationId == parentNetworkingNode.Id ||  acceptAsAnycast)
@@ -402,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // When not for this node, send it to the FORWARD processor...
                     if (jsonResponseMessage.DestinationId != parentNetworkingNode.Id)
-                        await parentNetworkingNode.OCPP.FORWARD.ProcessJSONResponseMessage(jsonResponseMessage);
+                        await parentNetworkingNode.OCPP.FORWARD.ProcessJSONResponseMessage(jsonResponseMessage, WebSocketConnection);
 
                     // Directly for this node OR an anycast message for this node...
                     if (jsonResponseMessage.DestinationId == parentNetworkingNode.Id ||
@@ -603,7 +602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // When not for this node, send it to the FORWARD processor...
                     if (binaryRequest.DestinationId != parentNetworkingNode.Id)
-                        await parentNetworkingNode.OCPP.FORWARD.ProcessBinaryRequestMessage(binaryRequest);
+                        await parentNetworkingNode.OCPP.FORWARD.ProcessBinaryRequestMessage(binaryRequest, WebSocketConnection);
 
                     // Directly for this node OR an anycast message for this node...
                     if (binaryRequest.DestinationId == parentNetworkingNode.Id ||

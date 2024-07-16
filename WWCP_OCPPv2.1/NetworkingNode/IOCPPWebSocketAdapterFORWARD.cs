@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
-        ForwardingResults           DefaultResult        { get; set; }
+        ForwardingResults           DefaultForwardingResult        { get; set; }
 
         HashSet<NetworkingNode_Id>  AnycastIdsAllowed    { get; }
 
@@ -509,14 +509,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         NetworkingNode_Id? GetForwardedNodeId(Request_Id RequestId);
 
 
-        Task ProcessJSONRequestMessage       (OCPP_JSONRequestMessage        JSONRequestMessage);
-        Task ProcessJSONResponseMessage      (OCPP_JSONResponseMessage       JSONResponseMessage);
-        Task ProcessJSONRequestErrorMessage  (OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage);
-        Task ProcessJSONResponseErrorMessage (OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage);
+        Task ProcessJSONRequestMessage       (OCPP_JSONRequestMessage        JSONRequestMessage,        IWebSocketConnection WebSocketConnection);
+        Task ProcessJSONResponseMessage      (OCPP_JSONResponseMessage       JSONResponseMessage,       IWebSocketConnection WebSocketConnection);
+        Task ProcessJSONRequestErrorMessage  (OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage,   IWebSocketConnection WebSocketConnection);
+        Task ProcessJSONResponseErrorMessage (OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,  IWebSocketConnection WebSocketConnection);
 
 
-        Task ProcessBinaryRequestMessage     (OCPP_BinaryRequestMessage      BinaryRequestMessage);
-        Task ProcessBinaryResponseMessage    (OCPP_BinaryResponseMessage     BinaryResponseMessage);
+        Task ProcessBinaryRequestMessage     (OCPP_BinaryRequestMessage      BinaryRequestMessage,      IWebSocketConnection WebSocketConnection);
+        Task ProcessBinaryResponseMessage    (OCPP_BinaryResponseMessage     BinaryResponseMessage,     IWebSocketConnection WebSocketConnection);
 
 
         #region Common

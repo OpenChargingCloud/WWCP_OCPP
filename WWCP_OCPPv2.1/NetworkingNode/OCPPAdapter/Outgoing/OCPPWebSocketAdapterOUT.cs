@@ -19,7 +19,6 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -28,8 +27,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// The OCPP adapter for sending messages.
-    /// </summary>
+    /// The OCPP adapter for sending outgoing messages.
+    /// </remarks>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
@@ -77,11 +76,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnBinaryResponseMessageSentDelegate?      OnBinaryResponseMessageSent;
 
-        ///// <summary>
-        ///// An event sent whenever a binary error response was sent.
-        ///// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?   OnBinaryErrorResponseSent;
-
         #endregion
 
         #endregion
@@ -102,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        // Send requests...
+        // Send requests/responses...
 
         #region SendJSONRequest          (JSONRequestMessage)
 
@@ -458,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        // Response events...
+        // Request/response events...
 
         #region NotifyJSONMessageResponseSent   (JSONResponseMessage,      SendMessageResult)
 

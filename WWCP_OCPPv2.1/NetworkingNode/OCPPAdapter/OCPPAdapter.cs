@@ -23,10 +23,6 @@ using Newtonsoft.Json;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.NN;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -387,19 +383,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <            BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
-        public CustomBinarySerializerDelegate <            BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
-        public CustomBinarySerializerDelegate <            BinaryDataTransferRequest>?                           CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
-        public CustomBinarySerializerDelegate <            BinaryDataTransferResponse>?                          CustomBinaryDataTransferResponseSerializer                   { get; set; }
-
-        public CustomBinarySerializerDelegate <            SecureDataTransferRequest>?                           CustomSecureDataTransferRequestSerializer                    { get; set; }
-        public CustomBinarySerializerDelegate <            SecureDataTransferResponse>?                          CustomIncomingSecureDataTransferResponseSerializer           { get; set; }
-        public CustomBinarySerializerDelegate <            SecureDataTransferRequest>?                           CustomIncomingSecureDataTransferRequestSerializer            { get; set; }
-        public CustomBinarySerializerDelegate <            SecureDataTransferResponse>?                          CustomSecureDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?      CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?     CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?     CustomBinaryDataTransferResponseSerializer                   { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?   CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseSerializer          { get; set; }
+        // E2E Security Extensions
+
+        public CustomBinarySerializerDelegate <SecureDataTransferRequest>?      CustomSecureDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate <SecureDataTransferResponse>?     CustomIncomingSecureDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate <SecureDataTransferRequest>?      CustomIncomingSecureDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate <SecureDataTransferResponse>?     CustomSecureDataTransferResponseSerializer                   { get; set; }
+
+
+        // Overlay Network Extensions
+        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?   CustomNotifyNetworkTopologyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseSerializer                { get; set; }
+
 
         #region Data Structures
 
@@ -513,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Overlay Networking Extensions
-        public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer                   { get; set; }
 
         #endregion
 
@@ -1387,12 +1388,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 DestinationId,
 
-                (id)                   => [reachability],
+                (id)                   => [ reachability ],
 
                 (id, reachabilityList) => {
 
                     if (reachabilityList is null)
-                        return [reachability];
+                        return [ reachability ];
 
                     else
                     {
@@ -1409,9 +1410,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
 
             );
-
-            //csmsChannel.Item1.AddStaticRouting(DestinationId,
-            //                                   NetworkingHubId);
 
         }
 
@@ -1437,12 +1435,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 DestinationId,
 
-                (id)                   => [reachability],
+                (id)                   => [ reachability ],
 
                 (id, reachabilityList) => {
 
                     if (reachabilityList is null)
-                        return [reachability];
+                        return [ reachability ];
 
                     else
                     {
@@ -1459,9 +1457,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
 
             );
-
-            //csmsChannel.Item1.AddStaticRouting(DestinationId,
-            //                                   NetworkingHubId);
 
         }
 
@@ -1487,12 +1482,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 DestinationId,
 
-                (id)                   => [reachability],
+                (id)                   => [ reachability ],
 
                 (id, reachabilityList) => {
 
                     if (reachabilityList is null)
-                        return [reachability];
+                        return [ reachability ];
 
                     else
                     {
@@ -1509,9 +1504,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
 
             );
-
-            //csmsChannel.Item1.AddStaticRouting(DestinationId,
-            //                                   NetworkingHubId);
 
         }
 
