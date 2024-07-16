@@ -22,6 +22,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
+using BCx509 = Org.BouncyCastle.X509;
+using Org.BouncyCastle.Crypto;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -188,9 +191,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         //private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   connectedNetworkingNodes     = [];
 
-        private          readonly  HTTPExtAPI                                                                    CSMSAPI;
-
-
         protected static readonly  SemaphoreSlim                                                                 ChargingStationSemaphore     = new (1, 1);
 
         private          readonly  TimeSpan                                                                      defaultRequestTimeout        = TimeSpan.FromSeconds(30);
@@ -222,6 +222,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         [Optional]
         public String?                     SoftwareVersion            { get; }
+
+
+        public AsymmetricCipherKeyPair?  ClientCAKeyPair        { get; }
+        public BCx509.X509Certificate?   ClientCACertificate    { get; }
+
 
 
         /// <summary>
@@ -459,28 +464,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Id">The unique identification of this Charging Station Management System (CSMS).</param>
         /// <param name="Description">An optional multi-language description of the Charging Station Management System (CSMS).</param>
-        public ACSMS(NetworkingNode_Id  Id,
-                      String             VendorName,
-                      String             Model,
-                      String?            SerialNumber                = null,
-                      String?            SoftwareVersion             = null,
-                      I18NString?        Description                 = null,
-                      CustomData?        CustomData                  = null,
+        public ACSMS(NetworkingNode_Id         Id,
+                     String                    VendorName,
+                     String                    Model,
+                     String?                   SerialNumber                = null,
+                     String?                   SoftwareVersion             = null,
+                     I18NString?               Description                 = null,
+                     CustomData?               CustomData                  = null,
 
-                      SignaturePolicy?   SignaturePolicy             = null,
-                      SignaturePolicy?   ForwardingSignaturePolicy   = null,
+                     AsymmetricCipherKeyPair?  ClientCAKeyPair             = null,
+                     BCx509.X509Certificate?   ClientCACertificate         = null,
 
-                      IPPort?            HTTPUploadPort              = null,
-                      IPPort?            HTTPDownloadPort            = null,
+                     SignaturePolicy?          SignaturePolicy             = null,
+                     SignaturePolicy?          ForwardingSignaturePolicy   = null,
 
-                      TimeSpan?          DefaultRequestTimeout       = null,
+                     IPPort?                   HTTPUploadPort              = null,
+                     IPPort?                   HTTPDownloadPort            = null,
 
-                      Boolean            DisableSendHeartbeats       = false,
-                      TimeSpan?          SendHeartbeatsEvery         = null,
+                     TimeSpan?                 DefaultRequestTimeout       = null,
 
-                      Boolean            DisableMaintenanceTasks     = false,
-                      TimeSpan?          MaintenanceEvery            = null,
-                      DNSClient?         DNSClient                   = null)
+                     Boolean                   DisableSendHeartbeats       = false,
+                     TimeSpan?                 SendHeartbeatsEvery         = null,
+
+                     Boolean                   DisableMaintenanceTasks     = false,
+                     TimeSpan?                 MaintenanceEvery            = null,
+                     DNSClient?                DNSClient                   = null)
 
             : base(Id,
                    Description,
@@ -507,10 +515,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             if (Model.     IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Model),       "The given model must not be null or empty!");
 
-            this.VendorName       = VendorName;
-            this.Model            = Model;
-            this.SerialNumber     = SerialNumber;
-            this.SoftwareVersion  = SoftwareVersion;
+            this.VendorName           = VendorName;
+            this.Model                = Model;
+            this.SerialNumber         = SerialNumber;
+            this.SoftwareVersion      = SoftwareVersion;
+
+            this.ClientCAKeyPair      = ClientCAKeyPair;
+            this.ClientCACertificate  = ClientCACertificate;
 
             OCPP.IN.AnycastIds.Add(NetworkingNode_Id.CSMS);
 
@@ -603,10 +614,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
 
-
-
-
-
         #region ConnectWebSocketClient(...)
 
         public async Task<HTTPResponse> ConnectWebSocketClient(NetworkingNode_Id                                               NetworkingNodeId,
@@ -616,7 +623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                Boolean?                                                        PreferIPv4                   = null,
                                                                RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
                                                                LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                                               X509Certificate?                                                ClientCert                   = null,
+                                                               System.Security.Cryptography.X509Certificates.X509Certificate?  ClientCert                   = null,
                                                                SslProtocols?                                                   TLSProtocol                  = null,
                                                                String?                                                         HTTPUserAgent                = null,
                                                                IHTTPAuthentication?                                            HTTPAuthentication           = null,
