@@ -15,10 +15,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Devices\Gateway\.gitkeep" />
+    <None Remove="Devices\Gateway\IncomingMessages\.gitkeep" />
+    <None Remove="Devices\Gateway\OutgoingMessages\.gitkeep" />
+    <None Remove="Devices\LocalController\.gitkeep" />
+    <None Remove="Devices\LocalController\IncomingMessages\.gitkeep" />
+    <None Remove="Devices\LocalController\OutgoingMessages\.gitkeep" />
     <None Remove="NetworkingNode\OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Devices\Gateway\.gitkeep" />
+    <Compile Include="Devices\Gateway\IncomingMessages\.gitkeep" />
+    <Compile Include="Devices\Gateway\OutgoingMessages\.gitkeep" />
+    <Compile Include="Devices\LocalController\.gitkeep" />
+    <Compile Include="Devices\LocalController\IncomingMessages\.gitkeep" />
+    <Compile Include="Devices\LocalController\OutgoingMessages\.gitkeep" />
     <Compile Include="NetworkingNode\OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 

@@ -30,13 +30,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
     public interface ILocalController : INetworkingNode
     {
 
-        String                               Model                    { get; }
-        String                               VendorName               { get; }
-        String?                              SerialNumber             { get; }
-        Modem?                               Modem                    { get; }
-        String?                              SoftwareVersion          { get; }
+        String   VendorName         { get; }
+        String   Model              { get; }
+        String?  SoftwareVersion    { get; }
+        String?  SerialNumber       { get; }
+
+        Modem?   Modem              { get; }
+
 
     }
-
 
 }

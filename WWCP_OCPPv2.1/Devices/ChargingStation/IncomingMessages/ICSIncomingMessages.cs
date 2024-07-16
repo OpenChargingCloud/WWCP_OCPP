@@ -28,8 +28,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// The common interface of all charging station servers.
     /// </summary>
     public interface ICSIncomingMessages : OCPP.CS.ICSIncomingMessages,
-                                           ICSIncomingMessages_BinaryDataStreamsExtensions,
-                                           ICSIncomingMessages_E2ESecurityExtensions
+                                           INNIncomingMessages_BinaryDataStreamsExtensions,
+                                           INNIncomingMessages_E2ESecurityExtensions
     {
 
         #region OnReset

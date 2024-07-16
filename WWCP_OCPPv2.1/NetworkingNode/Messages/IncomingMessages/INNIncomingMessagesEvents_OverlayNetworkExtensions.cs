@@ -24,22 +24,6 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public interface INetworkingNode_IncomingMessages_OverlayNetworkExtensions
-    {
-
-
-        #region OnNotifyNetworkTopology
-
-        /// <summary>
-        /// An event sent whenever a NotifyNetworkTopology request was received.
-        /// </summary>
-        event OnNotifyNetworkTopologyDelegate            OnNotifyNetworkTopology;
-
-        #endregion
-
-    }
-
-
     public interface INetworkingNode_IncomingMessagesEvents_OverlayNetworkExtensions
     {
 

@@ -24,56 +24,6 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public interface INetworkingNode_IncomingMessages_BinaryDataStreamsExtensions
-    {
-
-        #region OnBinaryDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was received.
-        /// </summary>
-        event OnBinaryDataTransferDelegate              OnBinaryDataTransfer;
-
-        #endregion
-
-        #region OnDeleteFile
-
-        /// <summary>
-        /// An event sent whenever a DeleteFile request was received.
-        /// </summary>
-        event OnDeleteFileDelegate                     OnDeleteFile;
-
-        #endregion
-
-        #region OnGetFile
-
-        /// <summary>
-        /// An event sent whenever a GetFile request was received.
-        /// </summary>
-        event OnGetFileDelegate                      OnGetFile;
-
-        #endregion
-
-        #region OnListDirectory
-
-        /// <summary>
-        /// An event sent whenever a ListDirectory request was received.
-        /// </summary>
-        event OnListDirectoryDelegate                  OnListDirectory;
-
-        #endregion
-
-        #region OnSendFile
-
-        /// <summary>
-        /// An event sent whenever a SendFile request was received.
-        /// </summary>
-        event OnSendFileDelegate                     OnSendFile;
-
-        #endregion
-
-    }
-
     public interface INetworkingNode_IncomingMessagesEvents_BinaryDataStreamsExtensions
     {
 

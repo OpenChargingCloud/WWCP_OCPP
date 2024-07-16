@@ -40,10 +40,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.GW
     public interface IGateway : INetworkingNode
     {
 
-        String                               Model                    { get; }
-        String                               VendorName               { get; }
-        String?                              SerialNumber             { get; }
-        String?                              SoftwareVersion          { get; }
+        String   VendorName         { get; }
+        String   Model              { get; }
+        String?  SoftwareVersion    { get; }
+        String?  SerialNumber       { get; }
 
     }
 

@@ -17,7 +17,6 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -25,53 +24,33 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public interface ICSIncomingMessages_BinaryDataStreamsExtensions
+    public interface INNIncomingMessages_BinaryDataStreamsExtensions
     {
-
-        #region OnIncomingBinaryDataTransfer
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        event OnBinaryDataTransferRequestReceivedDelegate    OnIncomingBinaryDataTransfer;
-
-        #endregion
-
-        #region OnGetFile
-
-        /// <summary>
-        /// An event sent whenever a GetFile request was received.
-        /// </summary>
-        event OnGetFileDelegate               OnGetFile;
-
-        #endregion
-
-        #region OnSendFile
-
-        /// <summary>
-        /// An event sent whenever a SendFile request was received.
-        /// </summary>
-        event OnSendFileDelegate              OnSendFile;
-
-        #endregion
-
-        #region OnDeleteFile
+        event OnBinaryDataTransferDelegate    OnBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a DeleteFile request was received.
         /// </summary>
         event OnDeleteFileDelegate            OnDeleteFile;
 
-        #endregion
-
-        #region OnListDirectory
+        /// <summary>
+        /// An event sent whenever a GetFile request was received.
+        /// </summary>
+        event OnGetFileDelegate               OnGetFile;
 
         /// <summary>
         /// An event sent whenever a ListDirectory request was received.
         /// </summary>
         event OnListDirectoryDelegate         OnListDirectory;
 
-        #endregion
+        /// <summary>
+        /// An event sent whenever a SendFile request was received.
+        /// </summary>
+        event OnSendFileDelegate              OnSendFile;
 
     }
 

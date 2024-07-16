@@ -17,25 +17,20 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    /// <summary>
-    /// The common interface of all charging station management systems.
-    /// </summary>
-    public interface ICSMS2Service : INetworkingNode
+    public interface INetworkingNode_IncomingMessages_OverlayNetworkExtensions
     {
 
-
-        IEnumerable<ChargingStation>           ChargingStations           { get; }
-
-     //   IEnumerable<ChargingStation_Id>  ChargingStationIds    { get; }
-
-        Boolean TryGetChargeBox(ChargingStation_Id ChargingStationId, out ChargingStation? ChargingStation);
+        /// <summary>
+        /// An event sent whenever a NotifyNetworkTopology request was received.
+        /// </summary>
+        event OnNotifyNetworkTopologyDelegate    OnNotifyNetworkTopology;
 
     }
 

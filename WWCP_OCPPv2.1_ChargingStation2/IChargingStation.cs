@@ -21,14 +21,23 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// The common interface of all charging station management systems.
+    /// The common interface of all charging station.
     /// </summary>
-    public interface ICSMS : INetworkingNode
+    public interface IChargingStation : INetworkingNode
     {
+
+        TimeSpan           DefaultRequestTimeout    { get; }
+
+        String             VendorName               { get; }
+        String             Model                    { get; }
+        String?            FirmwareVersion          { get; }
+        String?            SerialNumber             { get; }
+
+        Modem?             Modem                    { get; }
 
 
     }

@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
 
 
 
-            var testCSMS01               = new TestCSMS2(
+            var testCSMS01               = new TestCSMS(
                                                Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
                                                VendorName:              "GraphDefined",
                                                Model:                   "GraphDefined OCPP Test",

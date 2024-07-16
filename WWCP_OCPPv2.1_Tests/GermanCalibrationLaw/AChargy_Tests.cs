@@ -42,9 +42,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
 
         #region Data
 
-        protected TestCSMS2?                      testCSMS01;
-        protected TestCSMS2?                      testCSMS02;
-        protected TestCSMS2?                      testCSMS03;
+        protected TestCSMS?                      testCSMS01;
+        protected TestCSMS?                      testCSMS02;
+        protected TestCSMS?                      testCSMS03;
 
         protected OCPPWebSocketServer?            testBackendWebSockets01;
         protected OCPPWebSocketServer?            testBackendWebSockets02;
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
 
             Timestamp.Reset();
 
-            testCSMS01      = new TestCSMS2(
+            testCSMS01      = new TestCSMS(
                                   Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
                                   VendorName:              "GraphDefined",
                                   Model:                   "OCPPTest",

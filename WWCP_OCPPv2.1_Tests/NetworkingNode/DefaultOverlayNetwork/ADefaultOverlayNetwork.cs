@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
         #region Data
 
-        protected TestCSMS2?                    CSMS;
+        protected TestCSMS?                    CSMS;
 
         protected OCPPWebSocketServer?          csmsWSServer;
 
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             #region Create the CSMS
 
-            CSMS = new TestCSMS2(
+            CSMS = new TestCSMS(
                        Id:                      NetworkingNode_Id.Parse("csms01"),
                        VendorName:              "GraphDefined",
                        Model:                   "OCPPTest",

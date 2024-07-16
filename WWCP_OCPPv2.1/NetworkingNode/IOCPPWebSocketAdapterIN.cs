@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                CSMS.INetworkingNodeIncomingMessages,
                                                CSMS.INetworkingNodeIncomingMessageEvents,
 
-                                               INetworkingNode_IncomingMessages_BinaryDataStreamsExtensions,
+                                               INNIncomingMessages_BinaryDataStreamsExtensions,
                                                INetworkingNode_IncomingMessagesEvents_BinaryDataStreamsExtensions,
 
-                                               INetworkingNode_IncomingMessages_E2ESecurityExtensions,
+                                               INNIncomingMessages_E2ESecurityExtensions,
                                                INetworkingNode_IncomingMessagesEvents_E2ESecurityExtensions,
 
                                                INetworkingNode_IncomingMessages_OverlayNetworkExtensions,

@@ -24,62 +24,44 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public interface ICSIncomingMessages_E2ESecurityExtensions
+    public interface INNIncomingMessages_E2ESecurityExtensions
     {
-
-        #region OnAddSignaturePolicy
 
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy request was received.
         /// </summary>
         event OnAddSignaturePolicyDelegate       OnAddSignaturePolicy;
 
-        #endregion
-
-        #region OnUpdateSignaturePolicy
-
         /// <summary>
         /// An event sent whenever an UpdateSignaturePolicy request was received.
         /// </summary>
         event OnUpdateSignaturePolicyDelegate    OnUpdateSignaturePolicy;
-
-        #endregion
-
-        #region OnDeleteSignaturePolicy
 
         /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy request was received.
         /// </summary>
         event OnDeleteSignaturePolicyDelegate    OnDeleteSignaturePolicy;
 
-        #endregion
-
-        #region OnAddUserRole
-
         /// <summary>
         /// An event sent whenever an AddUserRole request was received.
         /// </summary>
         event OnAddUserRoleDelegate              OnAddUserRole;
-
-        #endregion
-
-        #region OnUpdateUserRole
 
         /// <summary>
         /// An event sent whenever an UpdateUserRole request was received.
         /// </summary>
         event OnUpdateUserRoleDelegate           OnUpdateUserRole;
 
-        #endregion
-
-        #region OnDeleteUserRole
-
         /// <summary>
         /// An event sent whenever a DeleteUserRole request was received.
         /// </summary>
         event OnDeleteUserRoleDelegate           OnDeleteUserRole;
 
-        #endregion
+
+        /// <summary>
+        /// An event sent whenever a SecureDataTransfer request was received.
+        /// </summary>
+        event OnSecureDataTransferDelegate       OnSecureDataTransfer;
 
     }
 

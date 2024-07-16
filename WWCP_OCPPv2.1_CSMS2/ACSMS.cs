@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// An abstract networking node.
     /// </summary>
-    public abstract class ACSMS2 : ANetworkingNode
+    public abstract class ACSMS : ANetworkingNode
                           //         CSMS2.ICSMS2
     {
 
@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Id">The unique identification of this Charging Station Management System (CSMS).</param>
         /// <param name="Description">An optional multi-language description of the Charging Station Management System (CSMS).</param>
-        public ACSMS2(NetworkingNode_Id  Id,
+        public ACSMS(NetworkingNode_Id  Id,
                       String             VendorName,
                       String             Model,
                       String?            SerialNumber                = null,
@@ -820,7 +820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS2),
+                                  nameof(TestCSMS),
                                   nameof(OnServerStarted),
                                   e
                               );
@@ -860,7 +860,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS2),
+                                  nameof(TestCSMS),
                                   nameof(OnNewTCPConnection),
                                   e
                               );
@@ -914,7 +914,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS2),
+                                  nameof(TestCSMS),
                                   nameof(OnNewWebSocketConnection),
                                   e
                               );
@@ -962,7 +962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS2),
+                                  nameof(TestCSMS),
                                   nameof(OnCloseMessageReceived),
                                   e
                               );
@@ -1006,7 +1006,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS2),
+                                  nameof(TestCSMS),
                                   nameof(OnTCPConnectionClosed),
                                   e
                               );
@@ -1046,7 +1046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS2),
+                                  nameof(TestCSMS),
                                   nameof(OnServerStopped),
                                   e
                               );

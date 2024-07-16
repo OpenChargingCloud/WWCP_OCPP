@@ -39,8 +39,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// A networking node for testing.
     /// </summary>
-    public partial class TestCSMS2 : ACSMS2,
-                                     ICSMS
+    public partial class TestCSMS : ACSMS,
+                                    ICSMS
     {
 
         #region Properties
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new charging station management system for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this charging station management system.</param>
-        public TestCSMS2(NetworkingNode_Id  Id,
+        public TestCSMS(NetworkingNode_Id  Id,
                          String             VendorName,
                          String             Model,
                          String?            SerialNumber                = null,
