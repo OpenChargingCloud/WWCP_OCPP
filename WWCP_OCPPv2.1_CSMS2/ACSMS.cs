@@ -180,7 +180,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// An abstract networking node.
     /// </summary>
     public abstract class ACSMS : ANetworkingNode
-                          //         CSMS2.ICSMS2
     {
 
         #region Data

@@ -17,15 +17,9 @@
 
 #region Usings
 
-using System.Collections.ObjectModel;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 

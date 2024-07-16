@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all notworking nodes acting as a CSMS.
     /// </summary>
-    public interface INetworkingNodeOutgoingMessageEvents : OCPP.NN.CSMS.INetworkingNodeOutgoingMessageEvents
+    public interface INetworkingNodeOutgoingMessageEvents
     {
 
         // Outgoing requests
@@ -443,12 +443,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         event OnSecurityEventNotificationResponseSentDelegate            OnSecurityEventNotificationResponseSent;
 
         #endregion
-
-
-        ///// <summary>
-        ///// An event sent whenever a response to a data transfer request was sent.
-        ///// </summary>
-        //event OnIncomingDataTransferResponseDelegate    OnIncomingDataTransferResponse;
 
 
     }

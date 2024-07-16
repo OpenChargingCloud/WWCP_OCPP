@@ -30,7 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
 

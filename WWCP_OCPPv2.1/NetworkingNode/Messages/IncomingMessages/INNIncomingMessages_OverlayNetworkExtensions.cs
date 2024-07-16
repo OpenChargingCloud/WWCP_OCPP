@@ -24,7 +24,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public interface INetworkingNode_IncomingMessages_OverlayNetworkExtensions
+    public interface INNIncomingMessages_OverlayNetworkExtensions
     {
 
         /// <summary>

@@ -21,9 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The common interface of all networking node incoming messages.
     /// </summary>
-    public interface INetworkingNodeIncomingMessages : OCPP.NN.INetworkingNodeIncomingMessages
-                                                     //: CS.  INetworkingNodeIncomingMessages,
-                                                     //  CSMS.INetworkingNodeIncomingMessages
+    public interface INetworkingNodeIncomingMessages
     {
 
         #region OnIncomingDataTransfer

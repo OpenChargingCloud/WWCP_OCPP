@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
-    public interface ICSMSIncomingMessagesEvents : OCPP.CSMS.ICSMSIncomingMessagesEvents
+    public interface ICSMSIncomingMessagesEvents
     {
 
         // Certificates

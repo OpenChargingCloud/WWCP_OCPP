@@ -24,7 +24,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public interface INetworkingNode_IncomingMessagesEvents_E2ESecurityExtensions
+    public interface INNIncomingMessagesEvents_E2ESecurityExtensions
     {
 
         #region OnAddSignaturePolicy    (RequestReceived/-ResponseSent)

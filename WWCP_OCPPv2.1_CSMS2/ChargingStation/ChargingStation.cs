@@ -26,8 +26,6 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion

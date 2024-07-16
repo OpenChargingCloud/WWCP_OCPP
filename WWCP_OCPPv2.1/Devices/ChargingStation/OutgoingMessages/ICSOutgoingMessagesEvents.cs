@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The common interface of all charging station clients.
     /// </summary>
-    public interface ICSOutgoingMessagesEvents : OCPP.CS.ICSOutgoingMessagesEvents
+    public interface ICSOutgoingMessagesEvents
     {
 
         #region SendBootNotification                  (Request/-Response)

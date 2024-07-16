@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="BinaryRequest">The incoming binary request.</param>
-    public delegate Task WwebSocketBinaryRequestLogHandler(DateTime               Timestamp,
-                                                           IWebSocketConnection   Connection,
-                                                           NetworkingNode_Id      DestinationId,
-                                                           NetworkPath            NetworkPath,
-                                                           EventTracking_Id       EventTrackingId,
-                                                           Byte[]                 BinaryRequest);
+    public delegate Task WebSocketBinaryRequestLogHandler(DateTime               Timestamp,
+                                                          IWebSocketConnection   Connection,
+                                                          NetworkingNode_Id      DestinationId,
+                                                          NetworkPath            NetworkPath,
+                                                          EventTracking_Id       EventTrackingId,
+                                                          Byte[]                 BinaryRequest);
 
 
 

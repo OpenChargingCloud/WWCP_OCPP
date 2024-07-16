@@ -28,23 +28,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// The common interface of all central systems channels.
     /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channel.
     /// </summary>
-    public interface INetworkingNodeChannel : OCPP.NN.INetworkingNodeOutgoingMessages,
-                                              OCPP.NN.INetworkingNodeOutgoingMessageEvents,
-                                              //OCPP.NN.INetworkingNodeIncomingMessages,
-                                              //OCPP.NN.INetworkingNodeIncomingMessageEvents,
-
-                                              OCPP.NN.CSMS.INetworkingNodeOutgoingMessages,
-                                              OCPP.NN.CSMS.INetworkingNodeOutgoingMessageEvents,
-
-                                              //CS.  INetworkingNodeIncomingMessages,
-                                              //CS.  INetworkingNodeIncomingMessageEvents,
-                                              //CS.  INetworkingNodeOutgoingMessages,
-                                              //CS.  INetworkingNodeOutgoingMessageEvents,
-
-                                              //CSMS.INetworkingNodeIncomingMessages
-                                              //CSMS.INetworkingNodeIncomingMessageEvents
-                                                CSMS.INetworkingNodeOutgoingMessages,
-                                                CSMS.INetworkingNodeOutgoingMessageEvents
+    public interface INetworkingNodeChannel : CSMS.INetworkingNodeOutgoingMessages,
+                                              CSMS.INetworkingNodeOutgoingMessageEvents
 
     {
 
@@ -106,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        Task<DataTransferResponse>           DataTransfer         (          DataTransferRequest           Request);
+        Task<DataTransferResponse> DataTransfer(DataTransferRequest  Request);
 
 
         event OCPPv2_1.CSMS.OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
@@ -139,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OCPPv2_1.CSMS.OnNotifyDisplayMessagesDelegate?                OnNotifyDisplayMessages;
         event OCPPv2_1.CSMS.OnNotifyCustomerInformationDelegate?            OnNotifyCustomerInformation;
 
-        event OnBinaryDataTransferDelegate?                         OnIncomingBinaryDataTransfer;
+        event OnBinaryDataTransferDelegate?                                 OnIncomingBinaryDataTransfer;
 
 
         void AddStaticRouting   (NetworkingNode_Id DestinationId,

@@ -24,7 +24,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public interface INetworkingNode_IncomingMessagesEvents_BinaryDataStreamsExtensions
+    public interface INNIncomingMessagesEvents_BinaryDataStreamsExtensions
     {
 
         #region OnBinaryDataTransfer (RequestReceived/-ResponseSent)

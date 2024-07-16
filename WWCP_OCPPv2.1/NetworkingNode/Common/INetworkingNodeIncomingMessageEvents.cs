@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The common interface of all networking node incoming message events.
     /// </summary>
-    public interface INetworkingNodeIncomingMessageEvents : OCPP.NN.INetworkingNodeIncomingMessageEvents
+    public interface INetworkingNodeIncomingMessageEvents
     {
 
         #region OnDataTransfer                         (Request/-Response)
