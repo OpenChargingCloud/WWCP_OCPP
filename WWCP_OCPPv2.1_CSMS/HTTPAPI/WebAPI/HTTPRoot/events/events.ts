@@ -4633,13 +4633,13 @@ function StartEventsSSE() {
     const streamFilterInput  = document.getElementById('eventsFilterDiv').getElementsByTagName('input')[0] as HTMLInputElement;
     streamFilterInput.onchange = () => {
 
-        const AllLogLines = eventsDiv.getElementsByClassName('logLine') as HTMLCollectionOf<HTMLDivElement>;
+        const allLogLines = eventsDiv.getElementsByClassName('logLine') as HTMLCollectionOf<HTMLDivElement>;
 
-        for (let i = 0; i < AllLogLines.length; i++) {
-            if (AllLogLines[i].innerHTML.indexOf(streamFilterInput.value) > -1)
-                AllLogLines[i].style.display = 'table-row';
+        for (let i = 0; i < allLogLines.length; i++) {
+            if (allLogLines[i].innerHTML.indexOf(streamFilterInput.value) > -1)
+                allLogLines[i].style.display = 'table-row';
             else
-                AllLogLines[i].style.display = 'none';
+                allLogLines[i].style.display = 'none';
         }
 
     }
@@ -4758,15 +4758,15 @@ function StartEventsSSE() {
             try
             {
 
-                const request  = JSON.parse((event as MessageEvent).data);
+                const request = JSON.parse((event as MessageEvent).data);
 
                 CreateLogEntry(request.timestamp,
                                request.connection.customData?.chargeBoxId ?? "-",
                                request.eventTrackingId,
                                "OnNewTCPConnection",
                                request.connection.remoteSocket,
-                               request.connection.remoteSocket // ConnectionColorKey
-                              );
+                               // ConnectionColorKey
+                               request.connection.remoteSocket);
 
             }
             catch (exception) {

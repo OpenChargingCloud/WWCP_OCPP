@@ -4627,12 +4627,12 @@ function StartEventsSSE() {
     const eventsDiv = document.getElementById('eventsDiv');
     const streamFilterInput = document.getElementById('eventsFilterDiv').getElementsByTagName('input')[0];
     streamFilterInput.onchange = () => {
-        const AllLogLines = eventsDiv.getElementsByClassName('logLine');
-        for (let i = 0; i < AllLogLines.length; i++) {
-            if (AllLogLines[i].innerHTML.indexOf(streamFilterInput.value) > -1)
-                AllLogLines[i].style.display = 'table-row';
+        const allLogLines = eventsDiv.getElementsByClassName('logLine');
+        for (let i = 0; i < allLogLines.length; i++) {
+            if (allLogLines[i].innerHTML.indexOf(streamFilterInput.value) > -1)
+                allLogLines[i].style.display = 'table-row';
             else
-                AllLogLines[i].style.display = 'none';
+                allLogLines[i].style.display = 'none';
         }
     };
     function GetConnectionColors(connectionId) {
@@ -4710,8 +4710,9 @@ function StartEventsSSE() {
             var _a, _b;
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, (_b = (_a = request.connection.customData) === null || _a === void 0 ? void 0 : _a.chargeBoxId) !== null && _b !== void 0 ? _b : "-", request.eventTrackingId, "OnNewTCPConnection", request.connection.remoteSocket, request.connection.remoteSocket // ConnectionColorKey
-                );
+                CreateLogEntry(request.timestamp, (_b = (_a = request.connection.customData) === null || _a === void 0 ? void 0 : _a.chargeBoxId) !== null && _b !== void 0 ? _b : "-", request.eventTrackingId, "OnNewTCPConnection", request.connection.remoteSocket, 
+                // ConnectionColorKey
+                request.connection.remoteSocket);
             }
             catch (exception) {
                 console.debug(exception);

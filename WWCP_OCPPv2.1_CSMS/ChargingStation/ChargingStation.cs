@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
-using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
             public ChargingStationConnector(Connector_Id       Id,
-                                        OperationalStatus  OperationalStatus)
+                                            OperationalStatus  OperationalStatus)
             {
 
                 this.Id                 = Id;
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
-        public event OnDataTransferRequestSentDelegate?   OnDataTransferRequest;
+        public event OnDataTransferRequestSentDelegate?       OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
@@ -1296,13 +1296,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             public ChargingStation2ChargingStationEdge
 
                 AddInEdge (ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
-                           ChargingStation                    SourceChargingStation,
-                           PrivacyLevel                    PrivacyLevel = PrivacyLevel.World)
+                           ChargingStation                           SourceChargingStation,
+                           PrivacyLevel                              PrivacyLevel = PrivacyLevel.World)
 
                 => _ChargingStation2ChargingStation_InEdges. AddAndReturnElement(new ChargingStation2ChargingStationEdge(SourceChargingStation,
-                                                                                                                                                    EdgeLabel,
-                                                                                                                                                    this,
-                                                                                                                                                    PrivacyLevel));
+                                                                                                                         EdgeLabel,
+                                                                                                                         this,
+                                                                                                                         PrivacyLevel));
 
             #endregion
 

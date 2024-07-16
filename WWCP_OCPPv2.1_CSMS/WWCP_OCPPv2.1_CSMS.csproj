@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>cloud.charging.open.protocols.OCPPv2_1.CSMS</RootNamespace>
+    <RootNamespace>WWCP_OCPPv2._1_CSMS2</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -23,15 +23,10 @@
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.html" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
-    <None Remove="WebSockets\Incoming\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="HTTPAPI\DownloadAPI\HTTPRoot\LICENSE.txt" />
-    <Compile Include="WebSockets\Incoming\BinaryDataStreamsExtensions\.gitkeep" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
@@ -56,8 +51,13 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
+    <ProjectReference Include="..\..\WWCP_Core\WWCP_Core\WWCP_Core.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HTTPAPI\QRCodeAPI\HTTPRoot\" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

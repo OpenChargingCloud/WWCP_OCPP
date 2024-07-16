@@ -17,35 +17,24 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Hermod;
-
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
-
     /// <summary>
-    /// The common interface of all charging station.
+    /// The common interface of all charging station management systems.
     /// </summary>
-    public interface ICSMS : IEventSender
+    public interface ICSMS : INetworkingNode
     {
 
-        NetworkingNode_Id  Id                    { get; }
+        String   VendorName         { get; }
+        String   Model              { get; }
+        String?  SoftwareVersion    { get; }
+        String?  SerialNumber       { get; }
 
-        String?            ClientCloseMessage    { get; }
-
-
-
-        Task HandleErrors(String     Module,
-                          String     Caller,
-                          Exception  ExceptionOccured);
-
-        Task HandleErrors(String     Module,
-                          String     Caller,
-                          String     ErrorResponse);
 
     }
 

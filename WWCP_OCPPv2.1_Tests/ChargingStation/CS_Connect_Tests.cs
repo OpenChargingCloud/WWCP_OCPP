@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #region Data
 
-        protected TestCSMS?                              testCSMS01;
+        protected TestCSMS?                               testCSMS01;
         protected OCPPWebSocketServer?                    testWebSocketServer01;
 
         protected ConcurrentList<LogJSONRequest>?         csmsWebSocketTextMessagesReceived;

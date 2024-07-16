@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const           String                              DefaultHTTPServerName   = $"Open Charging Cloud OCPP {Version.String} CSMS Upload API";
+        public new const           String                              DefaultHTTPServerName   = $"Open Charging Cloud OCPP {Version.String} Networking Node Upload API";
 
         /// <summary>
         /// The default HTTP URL prefix.
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public     const           String                              DefaultHTTPRealm        = "Open Charging Cloud OCPP CSMS Upload API";
+        public     const           String                              DefaultHTTPRealm        = "Open Charging Cloud OCPP Networking Node Upload API";
 
         private           readonly Dictionary<String, FileUploadAuthentication>  validFileUploadAuths    = [];
 
@@ -57,9 +57,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Properties
 
         /// <summary>
-        /// The parent charging station management system.
+        /// The parent networking node.
         /// </summary>
-        public ACSMS                                      CSMS              { get; }
+        public ACSMS                            NetworkingNode    { get; }
 
         /// <summary>
         /// The location to store the received files within the file system.
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public UploadAPI(ACSMS                                       CSMS,
+        public UploadAPI(ACSMS                             NetworkingNode,
                          HTTPServer                                  HTTPServer,
                          String                                      FileSystemPath,
 
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.CSMS            = CSMS;
+            this.NetworkingNode  = NetworkingNode;
             this.FileSystemPath  = FileSystemPath;
 
             this.HTTPRealm       = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
@@ -153,29 +153,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             RegisterURITemplates();
 
-            validFileUploadAuths.Add("35835794867046", new FileUploadAuthentication("35835794867046", Timestamp.Now + TimeSpan.FromDays(1)));
-
         }
 
         #endregion
 
 
-        #region GenerateNewFileUploadAuthentication(Length = 42, Timeout = null)
+        #region GenerateNewFileUploadAuthentication(Length = 30, Timeout = null)
 
         /// <summary>
         /// Generate a new file upload authentication.
         /// </summary>
-        /// <param name="Length">The optional requested length of the path prefix (>20).</param>
+        /// <param name="Length">The optional requested length of the path prefix.</param>
         /// <param name="Timeout">The optional timeout of the requested file upload authentication.</param>
-        public FileUploadAuthentication GenerateNewFileUploadAuthentication(UInt16     Length    = 42,
+        public FileUploadAuthentication GenerateNewFileUploadAuthentication(UInt16     Length    = 30,
                                                                             TimeSpan?  Timeout   = null)
         {
 
-            var now   = Timestamp.Now;
-            var auth  = new FileUploadAuthentication(
-                            now.ToString("yyyyMMddHHmmss") + RandomExtensions.RandomString((UInt16) (Math.Max(20U, Length) - 14)),
-                            now + (Timeout ?? TimeSpan.FromMinutes(15))
-                        );
+            var auth = new FileUploadAuthentication(
+                           RandomExtensions.RandomString(Length),
+                           Timestamp.Now + (Timeout ?? TimeSpan.FromMinutes(15))
+                       );
 
             validFileUploadAuths.Add(auth.PathPrefix,
                                      auth);
@@ -226,6 +223,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+        //ToDo: Maybe the uploaded file should be send to the CSMS asap!
+
         #region (private) RegisterURLTemplates()
 
         private void RegisterURITemplates()
@@ -233,10 +232,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region PUT   ~/*
 
-            // curl -X PUT -d "abcd" http://127.0.0.1:3502/uploads/35835794867046/diagnostics.log
+            // curl -X PUT http://127.0.0.1:9901/diagnostics/test.log -T test.log
             AddMethodCallback(HTTPHostname.Any,
                               HTTPMethod.PUT,
-                              URLPathPrefix + "{fileUploadAuth}/{file}",
+                              URLPathPrefix + "{file}",
                               HTTPDelegate: async request => {
 
                                   try
@@ -287,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                       Directory.CreateDirectory(Path.Combine(FileSystemPath, fileUploadAuth));
 
-                                      var fileStream   = File.Create(Path.Combine(FileSystemPath, fileUploadAuth, fileName));
+                                      var fileStream   = File.Create(Path.Combine(FileSystemPath, fileName));
                                       var fileContent  = request.HTTPBody;
 
                                       await fileStream.WriteAsync(fileContent, request.CancellationToken);
@@ -345,27 +344,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region POST  ~/*
 
-            // curl -X POST -d "abcd" http://127.0.0.1:3502/uploads/35835794867046/diagnostics.log
+            // curl -X PUT http://127.0.0.1:9901/diagnostics/test.log -T test.log
             AddMethodCallback(HTTPHostname.Any,
                               HTTPMethod.POST,
                               URLPathPrefix + "{file}",
                               HTTPDelegate: async request => {
-
-//ToDo: Some charging stations send something like the following...
-
-// POST /uploads/20240306234447AvK8z7hWESrW8Knh8Wv9G2185vAC/ HTTP/1.1
-// Host: api1.ocpp.charging.cloud:3502
-// Accept: */*
-// Accept-Encoding: deflate, gzip
-// Content-Length: 529297
-// Content-Type: multipart/form-data; boundary=------------------------941d61f54d73e8ac
-// 
-// --------------------------941d61f54d73e8ac
-// Content-Disposition: form-data; name=""; filename="AWLU770001T2P1-D2205A796A1-20240306234446.zip"
-// Content-Type: application/zip
-// 
-// PK
-
 
                                   try
                                   {

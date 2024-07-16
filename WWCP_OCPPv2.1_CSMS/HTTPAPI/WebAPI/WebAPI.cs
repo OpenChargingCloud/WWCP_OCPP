@@ -18,15 +18,12 @@
 #region Usings
 
 using System.Reflection;
-using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -34,7 +31,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The OCPP Charging Station Management System WebAPI.
+    /// OCPP Networking Node WebAPI extensions.
+    /// </summary>
+    public static class WebAPIExtensions
+    {
+
+    }
+
+
+    /// <summary>
+    /// The OCPP Networking Node WebAPI.
     /// </summary>
     public class WebAPI : HTTPAPI
     {
@@ -54,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public new const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.CSMS.HTTPAPI.WebAPI.HTTPRoot.";
+        public new const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.WebAPI.HTTPRoot.";
 
         #endregion
 
@@ -68,12 +74,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="CSMS">A Charging Station Management System.</param>
+        /// <param name="NetworkingNode">An OCPP charging station management system.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public WebAPI(ACSMS                                       CSMS,
+        public WebAPI(ACSMS                             NetworkingNode,
                       HTTPExtAPI                                  HTTPAPI,
                       String?                                     HTTPServerName   = null,
                       HTTPPath?                                   URLPathPrefix    = null,
@@ -82,11 +88,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
                       String?                                     HTMLTemplate     = null)
 
-            : base(CSMS,
+            : base(NetworkingNode,
                    HTTPAPI,
                    HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
                    BasePath,
+                   HTTPRealm,
+                   HTTPLogins,
                    HTMLTemplate)
 
         {
@@ -95,11 +103,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
             //HTTPServer.ResponseLog  += (HTTPProcessor, ServerTimestamp, Request, Response)                       => ResponseLog.WhenAll(HTTPProcessor, ServerTimestamp, Request, Response);
             //HTTPServer.ErrorLog     += (HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException) => ErrorLog.   WhenAll(HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException);
-
-            var LogfilePrefix        = "HTTPSSEs" + Path.DirectorySeparatorChar;
-
-
-            this.HTMLTemplate = HTMLTemplate ?? GetResourceString("template.html");
 
             RegisterURITemplates();
 
@@ -116,10 +119,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         protected override Stream? GetResourceStream(String ResourceName)
 
-            => GetResourceStream(ResourceName,
-                                 new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceStream(ResourceName,
+                                 new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                 new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                 new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -127,10 +130,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
-            => GetResourceMemoryStream(ResourceName,
-                                       new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                       new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                       new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceMemoryStream(ResourceName,
+                                       new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                       new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -138,10 +141,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         protected override String GetResourceString(String ResourceName)
 
-            => GetResourceString(ResourceName,
-                                 new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceString(ResourceName,
+                                 new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                 new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                 new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -149,10 +152,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         protected override Byte[] GetResourceBytes(String ResourceName)
 
-            => GetResourceBytes(ResourceName,
-                                new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceBytes(ResourceName,
+                                new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -160,10 +163,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         protected override String MixWithHTMLTemplate(String ResourceName)
 
-            => MixWithHTMLTemplate(ResourceName,
-                                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                   new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.MixWithHTMLTemplate(ResourceName,
+                                   new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                   new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                   new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -172,11 +175,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override String MixWithHTMLTemplate(String                ResourceName,
                                                       Func<String, String>  HTMLConverter)
 
-            => MixWithHTMLTemplate(ResourceName,
+            => base.MixWithHTMLTemplate(ResourceName,
                                    HTMLConverter,
-                                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                   new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+                                   new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                   new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                   new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -186,13 +189,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                       String   ResourceName,
                                                       String?  Content   = null)
 
-            => MixWithHTMLTemplate(Template,
+            => base.MixWithHTMLTemplate(Template,
                                    ResourceName,
-                                   [
-                                       new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                       new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                       new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly)
-                                   ],
+                                   new[] {
+                                       new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                       new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly)
+                                   },
                                    Content);
 
         #endregion
@@ -202,101 +205,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         private void RegisterURITemplates()
         {
 
-            HTTPBaseAPI.HTTPServer.AddAuth  (request => {
-
-                #region Allow some URLs for anonymous access...
-
-                if (request.Path.StartsWith(URLPathPrefix)                      ||
-                    request.Path.StartsWith(URLPathPrefix + "/js")              ||
-                    request.Path.StartsWith(URLPathPrefix + "/events")          ||
-                    request.Path.StartsWith(URLPathPrefix + "/chargingStation") ||
-                    request.Path.StartsWith(URLPathPrefix + "/chargingStations"))
-                {
-                    return HTTPExtAPI.Anonymous;
-                }
-
-                #endregion
-
-                return null;
-
-            });
-
-
-            #region /shared/UsersAPI
-
-            //HTTPBaseAPI.RegisterResourcesFolder(this,
-            //                                    HTTPHostname.Any,
-            //                                    URLPathPrefix + "shared/UsersAPI",
-            //                                    HTTPRoot.Substring(0, HTTPRoot.Length - 1),
-            //                                    typeof(UsersAPI).Assembly);
-
-            #endregion
-
-
             #region / (HTTPRoot)
 
-            HTTPBaseAPI.MapResourceAssemblyFolder(
-                HTTPHostname.Any,
-                URLPathPrefix,
-                HTTPRoot, //"default",
-                DefaultFilename:       "index.html",
-                RequireAuthentication:  false
-            );
+            //HTTPBaseAPI.RegisterResourcesFolder(this,
+            //                                HTTPHostname.Any,
+            //                                URLPathPrefix,
+            //                                "cloud.charging.open.protocols.OCPPv2_1.WebAPI.HTTPRoot",
+            //                                DefaultFilename: "index.html");
 
-            #endregion
+            //HTTPServer.AddMethodCallback(HTTPHostname.Any,
+            //                             HTTPMethod.GET,
+            //                             URLPathPrefix,
+            //                             HTTPDelegate: Request => {
 
+            //                                 return Task.FromResult(
+            //                                     new HTTPResponse.Builder(Request) {
+            //                                         HTTPStatusCode             = HTTPStatusCode.OK,
+            //                                         Server                     = DefaultHTTPServerName,
+            //                                         Date                       = Timestamp.Now,
+            //                                         AccessControlAllowOrigin   = "*",
+            //                                         AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+            //                                         AccessControlAllowHeaders  = [ "Authorization" ],
+            //                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
+            //                                         Content                    = ("<html><body>" +
+            //                                                                          "This is an Open Charge Point Protocol v1.6 HTTP service!<br /><br />" +
+            //                                                                          "<ul>" +
+            //                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/chargeBoxes\">Charge Boxes</a></li>" +
+            //                                                                          "</ul>" +
+            //                                                                       "<body></html>").ToUTF8Bytes(),
+            //                                         Connection                 = "close"
+            //                                     }.AsImmutable);
 
-            #region ~/chargingStationIds
-
-            //HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-            //                              HTTPMethod.GET,
-            //                              URLPathPrefix + "chargingStationIds",
-            //                              HTTPContentType.Application.JSON_UTF8,
-            //                              HTTPDelegate: Request => {
-
-            //                                  return Task.FromResult(
-            //                                      new HTTPResponse.Builder(Request) {
-            //                                          HTTPStatusCode             = HTTPStatusCode.OK,
-            //                                          Server                     = HTTPServiceName,
-            //                                          Date                       = Timestamp.Now,
-            //                                          AccessControlAllowOrigin   = "*",
-            //                                          AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
-            //                                          AccessControlAllowHeaders  = [ "Authorization" ],
-            //                                          ContentType                = HTTPContentType.Application.JSON_UTF8,
-            //                                          Content                    = JSONArray.Create(
-            //                                                                           chargingStations.Keys.Select(chargingStationId => new JObject(new JProperty("@id", chargingStationId.ToString())))
-            //                                                                       ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-            //                                          Connection                 = "close"
-            //                                      }.AsImmutable);
-
-            //                              });
-
-            #endregion
-
-            #region ~/chargingStations
-
-            //HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-            //                              HTTPMethod.GET,
-            //                              URLPathPrefix + "chargingStations",
-            //                              HTTPContentType.Application.JSON_UTF8,
-            //                              HTTPDelegate: Request => {
-
-            //                                  return Task.FromResult(
-            //                                      new HTTPResponse.Builder(Request) {
-            //                                          HTTPStatusCode             = HTTPStatusCode.OK,
-            //                                          Server                     = HTTPServiceName,
-            //                                          Date                       = Timestamp.Now,
-            //                                          AccessControlAllowOrigin   = "*",
-            //                                          AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
-            //                                          AccessControlAllowHeaders  = [ "Authorization" ],
-            //                                          ContentType                = HTTPContentType.Application.JSON_UTF8,
-            //                                          Content                    = JSONArray.Create(
-            //                                                                           chargingStations.Values.Select(chargingStation => chargingStation.ToJSON())
-            //                                                                       ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-            //                                          Connection                 = "close"
-            //                                      }.AsImmutable);
-
-            //                              });
+            //                             });
 
             #endregion
 
@@ -305,44 +245,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region HTML
 
-            // --------------------------------------------------------------------
-            // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
-            // --------------------------------------------------------------------
-            HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                          HTTPMethod.GET,
-                                          URLPathPrefix + "events",
-                                          HTTPContentType.Text.HTML_UTF8,
-                                          HTTPDelegate: Request => {
+            //// --------------------------------------------------------------------
+            //// curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
+            //// --------------------------------------------------------------------
+            //HTTPBaseAPI.AddMethodCallback(
+            //                HTTPHostname.Any,
+            //                HTTPMethod.GET,
+            //                URLPathPrefix + "events",
+            //                HTTPContentType.Text.HTML_UTF8,
+            //                HTTPDelegate: Request => {
 
-                                          #region Get HTTP user and its organizations
+            //                    #region Get HTTP user and its organizations
 
-                                          //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                          //if (!TryGetHTTPUser(Request,
-                                          //                    out User                   HTTPUser,
-                                          //                    out HashSet<Organization>  HTTPOrganizations,
-                                          //                    out HTTPResponse.Builder   Response,
-                                          //                    Recursive:                 true))
-                                          //{
-                                          //    return Task.FromResult(Response.AsImmutable);
-                                          //}
+            //                    //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+            //                    //if (!TryGetHTTPUser(Request,
+            //                    //                    out User                   HTTPUser,
+            //                    //                    out HashSet<Organization>  HTTPOrganizations,
+            //                    //                    out HTTPResponse.Builder   Response,
+            //                    //                    Recursive:                 true))
+            //                    //{
+            //                    //    return Task.FromResult(Response.AsImmutable);
+            //                    //}
 
-                                          #endregion
+            //                    #endregion
 
-                                          return Task.FromResult(
-                                                     new HTTPResponse.Builder(Request) {
-                                                         HTTPStatusCode             = HTTPStatusCode.OK,
-                                                         Server                     = HTTPServiceName,
-                                                         Date                       = Timestamp.Now,
-                                                         AccessControlAllowOrigin   = "*",
-                                                         AccessControlAllowMethods  = [ "GET" ],
-                                                         AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
-                                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
-                                                         Content                    = MixWithHTMLTemplate("events.index.shtml").ToUTF8Bytes(),
-                                                         Connection                 = "close",
-                                                         Vary                       = "Accept"
-                                                     }.AsImmutable);
+            //                    return Task.FromResult(
+            //                               new HTTPResponse.Builder(Request) {
+            //                                   HTTPStatusCode             = HTTPStatusCode.OK,
+            //                                   Server                     = HTTPServiceName,
+            //                                   Date                       = Timestamp.Now,
+            //                                   AccessControlAllowOrigin   = "*",
+            //                                   AccessControlAllowMethods  = [ "GET" ],
+            //                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+            //                                   ContentType                = HTTPContentType.Text.HTML_UTF8,
+            //                                   Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
+            //                                   Connection                 = "close",
+            //                                   Vary                       = "Accept"
+            //                               }.AsImmutable);
 
-                                      });
+            //                });
 
             #endregion
 
@@ -352,6 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         }
 
         #endregion
+
 
 
     }

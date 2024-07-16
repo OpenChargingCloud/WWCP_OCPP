@@ -17,10 +17,10 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const            String    DefaultHTTPServerName   = $"Open Charging Cloud OCPP {Version.String} CSMS Download API";
+        public new const            String    DefaultHTTPServerName   = $"Open Charging Cloud OCPP {Version.String} Networking Node Download API";
 
         /// <summary>
         /// The default HTTP URL prefix.
@@ -53,16 +53,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public new const            String    HTTPRoot                = "cloud.charging.open.protocols.OCPPv2_1.CSMS.HTTPAPI.DownloadAPI.HTTPRoot";
+        public new const            String    HTTPRoot                = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS.HTTPAPI.DownloadAPI.HTTPRoot";
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// The parent charging station management system.
+        /// The parent networking node.
         /// </summary>
-        public ACSMS                                      CSMS              { get; }
+        public ACSMS                            NetworkingNode    { get; }
 
         /// <summary>
         /// The optional location of the served files within the file system.
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Attach an OCPP Download API to the given HTTP server.
         /// </summary>
-        /// <param name="CSMS">A charging station management system.</param>
+        /// <param name="NetworkingNode">A networking node.</param>
         /// <param name="HTTPServer">A HTTP server.</param>
         /// 
         /// <param name="BasePath">When the API is served from an optional subdirectory path.</param>
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// 
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public DownloadAPI(ACSMS                                       CSMS,
+        public DownloadAPI(ACSMS                             NetworkingNode,
                            HTTPServer                                  HTTPServer,
 
                            HTTPPath?                                   BasePath        = null,
@@ -152,7 +152,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.CSMS            = CSMS;
+            this.NetworkingNode  = NetworkingNode;
+
             this.FileSystemPath  = FileSystemPath;
 
             this.HTTPRealm       = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
@@ -211,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region GET  ~/*
 
-            // curl http://127.0.0.1:3502/downloads/LICENSE.txt
+            // curl http://127.0.0.1:9901/downloads/LICENSE.txt
             AddMethodCallback(HTTPHostname.Any,
                               HTTPMethod.GET,
                               URLPathPrefix + "{file}",

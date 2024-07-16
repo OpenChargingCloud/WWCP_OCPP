@@ -24,7 +24,7 @@
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1_Adapter\WWCP_OCPPv2.1_Adapter.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1_ChargingStation2\WWCP_OCPPv2.1_ChargingStation2.csproj" />
-    <ProjectReference Include="..\WWCP_OCPPv2.1_CSMS2\WWCP_OCPPv2.1_CSMS2.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1_CSMS\WWCP_OCPPv2.1_CSMS.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1_Gateway\WWCP_OCPPv2.1_Gateway.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1_LocalController\WWCP_OCPPv2.1_LocalController.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
