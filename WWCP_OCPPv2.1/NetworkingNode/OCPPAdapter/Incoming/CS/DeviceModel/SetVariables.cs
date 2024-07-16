@@ -25,7 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SetVariables(DateTime              RequestTimestamp,
                                  IWebSocketConnection  WebSocketConnection,
-                                 NetworkingNode_Id     DestinationNodeId,
+                                 NetworkingNode_Id     DestinationId,
                                  NetworkPath           NetworkPath,
                                  EventTracking_Id      EventTrackingId,
                                  Request_Id            RequestId,
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 OnSetVariablesWSRequest?.Invoke(startTime,
                                                 parentNetworkingNode,
                                                 WebSocketConnection,
-                                                DestinationNodeId,
+                                                DestinationId,
                                                 NetworkPath,
                                                 EventTrackingId,
                                                 RequestTimestamp,
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (SetVariablesRequest.TryParse(RequestJSON,
                                                  RequestId,
-                                                 DestinationNodeId,
+                                                 DestinationId,
                                                  NetworkPath,
                                                  out var request,
                                                  out var errorResponse,
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 OnSetVariablesWSResponse?.Invoke(endTime,
                                                  parentNetworkingNode,
                                                  WebSocketConnection,
-                                                 DestinationNodeId,
+                                                 DestinationId,
                                                  NetworkPath,
                                                  EventTrackingId,
                                                  RequestTimestamp,

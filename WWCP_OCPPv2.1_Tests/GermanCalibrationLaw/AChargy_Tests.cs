@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -41,46 +42,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
 
         #region Data
 
-        protected TestCSMS?                     testCSMS01;
-        protected TestCSMS?                     testCSMS02;
-        protected TestCSMS?                     testCSMS03;
+        protected TestCSMS2?                      testCSMS01;
+        protected TestCSMS2?                      testCSMS02;
+        protected TestCSMS2?                      testCSMS03;
 
-        protected CSMSWSServer?                 testBackendWebSockets01;
-        protected CSMSWSServer?                 testBackendWebSockets02;
-        protected CSMSWSServer?                 testBackendWebSockets03;
-
-
-        protected List<LogJSONRequest>?         csms1WebSocketJSONMessagesReceived;
-        protected List<LogDataJSONResponse>?    csms1WebSocketJSONMessageResponsesSent;
-        protected List<LogJSONRequest>?         csms1WebSocketJSONMessagesSent;
-        protected List<LogDataJSONResponse>?    csms1WebSocketJSONMessageResponsesReceived;
-
-        protected List<LogBinaryRequest>?       csms1WebSocketBinaryMessagesReceived;
-        protected List<LogDataBinaryResponse>?  csms1WebSocketBinaryMessageResponsesSent;
-        protected List<LogBinaryRequest>?       csms1WebSocketBinaryMessagesSent;
-        protected List<LogDataBinaryResponse>?  csms1WebSocketBinaryMessageResponsesReceived;
+        protected OCPPWebSocketServer?            testBackendWebSockets01;
+        protected OCPPWebSocketServer?            testBackendWebSockets02;
+        protected OCPPWebSocketServer?            testBackendWebSockets03;
 
 
-        protected List<LogJSONRequest>?         csms2WebSocketJSONMessagesReceived;
-        protected List<LogDataJSONResponse>?    csms2WebSocketJSONMessageResponsesSent;
-        protected List<LogJSONRequest>?         csms2WebSocketJSONMessagesSent;
-        protected List<LogDataJSONResponse>?    csms2WebSocketJSONMessageResponsesReceived;
+        protected List<LogJSONRequest>?           csms1WebSocketJSONMessagesReceived;
+        protected List<LogDataJSONResponse>?      csms1WebSocketJSONMessageResponsesSent;
+        protected List<LogJSONRequest>?           csms1WebSocketJSONMessagesSent;
+        protected List<LogDataJSONResponse>?      csms1WebSocketJSONMessageResponsesReceived;
 
-        protected List<LogBinaryRequest>?       csms2WebSocketBinaryMessagesReceived;
-        protected List<LogDataBinaryResponse>?  csms2WebSocketBinaryMessageResponsesSent;
-        protected List<LogBinaryRequest>?       csms2WebSocketBinaryMessagesSent;
-        protected List<LogDataBinaryResponse>?  csms2WebSocketBinaryMessageResponsesReceived;
+        protected List<LogBinaryRequest>?         csms1WebSocketBinaryMessagesReceived;
+        protected List<LogDataBinaryResponse>?    csms1WebSocketBinaryMessageResponsesSent;
+        protected List<LogBinaryRequest>?         csms1WebSocketBinaryMessagesSent;
+        protected List<LogDataBinaryResponse>?    csms1WebSocketBinaryMessageResponsesReceived;
 
 
-        protected List<LogJSONRequest>?         csms3WebSocketJSONMessagesReceived;
-        protected List<LogDataJSONResponse>?    csms3WebSocketJSONMessageResponsesSent;
-        protected List<LogJSONRequest>?         csms3WebSocketJSONMessagesSent;
-        protected List<LogDataJSONResponse>?    csms3WebSocketJSONMessageResponsesReceived;
+        protected List<LogJSONRequest>?           csms2WebSocketJSONMessagesReceived;
+        protected List<LogDataJSONResponse>?      csms2WebSocketJSONMessageResponsesSent;
+        protected List<LogJSONRequest>?           csms2WebSocketJSONMessagesSent;
+        protected List<LogDataJSONResponse>?      csms2WebSocketJSONMessageResponsesReceived;
 
-        protected List<LogBinaryRequest>?       csms3WebSocketBinaryMessagesReceived;
-        protected List<LogDataBinaryResponse>?  csms3WebSocketBinaryMessageResponsesSent;
-        protected List<LogBinaryRequest>?       csms3WebSocketBinaryMessagesSent;
-        protected List<LogDataBinaryResponse>?  csms3WebSocketBinaryMessageResponsesReceived;
+        protected List<LogBinaryRequest>?         csms2WebSocketBinaryMessagesReceived;
+        protected List<LogDataBinaryResponse>?    csms2WebSocketBinaryMessageResponsesSent;
+        protected List<LogBinaryRequest>?         csms2WebSocketBinaryMessagesSent;
+        protected List<LogDataBinaryResponse>?    csms2WebSocketBinaryMessageResponsesReceived;
+
+
+        protected List<LogJSONRequest>?           csms3WebSocketJSONMessagesReceived;
+        protected List<LogDataJSONResponse>?      csms3WebSocketJSONMessageResponsesSent;
+        protected List<LogJSONRequest>?           csms3WebSocketJSONMessagesSent;
+        protected List<LogDataJSONResponse>?      csms3WebSocketJSONMessageResponsesReceived;
+
+        protected List<LogBinaryRequest>?         csms3WebSocketBinaryMessagesReceived;
+        protected List<LogDataBinaryResponse>?    csms3WebSocketBinaryMessageResponsesSent;
+        protected List<LogBinaryRequest>?         csms3WebSocketBinaryMessagesSent;
+        protected List<LogDataBinaryResponse>?    csms3WebSocketBinaryMessageResponsesReceived;
 
         #endregion
 
@@ -103,9 +104,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
 
             Timestamp.Reset();
 
-            testCSMS01      = new TestCSMS(
-                                  Id:                      OCPP.NetworkingNode_Id.Parse("OCPPTest01"),
-                                  RequireAuthentication:   true,
+            testCSMS01      = new TestCSMS2(
+                                  Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
+                                  VendorName:              "GraphDefined",
+                                  Model:                   "OCPPTest",
                                   HTTPUploadPort:          IPPort.Parse(9100),
                                   DNSClient:               new DNSClient(
                                                                SearchForIPv6DNSServers: false,
@@ -115,8 +117,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
 
             ClassicAssert.IsNotNull(testCSMS01);
 
-            testBackendWebSockets01  = testCSMS01.AttachWebSocketService(
+            testBackendWebSockets01  = testCSMS01.AttachWebSocketServer(
                                            TCPPort:                 IPPort.Parse(9101),
+                                           RequireAuthentication:   true,
                                            DisableWebSocketPings:   true,
                                            AutoStart:               true
                                        );

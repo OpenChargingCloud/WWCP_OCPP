@@ -22,9 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -77,9 +77,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnNotifyChargingLimitRequestFilterDelegate?      OnNotifyChargingLimitRequest;
+        public event OnNotifyChargingLimitRequestReceivedDelegate?    OnNotifyChargingLimitRequestReceived;
+        public event OnNotifyChargingLimitRequestFilterDelegate?      OnNotifyChargingLimitRequestFilter;
+        public event OnNotifyChargingLimitRequestFilteredDelegate?    OnNotifyChargingLimitRequestFiltered;
+        public event OnNotifyChargingLimitRequestSentDelegate?        OnNotifyChargingLimitRequestSent;
 
-        public event OnNotifyChargingLimitRequestFilteredDelegate?    OnNotifyChargingLimitRequestLogging;
+        public event OnNotifyChargingLimitResponseReceivedDelegate?   OnNotifyChargingLimitResponseReceived;
+        public event OnNotifyChargingLimitResponseSentDelegate?       OnNotifyChargingLimitResponseSent;
 
         #endregion
 
@@ -95,30 +99,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      JSONRequestMessage.RequestId,
                                                      JSONRequestMessage.DestinationId,
                                                      JSONRequestMessage.NetworkPath,
-                                                     out var Request,
+                                                     out var request,
                                                      out var errorResponse,
                                                      parentNetworkingNode.OCPP.CustomNotifyChargingLimitRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<NotifyChargingLimitRequest, NotifyChargingLimitResponse>? forwardingDecision = null;
 
-            #region Send OnNotifyChargingLimitRequest event
 
-            var requestFilter = OnNotifyChargingLimitRequest;
+            #region Send OnNotifyChargingLimitRequestReceived event
+
+            var receivedLogging = OnNotifyChargingLimitRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnNotifyChargingLimitRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                                                                         Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnNotifyChargingLimitRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            #region Send OnNotifyChargingLimitRequestFilter event
+
+            var requestFilter = OnNotifyChargingLimitRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnNotifyChargingLimitRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
+                                                     OfType<OnNotifyChargingLimitRequestFilterDelegate>().
+                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                                    parentNetworkingNode,
+                                                                                                    Connection,
+                                                                                                    request,
+                                                                                                    CancellationToken)).
                                                      ToArray());
 
                     //ToDo: Find a good result!
@@ -129,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnNotifyChargingLimitRequest),
+                              nameof(OnNotifyChargingLimitRequestFilter),
                               e
                           );
                 }
@@ -138,11 +174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
             #region Default result
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<NotifyChargingLimitRequest, NotifyChargingLimitResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -152,12 +189,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new NotifyChargingLimitResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<NotifyChargingLimitRequest, NotifyChargingLimitResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -172,21 +209,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnNotifyChargingLimitRequestLogging event
+            #region Send OnNotifyChargingLimitRequestFiltered event
 
-            var logger = OnNotifyChargingLimitRequestLogging;
+            var logger = OnNotifyChargingLimitRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnNotifyChargingLimitRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
+                                       OfType<OnNotifyChargingLimitRequestFilteredDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        parentNetworkingNode,
+                                                                                        Connection,
+                                                                                        request,
+                                                                                        forwardingDecision)).
                                        ToArray());
 
                 }
@@ -194,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnNotifyChargingLimitRequestLogging),
+                              nameof(OnNotifyChargingLimitRequestFiltered),
                               e
                           );
                 }
@@ -202,6 +239,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnNotifyChargingLimitRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnNotifyChargingLimitRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnNotifyChargingLimitRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnNotifyChargingLimitRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+
+                                                        parentNetworkingNode.OCPP.CustomNotifyChargingLimitRequestSerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                                                        parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
+                                                        parentNetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomSalesTariffSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSalesTariffEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomRelativeTimeIntervalSerializer,
+                                                        parentNetworkingNode.OCPP.CustomConsumptionCostSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCostSerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomAbsolutePriceScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomPriceRuleStackSerializer,
+                                                        parentNetworkingNode.OCPP.CustomPriceRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomTaxRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomOverstayRuleListSerializer,
+                                                        parentNetworkingNode.OCPP.CustomOverstayRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomAdditionalServiceSerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomPriceLevelScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomPriceLevelScheduleEntrySerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+
+                                                    );
 
             return forwardingDecision;
 

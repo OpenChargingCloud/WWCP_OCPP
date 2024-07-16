@@ -22,9 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -77,9 +77,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnNotifyEVChargingNeedsRequestFilterDelegate?      OnNotifyEVChargingNeedsRequest;
+        public event OnNotifyEVChargingNeedsRequestReceivedDelegate?    OnNotifyEVChargingNeedsRequestReceived;
+        public event OnNotifyEVChargingNeedsRequestFilterDelegate?      OnNotifyEVChargingNeedsRequestFilter;
+        public event OnNotifyEVChargingNeedsRequestFilteredDelegate?    OnNotifyEVChargingNeedsRequestFiltered;
+        public event OnNotifyEVChargingNeedsRequestSentDelegate?        OnNotifyEVChargingNeedsRequestSent;
 
-        public event OnNotifyEVChargingNeedsRequestFilteredDelegate?    OnNotifyEVChargingNeedsRequestLogging;
+        public event OnNotifyEVChargingNeedsResponseReceivedDelegate?   OnNotifyEVChargingNeedsResponseReceived;
+        public event OnNotifyEVChargingNeedsResponseSentDelegate?       OnNotifyEVChargingNeedsResponseSent;
 
         #endregion
 
@@ -95,30 +99,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        JSONRequestMessage.RequestId,
                                                        JSONRequestMessage.DestinationId,
                                                        JSONRequestMessage.NetworkPath,
-                                                       out var Request,
+                                                       out var request,
                                                        out var errorResponse,
                                                        parentNetworkingNode.OCPP.CustomNotifyEVChargingNeedsRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<NotifyEVChargingNeedsRequest, NotifyEVChargingNeedsResponse>? forwardingDecision = null;
 
-            #region Send OnNotifyEVChargingNeedsRequest event
 
-            var requestFilter = OnNotifyEVChargingNeedsRequest;
+            #region Send OnNotifyEVChargingNeedsRequestReceived event
+
+            var receivedLogging = OnNotifyEVChargingNeedsRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnNotifyEVChargingNeedsRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                          Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnNotifyEVChargingNeedsRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            #region Send OnNotifyEVChargingNeedsRequestFilter event
+
+            var requestFilter = OnNotifyEVChargingNeedsRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnNotifyEVChargingNeedsRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
+                                                     OfType<OnNotifyEVChargingNeedsRequestFilterDelegate>().
+                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                                    parentNetworkingNode,
+                                                                                                    Connection,
+                                                                                                    request,
+                                                                                                    CancellationToken)).
                                                      ToArray());
 
                     //ToDo: Find a good result!
@@ -129,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnNotifyEVChargingNeedsRequest),
+                              nameof(OnNotifyEVChargingNeedsRequestFilter),
                               e
                           );
                 }
@@ -138,11 +174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
             #region Default result
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<NotifyEVChargingNeedsRequest, NotifyEVChargingNeedsResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -152,12 +189,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new NotifyEVChargingNeedsResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<NotifyEVChargingNeedsRequest, NotifyEVChargingNeedsResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -173,21 +210,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnNotifyEVChargingNeedsRequestLogging event
+            #region Send OnNotifyEVChargingNeedsRequestFiltered event
 
-            var logger = OnNotifyEVChargingNeedsRequestLogging;
+            var logger = OnNotifyEVChargingNeedsRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnNotifyEVChargingNeedsRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
+                                       OfType<OnNotifyEVChargingNeedsRequestFilteredDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        parentNetworkingNode,
+                                                                                        Connection,
+                                                                                        request,
+                                                                                        forwardingDecision)).
                                        ToArray());
 
                 }
@@ -195,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnNotifyEVChargingNeedsRequestLogging),
+                              nameof(OnNotifyEVChargingNeedsRequestFiltered),
                               e
                           );
                 }
@@ -203,6 +240,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnNotifyEVChargingNeedsRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnNotifyEVChargingNeedsRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnNotifyEVChargingNeedsRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnNotifyEVChargingNeedsRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomNotifyEVChargingNeedsRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomChargingNeedsSerializer,
+                                                        parentNetworkingNode.OCPP.CustomACChargingParametersSerializer,
+                                                        parentNetworkingNode.OCPP.CustomDCChargingParametersSerializer,
+                                                        parentNetworkingNode.OCPP.CustomV2XChargingParametersSerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVEnergyOfferSerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVPowerScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVPowerScheduleEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVAbsolutePriceScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVAbsolutePriceScheduleEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVPriceRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             return forwardingDecision;
 

@@ -21,10 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -77,9 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnListDirectoryRequestFilterDelegate?      OnListDirectoryRequest;
+        public event OnListDirectoryRequestReceivedDelegate?    OnListDirectoryRequestReceived;
+        public event OnListDirectoryRequestFilterDelegate?      OnListDirectoryRequestFilter;
+        public event OnListDirectoryRequestFilteredDelegate?    OnListDirectoryRequestFiltered;
+        public event OnListDirectoryRequestSentDelegate?        OnListDirectoryRequestSent;
 
-        public event OnListDirectoryRequestFilteredDelegate?    OnListDirectoryRequestLogging;
+        public event OnListDirectoryResponseReceivedDelegate?   OnListDirectoryResponseReceived;
+        public event OnListDirectoryResponseSentDelegate?       OnListDirectoryResponseSent;
 
         #endregion
 
@@ -95,30 +96,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                JSONRequestMessage.RequestId,
                                                JSONRequestMessage.DestinationId,
                                                JSONRequestMessage.NetworkPath,
-                                               out var Request,
+                                               out var request,
                                                out var errorResponse,
                                                parentNetworkingNode.OCPP.CustomListDirectoryRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>? forwardingDecision = null;
 
-            #region Send OnListDirectoryRequest event
 
-            var requestFilter = OnListDirectoryRequest;
+            #region Send OnListDirectoryRequestReceived event
+
+            var receivedLogging = OnListDirectoryRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnListDirectoryRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                                                                         Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnListDirectoryRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            #region Send OnListDirectoryRequestFilter event
+
+            var requestFilter = OnListDirectoryRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnListDirectoryRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
+                                                     OfType<OnListDirectoryRequestFilterDelegate>().
+                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                                    parentNetworkingNode,
+                                                                                                    Connection,
+                                                                                                    request,
+                                                                                                    CancellationToken)).
                                                      ToArray());
 
                     //ToDo: Find a good result!
@@ -129,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnListDirectoryRequest),
+                              nameof(OnListDirectoryRequestFilter),
                               e
                           );
                 }
@@ -138,11 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
             #region Default result
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -152,12 +186,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new ListDirectoryResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -173,21 +207,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnListDirectoryRequestLogging event
+            #region Send OnListDirectoryRequestFiltered event
 
-            var logger = OnListDirectoryRequestLogging;
+            var logger = OnListDirectoryRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnListDirectoryRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
+                                       OfType<OnListDirectoryRequestFilteredDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        parentNetworkingNode,
+                                                                                        Connection,
+                                                                                        request,
+                                                                                        forwardingDecision)).
                                        ToArray());
 
                 }
@@ -195,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnListDirectoryRequestLogging),
+                              nameof(OnListDirectoryRequestFiltered),
                               e
                           );
                 }
@@ -203,6 +237,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnListDirectoryRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnListDirectoryRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnListDirectoryRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnListDirectoryRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomListDirectoryRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             return forwardingDecision;
 

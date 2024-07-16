@@ -28,9 +28,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -46,30 +46,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #region Data
 
-        protected TestCSMS?                         testCSMS01;
-        protected CSMSWSServer?                     testBackendWebSockets01;
+        protected TestCSMS2?                              testCSMS01;
+        protected OCPPWebSocketServer?                    testWebSocketServer01;
 
         protected ConcurrentList<LogJSONRequest>?         csmsWebSocketTextMessagesReceived;
-        protected ConcurrentList<LogDataJSONResponse>?         csmsWebSocketTextMessageResponsesSent;
+        protected ConcurrentList<LogDataJSONResponse>?    csmsWebSocketTextMessageResponsesSent;
         protected ConcurrentList<LogJSONRequest>?         csmsWebSocketTextMessagesSent;
-        protected ConcurrentList<LogDataJSONResponse>?         csmsWebSocketTextMessageResponsesReceived;
+        protected ConcurrentList<LogDataJSONResponse>?    csmsWebSocketTextMessageResponsesReceived;
 
 
-        protected TestChargingStation?              chargingStation1;
-        protected TestChargingStation?              chargingStation2;
-        protected TestChargingStation?              chargingStation3;
+        protected TestChargingStation?                    chargingStation1;
+        protected TestChargingStation?                    chargingStation2;
+        protected TestChargingStation?                    chargingStation3;
 
         protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesReceived;
         protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketJSONMessagesReceived;
         protected ConcurrentList<LogJSONRequest>?         chargingStation3WebSocketJSONMessagesReceived;
 
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation1WebSocketJSONMessageResponsesReceived;
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation2WebSocketJSONMessageResponsesReceived;
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation3WebSocketJSONMessageResponsesReceived;
+        protected ConcurrentList<LogDataJSONResponse>?    chargingStation1WebSocketJSONMessageResponsesReceived;
+        protected ConcurrentList<LogDataJSONResponse>?    chargingStation2WebSocketJSONMessageResponsesReceived;
+        protected ConcurrentList<LogDataJSONResponse>?    chargingStation3WebSocketJSONMessageResponsesReceived;
 
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation1WebSocketJSONMessageResponsesSent;
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation2WebSocketJSONMessageResponsesSent;
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation3WebSocketJSONMessageResponsesSent;
+        protected ConcurrentList<LogDataJSONResponse>?    chargingStation1WebSocketJSONMessageResponsesSent;
+        protected ConcurrentList<LogDataJSONResponse>?    chargingStation2WebSocketJSONMessageResponsesSent;
+        protected ConcurrentList<LogDataJSONResponse>?    chargingStation3WebSocketJSONMessageResponsesSent;
 
         protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesSent;
         protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketJSONMessagesSent;
@@ -98,9 +98,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             Timestamp.Reset();
 
-            testCSMS01      = new TestCSMS(
+            testCSMS01      = new TestCSMS2(
                                   Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
-                                  RequireAuthentication:   RequireAuthentication,
+                                  VendorName:              "GraphDefined",
+                                  Model:                   "OCPP-CSMS-Test-Server",
                                   HTTPUploadPort:          IPPort.Parse(9100),
                                   DNSClient:               new DNSClient(
                                                                SearchForIPv6DNSServers: false,
@@ -110,13 +111,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ClassicAssert.IsNotNull(testCSMS01);
 
-            testBackendWebSockets01  = testCSMS01.AttachWebSocketService(
-                                           TCPPort:                 IPPort.Parse(9101),
-                                           DisableWebSocketPings:   DisableWebSocketPings,
-                                           AutoStart:               true
-                                       );
+            testWebSocketServer01  = testCSMS01.AttachWebSocketServer(
+                                         TCPPort:                 IPPort.Parse(9101),
+                                         RequireAuthentication:   RequireAuthentication,
+                                         DisableWebSocketPings:   DisableWebSocketPings,
+                                         AutoStart:               true
+                                     );
 
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testWebSocketServer01);
 
 
             csmsWebSocketTextMessagesReceived          = new ConcurrentList<LogJSONRequest>();
@@ -125,15 +127,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             csmsWebSocketTextMessageResponsesReceived  = new ConcurrentList<LogDataJSONResponse>();
 
 
-            testBackendWebSockets01.OnServerStarted               += (timestamp, server, eventTrackingId, cancellationToken) => {
+            testWebSocketServer01.OnServerStarted               += (timestamp, server, eventTrackingId, cancellationToken) => {
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnValidateTCPConnection       += (timestamp, server, connection, eventTrackingId, cancellationToken) => {
+            testWebSocketServer01.OnValidateTCPConnection       += (timestamp, server, connection, eventTrackingId, cancellationToken) => {
                 return Task.FromResult(ConnectionFilterResponse.Accepted());
             };
 
-            testBackendWebSockets01.OnNewTCPConnection            += (timestamp, server, connection, eventTrackingId, cancellationToken) => {
+            testWebSocketServer01.OnNewTCPConnection            += (timestamp, server, connection, eventTrackingId, cancellationToken) => {
                 return Task.CompletedTask;
             };
 
@@ -141,32 +143,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             // OnValidateWebSocketConnection
 
-            testBackendWebSockets01.OnNewWebSocketConnection      += (timestamp, server, newConnection, networkingNodeId, sharedSubprotocols, eventTrackingId, cancellationToken) => {
+            testWebSocketServer01.OnNewWebSocketConnection      += (timestamp, server, newConnection, //networkingNodeId,
+                                                                                                      sharedSubprotocols, eventTrackingId, cancellationToken) => {
                 return Task.CompletedTask;
             };
 
-            // OnHTTPResponse
 
-
-
-
-
-            testBackendWebSockets01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
+            testWebSocketServer01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
                 csmsWebSocketTextMessagesReceived.        TryAdd(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnJSONMessageResponseSent     += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
+            testWebSocketServer01.OnJSONMessageResponseSent     += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
                 csmsWebSocketTextMessageResponsesSent.    TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
+            testWebSocketServer01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
                 csmsWebSocketTextMessagesSent.            TryAdd(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnJSONMessageResponseReceived += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
+            testWebSocketServer01.OnJSONMessageResponseReceived += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
                 csmsWebSocketTextMessageResponsesReceived.TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
                 return Task.CompletedTask;
             };
@@ -191,21 +189,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                   ICCID:   "0000",
                                                                   IMSI:    "1111"
                                                               ),
-                                    EVSEs:                    new[] {
-                                                                  new ChargingStationEVSE(
+                                    EVSEs:                    [
+                                                                  new CS.ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
                                                                       AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT1",
                                                                       MeterSerialNumber:   "MSN1",
                                                                       MeterPublicKey:      "MPK1",
-                                                                      Connectors:          new[] {
-                                                                                               new ChargingStationConnector(
+                                                                      Connectors:          [
+                                                                                               new CS.ChargingStationConnector(
                                                                                                    Id:              Connector_Id.Parse(1),
                                                                                                    ConnectorType:   ConnectorType.sType2
                                                                                                )
-                                                                                           }
+                                                                                           ]
                                                                   )
-                                                              },
+                                                              ],
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0001",
                                     MeterPublicKey:           "0xcafebabe",
@@ -220,13 +218,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             ClassicAssert.IsNotNull(chargingStation1);
 
 
-            if (testBackendWebSockets01 is not null)
+            if (testWebSocketServer01 is not null)
             {
 
                 testCSMS01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
 
-                var response1 = chargingStation1.ConnectWebSocket(
-                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.Id),
+                var response1 = chargingStation1.ConnectWebSocketClient(
+                                    NetworkingNodeId:        NetworkingNode_Id.CSMS,
+                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + testWebSocketServer01.IPPort.ToString() + "/" + chargingStation1.Id),
                                     HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
                                     DisableWebSocketPings:   true
                                 ).Result;
@@ -255,29 +254,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 }
 
 
-                var chargingStation1WebSocketClient = chargingStation1.CSClient as ChargingStationWSClient;
-                ClassicAssert.IsNotNull(chargingStation1WebSocketClient);
+                //var chargingStation1WebSocketClient = chargingStation1.CSClient as ChargingStationWSClient;
+                //ClassicAssert.IsNotNull(chargingStation1WebSocketClient);
 
-                if (chargingStation1WebSocketClient is not null)
-                {
+                //if (chargingStation1WebSocketClient is not null)
+                //{
 
-                    chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
-                        chargingStation1WebSocketJSONMessagesReceived.        TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
-                    };
+                //    chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
+                //        chargingStation1WebSocketJSONMessagesReceived.        TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                //    };
 
-                    chargingStation1WebSocketClient.OnJSONMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                        chargingStation1WebSocketJSONMessageResponsesSent.    TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
-                    };
+                //    chargingStation1WebSocketClient.OnJSONMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                //        chargingStation1WebSocketJSONMessageResponsesSent.    TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                //    };
 
-                    chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
-                        chargingStation1WebSocketJSONMessagesSent.            TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
-                    };
+                //    chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
+                //        chargingStation1WebSocketJSONMessagesSent.            TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                //    };
 
-                    chargingStation1WebSocketClient.OnJSONMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                        chargingStation1WebSocketJSONMessageResponsesReceived.TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
-                    };
+                //    chargingStation1WebSocketClient.OnJSONMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                //        chargingStation1WebSocketJSONMessageResponsesReceived.TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                //    };
 
-                }
+                //}
 
             }
 
@@ -298,10 +297,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public virtual void ShutdownEachTest()
         {
 
-            testBackendWebSockets01?.Shutdown();
+            testWebSocketServer01?.Shutdown();
 
             testCSMS01               = null;
-            testBackendWebSockets01  = null;
+            testWebSocketServer01  = null;
 
             chargingStation1         = null;
             chargingStation2         = null;
@@ -322,13 +321,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         {
 
             ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testWebSocketServer01);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
             if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+                testWebSocketServer01 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)

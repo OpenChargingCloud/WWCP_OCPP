@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation1.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -76,17 +76,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var resetType  = ResetType.Immediate;
                 var now        = Timestamp.Now;
                 var response   = await testCSMS01.Reset(
-                                     DestinationNodeId:   chargingStation1.Id,
-                                     ResetType:           resetType,
-                                     SignInfos:           new[] {
-                                                              keyPair.ToSignInfo1(
-                                                                          Name:         "ahzf",
-                                                                          Description:   I18NString.Create("Just a test!"),
-                                                                          Timestamp:     now
-                                                                      )
-                                                          },
-                                     CustomData:          null
-                                 );
+                                           DestinationId:   chargingStation1.Id,
+                                           ResetType:           resetType,
+                                           SignInfos:           new[] {
+                                                                    keyPair.ToSignInfo1(
+                                                                                Name:         "ahzf",
+                                                                                Description:   I18NString.Create("Just a test!"),
+                                                                                Timestamp:     now
+                                                                            )
+                                                                },
+                                           CustomData:          null
+                                       );
 
                 ClassicAssert.AreEqual(ResultCode.OK,                response.Result.ResultCode);
                 ClassicAssert.AreEqual(ResetStatus.Accepted,          response.Status);
@@ -94,10 +94,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 ClassicAssert.IsTrue  (testCSMS01.SignaturePolicy.VerifyResponseMessage(
                                     response,
                                     response.ToJSON(
-                                        testCSMS01.CustomResetResponseSerializer,
-                                        testCSMS01.CustomStatusInfoSerializer,
-                                        testCSMS01.CustomSignatureSerializer,
-                                        testCSMS01.CustomCustomDataSerializer
+                                        testCSMS01.OCPP.CustomResetResponseSerializer,
+                                        testCSMS01.OCPP.CustomStatusInfoSerializer,
+                                        testCSMS01.OCPP.CustomSignatureSerializer,
+                                        testCSMS01.OCPP.CustomCustomDataSerializer
                                     ),
                                     out var errorResponse
                                 ));

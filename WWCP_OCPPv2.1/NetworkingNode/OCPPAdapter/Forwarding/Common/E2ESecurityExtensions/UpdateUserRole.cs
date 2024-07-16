@@ -21,10 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -77,9 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnUpdateUserRoleRequestFilterDelegate?      OnUpdateUserRoleRequest;
+        public event OnUpdateUserRoleRequestReceivedDelegate?    OnUpdateUserRoleRequestReceived;
+        public event OnUpdateUserRoleRequestFilterDelegate?      OnUpdateUserRoleRequestFilter;
+        public event OnUpdateUserRoleRequestFilteredDelegate?    OnUpdateUserRoleRequestFiltered;
+        public event OnUpdateUserRoleRequestSentDelegate?        OnUpdateUserRoleRequestSent;
 
-        public event OnUpdateUserRoleRequestFilteredDelegate?    OnUpdateUserRoleRequestLogging;
+        public event OnUpdateUserRoleResponseReceivedDelegate?   OnUpdateUserRoleResponseReceived;
+        public event OnUpdateUserRoleResponseSentDelegate?       OnUpdateUserRoleResponseSent;
 
         #endregion
 
@@ -95,29 +96,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 JSONRequestMessage.RequestId,
                                                 JSONRequestMessage.DestinationId,
                                                 JSONRequestMessage.NetworkPath,
-                                                out var Request,
+                                                out var request,
                                                 out var errorResponse,
                                                 parentNetworkingNode.OCPP.CustomUpdateUserRoleRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>? forwardingDecision = null;
 
-            #region Send OnUpdateUserRoleRequest event
 
-            var requestFilter = OnUpdateUserRoleRequest;
+            #region Send OnUpdateUserRoleRequestReceived event
+
+            var receivedLogging = OnUpdateUserRoleRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnUpdateUserRoleRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                                                                         Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnUpdateUserRoleRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            #region Send OnUpdateUserRoleRequestFilter event
+
+            var requestFilter = OnUpdateUserRoleRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnUpdateUserRoleRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                     OfType<OnUpdateUserRoleRequestFilterDelegate>().
+                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
-                                                                                                     Request,
+                                                                                                     request,
                                                                                                      CancellationToken)).
                                                      ToArray());
 
@@ -129,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnUpdateUserRoleRequest),
+                              nameof(OnUpdateUserRoleRequestFilter),
                               e
                           );
                 }
@@ -138,11 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
             #region Default result
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -152,12 +186,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new UpdateUserRoleResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<UpdateUserRoleRequest, UpdateUserRoleResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -173,20 +207,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnUpdateUserRoleRequestLogging event
+            #region Send OnUpdateUserRoleRequestFiltered event
 
-            var logger = OnUpdateUserRoleRequestLogging;
+            var logger = OnUpdateUserRoleRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnUpdateUserRoleRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                       OfType<OnUpdateUserRoleRequestFilteredDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
-                                                                                         Request,
+                                                                                         request,
                                                                                          forwardingDecision)).
                                        ToArray());
 
@@ -195,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnUpdateUserRoleRequestLogging),
+                              nameof(OnUpdateUserRoleRequestFiltered),
                               e
                           );
                 }
@@ -203,6 +237,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnUpdateUserRoleRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnUpdateUserRoleRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnUpdateUserRoleRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnUpdateUserRoleRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomUpdateUserRoleRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             return forwardingDecision;
 

@@ -19,7 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Hermod;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 

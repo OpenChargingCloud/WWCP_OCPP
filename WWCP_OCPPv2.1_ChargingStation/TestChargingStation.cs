@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A charging station for testing.
     /// </summary>
-    public class TestChargingStation : IChargingStation,
+    public class TestChargingStation_Old : IChargingStation,
                                     //  IChargingStationClientEvents,
                                        IEventSender
     {
@@ -12046,7 +12046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
 
                     var response = await wsClient.SendRequest(
-                                             enqueuedRequest.NetworkingNodeId,
+                                             enqueuedRequest.DestinationId,
                                              enqueuedRequest.Command,
                                              enqueuedRequest.Request.RequestId,
                                              enqueuedRequest.RequestJSON

@@ -22,7 +22,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -97,14 +97,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               JSONRequestMessage.RequestId,
                                               JSONRequestMessage.DestinationId,
                                               JSONRequestMessage.NetworkPath,
-                                              out var Request,
+                                              out var request,
                                               out var errorResponse,
                                               parentNetworkingNode.OCPP.CustomDataTransferRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<DataTransferRequest, DataTransferResponse>? forwardingDecision = null;
+
+
+            #region Send OnDataTransferRequestReceived event
+
+            var receivedLogging = OnDataTransferRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnDataTransferRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                                                                         Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnDataTransferRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
 
             #region Send OnDataTransferRequestFilter event
 
@@ -115,11 +147,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnDataTransferRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                     OfType<OnDataTransferRequestFilterDelegate>().
+                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
-                                                                                                     Request,
+                                                                                                     request,
                                                                                                      CancellationToken)).
                                                      ToArray());
 
@@ -140,11 +172,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
             #region Default result
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -154,12 +187,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new DataTransferResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -184,12 +217,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnDataTransferRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
+                                       OfType<OnDataTransferRequestFilteredDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        parentNetworkingNode,
+                                                                                        Connection,
+                                                                                        request,
+                                                                                        forwardingDecision)).
                                        ToArray());
 
                 }
@@ -205,6 +238,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnDataTransferRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnDataTransferRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnDataTransferRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnDataTransferRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomDataTransferRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             return forwardingDecision;
 

@@ -22,7 +22,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a UpdateUserRole request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnUpdateUserRoleRequestDelegate?     OnUpdateUserRoleRequest;
+        public event OnUpdateUserRoleRequestSentDelegate?         OnUpdateUserRoleRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a UpdateUserRole request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnUpdateUserRoleResponseDelegate?    OnUpdateUserRoleResponse;
+        public event OnUpdateUserRoleResponseReceivedDelegate?    OnUpdateUserRoleResponseReceived;
 
         #endregion
 
@@ -63,20 +63,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request)
         {
 
-            #region Send OnUpdateUserRoleRequest event
+            #region Send OnUpdateUserRoleRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnUpdateUserRoleRequest?.Invoke(startTime,
-                                                parentNetworkingNode,
-                                                Request);
+                OnUpdateUserRoleRequestSent?.Invoke(startTime,
+                                                    parentNetworkingNode,
+                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateUserRoleRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateUserRoleRequestSent));
             }
 
             #endregion
@@ -140,23 +140,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            #region Send OnUpdateUserRoleResponse event
+            #region Send OnUpdateUserRoleResponseReceived event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnUpdateUserRoleResponse?.Invoke(endTime,
-                                                 parentNetworkingNode,
-                                                 Request,
-                                                 response,
-                                                 endTime - startTime);
+                OnUpdateUserRoleResponseReceived?.Invoke(endTime,
+                                                         parentNetworkingNode,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateUserRoleResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateUserRoleResponseReceived));
             }
 
             #endregion

@@ -561,8 +561,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnSignedUpdateFirmwareRequestDelegate?                   OnSignedUpdateFirmwareRequest;
         public event OnSignedUpdateFirmwareResponseDelegate?                  OnSignedUpdateFirmwareResponse;
 
-        public event OCPP.OnBinaryDataTransferRequestSentDelegate?                OnBinaryDataTransferRequestSent;
-        public event OCPP.OnBinaryDataTransferResponseReceivedDelegate?               OnBinaryDataTransferResponseReceived;
+        //public event OCPP.OnBinaryDataTransferRequestSentDelegate?                OnBinaryDataTransferRequestSent;
+        //public event OCPP.OnBinaryDataTransferResponseReceivedDelegate?               OnBinaryDataTransferResponseReceived;
         public event OCPP.CSMS.OnGetFileRequestDelegate?                      OnGetFileRequest;
         public event OCPP.CSMS.OnGetFileResponseDelegate?                     OnGetFileResponse;
         public event OCPP.CSMS.OnSendFileRequestDelegate?                     OnSendFileRequest;

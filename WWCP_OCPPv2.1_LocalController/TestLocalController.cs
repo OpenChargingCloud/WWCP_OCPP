@@ -30,6 +30,7 @@ using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.LC;
 
 #endregion
 
@@ -39,7 +40,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
     /// <summary>
     /// A local controller for testing.
     /// </summary>
-    public partial class TestLocalController : ALocalController
+    public partial class TestLocalController : ALocalController,
+                                               ILocalController
     {
 
         #region Properties
@@ -60,6 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                    String?            SoftwareVersion             = null,
                                    Modem?             Modem                       = null,
                                    I18NString?        Description                 = null,
+                                   CustomData?        CustomData                  = null,
 
                                    SignaturePolicy?   SignaturePolicy             = null,
                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
@@ -82,6 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                    SoftwareVersion,
                    Modem,
                    Description,
+                   CustomData,
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
@@ -127,11 +131,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             };
 
 
-            OCPP.FORWARD.OnDeleteFileRequest += (timestamp,
-                                                 sender,
-                                                 connection,
-                                                 request,
-                                                 cancellationToken) =>
+            OCPP.FORWARD.OnDeleteFileRequestFilter += (timestamp,
+                                                       sender,
+                                                       connection,
+                                                       request,
+                                                       cancellationToken) =>
 
                 Task.FromResult(
                     ForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
@@ -165,11 +169,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             };
 
 
-            OCPP.FORWARD.OnGetFileRequest += (timestamp,
-                                              sender,
-                                              connection,
-                                              request,
-                                              cancellationToken) =>
+            OCPP.FORWARD.OnGetFileRequestFilter += (timestamp,
+                                                    sender,
+                                                    connection,
+                                                    request,
+                                                    cancellationToken) =>
 
                 Task.FromResult(
                     ForwardingDecision<GetFileRequest, GetFileResponse>.FORWARD(request)
@@ -198,11 +202,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             };
 
 
-            OCPP.FORWARD.OnListDirectoryRequest += (timestamp,
-                                                    sender,
-                                                    connection,
-                                                    request,
-                                                    cancellationToken) =>
+            OCPP.FORWARD.OnListDirectoryRequestFilter += (timestamp,
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          cancellationToken) =>
 
                 Task.FromResult(
                     ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request)
@@ -230,11 +234,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             };
 
 
-            OCPP.FORWARD.OnSendFileRequest += (timestamp,
-                                               sender,
-                                               connection,
-                                               request,
-                                               cancellationToken) =>
+            OCPP.FORWARD.OnSendFileRequestFilter += (timestamp,
+                                                     sender,
+                                                     connection,
+                                                     request,
+                                                     cancellationToken) =>
 
                 Task.FromResult(
                     ForwardingDecision<SendFileRequest, SendFileResponse>.FORWARD(request)
@@ -447,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                ? SecureDataTransferResponse.Encrypt(
                                      Request:                request,
                                      Status:                 SecureDataTransferStatus.Accepted,
-                                     DestinationNodeId:      request.NetworkPath.Source,
+                                     DestinationId:          request.NetworkPath.Source,
                                      Parameter:              0,
                                      KeyId:                  keyId,
                                      Key:                    GetEncryptionKey    (request.NetworkPath.Source, keyId),

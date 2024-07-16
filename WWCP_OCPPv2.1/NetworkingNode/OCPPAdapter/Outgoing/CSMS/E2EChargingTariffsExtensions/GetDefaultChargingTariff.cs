@@ -23,7 +23,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a GetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetDefaultChargingTariffRequestDelegate?     OnGetDefaultChargingTariffRequest;
+        public event OnGetDefaultChargingTariffRequestSentDelegate?         OnGetDefaultChargingTariffRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetDefaultChargingTariffResponseDelegate?    OnGetDefaultChargingTariffResponse;
+        public event OnGetDefaultChargingTariffResponseReceivedDelegate?    OnGetDefaultChargingTariffResponseReceived;
 
         #endregion
 
@@ -64,20 +64,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<GetDefaultChargingTariffResponse> GetDefaultChargingTariff(GetDefaultChargingTariffRequest Request)
         {
 
-            #region Send OnGetDefaultChargingTariffRequest event
+            #region Send OnGetDefaultChargingTariffRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnGetDefaultChargingTariffRequest?.Invoke(startTime,
-                                                          parentNetworkingNode,
-                                                          Request);
+                OnGetDefaultChargingTariffRequestSent?.Invoke(startTime,
+                                                              parentNetworkingNode,
+                                                              Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetDefaultChargingTariffRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetDefaultChargingTariffRequestSent));
             }
 
             #endregion
@@ -137,23 +137,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            #region Send OnGetDefaultChargingTariffResponse event
+            #region Send OnGetDefaultChargingTariffResponseReceived event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnGetDefaultChargingTariffResponse?.Invoke(endTime,
-                                                           parentNetworkingNode,
-                                                           Request,
-                                                           response,
-                                                           endTime - startTime);
+                OnGetDefaultChargingTariffResponseReceived?.Invoke(endTime,
+                                                                   parentNetworkingNode,
+                                                                   Request,
+                                                                   response,
+                                                                   endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetDefaultChargingTariffResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetDefaultChargingTariffResponseReceived));
             }
 
             #endregion

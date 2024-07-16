@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                  IEnumerable<KeyPair>?         SignKeys            = null,
                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                 IEnumerable<Signature>?       Signatures          = null,
 
                                  CustomData?                   CustomData          = null,
 
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                           IEnumerable<KeyPair>?         SignKeys            = null,
                           IEnumerable<SignInfo>?        SignInfos           = null,
-                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+                          IEnumerable<Signature>?       Signatures          = null,
 
                           CustomData?                   CustomData          = null,
 
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                               IEnumerable<KeyPair>?         SignKeys            = null,
                                               IEnumerable<SignInfo>?        SignInfos           = null,
-                                              IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                              IEnumerable<Signature>?       Signatures          = null,
 
                                               CustomData?                   CustomData          = null,
 
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                            IEnumerable<KeyPair>?         SignKeys            = null,
                                            IEnumerable<SignInfo>?        SignInfos           = null,
-                                           IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                           IEnumerable<Signature>?       Signatures          = null,
 
                                            CustomData?                   CustomData          = null,
 
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                       IEnumerable<KeyPair>?         SignKeys            = null,
                       IEnumerable<SignInfo>?        SignInfos           = null,
-                      IEnumerable<OCPP.Signature>?  Signatures          = null,
+                      IEnumerable<Signature>?       Signatures          = null,
 
                       CustomData?                   CustomData          = null,
 
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                              IEnumerable<KeyPair>?         SignKeys            = null,
                                              IEnumerable<SignInfo>?        SignInfos           = null,
-                                             IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                             IEnumerable<Signature>?       Signatures          = null,
 
                                              CustomData?                   CustomData          = null,
 
@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                    IEnumerable<KeyPair>?         SignKeys            = null,
                                    IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                   IEnumerable<Signature>?       Signatures          = null,
 
                                    CustomData?                   CustomData          = null,
 
@@ -532,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                             IEnumerable<KeyPair>?         SignKeys            = null,
                             IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+                            IEnumerable<Signature>?       Signatures          = null,
 
                             CustomData?                   CustomData          = null,
 
@@ -607,7 +607,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                             IEnumerable<KeyPair>?         SignKeys            = null,
                                             IEnumerable<SignInfo>?        SignInfos           = null,
-                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                            IEnumerable<Signature>?       Signatures          = null,
 
                                             CustomData?                   CustomData          = null,
 
@@ -680,7 +680,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
                          IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<OCPP.Signature>?  Signatures          = null,
+                         IEnumerable<Signature>?       Signatures          = null,
 
                          CustomData?                   CustomData          = null,
 
@@ -724,67 +724,67 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData                (VendorId, MessageId = null, Data = null, ...)
+        //#region TransferBinaryData                (VendorId, MessageId = null, Data = null, ...)
 
-        /// <summary>
-        /// Transfer the given binary data to the CSMS.
-        /// </summary>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification field.</param>
-        /// <param name="Data">Optional message data as text without specified length or format.</param>
-        /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<BinaryDataTransferResponse>
+        ///// <summary>
+        ///// Transfer the given binary data to the CSMS.
+        ///// </summary>
+        ///// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        ///// <param name="MessageId">An optional message identification field.</param>
+        ///// <param name="Data">Optional message data as text without specified length or format.</param>
+        ///// 
+        ///// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///// 
+        ///// <param name="RequestId">An optional request identification.</param>
+        ///// <param name="RequestTimestamp">An optional request timestamp.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        //public static Task<BinaryDataTransferResponse>
 
-            TransferBinaryData(this IChargePoint             ChargePoint,
+        //    TransferBinaryData(this IChargePoint             ChargePoint,
 
-                               Vendor_Id                     VendorId,
-                               Message_Id?                   MessageId           = null,
-                               Byte[]?                       Data                = null,
-                               BinaryFormats?                Format              = null,
+        //                       Vendor_Id                     VendorId,
+        //                       Message_Id?                   MessageId           = null,
+        //                       Byte[]?                       Data                = null,
+        //                       BinaryFormats?                Format              = null,
 
-                               IEnumerable<KeyPair>?         SignKeys            = null,
-                               IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+        //                       IEnumerable<KeyPair>?         SignKeys            = null,
+        //                       IEnumerable<SignInfo>?        SignInfos           = null,
+        //                       IEnumerable<Signature>?       Signatures          = null,
 
-                               Request_Id?                   RequestId           = null,
-                               DateTime?                     RequestTimestamp    = null,
-                               TimeSpan?                     RequestTimeout      = null,
-                               EventTracking_Id?             EventTrackingId     = null,
-                               CancellationToken             CancellationToken   = default)
+        //                       Request_Id?                   RequestId           = null,
+        //                       DateTime?                     RequestTimestamp    = null,
+        //                       TimeSpan?                     RequestTimeout      = null,
+        //                       EventTracking_Id?             EventTrackingId     = null,
+        //                       CancellationToken             CancellationToken   = default)
 
 
-                => ChargePoint.BinaryDataTransfer(
-                       new BinaryDataTransferRequest(
+        //        => ChargePoint.BinaryDataTransfer(
+        //               new BinaryDataTransferRequest(
 
-                           ChargePoint.Id,
+        //                   ChargePoint.Id,
 
-                           VendorId,
-                           MessageId,
-                           Data,
-                           Format,
+        //                   VendorId,
+        //                   MessageId,
+        //                   Data,
+        //                   Format,
 
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
+        //                   SignKeys,
+        //                   SignInfos,
+        //                   Signatures,
 
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
-                           CancellationToken
+        //                   RequestId        ?? ChargePoint.NextRequestId,
+        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimeout   ?? ChargePoint.DefaultRequestTimeout,
+        //                   EventTrackingId  ?? EventTracking_Id.New,
+        //                   NetworkPath.Empty,
+        //                   CancellationToken
 
-                       )
-                   );
+        //               )
+        //           );
 
-        #endregion
+        //#endregion
 
 
     }

@@ -21,29 +21,24 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.NN;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NN
+namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public interface INetworkingNodeIN : NetworkingNode.     INetworkingNodeIncomingMessages,
-                                         NetworkingNode.     INetworkingNodeIncomingMessageEvents,
-                                         NetworkingNode.CS.  INetworkingNodeIncomingMessages,
-                                         NetworkingNode.CS.  INetworkingNodeIncomingMessageEvents,
-                                         NetworkingNode.CSMS.INetworkingNodeIncomingMessages,
-                                         NetworkingNode.CSMS.INetworkingNodeIncomingMessageEvents
+    public interface INetworkingNodeIN :      INetworkingNodeIncomingMessages,
+                                              INetworkingNodeIncomingMessageEvents,
+                                         CS.  INetworkingNodeIncomingMessages,
+                                         CS.  INetworkingNodeIncomingMessageEvents,
+                                         CSMS.INetworkingNodeIncomingMessages,
+                                         CSMS.INetworkingNodeIncomingMessageEvents
     {
 
-        void WireEvents(NetworkingNode.CS.  INetworkingNodeIncomingMessages IncomingMessages);
-        void WireEvents(NetworkingNode.CSMS.INetworkingNodeIncomingMessages IncomingMessages);
+        void WireEvents(CS.  INetworkingNodeIncomingMessages IncomingMessages);
+        void WireEvents(CSMS.INetworkingNodeIncomingMessages IncomingMessages);
 
 
         #region Incoming Messages: Networking Node <- CSMS
@@ -995,12 +990,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
     }
 
 
-    public interface INetworkingNodeOUT : NetworkingNode.     INetworkingNodeOutgoingMessages,
-                                          NetworkingNode.     INetworkingNodeOutgoingMessageEvents,
-                                          NetworkingNode.CS.  INetworkingNodeOutgoingMessages,
-                                          NetworkingNode.CS.  INetworkingNodeOutgoingMessageEvents,
-                                          NetworkingNode.CSMS.INetworkingNodeOutgoingMessages,
-                                          NetworkingNode.CSMS.INetworkingNodeOutgoingMessageEvents
+    public interface INetworkingNodeOUT :      INetworkingNodeOutgoingMessages,
+                                               INetworkingNodeOutgoingMessageEvents,
+                                          CS.  INetworkingNodeOutgoingMessages,
+                                          CS.  INetworkingNodeOutgoingMessageEvents,
+                                          CSMS.INetworkingNodeOutgoingMessages,
+                                          CSMS.INetworkingNodeOutgoingMessageEvents
 
     {
 
@@ -2298,11 +2293,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
        //// IEnumerable<ICSMSChannel>  CSMSChannels             { get; }
 
 
-       Byte[]  GetEncryptionKey     (NetworkingNode_Id DestinationNodeId, UInt16? KeyId = null);
+       Byte[]  GetEncryptionKey     (NetworkingNode_Id DestinationId, UInt16? KeyId = null);
        Byte[]  GetDecryptionKey     (NetworkingNode_Id SourceNodeId,      UInt16? KeyId = null);
 
-       UInt64  GetEncryptionNonce   (NetworkingNode_Id DestinationNodeId, UInt16? KeyId = null);
-       UInt64  GetEncryptionCounter (NetworkingNode_Id DestinationNodeId, UInt16? KeyId = null);
+       UInt64  GetEncryptionNonce   (NetworkingNode_Id DestinationId, UInt16? KeyId = null);
+       UInt64  GetEncryptionCounter (NetworkingNode_Id DestinationId, UInt16? KeyId = null);
 
 
     }

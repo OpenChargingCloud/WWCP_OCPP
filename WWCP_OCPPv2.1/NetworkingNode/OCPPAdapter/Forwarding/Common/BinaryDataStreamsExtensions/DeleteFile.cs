@@ -21,10 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -77,9 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnDeleteFileRequestFilterDelegate?      OnDeleteFileRequest;
+        public event OnDeleteFileRequestReceivedDelegate?    OnDeleteFileRequestReceived;
+        public event OnDeleteFileRequestFilterDelegate?      OnDeleteFileRequestFilter;
+        public event OnDeleteFileRequestFilteredDelegate?    OnDeleteFileRequestFiltered;
+        public event OnDeleteFileRequestSentDelegate?        OnDeleteFileRequestSent;
 
-        public event OnDeleteFileRequestFilteredDelegate?    OnDeleteFileRequestLogging;
+        public event OnDeleteFileResponseReceivedDelegate?   OnDeleteFileResponseReceived;
+        public event OnDeleteFileResponseSentDelegate?       OnDeleteFileResponseSent;
 
         #endregion
 
@@ -95,18 +96,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             JSONRequestMessage.RequestId,
                                             JSONRequestMessage.DestinationId,
                                             JSONRequestMessage.NetworkPath,
-                                            out var Request,
+                                            out var request,
                                             out var errorResponse,
                                             parentNetworkingNode.OCPP.CustomDeleteFileRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<DeleteFileRequest, DeleteFileResponse>? forwardingDecision = null;
 
-            #region Send OnDeleteFileRequest event
 
-            var requestFilter = OnDeleteFileRequest;
+            #region Send OnDeleteFileRequestReceived event
+
+            var receivedLogging = OnDeleteFileRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnDeleteFileRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                                                                         Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnDeleteFileRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            #region Send OnDeleteFileRequestFilter event
+
+            var requestFilter = OnDeleteFileRequestFilter;
             if (requestFilter is not null)
             {
                 try
@@ -117,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
-                                                                                                     Request,
+                                                                                                     request,
                                                                                                      CancellationToken)).
                                                      ToArray());
 
@@ -129,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnDeleteFileRequest),
+                              nameof(OnDeleteFileRequestFilter),
                               e
                           );
                 }
@@ -138,11 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
             #region Default result
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<DeleteFileRequest, DeleteFileResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -152,12 +186,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new DeleteFileResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<DeleteFileRequest, DeleteFileResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -173,9 +207,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnDeleteFileRequestLogging event
+            #region Send OnDeleteFileRequestFiltered event
 
-            var logger = OnDeleteFileRequestLogging;
+            var logger = OnDeleteFileRequestFiltered;
             if (logger is not null)
             {
                 try
@@ -186,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
-                                                                                         Request,
+                                                                                         request,
                                                                                          forwardingDecision)).
                                        ToArray());
 
@@ -195,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnDeleteFileRequestLogging),
+                              nameof(OnDeleteFileRequestFiltered),
                               e
                           );
                 }
@@ -203,6 +237,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnDeleteFileRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnDeleteFileRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnDeleteFileRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnDeleteFileRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomDeleteFileRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             return forwardingDecision;
 

@@ -21,13 +21,11 @@ using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.NN;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -114,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                     return Task.CompletedTask;
                 };
 
-                testCSMS01.             OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
+                testCSMS01.OCPP.IN.       OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
                     csmsBootNotificationRequests.  TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -249,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.        OnResetRequest                 += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.OCPP.IN. OnResetRequestReceived         += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.               TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -267,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
 
                 var resetType  = ResetType.Immediate;
                 var response   = await localController1.Reset(
-                                           DestinationNodeId:  chargingStation1.Id,
+                                           DestinationId:  chargingStation1.Id,
                                            ResetType:          resetType
                                        );
 
@@ -289,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                     // Charging Station Request IN
                     Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     var csResetRequest = csResetRequests.First();
-                    //Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation1.Id));   // Because of "standard" networking mode!
+                    //Assert.That(csResetRequest.DestinationId,       Is.EqualTo(chargingStation1.Id));   // Because of "standard" networking mode!
                     //Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     //Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode1.Id));    // Because of "standard" networking mode!
                     //Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode1.Id));    // Because of "standard" networking mode!
@@ -350,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
 
                 var csmsNotifyNetworkTopologyRequests  = new ConcurrentList<NotifyNetworkTopologyRequest>();
 
-                testCSMS01.OnIncomingNotifyNetworkTopologyRequest += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyNetworkTopologyRequestReceived += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
                     csmsNotifyNetworkTopologyRequests.TryAdd(notifyNetworkTopologyRequest);
                     return Task.CompletedTask;
                 };
@@ -362,22 +360,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                                         NetworkingNode_Id.CSMS,
                                         new NetworkTopologyInformation(
                                             RoutingNode:   localController1.Id,
-                                            Routes:        new[] {
+                                            Routes:        [
                                                                new NetworkRoutingInformation(
-                                                                   NetworkingNodeId:   localController1.Id,
-                                                                   Priority:           23,
-                                                                   Uplink:             new NetworkLinkInformation(
-                                                                                           Capacity:     5000,
-                                                                                           Latency:      TimeSpan.FromMilliseconds(10),
-                                                                                           ErrorRate:    PercentageDouble.Parse(0.05)
-                                                                                       ),
-                                                                   Downlink:           new NetworkLinkInformation(
-                                                                                           Capacity:     15000,
-                                                                                           Latency:      TimeSpan.FromMilliseconds(23),
-                                                                                           ErrorRate:    PercentageDouble.Parse(0.42)
-                                                                                       )
+                                                                   DestinationId:   localController1.Id,
+                                                                   Priority:        23,
+                                                                   Uplink:          new NetworkLinkInformation(
+                                                                                        Capacity:     5000,
+                                                                                        Latency:      TimeSpan.FromMilliseconds(10),
+                                                                                        ErrorRate:    PercentageDouble.Parse(0.05)
+                                                                                    ),
+                                                                   Downlink:        new NetworkLinkInformation(
+                                                                                        Capacity:     15000,
+                                                                                        Latency:      TimeSpan.FromMilliseconds(23),
+                                                                                        ErrorRate:    PercentageDouble.Parse(0.42)
+                                                                                    )
                                                                )
-                                                           },
+                                                           ],
                                             NotBefore:     Timestamp.Now - TimeSpan.FromMinutes(5),
                                             NotAfter:      Timestamp.Now + TimeSpan.FromHours  (6),
                                             Priority:      5,
@@ -471,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
 
                 var csmsNotifyNetworkTopologyRequests  = new ConcurrentList<NotifyNetworkTopologyRequest>();
 
-                testCSMS01.OnIncomingNotifyNetworkTopologyRequest += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyNetworkTopologyRequestReceived += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
                     csmsNotifyNetworkTopologyRequests.TryAdd(notifyNetworkTopologyRequest);
                     return Task.CompletedTask;
                 };
@@ -479,25 +477,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
 
                 var reason    = BootReason.PowerUp;
                 var response  = await localController1.NotifyNetworkTopology(
-                                    DestinationNodeId:            NetworkingNode_Id.CSMS,
+                                    DestinationId:            NetworkingNode_Id.CSMS,
                                     NetworkTopologyInformation:   new NetworkTopologyInformation(
                                                                       RoutingNode:   localController1.Id,
-                                                                      Routes:        new[] {
+                                                                      Routes:        [
                                                                                          new NetworkRoutingInformation(
-                                                                                             NetworkingNodeId:   localController1.Id,
-                                                                                             Priority:           23,
-                                                                                             Uplink:             new NetworkLinkInformation(
-                                                                                                                     Capacity:     5000,
-                                                                                                                     Latency:      TimeSpan.FromMilliseconds(10),
-                                                                                                                     ErrorRate:    PercentageDouble.Parse(0.05)
-                                                                                                                 ),
-                                                                                             Downlink:           new NetworkLinkInformation(
-                                                                                                                     Capacity:     15000,
-                                                                                                                     Latency:      TimeSpan.FromMilliseconds(23),
-                                                                                                                     ErrorRate:    PercentageDouble.Parse(0.42)
-                                                                                                                 )
+                                                                                             DestinationId:   localController1.Id,
+                                                                                             Priority:        23,
+                                                                                             Uplink:          new NetworkLinkInformation(
+                                                                                                                  Capacity:     5000,
+                                                                                                                  Latency:      TimeSpan.FromMilliseconds(10),
+                                                                                                                  ErrorRate:    PercentageDouble.Parse(0.05)
+                                                                                                              ),
+                                                                                             Downlink:        new NetworkLinkInformation(
+                                                                                                                  Capacity:     15000,
+                                                                                                                  Latency:      TimeSpan.FromMilliseconds(23),
+                                                                                                                  ErrorRate:    PercentageDouble.Parse(0.42)
+                                                                                                              )
                                                                                          )
-                                                                                     },
+                                                                                     ],
                                                                       NotBefore:     Timestamp.Now - TimeSpan.FromMinutes(5),
                                                                       NotAfter:      Timestamp.Now + TimeSpan.FromHours  (6),
                                                                       Priority:      5,

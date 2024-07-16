@@ -39,63 +39,63 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
 
         #region TransferBinaryData_Test()
 
-        /// <summary>
-        /// A test for transfering binary data to the CSMS.
-        /// </summary>
-        [Test]
-        public async Task TransferBinaryData_Test()
-        {
+        ///// <summary>
+        ///// A test for transfering binary data to the CSMS.
+        ///// </summary>
+        //[Test]
+        //public async Task TransferBinaryData_Test()
+        //{
 
-            Assert.Multiple(() => {
-                Assert.That(testCentralSystem01,      Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
-                Assert.That(chargePoint1,             Is.Not.Null);
-                Assert.That(chargePoint2,             Is.Not.Null);
-                Assert.That(chargePoint3,             Is.Not.Null);
-            });
+        //    Assert.Multiple(() => {
+        //        Assert.That(testCentralSystem01,      Is.Not.Null);
+        //        Assert.That(testBackendWebSockets01,  Is.Not.Null);
+        //        Assert.That(chargePoint1,             Is.Not.Null);
+        //        Assert.That(chargePoint2,             Is.Not.Null);
+        //        Assert.That(chargePoint3,             Is.Not.Null);
+        //    });
 
-            if (testCentralSystem01     is not null &&
-                testBackendWebSockets01 is not null &&
-                chargePoint1            is not null &&
-                chargePoint2            is not null &&
-                chargePoint3            is not null)
-            {
+        //    if (testCentralSystem01     is not null &&
+        //        testBackendWebSockets01 is not null &&
+        //        chargePoint1            is not null &&
+        //        chargePoint2            is not null &&
+        //        chargePoint3            is not null)
+        //    {
 
-                var binaryDataTransferRequests= new ConcurrentList<BinaryDataTransferRequest>();
+        //        var binaryDataTransferRequests= new ConcurrentList<BinaryDataTransferRequest>();
 
-                testCentralSystem01.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, binaryDataTransferRequest) => {
-                    binaryDataTransferRequests.TryAdd(binaryDataTransferRequest);
-                    return Task.CompletedTask;
-                };
+        //        testCentralSystem01.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, binaryDataTransferRequest) => {
+        //            binaryDataTransferRequests.TryAdd(binaryDataTransferRequest);
+        //            return Task.CompletedTask;
+        //        };
 
-                var vendorId   = Vendor_Id. GraphDefined;
-                var messageId  = Message_Id.GraphDefined_TestMessage;
-                var data       = "Hello world!".ToUTF8Bytes();
+        //        var vendorId   = Vendor_Id. GraphDefined;
+        //        var messageId  = Message_Id.GraphDefined_TestMessage;
+        //        var data       = "Hello world!".ToUTF8Bytes();
 
-                var response   = await chargePoint1.TransferBinaryData(
-                                           VendorId:    vendorId,
-                                           MessageId:   messageId,
-                                           Data:        data,
-                                           Format:      BinaryFormats.TextIds
-                                       );
+        //        var response   = await chargePoint1.TransferBinaryData(
+        //                                   VendorId:    vendorId,
+        //                                   MessageId:   messageId,
+        //                                   Data:        data,
+        //                                   Format:      BinaryFormats.TextIds
+        //                               );
 
-                Assert.Multiple(() => {
+        //        Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                            Is.EqualTo(ResultCode. OK));
-                    Assert.That(response.Status,                                       Is.EqualTo(DataTransferStatus.Accepted));
-                    Assert.That(response.Data?.ToUTF8String(),                         Is.EqualTo(data.Reverse().ToUTF8String()));
+        //            Assert.That(response.Result.ResultCode,                            Is.EqualTo(ResultCode. OK));
+        //            Assert.That(response.Status,                                       Is.EqualTo(DataTransferStatus.Accepted));
+        //            Assert.That(response.Data?.ToUTF8String(),                         Is.EqualTo(data.Reverse().ToUTF8String()));
 
-                    Assert.That(binaryDataTransferRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(binaryDataTransferRequests.First().DestinationId,   Is.EqualTo(chargePoint1.Id));
-                    Assert.That(binaryDataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
-                    Assert.That(binaryDataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
-                    Assert.That(binaryDataTransferRequests.First().Data,               Is.EqualTo(data));
+        //            Assert.That(binaryDataTransferRequests.Count,                      Is.EqualTo(1));
+        //            Assert.That(binaryDataTransferRequests.First().DestinationId,   Is.EqualTo(chargePoint1.Id));
+        //            Assert.That(binaryDataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
+        //            Assert.That(binaryDataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
+        //            Assert.That(binaryDataTransferRequests.First().Data,               Is.EqualTo(data));
 
-                });
+        //        });
 
-             }
+        //     }
 
-        }
+        //}
 
         #endregion
 

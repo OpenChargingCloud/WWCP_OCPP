@@ -22,9 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -77,9 +77,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnNotifyDisplayMessagesRequestFilterDelegate?      OnNotifyDisplayMessagesRequest;
+        public event OnNotifyDisplayMessagesRequestReceivedDelegate?    OnNotifyDisplayMessagesRequestReceived;
+        public event OnNotifyDisplayMessagesRequestFilterDelegate?      OnNotifyDisplayMessagesRequestFilter;
+        public event OnNotifyDisplayMessagesRequestFilteredDelegate?    OnNotifyDisplayMessagesRequestFiltered;
+        public event OnNotifyDisplayMessagesRequestSentDelegate?        OnNotifyDisplayMessagesRequestSent;
 
-        public event OnNotifyDisplayMessagesRequestFilteredDelegate?    OnNotifyDisplayMessagesRequestLogging;
+        public event OnNotifyDisplayMessagesResponseReceivedDelegate?   OnNotifyDisplayMessagesResponseReceived;
+        public event OnNotifyDisplayMessagesResponseSentDelegate?       OnNotifyDisplayMessagesResponseSent;
 
         #endregion
 
@@ -95,30 +99,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        JSONRequestMessage.RequestId,
                                                        JSONRequestMessage.DestinationId,
                                                        JSONRequestMessage.NetworkPath,
-                                                       out var Request,
+                                                       out var request,
                                                        out var errorResponse,
                                                        parentNetworkingNode.OCPP.CustomNotifyDisplayMessagesRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<NotifyDisplayMessagesRequest, NotifyDisplayMessagesResponse>? forwardingDecision = null;
 
-            #region Send OnNotifyDisplayMessagesRequest event
 
-            var requestFilter = OnNotifyDisplayMessagesRequest;
+            #region Send OnNotifyDisplayMessagesRequestReceived event
+
+            var receivedLogging = OnNotifyDisplayMessagesRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnNotifyDisplayMessagesRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                                                                         Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnNotifyDisplayMessagesRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            #region Send OnNotifyDisplayMessagesRequestFilter event
+
+            var requestFilter = OnNotifyDisplayMessagesRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnNotifyDisplayMessagesRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
+                                                     OfType<OnNotifyDisplayMessagesRequestFilterDelegate>().
+                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                                    parentNetworkingNode,
+                                                                                                    Connection,
+                                                                                                    request,
+                                                                                                    CancellationToken)).
                                                      ToArray());
 
                     //ToDo: Find a good result!
@@ -129,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnNotifyDisplayMessagesRequest),
+                              nameof(OnNotifyDisplayMessagesRequestFilter),
                               e
                           );
                 }
@@ -138,11 +174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
             #region Default result
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<NotifyDisplayMessagesRequest, NotifyDisplayMessagesResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -152,12 +189,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new NotifyDisplayMessagesResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<NotifyDisplayMessagesRequest, NotifyDisplayMessagesResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -172,21 +209,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnNotifyDisplayMessagesRequestLogging event
+            #region Send OnNotifyDisplayMessagesRequestFiltered event
 
-            var logger = OnNotifyDisplayMessagesRequestLogging;
+            var logger = OnNotifyDisplayMessagesRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnNotifyDisplayMessagesRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
+                                       OfType<OnNotifyDisplayMessagesRequestFilteredDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        parentNetworkingNode,
+                                                                                        Connection,
+                                                                                        request,
+                                                                                        forwardingDecision)).
                                        ToArray());
 
                 }
@@ -194,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnNotifyDisplayMessagesRequestLogging),
+                              nameof(OnNotifyDisplayMessagesRequestFiltered),
                               e
                           );
                 }
@@ -202,6 +239,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnNotifyDisplayMessagesRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnNotifyDisplayMessagesRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnNotifyDisplayMessagesRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                              parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnNotifyDisplayMessagesRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomNotifyDisplayMessagesRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomMessageInfoSerializer,
+                                                        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                                                        parentNetworkingNode.OCPP.CustomComponentSerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVSESerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             return forwardingDecision;
 

@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -122,11 +122,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     await Task.WhenAll(receivedLogging.GetInvocationList().
-                                          OfType <OnBootNotificationRequestReceivedDelegate>().
-                                          Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                          parentNetworkingNode,
-                                                                                          Connection,
-                                                                                          request)).
+                                          OfType<OnBootNotificationRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                                                                         Connection,
+                                                                                         request)).
                                           ToArray());
 
                 }
@@ -152,12 +152,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                        OfType <OnBootNotificationRequestFilterDelegate>().
-                                                        Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                        parentNetworkingNode,
-                                                                                                        Connection,
-                                                                                                        request,
-                                                                                                        CancellationToken)).
+                                                        OfType<OnBootNotificationRequestFilterDelegate>().
+                                                        Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                                       parentNetworkingNode,
+                                                                                                       Connection,
+                                                                                                       request,
+                                                                                                       CancellationToken)).
                                                         ToArray());
 
                     //ToDo: Find a good result!
@@ -256,10 +256,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         await Task.WhenAll(sentLogging.GetInvocationList().
-                                              OfType <OnBootNotificationRequestSentDelegate>().
-                                              Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                              parentNetworkingNode,
-                                                                                              request)).
+                                              OfType<OnBootNotificationRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
                                               ToArray());
 
                     }

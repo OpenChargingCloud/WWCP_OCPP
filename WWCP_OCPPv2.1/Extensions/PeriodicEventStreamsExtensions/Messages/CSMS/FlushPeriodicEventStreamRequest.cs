@@ -21,7 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new flush periodic event stream request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="Id">The unqiue identification of the periodic event stream to be flushed.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -77,12 +77,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public FlushPeriodicEventStreamRequest(NetworkingNode_Id        NetworkingNodeId,
+        public FlushPeriodicEventStreamRequest(NetworkingNode_Id        DestinationId,
                                                PeriodicEventStream_Id   Id,
 
                                                IEnumerable<KeyPair>?    SignKeys            = null,
                                                IEnumerable<SignInfo>?   SignInfos           = null,
-                                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                               IEnumerable<Signature>?       Signatures          = null,
 
                                                CustomData?              CustomData          = null,
 
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                NetworkPath?             NetworkPath         = null,
                                                CancellationToken        CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationId,
                    nameof(FlushPeriodicEventStreamRequest)[..^7],
 
                    SignKeys,
@@ -132,19 +132,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomFlushPeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomFlushPeriodicEventStreamRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an FlushPeriodicEventStream request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomFlushPeriodicEventStreamRequestParser">A delegate to parse custom FlushPeriodicEventStream requests.</param>
         public static FlushPeriodicEventStreamRequest Parse(JObject                                                        JSON,
                                                             Request_Id                                                     RequestId,
-                                                            NetworkingNode_Id                                              NetworkingNodeId,
+                                                            NetworkingNode_Id                                              DestinationId,
                                                             NetworkPath                                                    NetworkPath,
                                                             CustomJObjectParserDelegate<FlushPeriodicEventStreamRequest>?  CustomFlushPeriodicEventStreamRequestParser   = null)
         {
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         DestinationId,
                          NetworkPath,
                          out var addSignaturePolicyRequest,
                          out var errorResponse,
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out FlushPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out FlushPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -178,20 +178,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="FlushPeriodicEventStreamRequest">The parsed FlushPeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                               JSON,
                                        Request_Id                            RequestId,
-                                       NetworkingNode_Id                     NetworkingNodeId,
+                                       NetworkingNode_Id                     DestinationId,
                                        NetworkPath                           NetworkPath,
                                        out FlushPeriodicEventStreamRequest?  FlushPeriodicEventStreamRequest,
                                        out String?                           ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        NetworkingNodeId,
+                        DestinationId,
                         NetworkPath,
                         out FlushPeriodicEventStreamRequest,
                         out ErrorResponse,
@@ -203,14 +203,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="FlushPeriodicEventStreamRequest">The parsed FlushPeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomFlushPeriodicEventStreamRequestParser">A delegate to parse custom FlushPeriodicEventStream requests.</param>
         public static Boolean TryParse(JObject                                                        JSON,
                                        Request_Id                                                     RequestId,
-                                       NetworkingNode_Id                                              NetworkingNodeId,
+                                       NetworkingNode_Id                                              DestinationId,
                                        NetworkPath                                                    NetworkPath,
                                        out FlushPeriodicEventStreamRequest?                           FlushPeriodicEventStreamRequest,
                                        out String?                                                    ErrorResponse,
@@ -239,8 +239,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              OCPP.Signature.TryParse,
-                                              out HashSet<OCPP.Signature> Signatures,
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
+                                           OCPPv2_1.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 FlushPeriodicEventStreamRequest = new FlushPeriodicEventStreamRequest(
 
-                                                      NetworkingNodeId,
+                                                      DestinationId,
                                                       Id,
 
                                                       null,
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<FlushPeriodicEventStreamRequest>?  CustomFlushPeriodicEventStreamRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<OCPP.Signature>?                   CustomSignatureSerializer                         = null,
+                              CustomJObjectSerializerDelegate<Signature>?                        CustomSignatureSerializer                         = null,
                               CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                        = null)
         {
 

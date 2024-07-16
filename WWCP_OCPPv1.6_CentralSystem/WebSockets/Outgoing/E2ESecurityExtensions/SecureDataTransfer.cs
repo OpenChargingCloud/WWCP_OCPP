@@ -37,131 +37,131 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Custom binary serializer delegates
 
-        public CustomBinarySerializerDelegate<SecureDataTransferRequest>?  CustomSecureDataTransferRequestSerializer    { get; set; }
+        //public CustomBinarySerializerDelegate<SecureDataTransferRequest>?  CustomSecureDataTransferRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<SecureDataTransferResponse>?     CustomSecureDataTransferResponseParser       { get; set; }
+        //public CustomBinaryParserDelegate<SecureDataTransferResponse>?     CustomSecureDataTransferResponseParser       { get; set; }
 
         #endregion
 
         #region Events
 
-        /// <summary>
-        /// An event sent whenever a SecureDataTransfer request was sent.
-        /// </summary>
-        public event OnSecureDataTransferRequestSentDelegate?         OnSecureDataTransferRequest;
+        ///// <summary>
+        ///// An event sent whenever a SecureDataTransfer request was sent.
+        ///// </summary>
+        //public event OnSecureDataTransferRequestSentDelegate?         OnSecureDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a SecureDataTransfer request was sent.
-        /// </summary>
-        public event OnSecureDataTransferResponseReceivedDelegate?    OnSecureDataTransferResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a SecureDataTransfer request was sent.
+        ///// </summary>
+        //public event OnSecureDataTransferResponseReceivedDelegate?    OnSecureDataTransferResponse;
 
         #endregion
 
 
         #region SecureDataTransfer(Request)
 
-        public async Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request)
-        {
+        //public async Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request)
+        //{
 
-            #region Send OnSecureDataTransferRequest event
+        //    #region Send OnSecureDataTransferRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnSecureDataTransferRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecureDataTransferRequest));
-            }
+        //        OnSecureDataTransferRequest?.Invoke(startTime,
+        //                                            this,
+        //                                            Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecureDataTransferRequest));
+        //    }
 
-            #endregion
-
-
-            SecureDataTransferResponse? response = null;
-
-            try
-            {
-
-                var sendRequestState = await SendBinaryAndWait(
-                                                 Request.EventTrackingId,
-                                                 Request.DestinationId,
-                                                 Request.NetworkPath,
-                                                 Request.RequestId,
-                                                 Request.Action,
-                                                 Request.ToBinary(
-                                                     CustomSecureDataTransferRequestSerializer,
-                                                     CustomBinarySignatureSerializer
-                                                 ),
-                                                 Request.RequestTimeout
-                                             );
-
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.BinaryResponse is not null)
-                {
-
-                    if (!SecureDataTransferResponse.TryParse(Request,
-                                                             sendRequestState.BinaryResponse.Payload,
-                                                             sendRequestState.DestinationNodeId,
-                                                             sendRequestState.NetworkPath,
-                                                             out response,
-                                                             out var errorResponse,
-                                                             sendRequestState.ResponseTimestamp,
-                                                             CustomSecureDataTransferResponseParser))
-                    {
-                        response = new SecureDataTransferResponse(
-                                           Request,
-                                           Result.Format(errorResponse)
-                                       );
-                    }
-
-                }
-
-                response ??= new SecureDataTransferResponse(
-                                 Request,
-                                 SecureDataTransferStatus.Rejected
-                             );// Result.FromSendRequestState(sendRequestState));
-
-            }
-            catch (Exception e)
-            {
-
-                response = new SecureDataTransferResponse(
-                               Request,
-                               Result.FromException(e)
-                           );
-
-            }
+        //    #endregion
 
 
-            #region Send OnSecureDataTransferResponse event
+        //    SecureDataTransferResponse? response = null;
 
-            var endTime = Timestamp.Now;
+        //    try
+        //    {
 
-            try
-            {
+        //        var sendRequestState = await SendBinaryAndWait(
+        //                                         Request.EventTrackingId,
+        //                                         Request.DestinationId,
+        //                                         Request.NetworkPath,
+        //                                         Request.RequestId,
+        //                                         Request.Action,
+        //                                         Request.ToBinary(
+        //                                             CustomSecureDataTransferRequestSerializer,
+        //                                             CustomBinarySignatureSerializer
+        //                                         ),
+        //                                         Request.RequestTimeout
+        //                                     );
 
-                OnSecureDataTransferResponse?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
+        //        if (sendRequestState.NoErrors &&
+        //            sendRequestState.BinaryResponse is not null)
+        //        {
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecureDataTransferResponse));
-            }
+        //            if (!SecureDataTransferResponse.TryParse(Request,
+        //                                                     sendRequestState.BinaryResponse.Payload,
+        //                                                     sendRequestState.DestinationNodeId,
+        //                                                     sendRequestState.NetworkPath,
+        //                                                     out response,
+        //                                                     out var errorResponse,
+        //                                                     sendRequestState.ResponseTimestamp,
+        //                                                     CustomSecureDataTransferResponseParser))
+        //            {
+        //                response = new SecureDataTransferResponse(
+        //                                   Request,
+        //                                   Result.Format(errorResponse)
+        //                               );
+        //            }
 
-            #endregion
+        //        }
 
-            return response;
+        //        response ??= new SecureDataTransferResponse(
+        //                         Request,
+        //                         SecureDataTransferStatus.Rejected
+        //                     );// Result.FromSendRequestState(sendRequestState));
 
-        }
+        //    }
+        //    catch (Exception e)
+        //    {
+
+        //        response = new SecureDataTransferResponse(
+        //                       Request,
+        //                       Result.FromException(e)
+        //                   );
+
+        //    }
+
+
+        //    #region Send OnSecureDataTransferResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnSecureDataTransferResponse?.Invoke(endTime,
+        //                                             this,
+        //                                             Request,
+        //                                             response,
+        //                                             endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecureDataTransferResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 

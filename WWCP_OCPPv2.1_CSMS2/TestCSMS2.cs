@@ -33,13 +33,14 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
     /// A networking node for testing.
     /// </summary>
-    public partial class TestCSMS2 : ACSMS2
+    public partial class TestCSMS2 : ACSMS2,
+                                     ICSMS
     {
 
         #region Properties
@@ -59,6 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
                          String?            SerialNumber                = null,
                          String?            SoftwareVersion             = null,
                          I18NString?        Description                 = null,
+                         CustomData?        CustomData                  = null,
 
                          SignaturePolicy?   SignaturePolicy             = null,
                          SignaturePolicy?   ForwardingSignaturePolicy   = null,
@@ -82,6 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
                    SerialNumber,
                    SoftwareVersion,
                    Description,
+                   CustomData,
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
@@ -355,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
                                ? SecureDataTransferResponse.Encrypt(
                                      Request:                request,
                                      Status:                 SecureDataTransferStatus.Accepted,
-                                     DestinationNodeId:      request.NetworkPath.Source,
+                                     DestinationId:          request.NetworkPath.Source,
                                      Parameter:              0,
                                      KeyId:                  keyId,
                                      Key:                    GetEncryptionKey    (request.NetworkPath.Source, keyId),

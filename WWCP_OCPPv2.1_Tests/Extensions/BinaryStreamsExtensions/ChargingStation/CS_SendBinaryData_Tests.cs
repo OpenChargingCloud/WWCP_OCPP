@@ -21,9 +21,9 @@ using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var binaryDataTransferRequests= new ConcurrentList<BinaryDataTransferRequest>();
 
-                testCSMS01.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, binaryDataTransferRequest) => {
+                testCSMS01.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, binaryDataTransferRequest) => {
                     binaryDataTransferRequests.TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -74,11 +74,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
 
                 var response   = await chargingStation1.TransferBinaryData(
-                                     VendorId:     vendorId,
-                                     MessageId:    messageId,
-                                     Data:         data,
-                                     Format:       BinaryFormats.TextIds
-                                 );
+                                           VendorId:     vendorId,
+                                           MessageId:    messageId,
+                                           Data:         data,
+                                           Format:       BinaryFormats.TextIds
+                                       );
 
 
                 Assert.Multiple(() => {
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.Data?.ToUTF8String(),                           Is.EqualTo(data.Reverse().ToUTF8String()));
 
                     Assert.That(binaryDataTransferRequests.Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the CSMS!");
-                    Assert.That(binaryDataTransferRequests.First().DestinationId,    Is.EqualTo(NetworkingNode_Id.Zero)); // Because of standard networking mode!
+                    Assert.That(binaryDataTransferRequests.First().DestinationId,        Is.EqualTo(NetworkingNode_Id.Zero)); // Because of standard networking mode!
                     Assert.That(binaryDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(binaryDataTransferRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(binaryDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));

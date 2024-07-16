@@ -476,15 +476,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnIncomingBinaryDataTransfer (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever an IncomingBinaryDataTransfer request was received.
-        /// </summary>
-        public event OnBinaryDataTransferRequestReceivedDelegate?   OnBinaryDataTransferRequestReceived;
+        ///// <summary>
+        ///// An event sent whenever an IncomingBinaryDataTransfer request was received.
+        ///// </summary>
+        //public event OnBinaryDataTransferRequestReceivedDelegate?   OnBinaryDataTransferRequestReceived;
 
-        /// <summary>
-        /// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
-        /// </summary>
-        public event OnBinaryDataTransferResponseSentDelegate?  OnBinaryDataTransferResponseSent;
+        ///// <summary>
+        ///// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
+        ///// </summary>
+        //public event OnBinaryDataTransferResponseSentDelegate?  OnBinaryDataTransferResponseSent;
 
         #endregion
 
@@ -876,15 +876,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnBinaryDataTransfer          (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
-        /// </summary>
-        public event OnBinaryDataTransferRequestSentDelegate?       OnBinaryDataTransferRequest;
+        ///// <summary>
+        ///// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
+        ///// </summary>
+        //public event OnBinaryDataTransferRequestSentDelegate?       OnBinaryDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a BinaryDataTransfer request was received.
-        /// </summary>
-        public event OnBinaryDataTransferResponseReceivedDelegate?  OnBinaryDataTransferResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a BinaryDataTransfer request was received.
+        ///// </summary>
+        //public event OnBinaryDataTransferResponseReceivedDelegate?  OnBinaryDataTransferResponse;
 
         #endregion
 
@@ -1034,15 +1034,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnSecureDataTransfer          (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a SecureDataTransfer request will be sent to the charging station.
-        /// </summary>
-        public event OnSecureDataTransferRequestSentDelegate?       OnSecureDataTransferRequest;
+        ///// <summary>
+        ///// An event sent whenever a SecureDataTransfer request will be sent to the charging station.
+        ///// </summary>
+        //public event OnSecureDataTransferRequestSentDelegate?       OnSecureDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a SecureDataTransfer request was received.
-        /// </summary>
-        public event OnSecureDataTransferResponseReceivedDelegate?  OnSecureDataTransferResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a SecureDataTransfer request was received.
+        ///// </summary>
+        //public event OnSecureDataTransferResponseReceivedDelegate?  OnSecureDataTransferResponse;
 
         #endregion
 
@@ -3033,117 +3033,117 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnIncomingBinaryDataTransfer
 
-            CentralSystemServer.OnIncomingBinaryDataTransfer += async (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                       cancellationToken) => {
+        //    CentralSystemServer.OnIncomingBinaryDataTransfer += async (timestamp,
+        //                                                               sender,
+        //                                                               connection,
+        //                                                               request,
+        //                                                               cancellationToken) => {
 
-                #region Send OnIncomingBinaryDataTransfer event
+        //        #region Send OnIncomingBinaryDataTransfer event
 
-                var startTime = Timestamp.Now;
+        //        var startTime = Timestamp.Now;
 
-                try
-                {
+        //        try
+        //        {
 
-                    OnBinaryDataTransferRequestReceived?.Invoke(startTime,
-                                                                this,
-                                                                connection,
-                                                                request);
+        //            OnBinaryDataTransferRequestReceived?.Invoke(startTime,
+        //                                                        this,
+        //                                                        connection,
+        //                                                        request);
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequestReceived));
-                }
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequestReceived));
+        //        }
 
-                #endregion
-
-
-                // VendorId
-                // MessageId
-                // BinaryData
-
-                DebugX.Log("OnIncomingBinaryDataTransfer: " + request.VendorId  + ", " +
-                                                              request.MessageId + ", " +
-                                                              request.Data?.ToUTF8String() ?? "-");
+        //        #endregion
 
 
-                var responseBinaryData = Array.Empty<byte>();
+        //        // VendorId
+        //        // MessageId
+        //        // BinaryData
 
-                if (request.Data is not null)
-                {
-                    responseBinaryData = ((Byte[]) request.Data.Clone()).Reverse();
-                }
-
-
-                var response = !SignaturePolicy.VerifyRequestMessage(
-                                   request,
-                                   request.ToBinary(
-                                       CustomIncomingBinaryDataTransferRequestSerializer,
-                                       CustomBinarySignatureSerializer,
-                                       IncludeSignatures: false
-                                   ),
-                                   out var errorResponse
-                               )
-
-                                   ? new BinaryDataTransferResponse(
-                                         Request:      request,
-                                         Result:       Result.SignatureError(
-                                                           $"Invalid signature(s): {errorResponse}"
-                                                       )
-                                     )
-
-                                   : request.VendorId == Vendor_Id.GraphDefined
-
-                                         ? new (
-                                               Request:                request,
-                                               Status:                 BinaryDataTransferStatus.Accepted,
-                                               AdditionalStatusInfo:   null,
-                                               Data:                   responseBinaryData
-                                           )
-
-                                         : new BinaryDataTransferResponse(
-                                               Request:                request,
-                                               Status:                 BinaryDataTransferStatus.Rejected,
-                                               AdditionalStatusInfo:   null,
-                                               Data:                   responseBinaryData
-                                           );
-
-                SignaturePolicy.SignResponseMessage(
-                    response,
-                    response.ToBinary(
-                        CustomIncomingBinaryDataTransferResponseSerializer,
-                        null, //CustomStatusInfoSerializer,
-                        CustomBinarySignatureSerializer,
-                        IncludeSignatures: false
-                    ),
-                    out var errorResponse2);
+        //        DebugX.Log("OnIncomingBinaryDataTransfer: " + request.VendorId  + ", " +
+        //                                                      request.MessageId + ", " +
+        //                                                      request.Data?.ToUTF8String() ?? "-");
 
 
-                #region Send OnIncomingBinaryDataTransferResponse event
+        //        var responseBinaryData = Array.Empty<byte>();
 
-                try
-                {
+        //        if (request.Data is not null)
+        //        {
+        //            responseBinaryData = ((Byte[]) request.Data.Clone()).Reverse();
+        //        }
 
-                    OnBinaryDataTransferResponseSent?.Invoke(Timestamp.Now,
-                                                                 this,
-                                                                 connection,
-                                                                 request,
-                                                                 response,
-                                                                 Timestamp.Now - startTime);
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponseSent));
-                }
+        //        var response = !SignaturePolicy.VerifyRequestMessage(
+        //                           request,
+        //                           request.ToBinary(
+        //                               CustomIncomingBinaryDataTransferRequestSerializer,
+        //                               CustomBinarySignatureSerializer,
+        //                               IncludeSignatures: false
+        //                           ),
+        //                           out var errorResponse
+        //                       )
 
-                #endregion
+        //                           ? new BinaryDataTransferResponse(
+        //                                 Request:      request,
+        //                                 Result:       Result.SignatureError(
+        //                                                   $"Invalid signature(s): {errorResponse}"
+        //                                               )
+        //                             )
 
-                return response;
+        //                           : request.VendorId == Vendor_Id.GraphDefined
 
-            };
+        //                                 ? new (
+        //                                       Request:                request,
+        //                                       Status:                 BinaryDataTransferStatus.Accepted,
+        //                                       AdditionalStatusInfo:   null,
+        //                                       Data:                   responseBinaryData
+        //                                   )
+
+        //                                 : new BinaryDataTransferResponse(
+        //                                       Request:                request,
+        //                                       Status:                 BinaryDataTransferStatus.Rejected,
+        //                                       AdditionalStatusInfo:   null,
+        //                                       Data:                   responseBinaryData
+        //                                   );
+
+        //        SignaturePolicy.SignResponseMessage(
+        //            response,
+        //            response.ToBinary(
+        //                CustomIncomingBinaryDataTransferResponseSerializer,
+        //                null, //CustomStatusInfoSerializer,
+        //                CustomBinarySignatureSerializer,
+        //                IncludeSignatures: false
+        //            ),
+        //            out var errorResponse2);
+
+
+        //        #region Send OnIncomingBinaryDataTransferResponse event
+
+        //        try
+        //        {
+
+        //            OnBinaryDataTransferResponseSent?.Invoke(Timestamp.Now,
+        //                                                         this,
+        //                                                         connection,
+        //                                                         request,
+        //                                                         response,
+        //                                                         Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponseSent));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
 
             #endregion
 
@@ -7598,463 +7598,463 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region BinaryDataTransfer          (Request)
 
-        /// <summary>
-        /// Transfer the given data to the given charging station.
-        /// </summary>
-        /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
-        {
+        ///// <summary>
+        ///// Transfer the given data to the given charging station.
+        ///// </summary>
+        ///// <param name="Request">A BinaryDataTransfer request.</param>
+        //public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
+        //{
 
-            #region Send OnBinaryDataTransferRequest event
+        //    #region Send OnBinaryDataTransferRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnBinaryDataTransferRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequest));
-            }
+        //        OnBinaryDataTransferRequest?.Invoke(startTime,
+        //                                            this,
+        //                                            Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToBinary(
-                                          CustomBinaryDataTransferRequestSerializer,
-                                          CustomBinarySignatureSerializer,
-                                          IncludeSignatures: false
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.BinaryDataTransfer(Request)
-
-                                      : new BinaryDataTransferResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new BinaryDataTransferResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToBinary(
-                    CustomBinaryDataTransferResponseSerializer,
-                    null, // CustomStatusInfoSerializer
-                    CustomBinarySignatureSerializer,
-                    IncludeSignatures: false
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToBinary(
+        //                                  CustomBinaryDataTransferRequestSerializer,
+        //                                  CustomBinarySignatureSerializer,
+        //                                  IncludeSignatures: false
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.BinaryDataTransfer(Request)
+
+        //                              : new BinaryDataTransferResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new BinaryDataTransferResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnBinaryDataTransferResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToBinary(
+        //            CustomBinaryDataTransferResponseSerializer,
+        //            null, // CustomStatusInfoSerializer
+        //            CustomBinarySignatureSerializer,
+        //            IncludeSignatures: false
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnBinaryDataTransferResponse event
 
-                OnBinaryDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnBinaryDataTransferResponse?.Invoke(endTime,
+        //                                       this,
+        //                                       Request,
+        //                                       response,
+        //                                       endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
         #region GetFile                     (Request)
 
-        /// <summary>
-        /// Request the given file from the charging station.
-        /// </summary>
-        /// <param name="Request">A GetFile request.</param>
-        public async Task<OCPP.CS.GetFileResponse> GetFile(GetFileRequest Request)
-        {
+        ///// <summary>
+        ///// Request the given file from the charging station.
+        ///// </summary>
+        ///// <param name="Request">A GetFile request.</param>
+        //public async Task<OCPP.CS.GetFileResponse> GetFile(GetFileRequest Request)
+        //{
 
-            #region Send OnGetFileRequest event
+        //    #region Send OnGetFileRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnGetFileRequest?.Invoke(startTime,
-                                         this,
-                                         Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileRequest));
-            }
+        //        OnGetFileRequest?.Invoke(startTime,
+        //                                 this,
+        //                                 Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomGetFileRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.GetFile(Request)
-
-                                      : new OCPP.CS.GetFileResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.GetFileResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToBinary(
-                    CustomGetFileResponseSerializer,
-                    null, // CustomStatusInfoSerializer
-                    CustomBinarySignatureSerializer,
-                    IncludeSignatures: false
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomGetFileRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.GetFile(Request)
+
+        //                              : new OCPP.CS.GetFileResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.GetFileResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnGetFileResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToBinary(
+        //            CustomGetFileResponseSerializer,
+        //            null, // CustomStatusInfoSerializer
+        //            CustomBinarySignatureSerializer,
+        //            IncludeSignatures: false
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnGetFileResponse event
 
-                OnGetFileResponse?.Invoke(endTime,
-                                          this,
-                                          Request,
-                                          response,
-                                          endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnGetFileResponse?.Invoke(endTime,
+        //                                  this,
+        //                                  Request,
+        //                                  response,
+        //                                  endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
         #region SendFile                    (Request)
 
-        /// <summary>
-        /// Request the given file from the charging station.
-        /// </summary>
-        /// <param name="Request">A SendFile request.</param>
-        public async Task<OCPP.CS.SendFileResponse> SendFile(SendFileRequest Request)
-        {
+        ///// <summary>
+        ///// Request the given file from the charging station.
+        ///// </summary>
+        ///// <param name="Request">A SendFile request.</param>
+        //public async Task<OCPP.CS.SendFileResponse> SendFile(SendFileRequest Request)
+        //{
 
-            #region Send OnSendFileRequest event
+        //    #region Send OnSendFileRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnSendFileRequest?.Invoke(startTime,
-                                          this,
-                                          Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileRequest));
-            }
+        //        OnSendFileRequest?.Invoke(startTime,
+        //                                  this,
+        //                                  Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToBinary(
-                                          CustomSendFileRequestSerializer,
-                                          CustomBinarySignatureSerializer,
-                                          IncludeSignatures: false
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.SendFile(Request)
-
-                                      : new OCPP.CS.SendFileResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.SendFileResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomSendFileResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToBinary(
+        //                                  CustomSendFileRequestSerializer,
+        //                                  CustomBinarySignatureSerializer,
+        //                                  IncludeSignatures: false
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.SendFile(Request)
+
+        //                              : new OCPP.CS.SendFileResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.SendFileResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnSendFileResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomSendFileResponseSerializer,
+        //            CustomStatusInfoSerializer,
+        //            CustomSignatureSerializer
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnSendFileResponse event
 
-                OnSendFileResponse?.Invoke(endTime,
-                                           this,
-                                           Request,
-                                           response,
-                                           endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnSendFileResponse?.Invoke(endTime,
+        //                                   this,
+        //                                   Request,
+        //                                   response,
+        //                                   endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
         #region DeleteFile                  (Request)
 
-        /// <summary>
-        /// Delete the given file from the charging station.
-        /// </summary>
-        /// <param name="Request">A DeleteFile request.</param>
-        public async Task<OCPP.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
-        {
+        ///// <summary>
+        ///// Delete the given file from the charging station.
+        ///// </summary>
+        ///// <param name="Request">A DeleteFile request.</param>
+        //public async Task<OCPP.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
+        //{
 
-            #region Send OnDeleteFileRequest event
+        //    #region Send OnDeleteFileRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnDeleteFileRequest?.Invoke(startTime,
-                                            this,
-                                            Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileRequest));
-            }
+        //        OnDeleteFileRequest?.Invoke(startTime,
+        //                                    this,
+        //                                    Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomDeleteFileRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.DeleteFile(Request)
-
-                                      : new OCPP.CS.DeleteFileResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.DeleteFileResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomDeleteFileResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomDeleteFileRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.DeleteFile(Request)
+
+        //                              : new OCPP.CS.DeleteFileResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.DeleteFileResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnDeleteFileResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomDeleteFileResponseSerializer,
+        //            CustomStatusInfoSerializer,
+        //            CustomSignatureSerializer
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnDeleteFileResponse event
 
-                OnDeleteFileResponse?.Invoke(endTime,
-                                             this,
-                                             Request,
-                                             response,
-                                             endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnDeleteFileResponse?.Invoke(endTime,
+        //                                     this,
+        //                                     Request,
+        //                                     response,
+        //                                     endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
         #region ListDirectory               (Request)
 
-        /// <summary>
-        /// Delete the given file from the charging station.
-        /// </summary>
-        /// <param name="Request">A ListDirectory request.</param>
-        public async Task<OCPP.CS.ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
-        {
+        ///// <summary>
+        ///// Delete the given file from the charging station.
+        ///// </summary>
+        ///// <param name="Request">A ListDirectory request.</param>
+        //public async Task<OCPP.CS.ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
+        //{
 
-            #region Send OnListDirectoryRequest event
+        //    #region Send OnListDirectoryRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnListDirectoryRequest?.Invoke(startTime,
-                                               this,
-                                               Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryRequest));
-            }
+        //        OnListDirectoryRequest?.Invoke(startTime,
+        //                                       this,
+        //                                       Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomListDirectoryRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.ListDirectory(Request)
-
-                                      : new OCPP.CS.ListDirectoryResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.ListDirectoryResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomListDirectoryResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomListDirectoryRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.ListDirectory(Request)
+
+        //                              : new OCPP.CS.ListDirectoryResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.ListDirectoryResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnListDirectoryResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomListDirectoryResponseSerializer,
+        //            CustomStatusInfoSerializer,
+        //            CustomSignatureSerializer
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnListDirectoryResponse event
 
-                OnListDirectoryResponse?.Invoke(endTime,
-                                                this,
-                                                Request,
-                                                response,
-                                                endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnListDirectoryResponse?.Invoke(endTime,
+        //                                        this,
+        //                                        Request,
+        //                                        response,
+        //                                        endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
@@ -8064,677 +8064,677 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region AddSignaturePolicy          (Request)
 
-        /// <summary>
-        /// Add a signature policy.
-        /// </summary>
-        /// <param name="Request">An AddSignaturePolicy request.</param>
-        public async Task<OCPP.CS.AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
-        {
+        ///// <summary>
+        ///// Add a signature policy.
+        ///// </summary>
+        ///// <param name="Request">An AddSignaturePolicy request.</param>
+        //public async Task<OCPP.CS.AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
+        //{
 
-            #region Send OnAddSignaturePolicyRequest event
+        //    #region Send OnAddSignaturePolicyRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnAddSignaturePolicyRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyRequest));
-            }
+        //        OnAddSignaturePolicyRequest?.Invoke(startTime,
+        //                                            this,
+        //                                            Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          //CustomAddSignaturePolicyRequestSerializer,
-                                          //CustomMessageInfoSerializer,
-                                          //CustomMessageContentSerializer,
-                                          //CustomComponentSerializer,
-                                          //CustomEVSESerializer,
-                                          //CustomSignatureSerializer,
-                                          //CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.AddSignaturePolicy(Request)
-
-                                      : new OCPP.CS.AddSignaturePolicyResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.AddSignaturePolicyResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    //CustomAddSignaturePolicyResponseSerializer,
-                    //CustomStatusInfoSerializer,
-                    //CustomSignatureSerializer,
-                    //CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  //CustomAddSignaturePolicyRequestSerializer,
+        //                                  //CustomMessageInfoSerializer,
+        //                                  //CustomMessageContentSerializer,
+        //                                  //CustomComponentSerializer,
+        //                                  //CustomEVSESerializer,
+        //                                  //CustomSignatureSerializer,
+        //                                  //CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.AddSignaturePolicy(Request)
+
+        //                              : new OCPP.CS.AddSignaturePolicyResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.AddSignaturePolicyResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnAddSignaturePolicyResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            //CustomAddSignaturePolicyResponseSerializer,
+        //            //CustomStatusInfoSerializer,
+        //            //CustomSignatureSerializer,
+        //            //CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnAddSignaturePolicyResponse event
 
-                OnAddSignaturePolicyResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnAddSignaturePolicyResponse?.Invoke(endTime,
+        //                                            this,
+        //                                            Request,
+        //                                            response,
+        //                                            endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
         #region UpdateSignaturePolicy       (Request)
 
-        /// <summary>
-        /// Set a display message.
-        /// </summary>
-        /// <param name="Request">A UpdateSignaturePolicy request.</param>
-        public async Task<OCPP.CS.UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
-        {
+        ///// <summary>
+        ///// Set a display message.
+        ///// </summary>
+        ///// <param name="Request">A UpdateSignaturePolicy request.</param>
+        //public async Task<OCPP.CS.UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
+        //{
 
-            #region Send OnUpdateSignaturePolicyRequest event
+        //    #region Send OnUpdateSignaturePolicyRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnUpdateSignaturePolicyRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyRequest));
-            }
+        //        OnUpdateSignaturePolicyRequest?.Invoke(startTime,
+        //                                           this,
+        //                                           Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          //CustomUpdateSignaturePolicyRequestSerializer,
-                                          //CustomMessageInfoSerializer,
-                                          //CustomMessageContentSerializer,
-                                          //CustomComponentSerializer,
-                                          //CustomEVSESerializer,
-                                          //CustomSignatureSerializer,
-                                          //CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
-
-                                      : new OCPP.CS.UpdateSignaturePolicyResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.UpdateSignaturePolicyResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    //CustomUpdateSignaturePolicyResponseSerializer,
-                    //CustomStatusInfoSerializer,
-                    //CustomSignatureSerializer,
-                    //CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  //CustomUpdateSignaturePolicyRequestSerializer,
+        //                                  //CustomMessageInfoSerializer,
+        //                                  //CustomMessageContentSerializer,
+        //                                  //CustomComponentSerializer,
+        //                                  //CustomEVSESerializer,
+        //                                  //CustomSignatureSerializer,
+        //                                  //CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
+
+        //                              : new OCPP.CS.UpdateSignaturePolicyResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.UpdateSignaturePolicyResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnUpdateSignaturePolicyResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            //CustomUpdateSignaturePolicyResponseSerializer,
+        //            //CustomStatusInfoSerializer,
+        //            //CustomSignatureSerializer,
+        //            //CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnUpdateSignaturePolicyResponse event
 
-                OnUpdateSignaturePolicyResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnUpdateSignaturePolicyResponse?.Invoke(endTime,
+        //                                            this,
+        //                                            Request,
+        //                                            response,
+        //                                            endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
         #region DeleteSignaturePolicy       (Request)
 
-        /// <summary>
-        /// Set a display message.
-        /// </summary>
-        /// <param name="Request">A DeleteSignaturePolicy request.</param>
-        public async Task<OCPP.CS.DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
-        {
+        ///// <summary>
+        ///// Set a display message.
+        ///// </summary>
+        ///// <param name="Request">A DeleteSignaturePolicy request.</param>
+        //public async Task<OCPP.CS.DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
+        //{
 
-            #region Send OnDeleteSignaturePolicyRequest event
+        //    #region Send OnDeleteSignaturePolicyRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnDeleteSignaturePolicyRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyRequest));
-            }
+        //        OnDeleteSignaturePolicyRequest?.Invoke(startTime,
+        //                                           this,
+        //                                           Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          //CustomDeleteSignaturePolicyRequestSerializer,
-                                          //CustomMessageInfoSerializer,
-                                          //CustomMessageContentSerializer,
-                                          //CustomComponentSerializer,
-                                          //CustomEVSESerializer,
-                                          //CustomSignatureSerializer,
-                                          //CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
-
-                                      : new OCPP.CS.DeleteSignaturePolicyResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.DeleteSignaturePolicyResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    //CustomDeleteSignaturePolicyResponseSerializer,
-                    //CustomStatusInfoSerializer,
-                    //CustomSignatureSerializer,
-                    //CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  //CustomDeleteSignaturePolicyRequestSerializer,
+        //                                  //CustomMessageInfoSerializer,
+        //                                  //CustomMessageContentSerializer,
+        //                                  //CustomComponentSerializer,
+        //                                  //CustomEVSESerializer,
+        //                                  //CustomSignatureSerializer,
+        //                                  //CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
+
+        //                              : new OCPP.CS.DeleteSignaturePolicyResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.DeleteSignaturePolicyResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnDeleteSignaturePolicyResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            //CustomDeleteSignaturePolicyResponseSerializer,
+        //            //CustomStatusInfoSerializer,
+        //            //CustomSignatureSerializer,
+        //            //CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnDeleteSignaturePolicyResponse event
 
-                OnDeleteSignaturePolicyResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnDeleteSignaturePolicyResponse?.Invoke(endTime,
+        //                                            this,
+        //                                            Request,
+        //                                            response,
+        //                                            endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
         #region AddUserRole                 (Request)
 
-        /// <summary>
-        /// Set a display message.
-        /// </summary>
-        /// <param name="Request">A AddUserRole request.</param>
-        public async Task<OCPP.CS.AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request)
-        {
+        ///// <summary>
+        ///// Set a display message.
+        ///// </summary>
+        ///// <param name="Request">A AddUserRole request.</param>
+        //public async Task<OCPP.CS.AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request)
+        //{
 
-            #region Send OnAddUserRoleRequest event
+        //    #region Send OnAddUserRoleRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnAddUserRoleRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleRequest));
-            }
+        //        OnAddUserRoleRequest?.Invoke(startTime,
+        //                                           this,
+        //                                           Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          //CustomAddUserRoleRequestSerializer,
-                                          //CustomMessageInfoSerializer,
-                                          //CustomMessageContentSerializer,
-                                          //CustomComponentSerializer,
-                                          //CustomEVSESerializer,
-                                          //CustomSignatureSerializer,
-                                          //CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.AddUserRole(Request)
-
-                                      : new OCPP.CS.AddUserRoleResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.AddUserRoleResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    //CustomAddUserRoleResponseSerializer,
-                    //CustomStatusInfoSerializer,
-                    //CustomSignatureSerializer,
-                    //CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  //CustomAddUserRoleRequestSerializer,
+        //                                  //CustomMessageInfoSerializer,
+        //                                  //CustomMessageContentSerializer,
+        //                                  //CustomComponentSerializer,
+        //                                  //CustomEVSESerializer,
+        //                                  //CustomSignatureSerializer,
+        //                                  //CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.AddUserRole(Request)
+
+        //                              : new OCPP.CS.AddUserRoleResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.AddUserRoleResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnAddUserRoleResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            //CustomAddUserRoleResponseSerializer,
+        //            //CustomStatusInfoSerializer,
+        //            //CustomSignatureSerializer,
+        //            //CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnAddUserRoleResponse event
 
-                OnAddUserRoleResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnAddUserRoleResponse?.Invoke(endTime,
+        //                                            this,
+        //                                            Request,
+        //                                            response,
+        //                                            endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
         #region UpdateUserRole              (Request)
 
-        /// <summary>
-        /// Set a display message.
-        /// </summary>
-        /// <param name="Request">A UpdateUserRole request.</param>
-        public async Task<OCPP.CS.UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request)
-        {
+        ///// <summary>
+        ///// Set a display message.
+        ///// </summary>
+        ///// <param name="Request">A UpdateUserRole request.</param>
+        //public async Task<OCPP.CS.UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request)
+        //{
 
-            #region Send OnUpdateUserRoleRequest event
+        //    #region Send OnUpdateUserRoleRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnUpdateUserRoleRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleRequest));
-            }
+        //        OnUpdateUserRoleRequest?.Invoke(startTime,
+        //                                           this,
+        //                                           Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          //CustomUpdateUserRoleRequestSerializer,
-                                          //CustomMessageInfoSerializer,
-                                          //CustomMessageContentSerializer,
-                                          //CustomComponentSerializer,
-                                          //CustomEVSESerializer,
-                                          //CustomSignatureSerializer,
-                                          //CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.UpdateUserRole(Request)
-
-                                      : new OCPP.CS.UpdateUserRoleResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.UpdateUserRoleResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    //CustomUpdateUserRoleResponseSerializer,
-                    //CustomStatusInfoSerializer,
-                    //CustomSignatureSerializer,
-                    //CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  //CustomUpdateUserRoleRequestSerializer,
+        //                                  //CustomMessageInfoSerializer,
+        //                                  //CustomMessageContentSerializer,
+        //                                  //CustomComponentSerializer,
+        //                                  //CustomEVSESerializer,
+        //                                  //CustomSignatureSerializer,
+        //                                  //CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.UpdateUserRole(Request)
+
+        //                              : new OCPP.CS.UpdateUserRoleResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.UpdateUserRoleResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnUpdateUserRoleResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            //CustomUpdateUserRoleResponseSerializer,
+        //            //CustomStatusInfoSerializer,
+        //            //CustomSignatureSerializer,
+        //            //CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnUpdateUserRoleResponse event
 
-                OnUpdateUserRoleResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnUpdateUserRoleResponse?.Invoke(endTime,
+        //                                            this,
+        //                                            Request,
+        //                                            response,
+        //                                            endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
         #region DeleteUserRole              (Request)
 
-        /// <summary>
-        /// Set a display message.
-        /// </summary>
-        /// <param name="Request">A DeleteUserRole request.</param>
-        public async Task<OCPP.CS.DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request)
-        {
+        ///// <summary>
+        ///// Set a display message.
+        ///// </summary>
+        ///// <param name="Request">A DeleteUserRole request.</param>
+        //public async Task<OCPP.CS.DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request)
+        //{
 
-            #region Send OnDeleteUserRoleRequest event
+        //    #region Send OnDeleteUserRoleRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnDeleteUserRoleRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleRequest));
-            }
+        //        OnDeleteUserRoleRequest?.Invoke(startTime,
+        //                                           this,
+        //                                           Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          //CustomDeleteUserRoleRequestSerializer,
-                                          //CustomMessageInfoSerializer,
-                                          //CustomMessageContentSerializer,
-                                          //CustomComponentSerializer,
-                                          //CustomEVSESerializer,
-                                          //CustomSignatureSerializer,
-                                          //CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.DeleteUserRole(Request)
-
-                                      : new OCPP.CS.DeleteUserRoleResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new OCPP.CS.DeleteUserRoleResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    //CustomDeleteUserRoleResponseSerializer,
-                    //CustomStatusInfoSerializer,
-                    //CustomSignatureSerializer,
-                    //CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  //CustomDeleteUserRoleRequestSerializer,
+        //                                  //CustomMessageInfoSerializer,
+        //                                  //CustomMessageContentSerializer,
+        //                                  //CustomComponentSerializer,
+        //                                  //CustomEVSESerializer,
+        //                                  //CustomSignatureSerializer,
+        //                                  //CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.DeleteUserRole(Request)
+
+        //                              : new OCPP.CS.DeleteUserRoleResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new OCPP.CS.DeleteUserRoleResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnDeleteUserRoleResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            //CustomDeleteUserRoleResponseSerializer,
+        //            //CustomStatusInfoSerializer,
+        //            //CustomSignatureSerializer,
+        //            //CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnDeleteUserRoleResponse event
 
-                OnDeleteUserRoleResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnDeleteUserRoleResponse?.Invoke(endTime,
+        //                                            this,
+        //                                            Request,
+        //                                            response,
+        //                                            endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 
 
         #region SecureDataTransfer          (Request)
 
-        /// <summary>
-        /// Transfer the given data to the given charging station.
-        /// </summary>
-        /// <param name="Request">A SecureDataTransfer request.</param>
-        public async Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request)
-        {
+        ///// <summary>
+        ///// Transfer the given data to the given charging station.
+        ///// </summary>
+        ///// <param name="Request">A SecureDataTransfer request.</param>
+        //public async Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request)
+        //{
 
-            #region Send OnSecureDataTransferRequest event
+        //    #region Send OnSecureDataTransferRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnSecureDataTransferRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferRequest));
-            }
+        //        OnSecureDataTransferRequest?.Invoke(startTime,
+        //                                            this,
+        //                                            Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferRequest));
+        //    }
 
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToBinary(
-                                          CustomSecureDataTransferRequestSerializer,
-                                          CustomBinarySignatureSerializer,
-                                          IncludeSignatures: false
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.SecureDataTransfer(Request)
-
-                                      : new SecureDataTransferResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new SecureDataTransferResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationId)
-                                  );
+        //    #endregion
 
 
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToBinary(
-                    CustomSecureDataTransferResponseSerializer,
-                    // CustomStatusInfoSerializer
-                    CustomBinarySignatureSerializer,
-                    IncludeSignatures: false
-                ),
-                out errorResponse
-            );
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToBinary(
+        //                                  CustomSecureDataTransferRequestSerializer,
+        //                                  CustomBinarySignatureSerializer,
+        //                                  IncludeSignatures: false
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.SecureDataTransfer(Request)
+
+        //                              : new SecureDataTransferResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new SecureDataTransferResponse(
+        //                              Request,
+        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                          );
 
 
-            #region Send OnSecureDataTransferResponse event
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToBinary(
+        //            CustomSecureDataTransferResponseSerializer,
+        //            // CustomStatusInfoSerializer
+        //            CustomBinarySignatureSerializer,
+        //            IncludeSignatures: false
+        //        ),
+        //        out errorResponse
+        //    );
 
-            var endTime = Timestamp.Now;
 
-            try
-            {
+        //    #region Send OnSecureDataTransferResponse event
 
-                OnSecureDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
+        //    var endTime = Timestamp.Now;
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferResponse));
-            }
+        //    try
+        //    {
 
-            #endregion
+        //        OnSecureDataTransferResponse?.Invoke(endTime,
+        //                                       this,
+        //                                       Request,
+        //                                       response,
+        //                                       endTime - startTime);
 
-            return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferResponse));
+        //    }
 
-        }
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 

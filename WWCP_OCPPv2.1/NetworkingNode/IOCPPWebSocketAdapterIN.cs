@@ -22,8 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -69,14 +68,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The common interface of all incoming OCPP messages processors.
     /// </summary>
-    public interface IOCPPWebSocketAdapterIN : OCPP.NN.INetworkingNodeIncomingMessages,
-                                               OCPP.NN.INetworkingNodeIncomingMessageEvents,
-
-                                               CS.  INetworkingNodeIncomingMessages,
+    public interface IOCPPWebSocketAdapterIN : CS.  INetworkingNodeIncomingMessages,
                                                CS.  INetworkingNodeIncomingMessageEvents,
 
                                                CSMS.INetworkingNodeIncomingMessages,
-                                               CSMS.INetworkingNodeIncomingMessageEvents
+                                               CSMS.INetworkingNodeIncomingMessageEvents,
+
+                                               INetworkingNode_IncomingMessages_BinaryDataStreamsExtensions,
+                                               INetworkingNode_IncomingMessagesEvents_BinaryDataStreamsExtensions,
+
+                                               INetworkingNode_IncomingMessages_E2ESecurityExtensions,
+                                               INetworkingNode_IncomingMessagesEvents_E2ESecurityExtensions,
+
+                                               INetworkingNode_IncomingMessages_OverlayNetworkExtensions,
+                                               INetworkingNode_IncomingMessagesEvents_OverlayNetworkExtensions
 
     {
 
@@ -153,21 +158,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        #region OnDataTransfer (RequestReceived/-ResponseSent)
+        #region OnDataTransfer       (RequestReceived/-ResponseSent)
 
         /// <summary>
         /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        event OnDataTransferRequestReceivedDelegate  OnDataTransferRequestReceived;
+        event OnDataTransferRequestReceivedDelegate?           OnDataTransferRequestReceived;
 
+        /// <summary>
+        /// An event sent whenever a DataTransfer request was received.
+        /// </summary>
+        event OnDataTransferDelegate                           OnDataTransfer;
 
-        event OnDataTransferDelegate?                OnDataTransfer;
+        /// <summary>
+        /// An event fired whenever a response to a DataTransfer request was received.
+        /// </summary>
+        event OnDataTransferResponseReceivedDelegate?          OnDataTransferResponseReceived;
 
         #endregion
 
 
         #endregion
-
 
 
         Task<WebSocketTextMessageResponse>   ProcessJSONMessage   (DateTime              RequestTimestamp,

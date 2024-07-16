@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all noetworking node incoming messages.
     /// </summary>
-    public interface INetworkingNodeIncomingMessages : OCPP.NN.CS.INetworkingNodeIncomingMessages
+    public interface INetworkingNodeIncomingMessages
     {
 
         #region OnReset
@@ -260,12 +260,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #endregion
 
 
+        #region OnQRCodeScanned
+
+        /// <summary>
+        /// An event sent whenever a OnQRCodeScanned request was received.
+        /// </summary>
+        event OnQRCodeScannedRequestReceivedDelegate OnQRCodeScannedRequestReceived;
+
+        #endregion
+
         #region OnReserveNow
 
         /// <summary>
-        /// An event sent whenever a reserve now request was received.
+        /// An event sent whenever a ReserveNow request was received.
         /// </summary>
-        event OnReserveNowDelegate           OnReserveNow;
+        event OnReserveNowDelegate OnReserveNow;
 
         #endregion
 
@@ -430,103 +439,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// An event sent whenever a customer information request was received.
         /// </summary>
         event OnCustomerInformationDelegate           OnCustomerInformation;
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region OnDeleteFile
-
-        /// <summary>
-        /// An event sent whenever a DeleteFile request was received.
-        /// </summary>
-        event OnDeleteFileDelegate                     OnDeleteFile;
-
-        #endregion
-
-        #region OnGetFile
-
-        /// <summary>
-        /// An event sent whenever a GetFile request was received.
-        /// </summary>
-        event OnGetFileDelegate                      OnGetFile;
-
-        #endregion
-
-        #region OnListDirectory
-
-        /// <summary>
-        /// An event sent whenever a ListDirectory request was received.
-        /// </summary>
-        event OnListDirectoryDelegate                  OnListDirectory;
-
-        #endregion
-
-        #region OnSendFile
-
-        /// <summary>
-        /// An event sent whenever a SendFile request was received.
-        /// </summary>
-        event OnSendFileDelegate                     OnSendFile;
-
-        #endregion
-
-
-
-        // E2E Security Extensions
-
-        #region OnAddSignaturePolicy
-
-        /// <summary>
-        /// An event sent whenever an AddSignaturePolicy request was received.
-        /// </summary>
-        event OnAddSignaturePolicyDelegate            OnAddSignaturePolicy;
-
-        #endregion
-
-        #region OnUpdateSignaturePolicy
-
-        /// <summary>
-        /// An event sent whenever an UpdateSignaturePolicy request was received.
-        /// </summary>
-        event OnUpdateSignaturePolicyDelegate         OnUpdateSignaturePolicy;
-
-        #endregion
-
-        #region OnDeleteSignaturePolicy
-
-        /// <summary>
-        /// An event sent whenever a DeleteSignaturePolicy request was received.
-        /// </summary>
-        event OnDeleteSignaturePolicyDelegate         OnDeleteSignaturePolicy;
-
-        #endregion
-
-        #region OnAddUserRole
-
-        /// <summary>
-        /// An event sent whenever an AddUserRole request was received.
-        /// </summary>
-        event OnAddUserRoleDelegate                   OnAddUserRole;
-
-        #endregion
-
-        #region OnUpdateUserRole
-
-        /// <summary>
-        /// An event sent whenever an UpdateUserRole request was received.
-        /// </summary>
-        event OnUpdateUserRoleDelegate                OnUpdateUserRole;
-
-        #endregion
-
-        #region OnDeleteUserRole
-
-        /// <summary>
-        /// An event sent whenever a DeleteUserRole request was received.
-        /// </summary>
-        event OnDeleteUserRoleDelegate                OnDeleteUserRole;
 
         #endregion
 

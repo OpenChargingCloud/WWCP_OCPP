@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var bootNotificationRequests = new ConcurrentList<CS.BootNotificationRequest>();
 
-                testCSMS01.OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest) => {
+                testCSMS01.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest) => {
                     bootNotificationRequests.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -111,16 +111,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var reason                   = BootReason.PowerUp;
                 var now                      = Timestamp.Now;
                 var response1                = await chargingStation1.SendBootNotification(
-                                                   BootReason:   reason,
-                                                   SignInfos:    new[] {
-                                                                     requestKeyPair.ToSignInfo1(
-                                                                         "ahzf",
-                                                                         I18NString.Create("Just a test!"),
-                                                                         now
-                                                                     )
-                                                                 },
-                                                   CustomData:   null
-                                               );
+                                                         BootReason:   reason,
+                                                         SignInfos:    new[] {
+                                                                           requestKeyPair.ToSignInfo1(
+                                                                               "ahzf",
+                                                                               I18NString.Create("Just a test!"),
+                                                                               now
+                                                                           )
+                                                                       },
+                                                         CustomData:   null
+                                                     );
 
                 ClassicAssert.AreEqual(ResultCode.OK,                          response1.Result.ResultCode);
                 ClassicAssert.AreEqual(RegistrationStatus.Accepted,             response1.Status);

@@ -54,113 +54,113 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The global unique and unique in time identification of the charge detail record.
         /// </summary>
         [Mandatory]
-        public   CDR_Id                         Id                       { get; }
+        public CDR_Id                            Id                        { get; }
 
         /// <summary>
         /// The timestamp when this tariff was created.
         /// </summary>
         [Mandatory] //, NonStandard("Pagination")]
-        public   DateTime                       Created                  { get; }
+        public DateTime                          Created                   { get; }
 
         /// <summary>
         /// Optional references to other tariffs, which will be replaced by this charge detail record.
         /// </summary>
         [Optional]
-        public  IEnumerable<CDR_Id>             Replaces                 { get; }
+        public IEnumerable<CDR_Id>               Replaces                  { get; }
 
         /// <summary>
         /// Optional references to other tariffs, e.g. because some local adaption of a charge detail record was required.
         /// </summary>
         [Optional]
-        public IEnumerable<CDR_Id>              References               { get; }
+        public IEnumerable<CDR_Id>               References                { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility provider responsible for this tariff.
         /// </summary>
         [Mandatory]
-        public   Provider_Id                    ProviderId               { get; }
+        public Provider_Id                       ProviderId                { get; }
 
         /// <summary>
         /// The multi-language name of the e-mobility provider responsible for this tariff.
         /// </summary>
         [Mandatory]
-        public   DisplayTexts                   ProviderName             { get; }
+        public DisplayTexts                      ProviderName              { get; }
 
         /// <summary>
         /// The charging station operator identification.
         /// </summary>
         [Mandatory]
-        public CSOOperator_Id                   CSOOperatorId            { get; }
+        public CSOOperator_Id                    CSOOperatorId             { get; }
 
         /// <summary>
         /// The EVSE identification.
         /// </summary>
         [Mandatory]
-        public GlobalEVSE_Id                    EVSEId                   { get; }
+        public GlobalEVSE_Id                     EVSEId                    { get; }
 
         /// <summary>
         /// An optional enumeration of charging station identifications, this tariff is valid for.
         /// </summary>
         [Optional]
-        public NetworkPath       ?              NetworkPath        { get; }
+        public IEnumerable<ChargingStation_Id>?  ChargingStationIds        { get; }
 
         /// <summary>
         /// An optional enumeration of charging pool identifications, this tariff is valid for.
         /// </summary>
         [Optional]
-        public ChargingPool_Id?                 ChargingPoolId           { get; }
+        public IEnumerable<ChargingPool_Id>?     ChargingPoolIds           { get; }
 
         /// <summary>
         /// The optional charge detail record.
         /// </summary>
         [Optional]
-        public   ChargingTariff?                ChargingTariff           { get; }
+        public ChargingTariff?                   ChargingTariff            { get; }
 
         /// <summary>
         /// When this optional field is set, a charging session with this tariff will NOT
         /// cost more than this amount.
         /// </summary>
         [Optional]
-        public   Price?                         Price                    { get; }
+        public Price?                            Price                     { get; }
 
         /// <summary>
         /// The ISO 4217 code of the currency used for this tariff.
         /// </summary>
         [Optional]
-        public   Currency                       Currency                 { get; }
+        public Currency                          Currency                  { get; }
 
 
-        public   IEnumerable<MeteringValue>     MeteringValues           { get; }
+        public IEnumerable<MeteringValue>        MeteringValues            { get; }
 
-        public   IEnumerable<ChargingPeriod>    ChargingPeriods          { get; }
-
-
+        public IEnumerable<ChargingPeriod>       ChargingPeriods           { get; }
 
 
-        public   Price                          TotalFixedCost           { get; }
-        public   Price                          TotalReservationCost     { get; }
-
-        public   TimeSpan                       TotalTime                { get; }
-        public   TimeSpan                       BilledTime               { get; }
-        public   Price                          TotalTimeCost            { get; }
 
 
-        public   TimeSpan                       TotalChargingTime        { get; }
-        public   TimeSpan                       BilledChargingTime       { get; }
-        public   Price                          BilledChargingTimeCost    { get; }
+        public Price                             TotalFixedCost            { get; }
+        public Price                             TotalReservationCost      { get; }
+
+        public TimeSpan                          TotalTime                 { get; }
+        public TimeSpan                          BilledTime                { get; }
+        public Price                             TotalTimeCost             { get; }
 
 
-        public   WattHour                       TotalEnergy              { get; }
-        public   WattHour                       BilledEnergy             { get; }
-        public   Price                          BilledEnergyCost          { get; }
+        public TimeSpan                          TotalChargingTime         { get; }
+        public TimeSpan                          BilledChargingTime        { get; }
+        public Price                             BilledChargingTimeCost    { get; }
 
 
-        public   TimeSpan                       TotalParkingTime         { get; }
-        public   TimeSpan                       BilledParkingTime        { get; }
-        public   Price                          TotalParkingCost         { get; }
+        public WattHour                          TotalEnergy               { get; }
+        public WattHour                          BilledEnergy              { get; }
+        public Price                             BilledEnergyCost          { get; }
 
 
-        public   Price                          TotalCost                { get; }
+        public TimeSpan                          TotalParkingTime          { get; }
+        public TimeSpan                          BilledParkingTime         { get; }
+        public Price                             TotalParkingCost          { get; }
+
+
+        public Price                             TotalCost                 { get; }
 
         #endregion
 
@@ -187,53 +187,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public CDR(CDR_Id                        Id,
+        public CDR(CDR_Id                            Id,
 
-                   Provider_Id                   ProviderId,
-                   DisplayTexts                  ProviderName,
+                   Provider_Id                       ProviderId,
+                   DisplayTexts                      ProviderName,
 
-                   CSOOperator_Id                CSOOperatorId,
-                   GlobalEVSE_Id                 EVSEId,
-                   NetworkPath       ?           NetworkPath,
-                   ChargingPool_Id?              ChargingPoolId,
-                   IEnumerable<MeteringValue>    MeteringValues,
+                   CSOOperator_Id                    CSOOperatorId,
+                   GlobalEVSE_Id                     EVSEId,
+                   IEnumerable<ChargingStation_Id>?  ChargingStationIds,
+                   IEnumerable<ChargingPool_Id>?     ChargingPoolIds,
+                   IEnumerable<MeteringValue>        MeteringValues,
 
-                   Price                         TotalFixedCost,
-                   Price                         TotalReservationCost,
+                   Price                             TotalFixedCost,
+                   Price                             TotalReservationCost,
 
-                   TimeSpan                      TotalTime,
-                   TimeSpan                      BilledTime,
-                   Price                         TotalTimeCost,
+                   TimeSpan                          TotalTime,
+                   TimeSpan                          BilledTime,
+                   Price                             TotalTimeCost,
 
-                   TimeSpan                      TotalChargingTime,
-                   TimeSpan                      BilledChargingTime,
-                   Price                         TotalChargingTimeCost,
+                   TimeSpan                          TotalChargingTime,
+                   TimeSpan                          BilledChargingTime,
+                   Price                             TotalChargingTimeCost,
 
-                   WattHour                      TotalEnergy,
-                   WattHour                      BilledEnergy,
-                   Price                         TotalEnergyCost,
+                   WattHour                          TotalEnergy,
+                   WattHour                          BilledEnergy,
+                   Price                             TotalEnergyCost,
 
-                   TimeSpan                      TotalParkingTime,
-                   TimeSpan                      BilledParkingTime,
-                   Price                         TotalParkingCost,
+                   TimeSpan                          TotalParkingTime,
+                   TimeSpan                          BilledParkingTime,
+                   Price                             TotalParkingCost,
 
-                   Price                         TotalCost,
-                   Currency                      Currency,
+                   Price                             TotalCost,
+                   Currency                          Currency,
 
-                   DateTime?                     Created              = null,
-                   IEnumerable<CDR_Id>?          Replaces             = null,
-                   IEnumerable<CDR_Id>?          References           = null,
-                   ChargingTariff?               ChargingTariff       = null,
-                   IEnumerable<ChargingPeriod>?  ChargingPeriods      = null,
+                   DateTime?                         Created              = null,
+                   IEnumerable<CDR_Id>?              Replaces             = null,
+                   IEnumerable<CDR_Id>?              References           = null,
+                   ChargingTariff?                   ChargingTariff       = null,
+                   IEnumerable<ChargingPeriod>?      ChargingPeriods      = null,
 
-                   DisplayTexts?                 Description          = null,
-                   URL?                          URL                  = null,
+                   DisplayTexts?                     Description          = null,
+                   URL?                              URL                  = null,
 
-                   IEnumerable<KeyPair>?         SignKeys             = null,
-                   IEnumerable<SignInfo>?        SignInfos            = null,
-                   IEnumerable<OCPP.Signature>?  Signatures           = null,
+                   IEnumerable<KeyPair>?             SignKeys             = null,
+                   IEnumerable<SignInfo>?            SignInfos            = null,
+                   IEnumerable<Signature>?           Signatures           = null,
 
-                   CustomData?                   CustomData           = null)
+                   CustomData?                       CustomData           = null)
 
             : base (SignKeys,
                     SignInfos,
@@ -252,10 +252,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.CSOOperatorId          = CSOOperatorId;
             this.EVSEId                 = EVSEId;
-            this.NetworkPath      = NetworkPath;
-            this.ChargingPoolId         = ChargingPoolId;
-            this.MeteringValues         = MeteringValues.  Distinct();
-            this.ChargingPeriods        = ChargingPeriods?.Distinct() ?? Array.Empty<ChargingPeriod>();
+            this.ChargingStationIds     = ChargingStationIds?.Distinct();
+            this.ChargingPoolIds        = ChargingPoolIds?.   Distinct();
+            this.MeteringValues         = MeteringValues.     Distinct();
+            this.ChargingPeriods        = ChargingPeriods?.   Distinct() ?? Array.Empty<ChargingPeriod>();
 
             this.TotalFixedCost         = TotalFixedCost;
             this.TotalReservationCost   = TotalReservationCost;
@@ -305,19 +305,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        public static Boolean CalculateCosts(Provider_Id              ProviderId,
-                                             DisplayTexts             ProviderName,
-                                             CSOOperator_Id           CSOOperatorId,
-                                             GlobalEVSE_Id            EVSEId,
-                                             IEnumerable<MeterValue>  MeterValues,
-                                             ChargingTariff           ChargingTariff,
-                                             out CDR?                 CDR,
-                                             out String?              ErrorResponse,
+        public static Boolean CalculateCosts(Provider_Id                       ProviderId,
+                                             DisplayTexts                      ProviderName,
+                                             CSOOperator_Id                    CSOOperatorId,
+                                             GlobalEVSE_Id                     EVSEId,
+                                             IEnumerable<MeterValue>           MeterValues,
+                                             ChargingTariff                    ChargingTariff,
+                                             out CDR?                          CDR,
+                                             out String?                       ErrorResponse,
 
-                                             NetworkPath       ?      NetworkPath     = null,
-                                             ChargingPool_Id?         ChargingPoolId        = null,
-                                             Measurand?               Measurand             = null,
-                                             MeasurementLocation?     MeasurementLocation   = null)
+                                             IEnumerable<ChargingStation_Id>?  ChargingStationIds    = null,
+                                             IEnumerable<ChargingPool_Id>?     ChargingPoolIds       = null,
+                                             Measurand?                        Measurand             = null,
+                                             MeasurementLocation?              MeasurementLocation   = null)
         {
 
             CDR                     = null;
@@ -536,8 +536,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                       CSOOperatorId,
                       EVSEId,
-                      NetworkPath,
-                      ChargingPoolId,
+                      ChargingStationIds,
+                      ChargingPoolIds,
                       [
                           startMeteringValue,
                           stopMeteringValue
@@ -977,8 +977,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              OCPP.Signature.TryParse,
-                                              out HashSet<OCPP.Signature> Signatures,
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -991,7 +991,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
+                                           OCPPv2_1.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {
@@ -1114,7 +1114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
                               CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
                               CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
-                              CustomJObjectSerializerDelegate<OCPP.Signature>?       CustomSignatureSerializer             = null,
+                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
@@ -1167,9 +1167,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    CSOOperatorId,
                    EVSEId,
-                   NetworkPath,
-                   ChargingPoolId,
-                   MeteringValues. Select(meteringValue  => meteringValue.Clone()). ToArray(),
+                   ChargingStationIds?.Select(chargingStationId => chargingStationId.Clone).   ToArray(),
+                   ChargingPoolIds?.   Select(chargingPoolId    => chargingPoolId.   Clone).   ToArray(),
+                   MeteringValues.     Select(meteringValue     => meteringValue.    Clone()). ToArray(),
 
                    TotalFixedCost.       Clone(),
                    TotalReservationCost. Clone(),

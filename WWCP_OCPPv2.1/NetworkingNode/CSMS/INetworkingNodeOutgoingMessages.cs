@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all CSMS clients.
     /// </summary>
-    public interface INetworkingNodeOutgoingMessages : OCPP.NN.CSMS.INetworkingNodeOutgoingMessages
+    public interface INetworkingNodeOutgoingMessages
     {
 
         #region !!!Custom JSON serializer delegates
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         //#region Data Structures
 
         //CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
-        //CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
+        //CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
         //CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
         //CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
         //CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         //CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                         { get; set; }
         //CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                              { get; set; }
         //CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                         { get; set; }
-        
+
         //CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                        { get; set; }
         //CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                               { get; set; }
         //CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                                    { get; set; }
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         //CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                             { get; set; }
         //CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                                 { get; set; }
         //CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                            { get; set; }
-        
+
         //CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
         //CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
 
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Reset the given charging station.
         /// </summary>
-        /// <param name="Request">A reset request.</param>
+        /// <param name="Request">A Reset request.</param>
         Task<ResetResponse> Reset(ResetRequest Request);
 
         #endregion
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Initiate a firmware download from the given location at the given charging station.
         /// </summary>
-        /// <param name="Request">An update firmware request.</param>
+        /// <param name="Request">An UpdateFirmware request.</param>
         Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request);
 
         #endregion
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Publish a firmware.
         /// </summary>
-        /// <param name="Request">A publish firmware request.</param>
+        /// <param name="Request">A PublishFirmware request.</param>
         Task<PublishFirmwareResponse> PublishFirmware(PublishFirmwareRequest Request);
 
         #endregion
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Unpublish a firmware.
         /// </summary>
-        /// <param name="Request">An unpublish firmware request.</param>
+        /// <param name="Request">An UnpublishFirmware request.</param>
         Task<UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request);
 
         #endregion
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Get a base report.
         /// </summary>
-        /// <param name="Request">A get base report request.</param>
+        /// <param name="Request">A GetBaseReport request.</param>
         Task<GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request);
 
         #endregion
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Get a report.
         /// </summary>
-        /// <param name="Request">A get report request.</param>
+        /// <param name="Request">A GetReport request.</param>
         Task<GetReportResponse> GetReport(GetReportRequest Request);
 
         #endregion
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Retrieve log files from the charging station.
         /// </summary>
-        /// <param name="Request">A get log request.</param>
+        /// <param name="Request">A GetLog request.</param>
         Task<GetLogResponse> GetLog(GetLogRequest Request);
 
         #endregion
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Set variables.
         /// </summary>
-        /// <param name="Request">A set variables request.</param>
+        /// <param name="Request">A SetVariables request.</param>
         Task<SetVariablesResponse> SetVariables(SetVariablesRequest Request);
 
         #endregion
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Get all variables.
         /// </summary>
-        /// <param name="Request">A get variables request.</param>
+        /// <param name="Request">A GetVariables request.</param>
         Task<GetVariablesResponse> GetVariables(GetVariablesRequest Request);
 
         #endregion
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Set the monitoring base.
         /// </summary>
-        /// <param name="Request">A set monitoring base request.</param>
+        /// <param name="Request">A SetMonitoringBase request.</param>
         Task<SetMonitoringBaseResponse> SetMonitoringBase(SetMonitoringBaseRequest Request);
 
         #endregion
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Get a monitoring report.
         /// </summary>
-        /// <param name="Request">A get monitoring report request.</param>
+        /// <param name="Request">A GetMonitoringReport request.</param>
         Task<GetMonitoringReportResponse> GetMonitoringReport(GetMonitoringReportRequest Request);
 
         #endregion
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Set the monitoring level.
         /// </summary>
-        /// <param name="Request">A set monitoring level request.</param>
+        /// <param name="Request">A SetMonitoringLevel request.</param>
         Task<SetMonitoringLevelResponse> SetMonitoringLevel(SetMonitoringLevelRequest Request);
 
         #endregion
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Set a variable monitoring.
         /// </summary>
-        /// <param name="Request">A set variable monitoring request.</param>
+        /// <param name="Request">A SetVariableMonitoring request.</param>
         Task<SetVariableMonitoringResponse> SetVariableMonitoring(SetVariableMonitoringRequest Request);
 
         #endregion
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Remove the given variable monitoring.
         /// </summary>
-        /// <param name="Request">A clear variable monitoring request.</param>
+        /// <param name="Request">A ClearVariableMonitoring request.</param>
         Task<ClearVariableMonitoringResponse> ClearVariableMonitoring(ClearVariableMonitoringRequest Request);
 
         #endregion
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Set the network profile.
         /// </summary>
-        /// <param name="Request">A set network profile request.</param>
+        /// <param name="Request">A SetNetworkProfile request.</param>
         Task<SetNetworkProfileResponse> SetNetworkProfile(SetNetworkProfileRequest Request);
 
         #endregion
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Change the availability of the given charging station or EVSE.
         /// </summary>
-        /// <param name="Request">A change availability request.</param>
+        /// <param name="Request">A ChangeAvailability request.</param>
         Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request);
 
         #endregion
@@ -352,7 +352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Create a trigger for the given message at the given charging station or EVSE.
         /// </summary>
-        /// <param name="Request">A trigger message request.</param>
+        /// <param name="Request">A TriggerMessage request.</param>
         Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request);
 
         #endregion
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Send the signed certificate to the charging station.
         /// </summary>
-        /// <param name="Request">A certificate signed request.</param>
+        /// <param name="Request">A CertificateSigned request.</param>
         Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request);
 
         #endregion
@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Install the given certificate within the charging station.
         /// </summary>
-        /// <param name="Request">An install certificate request.</param>
+        /// <param name="Request">An InstallCertificate request.</param>
         Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request);
 
         #endregion
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
-        /// <param name="Request">A get installed certificate ids request.</param>
+        /// <param name="Request">A GetInstalledCertificateIds request.</param>
         Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request);
 
         #endregion
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Remove the given certificate from the charging station.
         /// </summary>
-        /// <param name="Request">A delete certificate request.</param>
+        /// <param name="Request">A DeleteCertificate request.</param>
         Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request);
 
         #endregion
@@ -414,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Return the local white list of the given charging station.
         /// </summary>
-        /// <param name="Request">A get local list version request.</param>
+        /// <param name="Request">A GetLocalListVersion request.</param>
         Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request);
 
         #endregion
@@ -424,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Set the local white liste at the given charging station.
         /// </summary>
-        /// <param name="Request">A send local list request.</param>
+        /// <param name="Request">A SendLocalList request.</param>
         Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request);
 
         #endregion
@@ -434,19 +434,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Clear the local white liste cache of the given charging station.
         /// </summary>
-        /// <param name="Request">A clear cache request.</param>
+        /// <param name="Request">A ClearCache request.</param>
         Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request);
 
         #endregion
 
+
+        #region QRCodeScanned               (Request)
+
+        /// <summary>
+        /// Inform the given charging station, that a QR-Code was scanned.
+        /// </summary>
+        /// <param name="Request">A QRCodeScanned request.</param>
+        Task<QRCodeScannedResponse> QRCodeScanned(QRCodeScannedRequest Request);
+
+        #endregion
 
         #region ReserveNow                  (Request)
 
         /// <summary>
         /// Create a charging reservation at the given charging station.
         /// </summary>
-        /// <param name="Request">A reserve now request.</param>
-        Task<ReserveNowResponse> ReserveNow(ReserveNowRequest  Request);
+        /// <param name="Request">A ReserveNow request.</param>
+        Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request);
 
         #endregion
 
@@ -455,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Cancel the given charging reservation.
         /// </summary>
-        /// <param name="Request">A cancel reservation request.</param>
+        /// <param name="Request">A CancelReservation request.</param>
         Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request);
 
         #endregion
@@ -465,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Start a charging process (transaction).
         /// </summary>
-        /// <param name="Request">A request start transaction request.</param>
+        /// <param name="Request">A RequestStartTransaction request.</param>
         Task<RequestStartTransactionResponse> RequestStartTransaction(RequestStartTransactionRequest Request);
 
         #endregion
@@ -475,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Stop a charging process (transaction).
         /// </summary>
-        /// <param name="Request">A request stop transaction request.</param>
+        /// <param name="Request">A RequestStopTransaction request.</param>
         Task<RequestStopTransactionResponse> RequestStopTransaction(RequestStopTransactionRequest Request);
 
         #endregion
@@ -485,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Get the status of a charging process (transaction).
         /// </summary>
-        /// <param name="Request">A get transaction status request.</param>
+        /// <param name="Request">A GetTransactionStatus request.</param>
         Task<GetTransactionStatusResponse> GetTransactionStatus(GetTransactionStatusRequest Request);
 
         #endregion
@@ -495,7 +505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Set the charging profile of the given EVSE at the given charging station.
         /// </summary>
-        /// <param name="Request">A set charging profile request.</param>
+        /// <param name="Request">A SetChargingProfile request.</param>
         Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request);
 
         #endregion
@@ -505,7 +515,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Get all charging profiles from the given charging station.
         /// </summary>
-        /// <param name="Request">A get charging profiles request.</param>
+        /// <param name="Request">A GetChargingProfiles request.</param>
         Task<GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request);
 
         #endregion
@@ -515,7 +525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Remove matching charging profiles from the given charging station.
         /// </summary>
-        /// <param name="Request">A clear charging profile request.</param>
+        /// <param name="Request">A ClearChargingProfile request.</param>
         Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request);
 
         #endregion
@@ -525,7 +535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Return the charging schedule at the given charging station and EVSE.
         /// </summary>
-        /// <param name="Request">A get composite schedule request.</param>
+        /// <param name="Request">A GetCompositeSchedule request.</param>
         Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request);
 
         #endregion
@@ -545,7 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Update the list of authorized energy services.
         /// </summary>
-        /// <param name="Request">A notify allowed energy transfer request.</param>
+        /// <param name="Request">A NotifyAllowedEnergyTransfer request.</param>
         Task<NotifyAllowedEnergyTransferResponse> NotifyAllowedEnergyTransfer(NotifyAllowedEnergyTransferRequest Request);
 
         #endregion
@@ -565,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Unlock the given EVSE/connector at the given charging station.
         /// </summary>
-        /// <param name="Request">An unlock connector request.</param>
+        /// <param name="Request">An UnlockConnector request.</param>
         Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request);
 
         #endregion
@@ -578,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// The charging station uses the value of signal to select a matching power value
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
-        /// <param name="Request">An unlock connector request.</param>
+        /// <param name="Request">An AFRRSignal request.</param>
         Task<AFRRSignalResponse> AFRRSignal(AFRRSignalRequest Request);
 
         #endregion
@@ -589,7 +599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Set a display message.
         /// </summary>
-        /// <param name="Request">A set display message request.</param>
+        /// <param name="Request">A SetDisplayMessage request.</param>
         Task<SetDisplayMessageResponse> SetDisplayMessage(SetDisplayMessageRequest Request);
 
         #endregion
@@ -599,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Get all display messages.
         /// </summary>
-        /// <param name="Request">A get display messages request.</param>
+        /// <param name="Request">A GetDisplayMessages request.</param>
         Task<GetDisplayMessagesResponse> GetDisplayMessages(GetDisplayMessagesRequest Request);
 
         #endregion
@@ -609,7 +619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Remove the given display message.
         /// </summary>
-        /// <param name="Request">A clear display message request.</param>
+        /// <param name="Request">A ClearDisplayMessage request.</param>
         Task<ClearDisplayMessageResponse> ClearDisplayMessage(ClearDisplayMessageRequest Request);
 
         #endregion
@@ -619,7 +629,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Send updated cost(s).
         /// </summary>
-        /// <param name="Request">A cost updated request.</param>
+        /// <param name="Request">A CostUpdated request.</param>
         Task<CostUpdatedResponse> CostUpdated(CostUpdatedRequest Request);
 
         #endregion
@@ -629,7 +639,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Request customer information.
         /// </summary>
-        /// <param name="Request">A customer information request.</param>
+        /// <param name="Request">A CustomerInformation request.</param>
         Task<CustomerInformationResponse> CustomerInformation(CustomerInformationRequest Request);
 
         #endregion

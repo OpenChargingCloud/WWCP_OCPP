@@ -21,12 +21,11 @@ using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -76,32 +75,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 var nnJSONResponseMessagesSent           = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var csBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
 
-                chargingStation.OnBootNotificationRequest                  += (timestamp, sender, bootNotificationRequest) => {
+                chargingStation.OCPP.OUT.OnBootNotificationRequestSent      += (timestamp, sender, bootNotificationRequest) => {
                     csBootNotificationRequestsSent.     TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN.OnJSONRequestMessageReceived        += (timestamp, sender, jsonRequestMessage) => {
+                localController.OCPP.IN. OnJSONRequestMessageReceived       += (timestamp, sender, jsonRequestMessage) => {
                     nnJSONMessageRequestsReceived.      TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN.OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
+                localController.OCPP.IN. OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
                     nnBootNotificationRequestsReceived. TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                //networkingNode.OCPP.OUT.nnBootNotificationResponsesSent += (timestamp, sender, jsonResponseMessage) => {
+                //networkingNode.OCPP.OUT.nnBootNotificationResponsesSent     += (timestamp, sender, jsonResponseMessage) => {
                 //    nnBootNotificationResponsesSent.    TryAdd(jsonResponseMessage);
                 //    return Task.CompletedTask;
                 //};
 
-                localController.OCPP.OUT.OnJSONResponseMessageSent         += (timestamp, sender, jsonResponseMessage, sendMessageResult) => {
+                localController.OCPP.OUT.OnJSONResponseMessageSent          += (timestamp, sender, jsonResponseMessage, sendMessageResult) => {
                     nnJSONResponseMessagesSent.         TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
 
-                chargingStation.        OnBootNotificationResponse        += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
+                chargingStation.OCPP.IN. OnBootNotificationResponseReceived += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
                     csBootNotificationResponsesReceived.TryAdd(bootNotificationResponse);
                     return Task.CompletedTask;
                 };
@@ -228,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 var nnJSONResponseMessagesSent       = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var csDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
 
-                chargingStation.OnDataTransferRequestSent              += (timestamp, sender, dataTransferRequest) => {
+                chargingStation.OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, dataTransferRequest) => {
                     csDataTransferRequestsSent.     TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -253,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                chargingStation.        OnDataTransferResponseReceived += (timestamp, sender, dataTransferRequest, dataTransferResponse, runtime) => {
+                chargingStation.OCPP.IN. OnDataTransferResponseReceived += (timestamp, sender, dataTransferRequest, dataTransferResponse, runtime) => {
                     csDataTransferResponsesReceived.TryAdd(dataTransferResponse);
                     return Task.CompletedTask;
                 };
@@ -380,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 var nnBinaryResponseMessagesSent           = new ConcurrentList<OCPP_BinaryResponseMessage>();
                 var csBinaryDataTransferResponsesReceived  = new ConcurrentList<BinaryDataTransferResponse>();
 
-                chargingStation.OnBinaryDataTransferRequestSent              += (timestamp, sender, bootNotificationRequest) => {
+                chargingStation.OCPP.OUT.OnBinaryDataTransferRequestSent      += (timestamp, sender, bootNotificationRequest) => {
                     csBinaryDataTransferRequestsSent.     TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -395,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                //networkingNode.OCPP.OUT.nnBinaryDataTransferResponsesSent  += (timestamp, sender, jsonResponseMessage) => {
+                //networkingNode.OCPP.OUT.nnBinaryDataTransferResponsesSent     += (timestamp, sender, jsonResponseMessage) => {
                 //    nnBinaryDataTransferResponsesSent.    TryAdd(jsonResponseMessage);
                 //    return Task.CompletedTask;
                 //};
@@ -405,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                chargingStation.        OnBinaryDataTransferResponseReceived += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
+                chargingStation.OCPP.IN. OnBinaryDataTransferResponseReceived += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
                     csBinaryDataTransferResponsesReceived.TryAdd(bootNotificationResponse);
                     return Task.CompletedTask;
                 };

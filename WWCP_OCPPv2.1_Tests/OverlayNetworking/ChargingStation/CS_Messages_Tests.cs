@@ -83,22 +83,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
             InitNetworkingNode1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,                       Is.Not.Null);
-                Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(localController1,                  Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
-                Assert.That(chargingStation1,                 Is.Not.Null);
-                Assert.That(chargingStation2,                 Is.Not.Null);
-                Assert.That(chargingStation3,                 Is.Not.Null);
+                Assert.That(testCSMS01,               Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(localController1,         Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer01,  Is.Not.Null);
+                Assert.That(chargingStation1,         Is.Not.Null);
+                Assert.That(chargingStation2,         Is.Not.Null);
+                Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01                     is not null &&
-                testBackendWebSockets01        is not null &&
-                localController1                is not null &&
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                localController1        is not null &&
                 lcOCPPWebSocketServer01 is not null &&
-                chargingStation1               is not null &&
-                chargingStation2               is not null &&
-                chargingStation3               is not null)
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
             {
 
                 var csBootNotificationRequests     = new ConcurrentList<BootNotificationRequest>();
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 var nnBootNotificationRequestsOUT  = new ConcurrentList<BootNotificationRequest>();
                 var csmsBootNotificationRequests   = new ConcurrentList<BootNotificationRequest>();
 
-                chargingStation1.       OnBootNotificationRequest += (timestamp, sender,             bootNotificationRequest) => {
+                chargingStation1.OCPP.OUT.    OnBootNotificationRequestSent     += (timestamp, sender,             bootNotificationRequest) => {
                     csBootNotificationRequests.   TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -127,12 +127,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 //    return Task.CompletedTask;
                 //};
 
-                testCSMS01.        OnBootNotificationRequestReceived      += (timestamp, sender, connection, bootNotificationRequest) => {
+                testCSMS01.      OCPP.IN.     OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest) => {
                     csmsBootNotificationRequests. TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.OverlayNetwork;
+                //chargingStation1.NetworkingMode = NetworkingMode.OverlayNetwork;
 
 
                 var reason    = BootReason.PowerUp;
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                     Assert.That(csBootNotificationRequests.    Count,                        Is.EqualTo(1), "The BootNotification did not leave the charging station!");
 
                     Assert.That(nnBootNotificationRequestsIN.  Count,                        Is.EqualTo(1), "The BootNotification did not reach the INPUT of the networking node!");
-                    Assert.That(nnBootNotificationRequestsIN.  First().DestinationId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBootNotificationRequestsIN.  First().DestinationId,        Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBootNotificationRequestsIN.  First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnBootNotificationRequestsIN.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnBootNotificationRequestsIN.  First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                     Assert.That(nnBootNotificationRequestsOUT. Count,                        Is.EqualTo(1), "The BootNotification did not reach the OUTPUT of the networking node!");
 
                     Assert.That(csmsBootNotificationRequests.  Count,                        Is.EqualTo(1), "The BootNotification did not reach the CSMS!");
-                    Assert.That(csmsBootNotificationRequests.  First().DestinationId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsBootNotificationRequests.  First().DestinationId,        Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Length,   Is.EqualTo(2));
                     Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Last,     Is.EqualTo(localController1. Id));
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 var nnBinaryDataTransferRequestsOUT         = new ConcurrentList<BinaryDataTransferRequest>();
                 var csmsIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                chargingStation1.       OnBinaryDataTransferRequestSent         += (timestamp, sender,             binaryDataTransferRequest) => {
+                chargingStation1.OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender,             binaryDataTransferRequest) => {
                     csBinaryDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -255,12 +255,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 //    return Task.CompletedTask;
                 //};
 
-                testCSMS01.             OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
+                testCSMS01.      OCPP.IN.     OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
                     csmsIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.OverlayNetwork;
+                //chargingStation1.NetworkingMode = NetworkingMode.OverlayNetwork;
 
 
                 var vendorId   = Vendor_Id. GraphDefined;

@@ -21,10 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -77,9 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnAddSignaturePolicyRequestFilterDelegate?      OnAddSignaturePolicyRequest;
+        public event OnAddSignaturePolicyRequestReceivedDelegate?    OnAddSignaturePolicyRequestReceived;
+        public event OnAddSignaturePolicyRequestFilterDelegate?      OnAddSignaturePolicyRequestFilter;
+        public event OnAddSignaturePolicyRequestFilteredDelegate?    OnAddSignaturePolicyRequestFiltered;
+        public event OnAddSignaturePolicyRequestSentDelegate?        OnAddSignaturePolicyRequestSent;
 
-        public event OnAddSignaturePolicyRequestFilteredDelegate?    OnAddSignaturePolicyRequestLogging;
+        public event OnAddSignaturePolicyResponseReceivedDelegate?   OnAddSignaturePolicyResponseReceived;
+        public event OnAddSignaturePolicyResponseSentDelegate?       OnAddSignaturePolicyResponseSent;
 
         #endregion
 
@@ -95,29 +96,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     JSONRequestMessage.RequestId,
                                                     JSONRequestMessage.DestinationId,
                                                     JSONRequestMessage.NetworkPath,
-                                                    out var Request,
+                                                    out var request,
                                                     out var errorResponse,
                                                     parentNetworkingNode.OCPP.CustomAddSignaturePolicyRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>? forwardingDecision = null;
 
-            #region Send OnAddSignaturePolicyRequest event
 
-            var requestFilter = OnAddSignaturePolicyRequest;
+            #region Send OnAddSignaturePolicyRequestReceived event
+
+            var receivedLogging = OnAddSignaturePolicyRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnAddSignaturePolicyRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                                                                         Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnAddSignaturePolicyRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            #region Send OnAddSignaturePolicyRequestFilter event
+
+            var requestFilter = OnAddSignaturePolicyRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnAddSignaturePolicyRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                     OfType<OnAddSignaturePolicyRequestFilterDelegate>().
+                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
-                                                                                                     Request,
+                                                                                                     request,
                                                                                                      CancellationToken)).
                                                      ToArray());
 
@@ -129,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnAddSignaturePolicyRequest),
+                              nameof(OnAddSignaturePolicyRequestFilter),
                               e
                           );
                 }
@@ -138,11 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
             #region Default result
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -152,12 +186,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new AddSignaturePolicyResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -173,20 +207,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnAddSignaturePolicyRequestLogging event
+            #region Send OnAddSignaturePolicyRequestFiltered event
 
-            var logger = OnAddSignaturePolicyRequestLogging;
+            var logger = OnAddSignaturePolicyRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnAddSignaturePolicyRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                       OfType<OnAddSignaturePolicyRequestFilteredDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
-                                                                                         Request,
+                                                                                         request,
                                                                                          forwardingDecision)).
                                        ToArray());
 
@@ -195,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnAddSignaturePolicyRequestLogging),
+                              nameof(OnAddSignaturePolicyRequestFiltered),
                               e
                           );
                 }
@@ -203,6 +237,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnAddSignaturePolicyRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnAddSignaturePolicyRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnAddSignaturePolicyRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnAddSignaturePolicyRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomAddSignaturePolicyRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignaturePolicySerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             return forwardingDecision;
 

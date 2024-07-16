@@ -30,150 +30,150 @@ namespace cloud.charging.open.protocols.OCPP.NN.CSMS
     public interface INetworkingNodeOutgoingMessageEvents : NN.INetworkingNodeOutgoingMessageEvents
     {
 
-        // Binary Data Streams Extensions
+        //// Binary Data Streams Extensions
 
-        #region GetFile                        (Request/-Response)
+        //#region GetFile                        (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a GetFile request will be sent to a charging station.
-        /// </summary>
-        event OnGetFileRequestDelegate?                         OnGetFileRequest;
+        ///// <summary>
+        ///// An event fired whenever a GetFile request will be sent to a charging station.
+        ///// </summary>
+        //event OnGetFileRequestDelegate?                         OnGetFileRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a GetFile request was received.
-        /// </summary>
-        event OnGetFileResponseDelegate?                        OnGetFileResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a GetFile request was received.
+        ///// </summary>
+        //event OnGetFileResponseDelegate?                        OnGetFileResponse;
 
-        #endregion
+        //#endregion
 
-        #region SendFile                       (Request/-Response)
+        //#region SendFile                       (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a SendFile request will be sent to a charging station.
-        /// </summary>
-        event OnSendFileRequestDelegate?                        OnSendFileRequest;
+        ///// <summary>
+        ///// An event fired whenever a SendFile request will be sent to a charging station.
+        ///// </summary>
+        //event OnSendFileRequestDelegate?                        OnSendFileRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a SendFile request was received.
-        /// </summary>
-        event OnSendFileResponseDelegate?                       OnSendFileResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a SendFile request was received.
+        ///// </summary>
+        //event OnSendFileResponseDelegate?                       OnSendFileResponse;
 
-        #endregion
+        //#endregion
 
-        #region DeleteFile                     (Request/-Response)
+        //#region DeleteFile                     (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a DeleteFile request will be sent to a charging station.
-        /// </summary>
-        event OnDeleteFileRequestDelegate?                      OnDeleteFileRequest;
+        ///// <summary>
+        ///// An event fired whenever a DeleteFile request will be sent to a charging station.
+        ///// </summary>
+        //event OnDeleteFileRequestDelegate?                      OnDeleteFileRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a DeleteFile request was received.
-        /// </summary>
-        event OnDeleteFileResponseDelegate?                     OnDeleteFileResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a DeleteFile request was received.
+        ///// </summary>
+        //event OnDeleteFileResponseDelegate?                     OnDeleteFileResponse;
 
-        #endregion
+        //#endregion
 
-        #region ListDirectory                  (Request/-Response)
+        //#region ListDirectory                  (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a ListDirectory request will be sent to a charging station.
-        /// </summary>
-        event OnListDirectoryRequestDelegate?                   OnListDirectoryRequest;
+        ///// <summary>
+        ///// An event fired whenever a ListDirectory request will be sent to a charging station.
+        ///// </summary>
+        //event OnListDirectoryRequestDelegate?                   OnListDirectoryRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a ListDirectory request was received.
-        /// </summary>
-        event OnListDirectoryResponseDelegate?                  OnListDirectoryResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a ListDirectory request was received.
+        ///// </summary>
+        //event OnListDirectoryResponseDelegate?                  OnListDirectoryResponse;
 
-        #endregion
+        //#endregion
 
 
-        // E2E Security Extensions
+        //// E2E Security Extensions
 
-        #region AddSignaturePolicy             (Request/-Response)
+        //#region AddSignaturePolicy             (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever an AddSignaturePolicy request will be sent to a charging station.
-        /// </summary>
-        event OnAddSignaturePolicyRequestDelegate?              OnAddSignaturePolicyRequest;
+        ///// <summary>
+        ///// An event fired whenever an AddSignaturePolicy request will be sent to a charging station.
+        ///// </summary>
+        //event OnAddSignaturePolicyRequestDelegate?              OnAddSignaturePolicyRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to an AddSignaturePolicy request was received.
-        /// </summary>
-        event OnAddSignaturePolicyResponseDelegate?             OnAddSignaturePolicyResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to an AddSignaturePolicy request was received.
+        ///// </summary>
+        //event OnAddSignaturePolicyResponseDelegate?             OnAddSignaturePolicyResponse;
 
-        #endregion
+        //#endregion
 
-        #region UpdateSignaturePolicy          (Request/-Response)
+        //#region UpdateSignaturePolicy          (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever an UpdateSignaturePolicy request will be sent to a charging station.
-        /// </summary>
-        event OnUpdateSignaturePolicyRequestDelegate?           OnUpdateSignaturePolicyRequest;
+        ///// <summary>
+        ///// An event fired whenever an UpdateSignaturePolicy request will be sent to a charging station.
+        ///// </summary>
+        //event OnUpdateSignaturePolicyRequestDelegate?           OnUpdateSignaturePolicyRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to an UpdateSignaturePolicy request was received.
-        /// </summary>
-        event OnUpdateSignaturePolicyResponseDelegate?          OnUpdateSignaturePolicyResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to an UpdateSignaturePolicy request was received.
+        ///// </summary>
+        //event OnUpdateSignaturePolicyResponseDelegate?          OnUpdateSignaturePolicyResponse;
 
-        #endregion
+        //#endregion
 
-        #region DeleteSignaturePolicy          (Request/-Response)
+        //#region DeleteSignaturePolicy          (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a DeleteSignaturePolicy request will be sent to a charging station.
-        /// </summary>
-        event OnDeleteSignaturePolicyRequestDelegate?           OnDeleteSignaturePolicyRequest;
+        ///// <summary>
+        ///// An event fired whenever a DeleteSignaturePolicy request will be sent to a charging station.
+        ///// </summary>
+        //event OnDeleteSignaturePolicyRequestDelegate?           OnDeleteSignaturePolicyRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a DeleteSignaturePolicy request was received.
-        /// </summary>
-        event OnDeleteSignaturePolicyResponseDelegate?          OnDeleteSignaturePolicyResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a DeleteSignaturePolicy request was received.
+        ///// </summary>
+        //event OnDeleteSignaturePolicyResponseDelegate?          OnDeleteSignaturePolicyResponse;
 
-        #endregion
+        //#endregion
 
-        #region AddUserRole                    (Request/-Response)
+        //#region AddUserRole                    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever an AddUserRole request will be sent to a charging station.
-        /// </summary>
-        event OnAddUserRoleRequestDelegate?                     OnAddUserRoleRequest;
+        ///// <summary>
+        ///// An event fired whenever an AddUserRole request will be sent to a charging station.
+        ///// </summary>
+        //event OnAddUserRoleRequestDelegate?                     OnAddUserRoleRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to an AddUserRole request was received.
-        /// </summary>
-        event OnAddUserRoleResponseDelegate?                    OnAddUserRoleResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to an AddUserRole request was received.
+        ///// </summary>
+        //event OnAddUserRoleResponseDelegate?                    OnAddUserRoleResponse;
 
-        #endregion
+        //#endregion
 
-        #region UpdateUserRole                 (Request/-Response)
+        //#region UpdateUserRole                 (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever an UpdateUserRole request will be sent to a charging station.
-        /// </summary>
-        event OnUpdateUserRoleRequestDelegate?                  OnUpdateUserRoleRequest;
+        ///// <summary>
+        ///// An event fired whenever an UpdateUserRole request will be sent to a charging station.
+        ///// </summary>
+        //event OnUpdateUserRoleRequestDelegate?                  OnUpdateUserRoleRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to an UpdateUserRole request was received.
-        /// </summary>
-        event OnUpdateUserRoleResponseDelegate?                 OnUpdateUserRoleResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to an UpdateUserRole request was received.
+        ///// </summary>
+        //event OnUpdateUserRoleResponseDelegate?                 OnUpdateUserRoleResponse;
 
-        #endregion
+        //#endregion
 
-        #region DeleteUserRole                 (Request/-Response)
+        //#region DeleteUserRole                 (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a DeleteUserRole request will be sent to a charging station.
-        /// </summary>
-        event OnDeleteUserRoleRequestDelegate?                  OnDeleteUserRoleRequest;
+        ///// <summary>
+        ///// An event fired whenever a DeleteUserRole request will be sent to a charging station.
+        ///// </summary>
+        //event OnDeleteUserRoleRequestDelegate?                  OnDeleteUserRoleRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a DeleteUserRole request was received.
-        /// </summary>
-        event OnDeleteUserRoleResponseDelegate?                 OnDeleteUserRoleResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a DeleteUserRole request was received.
+        ///// </summary>
+        //event OnDeleteUserRoleResponseDelegate?                 OnDeleteUserRoleResponse;
 
-        #endregion
+        //#endregion
 
 
     }

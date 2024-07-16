@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var setDefaultChargingTariffRequests = new ConcurrentList<SetDefaultChargingTariffRequest>();
 
-                chargingStation1.OnSetDefaultChargingTariffRequest += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
+                chargingStation1.OCPP.IN.OnSetDefaultChargingTariffRequestReceived += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
                     setDefaultChargingTariffRequests.TryAdd(setDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -162,19 +162,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.CustomChargingTariffSerializer,
-                                                     testCSMS01.CustomPriceSerializer,
-                                                     testCSMS01.CustomTaxRateSerializer,
-                                                     testCSMS01.CustomTariffElementSerializer,
-                                                     testCSMS01.CustomPriceComponentSerializer,
-                                                     testCSMS01.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.CustomEnergyMixSerializer,
-                                                     testCSMS01.CustomEnergySourceSerializer,
-                                                     testCSMS01.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.CustomIdTokenSerializer,
-                                                     testCSMS01.CustomAdditionalInfoSerializer,
-                                                     testCSMS01.CustomSignatureSerializer,
-                                                     testCSMS01.CustomCustomDataSerializer));
+                                                     testCSMS01.OCPP.CustomChargingTariffSerializer,
+                                                     testCSMS01.OCPP.CustomPriceSerializer,
+                                                     testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                     testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                     testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                     testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                     testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                     testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                     testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                     testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                     testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                     testCSMS01.OCPP.CustomSignatureSerializer,
+                                                     testCSMS01.OCPP.CustomCustomDataSerializer));
 
                 ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
 
@@ -182,10 +182,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
 
                 var response        = await testCSMS01.SetDefaultChargingTariff(
-                                          DestinationNodeId:  chargingStation1.Id,
-                                          ChargingTariff:     chargingTariff,
-                                          CustomData:         null
-                                      );
+                                                DestinationId:    chargingStation1.Id,
+                                                ChargingTariff:   chargingTariff,
+                                                CustomData:       null
+                                            );
 
                 #region Verify the response
 

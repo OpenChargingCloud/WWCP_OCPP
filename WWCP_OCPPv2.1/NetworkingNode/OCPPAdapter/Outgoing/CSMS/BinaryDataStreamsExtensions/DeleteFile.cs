@@ -22,7 +22,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a DeleteFile request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnDeleteFileRequestDelegate?     OnDeleteFileRequest;
+        public event OnDeleteFileRequestSentDelegate?         OnDeleteFileRequestSent;
 
         /// <summary>
-        /// An event sent whenever a response to a DeleteFile request was sent.
+        /// An event sent whenever a response to a DeleteFile request was received.
         /// </summary>
-        public event OCPP.CSMS.OnDeleteFileResponseDelegate?    OnDeleteFileResponse;
+        public event OnDeleteFileResponseReceivedDelegate?    OnDeleteFileResponseReceived;
 
         #endregion
 
@@ -63,20 +63,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
         {
 
-            #region Send OnDeleteFileRequest event
+            #region Send OnDeleteFileRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDeleteFileRequest?.Invoke(startTime,
-                                            parentNetworkingNode,
-                                            Request);
+                OnDeleteFileRequestSent?.Invoke(startTime,
+                                                parentNetworkingNode,
+                                                Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteFileRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteFileRequestSent));
             }
 
             #endregion
@@ -134,23 +134,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            #region Send OnDeleteFileResponse event
+            #region Send OnDeleteFileResponseReceived event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnDeleteFileResponse?.Invoke(endTime,
-                                             parentNetworkingNode,
-                                             Request,
-                                             response,
-                                             endTime - startTime);
+                OnDeleteFileResponseReceived?.Invoke(endTime,
+                                                     parentNetworkingNode,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteFileResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteFileResponseReceived));
             }
 
             #endregion

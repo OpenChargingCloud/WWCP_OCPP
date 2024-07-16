@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var setDefaultChargingTariffRequests = new ConcurrentList<SetDefaultChargingTariffRequest>();
 
-                chargingStation1.OnSetDefaultChargingTariffRequest += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
+                chargingStation1.OCPP.IN.OnSetDefaultChargingTariffRequestReceived += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
                     setDefaultChargingTariffRequests.TryAdd(setDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -162,19 +162,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.CustomChargingTariffSerializer,
-                                                     testCSMS01.CustomPriceSerializer,
-                                                     testCSMS01.CustomTaxRateSerializer,
-                                                     testCSMS01.CustomTariffElementSerializer,
-                                                     testCSMS01.CustomPriceComponentSerializer,
-                                                     testCSMS01.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.CustomEnergyMixSerializer,
-                                                     testCSMS01.CustomEnergySourceSerializer,
-                                                     testCSMS01.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.CustomIdTokenSerializer,
-                                                     testCSMS01.CustomAdditionalInfoSerializer,
-                                                     testCSMS01.CustomSignatureSerializer,
-                                                     testCSMS01.CustomCustomDataSerializer));
+                                                     testCSMS01.OCPP.CustomChargingTariffSerializer,
+                                                     testCSMS01.OCPP.CustomPriceSerializer,
+                                                     testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                     testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                     testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                     testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                     testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                     testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                     testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                     testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                     testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                     testCSMS01.OCPP.CustomSignatureSerializer,
+                                                     testCSMS01.OCPP.CustomCustomDataSerializer));
 
                 ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
 
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response        = await testCSMS01.SetDefaultChargingTariff(
-                                          DestinationNodeId:  chargingStation1.Id,
+                                          DestinationId:  chargingStation1.Id,
                                           ChargingTariff:     chargingTariff,
                                           CustomData:         null
                                       );
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var getDefaultChargingTariffRequests = new ConcurrentList<GetDefaultChargingTariffRequest>();
 
-                chargingStation2.OnGetDefaultChargingTariffRequest += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
                     getDefaultChargingTariffRequests.TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -286,13 +286,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response        = await testCSMS01.GetDefaultChargingTariff(
-                                          DestinationNodeId:  chargingStation2.Id,
+                                          DestinationId:  chargingStation2.Id,
                                           CustomData:         null
                                       );
 
                 #region Verify the response
 
-                ClassicAssert.AreEqual(ResultCode.OK,                      response.Result.ResultCode);
+                ClassicAssert.AreEqual(ResultCode.OK,                       response.Result.ResultCode);
                 ClassicAssert.AreEqual(GenericStatus.Accepted,              response.Status);
                 ClassicAssert.AreEqual(0,                                   response.ChargingTariffs.  Count());
                 ClassicAssert.AreEqual(0,                                   response.ChargingTariffMap.Count());
@@ -407,17 +407,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 var getDefaultChargingTariffRequests     = new ConcurrentList<GetDefaultChargingTariffRequest>();
                 var removeDefaultChargingTariffRequests  = new ConcurrentList<RemoveDefaultChargingTariffRequest>();
 
-                chargingStation1.OnSetDefaultChargingTariffRequest    += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
+                chargingStation1.OCPP.IN.OnSetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
                     setDefaultChargingTariffRequests.   TryAdd(setDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.OnGetDefaultChargingTariffRequest    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation1.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
                     getDefaultChargingTariffRequests.   TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.OnRemoveDefaultChargingTariffRequest += (timestamp, sender, connection, removeDefaultChargingTariffRequest) => {
+                chargingStation1.OCPP.IN.OnRemoveDefaultChargingTariffRequestReceived += (timestamp, sender, connection, removeDefaultChargingTariffRequest) => {
                     removeDefaultChargingTariffRequests.TryAdd(removeDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -484,19 +484,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.CustomChargingTariffSerializer,
-                                                     testCSMS01.CustomPriceSerializer,
-                                                     testCSMS01.CustomTaxRateSerializer,
-                                                     testCSMS01.CustomTariffElementSerializer,
-                                                     testCSMS01.CustomPriceComponentSerializer,
-                                                     testCSMS01.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.CustomEnergyMixSerializer,
-                                                     testCSMS01.CustomEnergySourceSerializer,
-                                                     testCSMS01.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.CustomIdTokenSerializer,
-                                                     testCSMS01.CustomAdditionalInfoSerializer,
-                                                     testCSMS01.CustomSignatureSerializer,
-                                                     testCSMS01.CustomCustomDataSerializer));
+                                                     testCSMS01.OCPP.CustomChargingTariffSerializer,
+                                                     testCSMS01.OCPP.CustomPriceSerializer,
+                                                     testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                     testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                     testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                     testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                     testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                     testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                     testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                     testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                     testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                     testCSMS01.OCPP.CustomSignatureSerializer,
+                                                     testCSMS01.OCPP.CustomCustomDataSerializer));
 
                 ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
 
@@ -504,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation1.Id,
+                                           DestinationId:  chargingStation1.Id,
                                            ChargingTariff:     chargingTariff,
                                            CustomData:         null
                                        );
@@ -546,7 +546,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation1.Id,
+                                           DestinationId:  chargingStation1.Id,
                                            CustomData:         null
                                        );
 
@@ -581,7 +581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation1.Id,
+                                           DestinationId:  chargingStation1.Id,
                                            CustomData:         null
                                        );
 
@@ -613,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation1.Id,
+                                           DestinationId:  chargingStation1.Id,
                                            CustomData:         null
                                        );
 
@@ -739,17 +739,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 var getDefaultChargingTariffRequests     = new ConcurrentList<GetDefaultChargingTariffRequest>();
                 var removeDefaultChargingTariffRequests  = new ConcurrentList<RemoveDefaultChargingTariffRequest>();
 
-                chargingStation2.OnSetDefaultChargingTariffRequest    += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnSetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
                     setDefaultChargingTariffRequests.   TryAdd(setDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation2.OnGetDefaultChargingTariffRequest    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
                     getDefaultChargingTariffRequests.   TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation2.OnRemoveDefaultChargingTariffRequest += (timestamp, sender, connection, removeDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnRemoveDefaultChargingTariffRequestReceived += (timestamp, sender, connection, removeDefaultChargingTariffRequest) => {
                     removeDefaultChargingTariffRequests.TryAdd(removeDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -816,19 +816,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.CustomChargingTariffSerializer,
-                                                     testCSMS01.CustomPriceSerializer,
-                                                     testCSMS01.CustomTaxRateSerializer,
-                                                     testCSMS01.CustomTariffElementSerializer,
-                                                     testCSMS01.CustomPriceComponentSerializer,
-                                                     testCSMS01.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.CustomEnergyMixSerializer,
-                                                     testCSMS01.CustomEnergySourceSerializer,
-                                                     testCSMS01.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.CustomIdTokenSerializer,
-                                                     testCSMS01.CustomAdditionalInfoSerializer,
-                                                     testCSMS01.CustomSignatureSerializer,
-                                                     testCSMS01.CustomCustomDataSerializer));
+                                                     testCSMS01.OCPP.CustomChargingTariffSerializer,
+                                                     testCSMS01.OCPP.CustomPriceSerializer,
+                                                     testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                     testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                     testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                     testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                     testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                     testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                     testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                     testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                     testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                     testCSMS01.OCPP.CustomSignatureSerializer,
+                                                     testCSMS01.OCPP.CustomCustomDataSerializer));
 
                 ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
 
@@ -836,7 +836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
+                                           DestinationId:  chargingStation2.Id,
                                            ChargingTariff:     chargingTariff,
                                            CustomData:         null
                                        );
@@ -878,7 +878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
+                                           DestinationId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -913,7 +913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
+                                           DestinationId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -945,7 +945,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
+                                           DestinationId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1071,17 +1071,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 var getDefaultChargingTariffRequests     = new ConcurrentList<GetDefaultChargingTariffRequest>();
                 var removeDefaultChargingTariffRequests  = new ConcurrentList<RemoveDefaultChargingTariffRequest>();
 
-                chargingStation2.OnSetDefaultChargingTariffRequest    += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnSetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
                     setDefaultChargingTariffRequests.   TryAdd(setDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation2.OnGetDefaultChargingTariffRequest    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
                     getDefaultChargingTariffRequests.   TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation2.OnRemoveDefaultChargingTariffRequest += (timestamp, sender, connection, removeDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnRemoveDefaultChargingTariffRequestReceived += (timestamp, sender, connection, removeDefaultChargingTariffRequest) => {
                     removeDefaultChargingTariffRequests.TryAdd(removeDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -1148,19 +1148,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.CustomChargingTariffSerializer,
-                                                     testCSMS01.CustomPriceSerializer,
-                                                     testCSMS01.CustomTaxRateSerializer,
-                                                     testCSMS01.CustomTariffElementSerializer,
-                                                     testCSMS01.CustomPriceComponentSerializer,
-                                                     testCSMS01.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.CustomEnergyMixSerializer,
-                                                     testCSMS01.CustomEnergySourceSerializer,
-                                                     testCSMS01.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.CustomIdTokenSerializer,
-                                                     testCSMS01.CustomAdditionalInfoSerializer,
-                                                     testCSMS01.CustomSignatureSerializer,
-                                                     testCSMS01.CustomCustomDataSerializer));
+                                                     testCSMS01.OCPP.CustomChargingTariffSerializer,
+                                                     testCSMS01.OCPP.CustomPriceSerializer,
+                                                     testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                     testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                     testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                     testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                     testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                     testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                     testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                     testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                     testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                     testCSMS01.OCPP.CustomSignatureSerializer,
+                                                     testCSMS01.OCPP.CustomCustomDataSerializer));
 
                 ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
 
@@ -1168,7 +1168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
+                                           DestinationId:  chargingStation2.Id,
                                            ChargingTariff:     chargingTariff,
                                            EVSEIds:            new[] {
                                                                    EVSE_Id.Parse(1)
@@ -1213,7 +1213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
+                                           DestinationId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1248,7 +1248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
+                                           DestinationId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1280,7 +1280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
+                                           DestinationId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1406,17 +1406,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 var getDefaultChargingTariffRequests     = new ConcurrentList<GetDefaultChargingTariffRequest>();
                 var removeDefaultChargingTariffRequests  = new ConcurrentList<RemoveDefaultChargingTariffRequest>();
 
-                chargingStation2.OnSetDefaultChargingTariffRequest    += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnSetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
                     setDefaultChargingTariffRequests.   TryAdd(setDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation2.OnGetDefaultChargingTariffRequest    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
                     getDefaultChargingTariffRequests.   TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation2.OnRemoveDefaultChargingTariffRequest += (timestamp, sender, connection, removeDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnRemoveDefaultChargingTariffRequestReceived += (timestamp, sender, connection, removeDefaultChargingTariffRequest) => {
                     removeDefaultChargingTariffRequests.TryAdd(removeDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -1479,23 +1479,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 ClassicAssert.IsTrue   (chargingTariff1.Sign(providerKeyPair,
-                                                      out var eerr,
-                                                      "emp1",
-                                                      I18NString.Create("Just a signed charging tariff!"),
-                                                      timeReference,
-                                                      testCSMS01.CustomChargingTariffSerializer,
-                                                      testCSMS01.CustomPriceSerializer,
-                                                      testCSMS01.CustomTaxRateSerializer,
-                                                      testCSMS01.CustomTariffElementSerializer,
-                                                      testCSMS01.CustomPriceComponentSerializer,
-                                                      testCSMS01.CustomTariffRestrictionsSerializer,
-                                                      testCSMS01.CustomEnergyMixSerializer,
-                                                      testCSMS01.CustomEnergySourceSerializer,
-                                                      testCSMS01.CustomEnvironmentalImpactSerializer,
-                                                      testCSMS01.CustomIdTokenSerializer,
-                                                      testCSMS01.CustomAdditionalInfoSerializer,
-                                                      testCSMS01.CustomSignatureSerializer,
-                                                      testCSMS01.CustomCustomDataSerializer));
+                                                             out var eerr,
+                                                             "emp1",
+                                                             I18NString.Create("Just a signed charging tariff!"),
+                                                             timeReference,
+                                                             testCSMS01.OCPP.CustomChargingTariffSerializer,
+                                                             testCSMS01.OCPP.CustomPriceSerializer,
+                                                             testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                             testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                             testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                             testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                             testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                             testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                             testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                             testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                             testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                             testCSMS01.OCPP.CustomSignatureSerializer,
+                                                             testCSMS01.OCPP.CustomCustomDataSerializer));
 
                 ClassicAssert.IsTrue   (chargingTariff1.Signatures.Any());
 
@@ -1555,23 +1555,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 ClassicAssert.IsTrue   (chargingTariff2.Sign(providerKeyPair,
-                                                      out var eerr2,
-                                                      "emp1",
-                                                      I18NString.Create("Just a signed charging tariff!"),
-                                                      timeReference,
-                                                      testCSMS01.CustomChargingTariffSerializer,
-                                                      testCSMS01.CustomPriceSerializer,
-                                                      testCSMS01.CustomTaxRateSerializer,
-                                                      testCSMS01.CustomTariffElementSerializer,
-                                                      testCSMS01.CustomPriceComponentSerializer,
-                                                      testCSMS01.CustomTariffRestrictionsSerializer,
-                                                      testCSMS01.CustomEnergyMixSerializer,
-                                                      testCSMS01.CustomEnergySourceSerializer,
-                                                      testCSMS01.CustomEnvironmentalImpactSerializer,
-                                                      testCSMS01.CustomIdTokenSerializer,
-                                                      testCSMS01.CustomAdditionalInfoSerializer,
-                                                      testCSMS01.CustomSignatureSerializer,
-                                                      testCSMS01.CustomCustomDataSerializer));
+                                                             out var eerr2,
+                                                             "emp1",
+                                                             I18NString.Create("Just a signed charging tariff!"),
+                                                             timeReference,
+                                                             testCSMS01.OCPP.CustomChargingTariffSerializer,
+                                                             testCSMS01.OCPP.CustomPriceSerializer,
+                                                             testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                             testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                             testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                             testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                             testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                             testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                             testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                             testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                             testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                             testCSMS01.OCPP.CustomSignatureSerializer,
+                                                             testCSMS01.OCPP.CustomCustomDataSerializer));
 
                 ClassicAssert.IsTrue   (chargingTariff2.Signatures.Any());
 
@@ -1579,10 +1579,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1a       = await testCSMS01.SetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
-                                           ChargingTariff:     chargingTariff1,
-                                           EVSEIds:            [ EVSE_Id.Parse(1) ],
-                                           CustomData:         null
+                                           DestinationId:    chargingStation2.Id,
+                                           ChargingTariff:   chargingTariff1,
+                                           EVSEIds:          [ EVSE_Id.Parse(1) ],
+                                           CustomData:       null
                                        );
 
                 #region Verify the response
@@ -1622,10 +1622,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1b       = await testCSMS01.SetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
-                                           ChargingTariff:     chargingTariff2,
-                                           EVSEIds:            [ EVSE_Id.Parse(2) ],
-                                           CustomData:         null
+                                           DestinationId:    chargingStation2.Id,
+                                           ChargingTariff:   chargingTariff2,
+                                           EVSEIds:          [ EVSE_Id.Parse(2) ],
+                                           CustomData:       null
                                        );
 
                 #region Verify the response
@@ -1665,8 +1665,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
-                                           CustomData:         null
+                                           DestinationId:   chargingStation2.Id,
+                                           CustomData:      null
                                        );
 
                 #region Verify the response
@@ -1701,8 +1701,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
-                                           CustomData:         null
+                                           DestinationId:   chargingStation2.Id,
+                                           CustomData:      null
                                        );
 
                 #region Verify the response
@@ -1733,8 +1733,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           DestinationNodeId:  chargingStation2.Id,
-                                           CustomData:         null
+                                           DestinationId:   chargingStation2.Id,
+                                           CustomData:      null
                                        );
 
                 #region Verify the response

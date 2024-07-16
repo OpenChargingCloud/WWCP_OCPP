@@ -24,33 +24,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
     public interface INetworkingNodeIncomingMessageEvents
     {
 
-        #region OnIncomingBinaryDataTransfer (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was received.
-        /// </summary>
-        event OnBinaryDataTransferRequestReceivedDelegate?     OnBinaryDataTransferRequestReceived;
-
-        /// <summary>
-        /// An event fired whenever a response to a BinaryDataTransfer request was received.
-        /// </summary>
-        event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponseReceived;
-
-        #endregion
-
-        #region OnIncomingSecureDataTransfer (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a SecureDataTransfer request was received.
-        /// </summary>
-        event OnSecureDataTransferRequestReceivedDelegate?     OnSecureDataTransferRequestReceived;
-
-        /// <summary>
-        /// An event fired whenever a response to a SecureDataTransfer request was received.
-        /// </summary>
-        event OnSecureDataTransferResponseReceivedDelegate?    OnSecureDataTransferResponseReceived;
-
-        #endregion
 
     }
 

@@ -31,110 +31,110 @@ namespace cloud.charging.open.protocols.OCPP.NN.CSMS
     public interface INetworkingNodeOutgoingMessages : NN.INetworkingNodeOutgoingMessages
     {
 
-        // Binary Data Streams Extensions
+        //// Binary Data Streams Extensions
 
-        #region GetFile                     (Request)
+        //#region GetFile                     (Request)
 
-        /// <summary>
-        /// Request to download the specified file.
-        /// </summary>
-        /// <param name="Request">A GetFile request.</param>
-        Task<GetFileResponse> GetFile(GetFileRequest Request);
+        ///// <summary>
+        ///// Request to download the specified file.
+        ///// </summary>
+        ///// <param name="Request">A GetFile request.</param>
+        //Task<GetFileResponse> GetFile(GetFileRequest Request);
 
-        #endregion
+        //#endregion
 
-        #region SendFile                    (Request)
+        //#region SendFile                    (Request)
 
-        /// <summary>
-        /// Send the given file to the charging station.
-        /// </summary>
-        /// <param name="Request">A SendFile request.</param>
-        Task<SendFileResponse> SendFile(SendFileRequest Request);
+        ///// <summary>
+        ///// Send the given file to the charging station.
+        ///// </summary>
+        ///// <param name="Request">A SendFile request.</param>
+        //Task<SendFileResponse> SendFile(SendFileRequest Request);
 
-        #endregion
+        //#endregion
 
-        #region DeleteFile                  (Request)
+        //#region DeleteFile                  (Request)
 
-        /// <summary>
-        /// Delete the given file from the charging station.
-        /// </summary>
-        /// <param name="Request">A DeleteFile request.</param>
-        Task<DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
+        ///// <summary>
+        ///// Delete the given file from the charging station.
+        ///// </summary>
+        ///// <param name="Request">A DeleteFile request.</param>
+        //Task<DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
 
-        #endregion
+        //#endregion
 
-        #region ListDirectory               (Request)
+        //#region ListDirectory               (Request)
 
-        /// <summary>
-        /// List the given directory of the charging station or networking node.
-        /// </summary>
-        /// <param name="Request">A ListDirectory request.</param>
-        Task<ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request);
+        ///// <summary>
+        ///// List the given directory of the charging station or networking node.
+        ///// </summary>
+        ///// <param name="Request">A ListDirectory request.</param>
+        //Task<ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request);
 
-        #endregion
+        //#endregion
 
 
-        // E2E Security Extensions
+        //// E2E Security Extensions
 
-        #region AddSignaturePolicy          (Request)
+        //#region AddSignaturePolicy          (Request)
 
-        /// <summary>
-        /// Add a signature policy.
-        /// </summary>
-        /// <param name="Request">An AddSignaturePolicy request.</param>
-        Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request);
+        ///// <summary>
+        ///// Add a signature policy.
+        ///// </summary>
+        ///// <param name="Request">An AddSignaturePolicy request.</param>
+        //Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request);
 
-        #endregion
+        //#endregion
 
-        #region UpdateSignaturePolicy       (Request)
+        //#region UpdateSignaturePolicy       (Request)
 
-        /// <summary>
-        /// Update a signature policy.
-        /// </summary>
-        /// <param name="Request">An UpdateSignaturePolicy request.</param>
-        Task<UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request);
+        ///// <summary>
+        ///// Update a signature policy.
+        ///// </summary>
+        ///// <param name="Request">An UpdateSignaturePolicy request.</param>
+        //Task<UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request);
 
-        #endregion
+        //#endregion
 
-        #region DeleteSignaturePolicy       (Request)
+        //#region DeleteSignaturePolicy       (Request)
 
-        /// <summary>
-        /// Delete a signature policy.
-        /// </summary>
-        /// <param name="Request">A DeleteSignaturePolicy request.</param>
-        Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request);
+        ///// <summary>
+        ///// Delete a signature policy.
+        ///// </summary>
+        ///// <param name="Request">A DeleteSignaturePolicy request.</param>
+        //Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request);
 
-        #endregion
+        //#endregion
 
-        #region AddUserRole                 (Request)
+        //#region AddUserRole                 (Request)
 
-        /// <summary>
-        /// Add a user role.
-        /// </summary>
-        /// <param name="Request">An AddUserRole request.</param>
-        Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request);
+        ///// <summary>
+        ///// Add a user role.
+        ///// </summary>
+        ///// <param name="Request">An AddUserRole request.</param>
+        //Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request);
 
-        #endregion
+        //#endregion
 
-        #region UpdateUserRole              (Request)
+        //#region UpdateUserRole              (Request)
 
-        /// <summary>
-        /// Update a user role.
-        /// </summary>
-        /// <param name="Request">An UpdateUserRole request.</param>
-        Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request);
+        ///// <summary>
+        ///// Update a user role.
+        ///// </summary>
+        ///// <param name="Request">An UpdateUserRole request.</param>
+        //Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request);
 
-        #endregion
+        //#endregion
 
-        #region DeleteUserRole              (Request)
+        //#region DeleteUserRole              (Request)
 
-        /// <summary>
-        /// Delete a user role.
-        /// </summary>
-        /// <param name="Request">An DeleteUserRole request.</param>
-        Task<DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request);
+        ///// <summary>
+        ///// Delete a user role.
+        ///// </summary>
+        ///// <param name="Request">An DeleteUserRole request.</param>
+        //Task<DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request);
 
-        #endregion
+        //#endregion
 
 
     }

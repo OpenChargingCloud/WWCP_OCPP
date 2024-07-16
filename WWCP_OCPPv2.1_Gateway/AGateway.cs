@@ -31,7 +31,6 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -430,6 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                         String?            SerialNumber                = null,
                         String?            SoftwareVersion             = null,
                         I18NString?        Description                 = null,
+                        CustomData?        CustomData                  = null,
 
                         SignaturePolicy?   SignaturePolicy             = null,
                         SignaturePolicy?   ForwardingSignaturePolicy   = null,
@@ -444,6 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             : base(Id,
                    Description,
+                   CustomData,
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
@@ -864,10 +865,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                                              cancellationToken) => {
 
                 // A new connection from the same networking node/charging station will replace the older one!
-                OCPP.AddStaticRouting(DestinationNodeId:  networkingNodeId,
-                                      WebSocketServer:    ocppWebSocketServer,
-                                      Priority:           0,
-                                      Timestamp:          timestamp);
+                OCPP.AddStaticRouting(DestinationId:    networkingNodeId,
+                                      WebSocketServer:  ocppWebSocketServer,
+                                      Priority:         0,
+                                      Timestamp:        timestamp);
 
                 #region Send OnNewWebSocketConnection
 

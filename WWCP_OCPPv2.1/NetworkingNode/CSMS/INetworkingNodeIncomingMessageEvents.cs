@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
-    public interface INetworkingNodeIncomingMessageEvents : OCPP.NN.CSMS.INetworkingNodeIncomingMessageEvents
+    public interface INetworkingNodeIncomingMessageEvents
     {
 
         // Incoming requests
@@ -445,6 +445,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// An event fired whenever a response to a SendLocalList request was received.
         /// </summary>
         event OnSendLocalListResponseReceivedDelegate?                  OnSendLocalListResponseReceived;
+
+        #endregion
+
+
+
+        #region ChargingTariffs
+
+        event OnSetDefaultChargingTariffResponseReceivedDelegate? OnSetDefaultChargingTariffResponseReceived;
 
         #endregion
 

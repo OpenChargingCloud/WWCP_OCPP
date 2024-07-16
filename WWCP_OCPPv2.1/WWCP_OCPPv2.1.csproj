@@ -9,18 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="CSMS\IncomingMessages\Networking\**" />
-    <EmbeddedResource Remove="CSMS\IncomingMessages\Networking\**" />
-    <None Remove="CSMS\IncomingMessages\Networking\**" />
+    <Compile Remove="Devices\CSMS\IncomingMessages\Networking\**" />
+    <EmbeddedResource Remove="Devices\CSMS\IncomingMessages\Networking\**" />
+    <None Remove="Devices\CSMS\IncomingMessages\Networking\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="NetworkingNode\OCPPAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\.gitkeep" />
     <None Remove="NetworkingNode\OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="NetworkingNode\OCPPAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\.gitkeep" />
     <Compile Include="NetworkingNode\OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 

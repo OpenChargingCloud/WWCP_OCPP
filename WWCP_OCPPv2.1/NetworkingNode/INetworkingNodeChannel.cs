@@ -142,10 +142,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OnBinaryDataTransferDelegate?                         OnIncomingBinaryDataTransfer;
 
 
-        void AddStaticRouting   (NetworkingNode_Id DestinationNodeId,
+        void AddStaticRouting   (NetworkingNode_Id DestinationId,
                                  NetworkingNode_Id NetworkingHubId);
 
-        void RemoveStaticRouting(NetworkingNode_Id DestinationNodeId,
+        void RemoveStaticRouting(NetworkingNode_Id DestinationId,
                                  NetworkingNode_Id NetworkingHubId);
 
 

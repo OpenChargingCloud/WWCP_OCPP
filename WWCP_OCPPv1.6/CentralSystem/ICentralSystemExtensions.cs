@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 IEnumerable<KeyPair>?         SignKeys            = null,
                                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                                IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                IEnumerable<Signature>?       Signatures          = null,
 
                                                 CustomData?                   CustomData          = null,
 
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                           IEnumerable<KeyPair>?         SignKeys            = null,
                                                                           IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                          IEnumerable<Signature>?       Signatures          = null,
 
                                                                           CustomData?                   CustomData          = null,
 
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                       IEnumerable<KeyPair>?         SignKeys            = null,
                                                                       IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                      IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                      IEnumerable<Signature>?       Signatures          = null,
 
                                                                       CustomData?                   CustomData          = null,
 
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                             IEnumerable<KeyPair>?         SignKeys            = null,
                                                                             IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                            IEnumerable<Signature>?       Signatures          = null,
 
                                                                             CustomData?                   CustomData          = null,
 
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                  IEnumerable<KeyPair>?         SignKeys            = null,
                                                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                 IEnumerable<Signature>?       Signatures          = null,
 
                                                                  CustomData?                   CustomData          = null,
 
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                   IEnumerable<KeyPair>?         SignKeys            = null,
                                                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                  IEnumerable<Signature>?       Signatures          = null,
 
                                                                   CustomData?                   CustomData          = null,
 
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                   IEnumerable<KeyPair>?         SignKeys            = null,
                                                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                  IEnumerable<Signature>?       Signatures          = null,
 
                                                                   CustomData?                   CustomData          = null,
 
@@ -451,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                   IEnumerable<KeyPair>?         SignKeys            = null,
                                                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                  IEnumerable<Signature>?       Signatures          = null,
 
                                                                   CustomData?                   CustomData          = null,
 
@@ -514,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                           IEnumerable<KeyPair>?         SignKeys            = null,
                                                           IEnumerable<SignInfo>?        SignInfos           = null,
-                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                          IEnumerable<Signature>?       Signatures          = null,
 
                                                           CustomData?                   CustomData          = null,
 
@@ -569,7 +569,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                         IEnumerable<KeyPair>?         SignKeys            = null,
                                                                         IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                        IEnumerable<Signature>?       Signatures          = null,
 
                                                                         CustomData?                   CustomData          = null,
 
@@ -624,7 +624,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                                   IEnumerable<KeyPair>?         SignKeys            = null,
                                                                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                                  IEnumerable<Signature>?       Signatures          = null,
 
                                                                                   CustomData?                   CustomData          = null,
 
@@ -677,7 +677,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                                 IEnumerable<KeyPair>?         SignKeys            = null,
                                                                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                                IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                                IEnumerable<Signature>?       Signatures          = null,
 
                                                                                 CustomData?                   CustomData          = null,
 
@@ -730,7 +730,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                           IEnumerable<KeyPair>?         SignKeys            = null,
                                                                           IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                          IEnumerable<Signature>?       Signatures          = null,
 
                                                                           CustomData?                   CustomData          = null,
 
@@ -789,7 +789,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                               IEnumerable<KeyPair>?         SignKeys                 = null,
                                                                               IEnumerable<SignInfo>?        SignInfos                = null,
-                                                                              IEnumerable<OCPP.Signature>?  Signatures               = null,
+                                                                              IEnumerable<Signature>?       Signatures               = null,
 
                                                                               CustomData?                   CustomData               = null,
 
@@ -848,7 +848,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                               IEnumerable<KeyPair>?         SignKeys            = null,
                                                                               IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                              IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                              IEnumerable<Signature>?       Signatures          = null,
 
                                                                               CustomData?                   CustomData          = null,
 
@@ -902,7 +902,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                     IEnumerable<KeyPair>?         SignKeys            = null,
                                                                     IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                    IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                    IEnumerable<Signature>?       Signatures          = null,
 
                                                                     CustomData?                   CustomData          = null,
 
@@ -953,7 +953,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                             IEnumerable<KeyPair>?         SignKeys            = null,
                                                                             IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                            IEnumerable<Signature>?       Signatures          = null,
 
                                                                             CustomData?                   CustomData          = null,
 
@@ -1059,7 +1059,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                           IEnumerable<KeyPair>?         SignKeys            = null,
                                                           IEnumerable<SignInfo>?        SignInfos           = null,
-                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                          IEnumerable<Signature>?       Signatures          = null,
 
                                                           CustomData?                   CustomData          = null,
 
@@ -1092,267 +1092,267 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        // Binary Data Streams Extensions
+        //// Binary Data Streams Extensions
 
-        #region TransferBinaryData     (NetworkingNodeId, VendorId, MessageId = null, Data = null, ...)
+        //#region TransferBinaryData     (NetworkingNodeId, VendorId, MessageId = null, Data = null, ...)
 
-        /// <summary>
-        /// Transfer the given binary data to the given charging station.
-        /// </summary>
-        /// <param name="NetworkingNodeId">The networking node identification.</param>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification field.</param>
-        /// <param name="Data">Optional message data as text without specified length or format.</param>
-        /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<BinaryDataTransferResponse>
+        ///// <summary>
+        ///// Transfer the given binary data to the given charging station.
+        ///// </summary>
+        ///// <param name="NetworkingNodeId">The networking node identification.</param>
+        ///// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        ///// <param name="MessageId">An optional message identification field.</param>
+        ///// <param name="Data">Optional message data as text without specified length or format.</param>
+        ///// 
+        ///// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///// 
+        ///// <param name="RequestId">An optional request identification.</param>
+        ///// <param name="RequestTimestamp">An optional request timestamp.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        //public static Task<BinaryDataTransferResponse>
 
-            TransferBinaryData(this ICentralSystem           CentralSystem,
+        //    TransferBinaryData(this ICentralSystem           CentralSystem,
 
-                               NetworkingNode_Id             NetworkingNodeId,
-                               Vendor_Id                     VendorId,
-                               Message_Id?                   MessageId           = null,
-                               Byte[]?                       Data                = null,
-                               BinaryFormats?                Format              = null,
+        //                       NetworkingNode_Id             NetworkingNodeId,
+        //                       Vendor_Id                     VendorId,
+        //                       Message_Id?                   MessageId           = null,
+        //                       Byte[]?                       Data                = null,
+        //                       BinaryFormats?                Format              = null,
 
-                               IEnumerable<KeyPair>?         SignKeys            = null,
-                               IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+        //                       IEnumerable<KeyPair>?         SignKeys            = null,
+        //                       IEnumerable<SignInfo>?        SignInfos           = null,
+        //                       IEnumerable<Signature>?       Signatures          = null,
 
-                               Request_Id?                   RequestId           = null,
-                               DateTime?                     RequestTimestamp    = null,
-                               TimeSpan?                     RequestTimeout      = null,
-                               EventTracking_Id?             EventTrackingId     = null,
-                               CancellationToken             CancellationToken   = default)
-
-
-                => CentralSystem.BinaryDataTransfer(
-                       new BinaryDataTransferRequest(
-                           NetworkingNodeId,
-                           VendorId,
-                           MessageId,
-                           Data,
-                           Format,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? CentralSystem.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
-        #region GetFile                (NetworkingNodeId, Filename, Priority = null, ...)
-
-        /// <summary>
-        /// Request to download the given file from the charging station.
-        /// </summary>
-        /// <param name="NetworkingNodeId">The networking node identification.</param>
-        /// <param name="Filename">The name of the file including its absolute path.</param>
-        /// <param name="Priority">The optional priority of the file request.</param>
-        /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CS.GetFileResponse>
-
-            GetFile(this ICentralSystem           CentralSystem,
-
-                    NetworkingNode_Id             NetworkingNodeId,
-                    FilePath                      Filename,
-                    Byte?                         Priority            = null,
-
-                    IEnumerable<KeyPair>?         SignKeys            = null,
-                    IEnumerable<SignInfo>?        SignInfos           = null,
-                    IEnumerable<OCPP.Signature>?  Signatures          = null,
-
-                    CustomData?                   CustomData          = null,
-
-                    Request_Id?                   RequestId           = null,
-                    DateTime?                     RequestTimestamp    = null,
-                    TimeSpan?                     RequestTimeout      = null,
-                    EventTracking_Id?             EventTrackingId     = null,
-                    CancellationToken             CancellationToken   = default)
+        //                       Request_Id?                   RequestId           = null,
+        //                       DateTime?                     RequestTimestamp    = null,
+        //                       TimeSpan?                     RequestTimeout      = null,
+        //                       EventTracking_Id?             EventTrackingId     = null,
+        //                       CancellationToken             CancellationToken   = default)
 
 
-                => CentralSystem.GetFile(
-                       new OCPP.CSMS.GetFileRequest(
-                           NetworkingNodeId,
-                           Filename,
-                           Priority,
+        //        => CentralSystem.BinaryDataTransfer(
+        //               new BinaryDataTransferRequest(
+        //                   NetworkingNodeId,
+        //                   VendorId,
+        //                   MessageId,
+        //                   Data,
+        //                   Format,
 
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
+        //                   SignKeys,
+        //                   SignInfos,
+        //                   Signatures,
 
-                           CustomData,
+        //                   RequestId        ?? CentralSystem.NextRequestId,
+        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimeout   ?? CentralSystem.DefaultRequestTimeout,
+        //                   EventTrackingId  ?? EventTracking_Id.New,
+        //                   NetworkPath.Empty,
+        //                   CancellationToken
+        //               )
+        //           );
 
-                           RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? CentralSystem.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
-                           CancellationToken
-                       )
-                   );
+        //#endregion
 
-        #endregion
+        //#region GetFile                (NetworkingNodeId, Filename, Priority = null, ...)
 
-        #region SendFile               (NetworkingNodeId, Filename, FileContent, FileContentType = null, ...)
+        ///// <summary>
+        ///// Request to download the given file from the charging station.
+        ///// </summary>
+        ///// <param name="NetworkingNodeId">The networking node identification.</param>
+        ///// <param name="Filename">The name of the file including its absolute path.</param>
+        ///// <param name="Priority">The optional priority of the file request.</param>
+        ///// 
+        ///// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///// 
+        ///// <param name="RequestId">An optional request identification.</param>
+        ///// <param name="RequestTimestamp">An optional request timestamp.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        //public static Task<OCPP.CS.GetFileResponse>
 
-        /// <summary>
-        /// Send the given file to the charging station.
-        /// </summary>
-        /// <param name="NetworkingNodeId">The networking node identification.</param>
-        /// <param name="FileName">The name of the file including its absolute path.</param>
-        /// <param name="FileContent">The file content.</param>
-        /// <param name="FileContentType">An optional content/MIME type of the file.</param>
-        /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
-        /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
-        /// <param name="FileSignatures">An optional enumeration of cryptographic signatures for the file content.</param>
-        /// <param name="Priority">The optional priority of the file request.</param>
-        /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CS.SendFileResponse>
+        //    GetFile(this ICentralSystem           CentralSystem,
 
-            SendFile(this ICentralSystem           CentralSystem,
+        //            NetworkingNode_Id             NetworkingNodeId,
+        //            FilePath                      Filename,
+        //            Byte?                         Priority            = null,
 
-                     NetworkingNode_Id             NetworkingNodeId,
-                     FilePath                      FileName,
-                     Byte[]                        FileContent,
-                     ContentType?                  FileContentType     = null,
-                     Byte[]?                       FileSHA256          = null,
-                     Byte[]?                       FileSHA512          = null,
-                     IEnumerable<OCPP.Signature>?  FileSignatures      = null,
-                     Byte?                         Priority            = null,
+        //            IEnumerable<KeyPair>?         SignKeys            = null,
+        //            IEnumerable<SignInfo>?        SignInfos           = null,
+        //            IEnumerable<Signature>?       Signatures          = null,
 
-                     IEnumerable<KeyPair>?         SignKeys            = null,
-                     IEnumerable<SignInfo>?        SignInfos           = null,
-                     IEnumerable<OCPP.Signature>?  Signatures          = null,
+        //            CustomData?                   CustomData          = null,
 
-                     CustomData?                   CustomData          = null,
-
-                     Request_Id?                   RequestId           = null,
-                     DateTime?                     RequestTimestamp    = null,
-                     TimeSpan?                     RequestTimeout      = null,
-                     EventTracking_Id?             EventTrackingId     = null,
-                     CancellationToken             CancellationToken   = default)
+        //            Request_Id?                   RequestId           = null,
+        //            DateTime?                     RequestTimestamp    = null,
+        //            TimeSpan?                     RequestTimeout      = null,
+        //            EventTracking_Id?             EventTrackingId     = null,
+        //            CancellationToken             CancellationToken   = default)
 
 
-                => CentralSystem.SendFile(
-                       new OCPP.CSMS.SendFileRequest(
-                           NetworkingNodeId,
-                           FileName,
-                           FileContent,
-                           FileContentType,
-                           FileSHA256,
-                           FileSHA512,
-                           FileSignatures,
-                           Priority,
+        //        => CentralSystem.GetFile(
+        //               new OCPP.CSMS.GetFileRequest(
+        //                   NetworkingNodeId,
+        //                   Filename,
+        //                   Priority,
 
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
+        //                   SignKeys,
+        //                   SignInfos,
+        //                   Signatures,
 
-                           CustomData,
+        //                   CustomData,
 
-                           RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? CentralSystem.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
-                           CancellationToken
-                       )
-                   );
+        //                   RequestId        ?? CentralSystem.NextRequestId,
+        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimeout   ?? CentralSystem.DefaultRequestTimeout,
+        //                   EventTrackingId  ?? EventTracking_Id.New,
+        //                   NetworkPath.Empty,
+        //                   CancellationToken
+        //               )
+        //           );
 
-        #endregion
+        //#endregion
 
-        #region DeleteFile             (NetworkingNodeId, Filename, FileContent, FileContentType = null, ...)
+        //#region SendFile               (NetworkingNodeId, Filename, FileContent, FileContentType = null, ...)
 
-        /// <summary>
-        /// Send the given file to the charging station.
-        /// </summary>
-        /// <param name="NetworkingNodeId">The networking node identification.</param>
-        /// <param name="FileName">The name of the file including its absolute path.</param>
-        /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
-        /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
-        /// <param name="Priority">The optional priority of the file request.</param>
-        /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CS.DeleteFileResponse>
+        ///// <summary>
+        ///// Send the given file to the charging station.
+        ///// </summary>
+        ///// <param name="NetworkingNodeId">The networking node identification.</param>
+        ///// <param name="FileName">The name of the file including its absolute path.</param>
+        ///// <param name="FileContent">The file content.</param>
+        ///// <param name="FileContentType">An optional content/MIME type of the file.</param>
+        ///// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
+        ///// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
+        ///// <param name="FileSignatures">An optional enumeration of cryptographic signatures for the file content.</param>
+        ///// <param name="Priority">The optional priority of the file request.</param>
+        ///// 
+        ///// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///// 
+        ///// <param name="RequestId">An optional request identification.</param>
+        ///// <param name="RequestTimestamp">An optional request timestamp.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        //public static Task<OCPP.CS.SendFileResponse>
 
-            DeleteFile(this ICentralSystem           CentralSystem,
+        //    SendFile(this ICentralSystem           CentralSystem,
 
-                       NetworkingNode_Id             NetworkingNodeId,
-                       FilePath                      FileName,
-                       Byte[]?                       FileSHA256          = null,
-                       Byte[]?                       FileSHA512          = null,
+        //             NetworkingNode_Id             NetworkingNodeId,
+        //             FilePath                      FileName,
+        //             Byte[]                        FileContent,
+        //             ContentType?                  FileContentType     = null,
+        //             Byte[]?                       FileSHA256          = null,
+        //             Byte[]?                       FileSHA512          = null,
+        //             IEnumerable<OCPP.Signature>?  FileSignatures      = null,
+        //             Byte?                         Priority            = null,
 
-                       IEnumerable<KeyPair>?         SignKeys            = null,
-                       IEnumerable<SignInfo>?        SignInfos           = null,
-                       IEnumerable<OCPP.Signature>?  Signatures          = null,
+        //             IEnumerable<KeyPair>?         SignKeys            = null,
+        //             IEnumerable<SignInfo>?        SignInfos           = null,
+        //             IEnumerable<Signature>?       Signatures          = null,
 
-                       CustomData?                   CustomData          = null,
+        //             CustomData?                   CustomData          = null,
 
-                       Request_Id?                   RequestId           = null,
-                       DateTime?                     RequestTimestamp    = null,
-                       TimeSpan?                     RequestTimeout      = null,
-                       EventTracking_Id?             EventTrackingId     = null,
-                       CancellationToken             CancellationToken   = default)
+        //             Request_Id?                   RequestId           = null,
+        //             DateTime?                     RequestTimestamp    = null,
+        //             TimeSpan?                     RequestTimeout      = null,
+        //             EventTracking_Id?             EventTrackingId     = null,
+        //             CancellationToken             CancellationToken   = default)
 
 
-                => CentralSystem.DeleteFile(
-                       new OCPP.CSMS.DeleteFileRequest(
-                           NetworkingNodeId,
-                           FileName,
-                           FileSHA256,
-                           FileSHA512,
+        //        => CentralSystem.SendFile(
+        //               new OCPP.CSMS.SendFileRequest(
+        //                   NetworkingNodeId,
+        //                   FileName,
+        //                   FileContent,
+        //                   FileContentType,
+        //                   FileSHA256,
+        //                   FileSHA512,
+        //                   FileSignatures,
+        //                   Priority,
 
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
+        //                   SignKeys,
+        //                   SignInfos,
+        //                   Signatures,
 
-                           CustomData,
+        //                   CustomData,
 
-                           RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? CentralSystem.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
-                           CancellationToken
-                       )
-                   );
+        //                   RequestId        ?? CentralSystem.NextRequestId,
+        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimeout   ?? CentralSystem.DefaultRequestTimeout,
+        //                   EventTrackingId  ?? EventTracking_Id.New,
+        //                   NetworkPath.Empty,
+        //                   CancellationToken
+        //               )
+        //           );
 
-        #endregion
+        //#endregion
+
+        //#region DeleteFile             (NetworkingNodeId, Filename, FileContent, FileContentType = null, ...)
+
+        ///// <summary>
+        ///// Send the given file to the charging station.
+        ///// </summary>
+        ///// <param name="NetworkingNodeId">The networking node identification.</param>
+        ///// <param name="FileName">The name of the file including its absolute path.</param>
+        ///// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
+        ///// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
+        ///// <param name="Priority">The optional priority of the file request.</param>
+        ///// 
+        ///// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///// 
+        ///// <param name="RequestId">An optional request identification.</param>
+        ///// <param name="RequestTimestamp">An optional request timestamp.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        //public static Task<OCPP.CS.DeleteFileResponse>
+
+        //    DeleteFile(this ICentralSystem           CentralSystem,
+
+        //               NetworkingNode_Id             NetworkingNodeId,
+        //               FilePath                      FileName,
+        //               Byte[]?                       FileSHA256          = null,
+        //               Byte[]?                       FileSHA512          = null,
+
+        //               IEnumerable<KeyPair>?         SignKeys            = null,
+        //               IEnumerable<SignInfo>?        SignInfos           = null,
+        //               IEnumerable<Signature>?       Signatures          = null,
+
+        //               CustomData?                   CustomData          = null,
+
+        //               Request_Id?                   RequestId           = null,
+        //               DateTime?                     RequestTimestamp    = null,
+        //               TimeSpan?                     RequestTimeout      = null,
+        //               EventTracking_Id?             EventTrackingId     = null,
+        //               CancellationToken             CancellationToken   = default)
+
+
+        //        => CentralSystem.DeleteFile(
+        //               new OCPP.CSMS.DeleteFileRequest(
+        //                   NetworkingNodeId,
+        //                   FileName,
+        //                   FileSHA256,
+        //                   FileSHA512,
+
+        //                   SignKeys,
+        //                   SignInfos,
+        //                   Signatures,
+
+        //                   CustomData,
+
+        //                   RequestId        ?? CentralSystem.NextRequestId,
+        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimeout   ?? CentralSystem.DefaultRequestTimeout,
+        //                   EventTrackingId  ?? EventTracking_Id.New,
+        //                   NetworkPath.Empty,
+        //                   CancellationToken
+        //               )
+        //           );
+
+        //#endregion
 
 
     }

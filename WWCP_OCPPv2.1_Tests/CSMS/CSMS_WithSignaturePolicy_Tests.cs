@@ -27,6 +27,7 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -146,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation1.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -163,12 +164,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var resetType       = ResetType.Immediate;
                 var now             = Timestamp.Now;
                 var response        = await testCSMS01.Reset(
-                                          DestinationNodeId:   chargingStation1.Id,
-                                          ResetType:           resetType,
-                                          CustomData:          null
-                                      );
+                                                DestinationId:   chargingStation1.Id,
+                                                ResetType:       resetType,
+                                                CustomData:      null
+                                            );
 
-                ClassicAssert.AreEqual(ResultCode.OK,                response.Result.ResultCode);
+                ClassicAssert.AreEqual(ResultCode.OK,                 response.Result.ResultCode);
                 ClassicAssert.AreEqual(ResetStatus.Accepted,          response.Status);
 
 

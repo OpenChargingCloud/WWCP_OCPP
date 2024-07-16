@@ -17,8 +17,7 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -71,8 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The common interface of all outgoing OCPP messages processors.
     /// </summary>
-    public interface IOCPPWebSocketAdapterOUT : OCPP.NN.INetworkingNodeOutgoingMessages,
-                                                OCPP.NN.INetworkingNodeOutgoingMessageEvents,
+    public interface IOCPPWebSocketAdapterOUT : INetworkingNodeOutgoingMessages,
+                                                INetworkingNodeOutgoingMessageEvents,
 
                                              //   OCPP.NN.CSMS.INetworkingNodeOutgoingMessages,
                                              //   OCPP.NN.CSMS.INetworkingNodeOutgoingMessageEvents,

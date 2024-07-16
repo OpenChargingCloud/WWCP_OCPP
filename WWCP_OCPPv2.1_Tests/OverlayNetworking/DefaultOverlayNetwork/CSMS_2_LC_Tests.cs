@@ -23,12 +23,12 @@ using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS2;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -107,8 +107,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationNodeId:  localController.Id,
-                                           ResetType:          resetType
+                                           DestinationId:  localController.Id,
+                                           ResetType:      resetType
                                        );
 
 
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Networking Node Request OUT
                     //Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     //var nnResetRequest = nnResetRequestsSent.First();
-                    //Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
+                    //Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     //Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Charging Station Request IN
                     //Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     //var csResetRequest = csResetRequests.First();
-                    ////Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
+                    ////Assert.That(csResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!";
                 var response   = await CSMS.TransferData(
-                                           DestinationNodeId:   localController.Id,
+                                           DestinationId:   localController.Id,
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
                                            Data:                data,
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 var data        = "Hello world!";
                 var response    = await CSMS.TransferSecureData(
-                                            DestinationNodeId:  localController.Id,
+                                            DestinationId:  localController.Id,
                                             Parameter:          0,
                                             KeyId:              1,
                                             Payload:            data.ToUTF8Bytes()
@@ -539,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationNodeId:  localController.Id,
+                                           DestinationId:  localController.Id,
                                            ResetType:          resetType
                                        );
 
@@ -549,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Networking Node Request OUT
                     //Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     //var nnResetRequest = nnResetRequestsSent.First();
-                    //Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
+                    //Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     //Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));
@@ -561,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Charging Station Request IN
                     //Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     //var csResetRequest = csResetRequests.First();
-                    ////Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
+                    ////Assert.That(csResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
@@ -644,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationNodeId:  localController.Id,
+                                           DestinationId:  localController.Id,
                                            ResetType:          resetType
                                        );
 
@@ -654,7 +654,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Networking Node Request OUT
                     //Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     //var nnResetRequest = nnResetRequestsSent.First();
-                    //Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
+                    //Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     //Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));
@@ -666,7 +666,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Charging Station Request IN
                     //Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     //var csResetRequest = csResetRequests.First();
-                    ////Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
+                    ////Assert.That(csResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
@@ -752,7 +752,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.DeleteFile(
-                                           DestinationNodeId:  localController.Id,
+                                           DestinationId:  localController.Id,
                                            FileName:           FilePath.Parse("/test.txt")
                                        );
 
@@ -762,7 +762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Networking Node Request OUT
                     //Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     //var nnResetRequest = nnResetRequestsSent.First();
-                    //Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
+                    //Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     //Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));
@@ -774,7 +774,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Charging Station Request IN
                     //Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     //var csResetRequest = csResetRequests.First();
-                    ////Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
+                    ////Assert.That(csResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
@@ -857,8 +857,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 //var resetType  = ResetType.Immediate;
                 var response   = await CSMS.GetFile(
-                                           DestinationNodeId:  localController.Id,
-                                           Filename:           FilePath.Parse("/test.txt")
+                                           DestinationId:  localController.Id,
+                                           FileName:       FilePath.Parse("/test.txt")
                                        );
 
 
@@ -867,7 +867,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Networking Node Request OUT
                     //Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     //var nnResetRequest = nnResetRequestsSent.First();
-                    //Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
+                    //Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     //Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));
@@ -879,7 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Charging Station Request IN
                     //Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     //var csResetRequest = csResetRequests.First();
-                    ////Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
+                    ////Assert.That(csResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
@@ -962,7 +962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.SendFile(
-                                           DestinationNodeId:  localController.Id,
+                                           DestinationId:  localController.Id,
                                            FileName:           FilePath.Parse("/test.txt"),
                                            FileContent:        "Hello world!".ToUTF8Bytes(),
                                            FileContentType:    ContentType.Text.Plain
@@ -974,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Networking Node Request OUT
                     //Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     //var nnResetRequest = nnResetRequestsSent.First();
-                    //Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));
+                    //Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     //Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));
                     //Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));
@@ -986,7 +986,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     //// Charging Station Request IN
                     //Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     //var csResetRequest = csResetRequests.First();
-                    ////Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
+                    ////Assert.That(csResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
                     ////Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!

@@ -22,9 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -77,9 +77,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnReportChargingProfilesRequestFilterDelegate?      OnReportChargingProfilesRequest;
+        public event OnReportChargingProfilesRequestReceivedDelegate?    OnReportChargingProfilesRequestReceived;
+        public event OnReportChargingProfilesRequestFilterDelegate?      OnReportChargingProfilesRequestFilter;
+        public event OnReportChargingProfilesRequestFilteredDelegate?    OnReportChargingProfilesRequestFiltered;
+        public event OnReportChargingProfilesRequestSentDelegate?        OnReportChargingProfilesRequestSent;
 
-        public event OnReportChargingProfilesRequestFilteredDelegate?    OnReportChargingProfilesRequestLogging;
+        public event OnReportChargingProfilesResponseReceivedDelegate?   OnReportChargingProfilesResponseReceived;
+        public event OnReportChargingProfilesResponseSentDelegate?       OnReportChargingProfilesResponseSent;
 
         #endregion
 
@@ -95,30 +99,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         JSONRequestMessage.RequestId,
                                                         JSONRequestMessage.DestinationId,
                                                         JSONRequestMessage.NetworkPath,
-                                                        out var Request,
+                                                        out var request,
                                                         out var errorResponse,
                                                         parentNetworkingNode.OCPP.CustomReportChargingProfilesRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>? forwardingDecision = null;
 
-            #region Send OnReportChargingProfilesRequest event
 
-            var requestFilter = OnReportChargingProfilesRequest;
+            #region Send OnReportChargingProfilesRequestReceived event
+
+            var receivedLogging = OnReportChargingProfilesRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnReportChargingProfilesRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                          Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnReportChargingProfilesRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            #region Send OnReportChargingProfilesRequestFilter event
+
+            var requestFilter = OnReportChargingProfilesRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnReportChargingProfilesRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
+                                                     OfType<OnReportChargingProfilesRequestFilterDelegate>().
+                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                                    parentNetworkingNode,
+                                                                                                    Connection,
+                                                                                                    request,
+                                                                                                    CancellationToken)).
                                                      ToArray());
 
                     //ToDo: Find a good result!
@@ -129,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnReportChargingProfilesRequest),
+                              nameof(OnReportChargingProfilesRequestFilter),
                               e
                           );
                 }
@@ -138,11 +174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
             #region Default result
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -152,12 +189,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new ReportChargingProfilesResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -172,21 +209,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnReportChargingProfilesRequestLogging event
+            #region Send OnReportChargingProfilesRequestFiltered event
 
-            var logger = OnReportChargingProfilesRequestLogging;
+            var logger = OnReportChargingProfilesRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnReportChargingProfilesRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
+                                       OfType<OnReportChargingProfilesRequestFilteredDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        parentNetworkingNode,
+                                                                                        Connection,
+                                                                                        request,
+                                                                                        forwardingDecision)).
                                        ToArray());
 
                 }
@@ -194,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnReportChargingProfilesRequestLogging),
+                              nameof(OnReportChargingProfilesRequestFiltered),
                               e
                           );
                 }
@@ -202,6 +239,74 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnReportChargingProfilesRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnReportChargingProfilesRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnReportChargingProfilesRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnReportChargingProfilesRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+
+                                                        parentNetworkingNode.OCPP.CustomReportChargingProfilesRequestSerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomChargingProfileSerializer,
+                                                        parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                                                        parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
+                                                        parentNetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomSalesTariffSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSalesTariffEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomRelativeTimeIntervalSerializer,
+                                                        parentNetworkingNode.OCPP.CustomConsumptionCostSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCostSerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomAbsolutePriceScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomPriceRuleStackSerializer,
+                                                        parentNetworkingNode.OCPP.CustomPriceRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomTaxRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomOverstayRuleListSerializer,
+                                                        parentNetworkingNode.OCPP.CustomOverstayRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomAdditionalServiceSerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomPriceLevelScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomPriceLevelScheduleEntrySerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+
+                                                    );
 
             return forwardingDecision;
 

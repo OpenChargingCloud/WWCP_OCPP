@@ -21,7 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.NN;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -47,12 +47,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a NotifyNetworkTopology request was sent.
         /// </summary>
-        public event OnNotifyNetworkTopologyRequestDelegate?     OnNotifyNetworkTopologyRequest;
+        public event OnNotifyNetworkTopologyRequestSentDelegate?         OnNotifyNetworkTopologyRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyNetworkTopology request was sent.
         /// </summary>
-        public event OnNotifyNetworkTopologyResponseDelegate?    OnNotifyNetworkTopologyResponse;
+        public event OnNotifyNetworkTopologyResponseReceivedDelegate?    OnNotifyNetworkTopologyResponseReceived;
 
         #endregion
 
@@ -62,20 +62,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request)
         {
 
-            #region Send OnNotifyNetworkTopologyRequest event
+            #region Send OnNotifyNetworkTopologyRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnNotifyNetworkTopologyRequest?.Invoke(startTime,
-                                                       parentNetworkingNode,
-                                                       Request);
+                OnNotifyNetworkTopologyRequestSent?.Invoke(startTime,
+                                                           parentNetworkingNode,
+                                                           Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyNetworkTopologyRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyNetworkTopologyRequestSent));
             }
 
             #endregion
@@ -136,23 +136,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            #region Send OnNotifyNetworkTopologyResponse event
+            #region Send OnNotifyNetworkTopologyResponseReceived event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnNotifyNetworkTopologyResponse?.Invoke(endTime,
-                                                        parentNetworkingNode,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
+                OnNotifyNetworkTopologyResponseReceived?.Invoke(endTime,
+                                                                parentNetworkingNode,
+                                                                Request,
+                                                                response,
+                                                                endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyNetworkTopologyResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyNetworkTopologyResponseReceived));
             }
 
             #endregion

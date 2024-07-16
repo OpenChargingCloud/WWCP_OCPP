@@ -30,6 +30,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.LocalController;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS2;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -241,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                                      RemoteURL:               URL.Parse($"http://127.0.0.1:{csmsWSServer.IPPort}/{localController.Id}"),
                                                      HTTPAuthentication:      HTTPBasicAuthentication.Create(localController.Id.ToString(), "1234abcd"),
                                                      DisableWebSocketPings:   true,
-                                                     NetworkingMode:          OCPP.WebSockets.NetworkingMode.OverlayNetwork
+                                                     NetworkingMode:          NetworkingMode.OverlayNetwork
                                                  );
 
             Assert.That(connectionSetupResponse1, Is.Not.Null);
@@ -296,21 +297,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                                                 ICCID:   "0000",
                                                                 IMSI:    "1111"
                                                             ),
-                                   EVSEs:                   new[] {
-                                                                new ChargingStationEVSE(
+                                   EVSEs:                   [
+                                                                new OCPPv2_1.CS.ChargingStationEVSE(
                                                                     Id:                  EVSE_Id.Parse(1),
                                                                     AdminStatus:         OperationalStatus.Operative,
                                                                     MeterType:           "MT1",
                                                                     MeterSerialNumber:   "MSN1",
                                                                     MeterPublicKey:      "MPK1",
-                                                                    Connectors:          new[] {
-                                                                                             new ChargingStationConnector(
+                                                                    Connectors:          [
+                                                                                             new OCPPv2_1.CS.ChargingStationConnector(
                                                                                                  Id:              Connector_Id.Parse(1),
                                                                                                  ConnectorType:   ConnectorType.sType2
                                                                                              )
-                                                                                         }
+                                                                                         ]
                                                                 )
-                                                            },
+                                                            ],
                                    MeterType:               "Virtual Energy Meter",
                                    MeterSerialNumber:       "SN-EN0001",
                                    MeterPublicKey:          "0xcafebabe",
@@ -343,7 +344,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             lcOCPPWebSocketServer.AddOrUpdateHTTPBasicAuth(chargingStation.Id, "1234abcd");
 
-            var connectionSetupResponse2  = await chargingStation.ConnectWebSocket(
+            var connectionSetupResponse2  = await chargingStation.ConnectWebSocketClient(
+                                                      NetworkingNodeId:        NetworkingNode_Id.CSMS,
                                                       RemoteURL:               URL.Parse("http://127.0.0.1:" + lcOCPPWebSocketServer.IPPort.ToString() + "/" + chargingStation.Id),
                                                       HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation.Id.ToString(), "1234abcd"),
                                                       DisableWebSocketPings:   true

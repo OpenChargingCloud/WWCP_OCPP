@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private   readonly  NN.IBaseNetworkingNode          parentNetworkingNode;
+        private   readonly  IBaseNetworkingNode             parentNetworkingNode;
 
         protected readonly  Dictionary<String, MethodInfo>  incomingMessageProcessorsLookup   = [];
 
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a new OCPP adapter for accepting incoming messages.
         /// </summary>
         /// <param name="NetworkingNode">The parent networking node.</param>
-        public OCPPWebSocketAdapterIN(NN.IBaseNetworkingNode NetworkingNode)
+        public OCPPWebSocketAdapterIN(IBaseNetworkingNode NetworkingNode)
         {
 
             this.parentNetworkingNode = NetworkingNode;
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     OCPP_BinaryResponseMessage?   BinaryResponseMessage     = null;
                     OCPP_JSONRequestErrorMessage? JSONRequestErrorMessage   = null;
 
-                    #region Fix DestinationNodeId and network path for standard networking connections
+                    #region Fix DestinationId and network path for standard networking connections
 
                     if (jsonRequestMessage.NetworkingMode == NetworkingMode.Standard &&
                         jsonRequestMessage.DestinationId  == NetworkingNode_Id.Zero  &&
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 else if (OCPP_JSONResponseMessage.     TryParse(JSONMessage, out var jsonResponseMessage,      out var responseParsingError,                                          sourceNodeId))
                 {
 
-                    #region Fix DestinationNodeId and network path for standard networking connections
+                    #region Fix DestinationId and network path for standard networking connections
 
                     if (jsonResponseMessage.NetworkingMode == NetworkingMode.Standard &&
                         jsonResponseMessage.DestinationId  == NetworkingNode_Id.Zero  &&
@@ -542,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if      (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError,  MessageTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && binaryRequest  is not null)
                 {
 
-                    #region Fix DestinationNodeId and network path for standard networking connections
+                    #region Fix DestinationId and network path for standard networking connections
 
                     if (binaryRequest.NetworkingMode    == NetworkingMode.Standard &&
                         binaryRequest.DestinationId == NetworkingNode_Id.Zero  &&
@@ -552,14 +552,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
 
                             case WebSocketClientConnection:
-                                binaryRequest = binaryRequest.ChangeDestinationNodeId(
+                                binaryRequest = binaryRequest.ChangeDestinationId(
                                                                   parentNetworkingNode.Id,
                                                                   binaryRequest.NetworkPath.Append(sourceNodeId.Value)
                                                               );
                                 break;
 
                             case WebSocketServerConnection:
-                                binaryRequest = binaryRequest.ChangeDestinationNodeId(
+                                binaryRequest = binaryRequest.ChangeDestinationId(
                                                                   NetworkingNode_Id.CSMS,
                                                                   binaryRequest.NetworkPath.Append(sourceNodeId.Value)
                                                               );

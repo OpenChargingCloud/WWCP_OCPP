@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new get periodic event stream request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="StreamId">The unique identification of the data stream to throttle.</param>
         /// <param name="Parameters">The updated rate of sending data.</param>
         /// 
@@ -86,13 +86,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ThrottlePeriodicEventStreamRequest(NetworkingNode_Id              NetworkingNodeId,
+        public ThrottlePeriodicEventStreamRequest(NetworkingNode_Id              DestinationId,
                                                   PeriodicEventStream_Id         StreamId,
                                                   PeriodicEventStreamParameters  Parameters,
 
                                                   IEnumerable<KeyPair>?          SignKeys            = null,
                                                   IEnumerable<SignInfo>?         SignInfos           = null,
-                                                  IEnumerable<OCPP.Signature>?   Signatures          = null,
+                                                  IEnumerable<Signature>?        Signatures          = null,
 
                                                   CustomData?                    CustomData          = null,
 
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   NetworkPath?                   NetworkPath         = null,
                                                   CancellationToken              CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationId,
                    nameof(ThrottlePeriodicEventStreamRequest)[..^7],
 
                    SignKeys,
@@ -143,19 +143,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomThrottlePeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomThrottlePeriodicEventStreamRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an ThrottlePeriodicEventStreams request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomThrottlePeriodicEventStreamRequestParser">A delegate to parse custom ThrottlePeriodicEventStreams requests.</param>
         public static ThrottlePeriodicEventStreamRequest Parse(JObject                                                           JSON,
                                                                Request_Id                                                        RequestId,
-                                                               NetworkingNode_Id                                                 NetworkingNodeId,
+                                                               NetworkingNode_Id                                                 DestinationId,
                                                                NetworkPath                                                       NetworkPath,
                                                                CustomJObjectParserDelegate<ThrottlePeriodicEventStreamRequest>?  CustomThrottlePeriodicEventStreamRequestParser   = null)
         {
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         DestinationId,
                          NetworkPath,
                          out var throttlePeriodicEventStreamsRequest,
                          out var errorResponse,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out ThrottlePeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ThrottlePeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -189,20 +189,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ThrottlePeriodicEventStreamRequest">The parsed ThrottlePeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       NetworkingNode_Id                                             NetworkingNodeId,
+                                       NetworkingNode_Id                                             DestinationId,
                                        NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out ThrottlePeriodicEventStreamRequest?  ThrottlePeriodicEventStreamRequest,
                                        [NotNullWhen(false)] out String?                              ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        NetworkingNodeId,
+                        DestinationId,
                         NetworkPath,
                         out ThrottlePeriodicEventStreamRequest,
                         out ErrorResponse,
@@ -214,14 +214,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ThrottlePeriodicEventStreamRequest">The parsed ThrottlePeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomThrottlePeriodicEventStreamRequestParser">A delegate to parse custom ThrottlePeriodicEventStreams requests.</param>
         public static Boolean TryParse(JObject                                                           JSON,
                                        Request_Id                                                        RequestId,
-                                       NetworkingNode_Id                                                 NetworkingNodeId,
+                                       NetworkingNode_Id                                                 DestinationId,
                                        NetworkPath                                                       NetworkPath,
                                        [NotNullWhen(true)]  out ThrottlePeriodicEventStreamRequest?      ThrottlePeriodicEventStreamRequest,
                                        [NotNullWhen(false)] out String?                                  ErrorResponse,
@@ -264,8 +264,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              OCPP.Signature.TryParse,
-                                              out HashSet<OCPP.Signature> Signatures,
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
+                                           OCPPv2_1.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ThrottlePeriodicEventStreamRequest = new ThrottlePeriodicEventStreamRequest(
 
-                                                    NetworkingNodeId,
+                                                    DestinationId,
                                                     StreamId,
                                                     Parameters,
 
@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ThrottlePeriodicEventStreamRequest>?  CustomThrottlePeriodicEventStreamRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?       CustomPeriodicEventStreamParametersSerializer   = null,
-                              CustomJObjectSerializerDelegate<OCPP.Signature>?                      CustomSignatureSerializer                       = null,
+                              CustomJObjectSerializerDelegate<Signature>?                           CustomSignatureSerializer                       = null,
                               CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataSerializer                      = null)
         {
 

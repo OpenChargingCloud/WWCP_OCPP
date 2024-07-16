@@ -23,7 +23,7 @@ using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private   readonly  NN.IBaseNetworkingNode                          parentNetworkingNode;
+        private   readonly  IBaseNetworkingNode                             parentNetworkingNode;
 
         protected readonly  Dictionary<String, MethodInfo>                  forwardingMessageProcessorsLookup   = [];
 
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
-        public ForwardingResults            DefaultResult        { get; set; } = ForwardingResults.DROP;
+        public ForwardingResults           DefaultResult        { get; set; } = ForwardingResults.DROP;
 
         public HashSet<NetworkingNode_Id>  AnycastIdsAllowed    { get; }      = [];
 
@@ -63,8 +63,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="NetworkingNode">The parent networking node.</param>
         /// <param name="DefaultResult">The default forwarding result.</param>
-        public OCPPWebSocketAdapterFORWARD(NN.IBaseNetworkingNode  NetworkingNode,
-                                           ForwardingResults        DefaultResult = ForwardingResults.DROP)
+        public OCPPWebSocketAdapterFORWARD(IBaseNetworkingNode  NetworkingNode,
+                                           ForwardingResults    DefaultResult = ForwardingResults.DROP)
         {
 
             this.parentNetworkingNode  = NetworkingNode;

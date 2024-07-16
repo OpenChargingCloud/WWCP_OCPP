@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -124,16 +124,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_BootNotificationResponse(
-                                                                                Request,
-                                                                                jsonResponse,
-                                                                                null,
-                                                                                sendRequestState.DestinationNodeId,
-                                                                                sendRequestState.NetworkPath,
-                                                                                Request.         EventTrackingId,
-                                                                                Request.         RequestId,
-                                                                                sendRequestState.ResponseTimestamp,
-                                                                                Request.         CancellationToken
-                                                                            );
+                                             Request,
+                                             jsonResponse,
+                                             null,
+                                             sendRequestState.DestinationId,
+                                             sendRequestState.NetworkPath,
+                                             Request.         EventTrackingId,
+                                             Request.         RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.         CancellationToken
+                                         );
 
                     }
 
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_BootNotificationResponse(BootNotificationRequest  Request,
                                              JObject                  ResponseJSON,
                                              IWebSocketConnection     WebSocketConnection,
-                                             NetworkingNode_Id        DestinationNodeId,
+                                             NetworkingNode_Id        DestinationId,
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
                                              Request_Id               RequestId,
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (BootNotificationResponse.TryParse(Request,
                                                       ResponseJSON,
-                                                      DestinationNodeId,
+                                                      DestinationId,
                                                       NetworkPath,
                                                       out response,
                                                       out var errorResponse,

@@ -577,15 +577,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnBinaryDataTransfer               (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a BinaryDataTransfer request will be sent to the central system.
-        /// </summary>
-        public event OnBinaryDataTransferRequestSentDelegate?                   OnBinaryDataTransferRequestSent;
+        ///// <summary>
+        ///// An event fired whenever a BinaryDataTransfer request will be sent to the central system.
+        ///// </summary>
+        //public event OnBinaryDataTransferRequestSentDelegate?                   OnBinaryDataTransferRequestSent;
 
-        /// <summary>
-        /// An event fired whenever a response to a BinaryDataTransfer request was received.
-        /// </summary>
-        public event OnBinaryDataTransferResponseReceivedDelegate?                  OnBinaryDataTransferResponseReceived;
+        ///// <summary>
+        ///// An event fired whenever a response to a BinaryDataTransfer request was received.
+        ///// </summary>
+        //public event OnBinaryDataTransferResponseReceivedDelegate?                  OnBinaryDataTransferResponseReceived;
 
         #endregion
 
@@ -862,8 +862,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        public event OnBinaryDataTransferRequestReceivedDelegate?             OnIncomingBinaryDataTransferRequest;
-        public event OnBinaryDataTransferResponseSentDelegate?            OnIncomingBinaryDataTransferResponse;
+        //public event OnBinaryDataTransferRequestReceivedDelegate?             OnIncomingBinaryDataTransferRequest;
+        //public event OnBinaryDataTransferResponseSentDelegate?            OnIncomingBinaryDataTransferResponse;
 
         public event OCPP.CS.OnGetFileRequestDelegate?                        OnGetFileRequest;
         public event OCPP.CS.OnGetFileResponseDelegate?                       OnGetFileResponse;
@@ -4006,95 +4006,95 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region BinaryDataTransfer               (Request)
 
-        /// <summary>
-        /// Send the given vendor-specific binary data to the central system.
-        /// </summary>
-        /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<BinaryDataTransferResponse>
-            BinaryDataTransfer(BinaryDataTransferRequest Request)
+        ///// <summary>
+        ///// Send the given vendor-specific binary data to the central system.
+        ///// </summary>
+        ///// <param name="Request">A BinaryDataTransfer request.</param>
+        //public async Task<BinaryDataTransferResponse>
+        //    BinaryDataTransfer(BinaryDataTransferRequest Request)
 
-        {
+        //{
 
-            #region Send OnBinaryDataTransferRequest event
+        //    #region Send OnBinaryDataTransferRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnBinaryDataTransferRequestSent?.Invoke(startTime,
-                                                    this,
-                                                    Request);
+        //        OnBinaryDataTransferRequestSent?.Invoke(startTime,
+        //                                            this,
+        //                                            Request);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnBinaryDataTransferRequestSent));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnBinaryDataTransferRequestSent));
+        //    }
 
-            #endregion
-
-
-            var response = CPClient is not null
-
-                               ? SignaturePolicy.SignRequestMessage(
-                                     Request,
-                                     Request.ToBinary(
-                                         CustomBinaryDataTransferRequestSerializer,
-                                         CustomBinarySignatureSerializer,
-                                         IncludeSignatures: false
-                                     ),
-                                     out var errorResponse
-                                 )
-
-                                     ? await CPClient.BinaryDataTransfer(Request)
-
-                                     : new BinaryDataTransferResponse(
-                                           Request,
-                                           Result.SignatureError(errorResponse)
-                                       )
-
-                               : new BinaryDataTransferResponse(
-                                     Request,
-                                     Result.UnknownOrUnreachable(Request.DestinationId)
-                                 );
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToBinary(
-                    CustomBinaryDataTransferResponseSerializer,
-                    null, //CustomStatusInfoSerializer,
-                    CustomBinarySignatureSerializer,
-                    IncludeSignatures: false
-                ),
-                out errorResponse
-            );
+        //    #endregion
 
 
-            #region Send OnBinaryDataTransferResponse event
+        //    var response = CPClient is not null
 
-            var endTime = Timestamp.Now;
+        //                       ? SignaturePolicy.SignRequestMessage(
+        //                             Request,
+        //                             Request.ToBinary(
+        //                                 CustomBinaryDataTransferRequestSerializer,
+        //                                 CustomBinarySignatureSerializer,
+        //                                 IncludeSignatures: false
+        //                             ),
+        //                             out var errorResponse
+        //                         )
 
-            try
-            {
+        //                             ? await CPClient.BinaryDataTransfer(Request)
 
-                OnBinaryDataTransferResponseReceived?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
+        //                             : new BinaryDataTransferResponse(
+        //                                   Request,
+        //                                   Result.SignatureError(errorResponse)
+        //                               )
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnBinaryDataTransferResponseReceived));
-            }
+        //                       : new BinaryDataTransferResponse(
+        //                             Request,
+        //                             Result.UnknownOrUnreachable(Request.DestinationId)
+        //                         );
 
-            #endregion
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToBinary(
+        //            CustomBinaryDataTransferResponseSerializer,
+        //            null, //CustomStatusInfoSerializer,
+        //            CustomBinarySignatureSerializer,
+        //            IncludeSignatures: false
+        //        ),
+        //        out errorResponse
+        //    );
 
-            return response;
 
-        }
+        //    #region Send OnBinaryDataTransferResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnBinaryDataTransferResponseReceived?.Invoke(endTime,
+        //                                             this,
+        //                                             Request,
+        //                                             response,
+        //                                             endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnBinaryDataTransferResponseReceived));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 

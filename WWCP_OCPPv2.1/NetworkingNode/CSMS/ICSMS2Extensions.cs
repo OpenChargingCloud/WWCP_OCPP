@@ -22,11 +22,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.CS2;
-using cloud.charging.open.protocols.OCPPv2_1.LC;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -41,12 +38,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #region as CSMS
 
-        #region Reset                       (DestinationNodeId, ResetType, EVSEId = null, ...)
+        #region Reset                       (DestinationId, ResetType, EVSEId = null, ...)
 
         /// <summary>
         /// Reset the given charging station/networking node.
         /// </summary>
-        /// <param name="DestinationNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -61,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.ResetResponse>
 
             Reset(this ICSMS2                   NetworkingNode,
-                  NetworkingNode_Id             DestinationNodeId,
+                  NetworkingNode_Id             DestinationId,
                   ResetType                     ResetType,
                   EVSE_Id?                      EVSEId              = null,
 
@@ -71,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                   IEnumerable<KeyPair>?         SignKeys            = null,
                   IEnumerable<SignInfo>?        SignInfos           = null,
-                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+                  IEnumerable<Signature>?       Signatures          = null,
 
                   Request_Id?                   RequestId           = null,
                   DateTime?                     RequestTimestamp    = null,
@@ -81,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.Reset(
                        new ResetRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            ResetType,
                            EVSEId,
 
@@ -105,12 +102,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region UpdateFirmware              (DestinationNodeId, Firmware, UpdateFirmwareRequestId, ...)
+        #region UpdateFirmware              (DestinationId, Firmware, UpdateFirmwareRequestId, ...)
 
         /// <summary>
         /// Initiate a firmware update of the given charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
         /// <param name="UpdateFirmwareRequestId">The update firmware request identification.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
@@ -127,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.UpdateFirmwareResponse>
 
             UpdateFirmware(this ICSMS2                   NetworkingNode,
-                           NetworkingNode_Id             DestinationNodeId,
+                           NetworkingNode_Id             DestinationId,
                            Firmware                      Firmware,
                            Int32                         UpdateFirmwareRequestId,
                            Byte?                         Retries             = null,
@@ -139,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                            IEnumerable<KeyPair>?         SignKeys            = null,
                            IEnumerable<SignInfo>?        SignInfos           = null,
-                           IEnumerable<OCPP.Signature>?  Signatures          = null,
+                           IEnumerable<Signature>?       Signatures          = null,
 
                            Request_Id?                   RequestId           = null,
                            DateTime?                     RequestTimestamp    = null,
@@ -150,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.UpdateFirmware(
                        new UpdateFirmwareRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            Firmware,
                            UpdateFirmwareRequestId,
                            Retries,
@@ -173,12 +170,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region PublishFirmware             (DestinationNodeId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
+        #region PublishFirmware             (DestinationId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Publish a firmware onto a local controller.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="PublishFirmwareRequestId">The unique identification of this publish firmware request</param>
         /// <param name="DownloadLocation">An URL for downloading the firmware.onto the local controller.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
@@ -196,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.PublishFirmwareResponse>
 
             PublishFirmware(this ICSMS2                   NetworkingNode,
-                            NetworkingNode_Id             DestinationNodeId,
+                            NetworkingNode_Id             DestinationId,
                             Int32                         PublishFirmwareRequestId,
                             URL                           DownloadLocation,
                             String                        MD5Checksum,
@@ -209,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                             IEnumerable<KeyPair>?         SignKeys            = null,
                             IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+                            IEnumerable<Signature>?       Signatures          = null,
 
                             Request_Id?                   RequestId           = null,
                             DateTime?                     RequestTimestamp    = null,
@@ -220,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.PublishFirmware(
                        new PublishFirmwareRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            PublishFirmwareRequestId,
                            DownloadLocation,
                            MD5Checksum,
@@ -244,12 +241,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region UnpublishFirmware           (DestinationNodeId, MD5Checksum, ...)
+        #region UnpublishFirmware           (DestinationId, MD5Checksum, ...)
 
         /// <summary>
         /// Unpublish a firmware from a local controller.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -263,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.UnpublishFirmwareResponse>
 
             UnpublishFirmware(this ICSMS2                   NetworkingNode,
-                              NetworkingNode_Id             DestinationNodeId,
+                              NetworkingNode_Id             DestinationId,
                               String                        MD5Checksum,
 
                               CustomData?                   CustomData          = null,
@@ -272,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                               IEnumerable<KeyPair>?         SignKeys            = null,
                               IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<OCPP.Signature>?  Signatures          = null,
+                              IEnumerable<Signature>?       Signatures          = null,
 
                               Request_Id?                   RequestId           = null,
                               DateTime?                     RequestTimestamp    = null,
@@ -283,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.UnpublishFirmware(
                        new UnpublishFirmwareRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            MD5Checksum,
 
                            SignKeys,
@@ -303,12 +300,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetBaseReport               (DestinationNodeId, GetBaseReportRequestId, ReportBase, ...)
+        #region GetBaseReport               (DestinationId, GetBaseReportRequestId, ReportBase, ...)
 
         /// <summary>
         /// Retrieve the base report from the charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="GetBaseReportRequestId">An unique identification of the get base report request.</param>
         /// <param name="ReportBase">The requested reporting base.</param>
         /// 
@@ -323,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetBaseReportResponse>
 
             GetBaseReport(this ICSMS2                   NetworkingNode,
-                          NetworkingNode_Id             DestinationNodeId,
+                          NetworkingNode_Id             DestinationId,
                           Int64                         GetBaseReportRequestId,
                           ReportBase                    ReportBase,
 
@@ -333,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                           IEnumerable<KeyPair>?         SignKeys            = null,
                           IEnumerable<SignInfo>?        SignInfos           = null,
-                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+                          IEnumerable<Signature>?       Signatures          = null,
 
                           Request_Id?                   RequestId           = null,
                           DateTime?                     RequestTimestamp    = null,
@@ -344,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetBaseReport(
                        new GetBaseReportRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            GetBaseReportRequestId,
                            ReportBase,
 
@@ -365,12 +362,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetReport                   (DestinationNodeId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
+        #region GetReport                   (DestinationId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Retrieve reports from the charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="GetReportRequestId">The networking node identification.</param>
         /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
@@ -386,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetReportResponse>
 
             GetReport(this ICSMS2                     NetworkingNode,
-                      NetworkingNode_Id               DestinationNodeId,
+                      NetworkingNode_Id               DestinationId,
                       Int32                           GetReportRequestId,
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
                       IEnumerable<ComponentVariable>  ComponentVariables,
@@ -397,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                       IEnumerable<KeyPair>?           SignKeys            = null,
                       IEnumerable<SignInfo>?          SignInfos           = null,
-                      IEnumerable<OCPP.Signature>?    Signatures          = null,
+                      IEnumerable<Signature>?         Signatures          = null,
 
                       Request_Id?                     RequestId           = null,
                       DateTime?                       RequestTimestamp    = null,
@@ -408,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetReport(
                        new GetReportRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            GetReportRequestId,
                            ComponentCriteria,
                            ComponentVariables,
@@ -430,12 +427,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetLog                      (DestinationNodeId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+        #region GetLog                      (DestinationId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Retrieve log files from the charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
@@ -453,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetLogResponse>
 
             GetLog(this ICSMS2                   NetworkingNode,
-                   NetworkingNode_Id             DestinationNodeId,
+                   NetworkingNode_Id             DestinationId,
                    LogType                       LogType,
                    Int32                         LogRequestId,
                    LogParameters                 Log,
@@ -466,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                    IEnumerable<KeyPair>?         SignKeys            = null,
                    IEnumerable<SignInfo>?        SignInfos           = null,
-                   IEnumerable<OCPP.Signature>?  Signatures          = null,
+                   IEnumerable<Signature>?       Signatures          = null,
 
                    Request_Id?                   RequestId           = null,
                    DateTime?                     RequestTimestamp    = null,
@@ -477,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetLog(
                        new GetLogRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            LogType,
                            LogRequestId,
                            Log,
@@ -502,12 +499,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         #endregion
 
 
-        #region SetVariables                (DestinationNodeId, VariableData, DataConsistencyModel = null, ...)
+        #region SetVariables                (DestinationId, VariableData, DataConsistencyModel = null, ...)
 
         /// <summary>
         /// Set variable data on a charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="VariableData">An enumeration of variable data to set/change.</param>
         /// <param name="DataConsistencyModel">An optional data consistency model for this request.</param>
         /// 
@@ -522,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.SetVariablesResponse>
 
             SetVariables(this ICSMS2                   NetworkingNode,
-                         NetworkingNode_Id             DestinationNodeId,
+                         NetworkingNode_Id             DestinationId,
                          IEnumerable<SetVariableData>  VariableData,
                          DataConsistencyModel?         DataConsistencyModel   = null,
 
@@ -532,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                          IEnumerable<KeyPair>?         SignKeys               = null,
                          IEnumerable<SignInfo>?        SignInfos              = null,
-                         IEnumerable<OCPP.Signature>?  Signatures             = null,
+                         IEnumerable<Signature>?       Signatures             = null,
 
                          Request_Id?                   RequestId              = null,
                          DateTime?                     RequestTimestamp       = null,
@@ -543,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.SetVariables(
                        new SetVariablesRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            VariableData,
                            DataConsistencyModel,
 
@@ -564,12 +561,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetVariables                (DestinationNodeId, VariableData, ...)
+        #region GetVariables                (DestinationId, VariableData, ...)
 
         /// <summary>
         /// Get variable data from a charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="VariableData">An enumeration of requested variable data sets.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -583,7 +580,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetVariablesResponse>
 
             GetVariables(this ICSMS2                   NetworkingNode,
-                         NetworkingNode_Id             DestinationNodeId,
+                         NetworkingNode_Id             DestinationId,
                          IEnumerable<GetVariableData>  VariableData,
 
                          CustomData?                   CustomData          = null,
@@ -592,7 +589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
                          IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<OCPP.Signature>?  Signatures          = null,
+                         IEnumerable<Signature>?       Signatures          = null,
 
                          Request_Id?                   RequestId           = null,
                          DateTime?                     RequestTimestamp    = null,
@@ -603,7 +600,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetVariables(
                        new GetVariablesRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            VariableData,
 
                            SignKeys,
@@ -623,12 +620,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region SetMonitoringBase           (DestinationNodeId, MonitoringBase, ...)
+        #region SetMonitoringBase           (DestinationId, MonitoringBase, ...)
 
         /// <summary>
         /// Set the monitoring base of a charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="MonitoringBase">The monitoring base to be set.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -642,7 +639,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.SetMonitoringBaseResponse>
 
             SetMonitoringBase(this ICSMS2                   NetworkingNode,
-                              NetworkingNode_Id             DestinationNodeId,
+                              NetworkingNode_Id             DestinationId,
                               MonitoringBase                MonitoringBase,
 
                               CustomData?                   CustomData          = null,
@@ -651,7 +648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                               IEnumerable<KeyPair>?         SignKeys            = null,
                               IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<OCPP.Signature>?  Signatures          = null,
+                              IEnumerable<Signature>?       Signatures          = null,
 
                               Request_Id?                   RequestId           = null,
                               DateTime?                     RequestTimestamp    = null,
@@ -662,7 +659,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.SetMonitoringBase(
                        new SetMonitoringBaseRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            MonitoringBase,
 
                            SignKeys,
@@ -682,12 +679,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetMonitoringReport         (DestinationNodeId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
+        #region GetMonitoringReport         (DestinationId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Get monitoring report from a charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="GetMonitoringReportRequestId">The networking node identification.</param>
         /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
@@ -703,7 +700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetMonitoringReportResponse>
 
             GetMonitoringReport(this ICSMS2                       NetworkingNode,
-                                NetworkingNode_Id                 DestinationNodeId,
+                                NetworkingNode_Id                 DestinationId,
                                 Int32                             GetMonitoringReportRequestId,
                                 IEnumerable<MonitoringCriterion>  MonitoringCriteria,
                                 IEnumerable<ComponentVariable>    ComponentVariables,
@@ -714,7 +711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                 IEnumerable<KeyPair>?             SignKeys            = null,
                                 IEnumerable<SignInfo>?            SignInfos           = null,
-                                IEnumerable<OCPP.Signature>?      Signatures          = null,
+                                IEnumerable<Signature>?           Signatures          = null,
 
                                 Request_Id?                       RequestId           = null,
                                 DateTime?                         RequestTimestamp    = null,
@@ -725,7 +722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetMonitoringReport(
                        new GetMonitoringReportRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            GetMonitoringReportRequestId,
                            MonitoringCriteria,
                            ComponentVariables,
@@ -747,12 +744,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region SetMonitoringLevel          (DestinationNodeId, Severity, ...)
+        #region SetMonitoringLevel          (DestinationId, Severity, ...)
 
         /// <summary>
         /// Set the monitoring level on a charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -766,7 +763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.SetMonitoringLevelResponse>
 
             SetMonitoringLevel(this ICSMS2                   NetworkingNode,
-                               NetworkingNode_Id             DestinationNodeId,
+                               NetworkingNode_Id             DestinationId,
                                Severities                    Severity,
 
                                CustomData?                   CustomData          = null,
@@ -775,7 +772,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                IEnumerable<KeyPair>?         SignKeys            = null,
                                IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+                               IEnumerable<Signature>?       Signatures          = null,
 
                                Request_Id?                   RequestId           = null,
                                DateTime?                     RequestTimestamp    = null,
@@ -786,7 +783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.SetMonitoringLevel(
                        new SetMonitoringLevelRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            Severity,
 
                            SignKeys,
@@ -806,12 +803,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region SetVariableMonitoring       (DestinationNodeId, MonitoringData, ...)
+        #region SetVariableMonitoring       (DestinationId, MonitoringData, ...)
 
         /// <summary>
         /// Set a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="MonitoringData">An enumeration of monitoring data.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -825,7 +822,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.SetVariableMonitoringResponse>
 
             SetVariableMonitoring(this ICSMS2                     NetworkingNode,
-                                  NetworkingNode_Id               DestinationNodeId,
+                                  NetworkingNode_Id               DestinationId,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
                                   CustomData?                     CustomData          = null,
@@ -834,7 +831,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                   IEnumerable<KeyPair>?           SignKeys            = null,
                                   IEnumerable<SignInfo>?          SignInfos           = null,
-                                  IEnumerable<OCPP.Signature>?    Signatures          = null,
+                                  IEnumerable<Signature>?         Signatures          = null,
 
                                   Request_Id?                     RequestId           = null,
                                   DateTime?                       RequestTimestamp    = null,
@@ -845,7 +842,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.SetVariableMonitoring(
                        new SetVariableMonitoringRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            MonitoringData,
 
                            SignKeys,
@@ -865,12 +862,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region ClearVariableMonitoring     (DestinationNodeId, VariableMonitoringIds, ...)
+        #region ClearVariableMonitoring     (DestinationId, VariableMonitoringIds, ...)
 
         /// <summary>
         /// Delete a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="VariableMonitoringIds">An enumeration of variable monitoring identifications to clear.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -884,7 +881,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.ClearVariableMonitoringResponse>
 
             ClearVariableMonitoring(this ICSMS2                         NetworkingNode,
-                                    NetworkingNode_Id                   DestinationNodeId,
+                                    NetworkingNode_Id                   DestinationId,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
                                     CustomData?                         CustomData          = null,
@@ -893,7 +890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                     IEnumerable<KeyPair>?               SignKeys            = null,
                                     IEnumerable<SignInfo>?              SignInfos           = null,
-                                    IEnumerable<OCPP.Signature>?        Signatures          = null,
+                                    IEnumerable<Signature>?             Signatures          = null,
 
                                     Request_Id?                         RequestId           = null,
                                     DateTime?                           RequestTimestamp    = null,
@@ -904,7 +901,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.ClearVariableMonitoring(
                        new ClearVariableMonitoringRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            VariableMonitoringIds,
 
                            SignKeys,
@@ -924,12 +921,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region SetNetworkProfile           (DestinationNodeId, ConfigurationSlot, NetworkConnectionProfile, ...)
+        #region SetNetworkProfile           (DestinationId, ConfigurationSlot, NetworkConnectionProfile, ...)
 
         /// <summary>
         /// Set the network profile of a charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="ConfigurationSlot">The slot in which the configuration should be stored.</param>
         /// <param name="NetworkConnectionProfile">The network connection configuration.</param>
         /// 
@@ -944,7 +941,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.SetNetworkProfileResponse>
 
             SetNetworkProfile(this ICSMS2                   NetworkingNode,
-                              NetworkingNode_Id             DestinationNodeId,
+                              NetworkingNode_Id             DestinationId,
                               Int32                         ConfigurationSlot,
                               NetworkConnectionProfile      NetworkConnectionProfile,
 
@@ -954,7 +951,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                               IEnumerable<KeyPair>?         SignKeys            = null,
                               IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<OCPP.Signature>?  Signatures          = null,
+                              IEnumerable<Signature>?       Signatures          = null,
 
                               Request_Id?                   RequestId           = null,
                               DateTime?                     RequestTimestamp    = null,
@@ -965,7 +962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.SetNetworkProfile(
                        new SetNetworkProfileRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            ConfigurationSlot,
                            NetworkConnectionProfile,
 
@@ -986,12 +983,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region ChangeAvailability          (DestinationNodeId, OperationalStatus, EVSE = null, ...)
+        #region ChangeAvailability          (DestinationId, OperationalStatus, EVSE = null, ...)
 
         /// <summary>
         /// Change the availability of the given charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
         /// 
         /// <param name="EVSE">Optional identification of an EVSE/connector for which the operational status should be changed.</param>
@@ -1007,7 +1004,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.ChangeAvailabilityResponse>
 
             ChangeAvailability(this ICSMS2                   NetworkingNode,
-                               NetworkingNode_Id             DestinationNodeId,
+                               NetworkingNode_Id             DestinationId,
                                OperationalStatus             OperationalStatus,
 
                                EVSE?                         EVSE                = null,
@@ -1018,7 +1015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                IEnumerable<KeyPair>?         SignKeys            = null,
                                IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+                               IEnumerable<Signature>?       Signatures          = null,
 
                                Request_Id?                   RequestId           = null,
                                DateTime?                     RequestTimestamp    = null,
@@ -1029,7 +1026,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.ChangeAvailability(
                        new ChangeAvailabilityRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            OperationalStatus,
                            EVSE,
 
@@ -1050,12 +1047,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region TriggerMessage              (DestinationNodeId, RequestedMessage, EVSEId = null, CustomTrigger = null, ...)
+        #region TriggerMessage              (DestinationId, RequestedMessage, EVSEId = null, CustomTrigger = null, ...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomTrigger">An optional custom trigger.</param>
@@ -1071,7 +1068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.TriggerMessageResponse>
 
             TriggerMessage(this ICSMS2                   NetworkingNode,
-                           NetworkingNode_Id             DestinationNodeId,
+                           NetworkingNode_Id             DestinationId,
                            MessageTrigger                RequestedMessage,
                            EVSE?                         EVSE                = null,
                            String?                       CustomTrigger       = null,
@@ -1082,7 +1079,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                            IEnumerable<KeyPair>?         SignKeys            = null,
                            IEnumerable<SignInfo>?        SignInfos           = null,
-                           IEnumerable<OCPP.Signature>?  Signatures          = null,
+                           IEnumerable<Signature>?       Signatures          = null,
 
                            Request_Id?                   RequestId           = null,
                            DateTime?                     RequestTimestamp    = null,
@@ -1093,7 +1090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.TriggerMessage(
                        new TriggerMessageRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            RequestedMessage,
                            EVSE,
                            CustomTrigger,
@@ -1116,12 +1113,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         #endregion
 
 
-        #region SendSignedCertificate       (DestinationNodeId, CertificateChain, CertificateType = null, ...)
+        #region SendSignedCertificate       (DestinationId, CertificateChain, CertificateType = null, ...)
 
         /// <summary>
         /// Send the signed certificate to the given charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1135,7 +1132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.CertificateSignedResponse>
 
             SendSignedCertificate(this ICSMS2                   NetworkingNode,
-                                  NetworkingNode_Id             DestinationNodeId,
+                                  NetworkingNode_Id             DestinationId,
                                   CertificateChain              CertificateChain,
                                   CertificateSigningUse?        CertificateType     = null,
 
@@ -1145,7 +1142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                   IEnumerable<KeyPair>?         SignKeys            = null,
                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                  IEnumerable<Signature>?       Signatures          = null,
 
                                   Request_Id?                   RequestId           = null,
                                   DateTime?                     RequestTimestamp    = null,
@@ -1156,7 +1153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.CertificateSigned(
                        new CertificateSignedRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            CertificateChain,
                            CertificateType,
 
@@ -1177,12 +1174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region InstallCertificate          (DestinationNodeId, CertificateType, Certificate, ...)
+        #region InstallCertificate          (DestinationId, CertificateType, Certificate, ...)
 
         /// <summary>
         /// Install the given certificate within the charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
         /// 
@@ -1197,7 +1194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.InstallCertificateResponse>
 
             InstallCertificate(this ICSMS2                   NetworkingNode,
-                               NetworkingNode_Id             DestinationNodeId,
+                               NetworkingNode_Id             DestinationId,
                                InstallCertificateUse         CertificateType,
                                Certificate                   Certificate,
 
@@ -1207,7 +1204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                IEnumerable<KeyPair>?         SignKeys            = null,
                                IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+                               IEnumerable<Signature>?       Signatures          = null,
 
                                Request_Id?                   RequestId           = null,
                                DateTime?                     RequestTimestamp    = null,
@@ -1218,7 +1215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.InstallCertificate(
                        new InstallCertificateRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            CertificateType,
                            Certificate,
 
@@ -1239,12 +1236,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetInstalledCertificateIds  (DestinationNodeId, CertificateTypes, ...)
+        #region GetInstalledCertificateIds  (DestinationId, CertificateTypes, ...)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="CertificateTypes">An optional enumeration of certificate types requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1258,7 +1255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetInstalledCertificateIdsResponse>
 
             GetInstalledCertificateIds(this ICSMS2                        NetworkingNode,
-                                       NetworkingNode_Id                  DestinationNodeId,
+                                       NetworkingNode_Id                  DestinationId,
                                        IEnumerable<GetCertificateIdUse>?  CertificateTypes    = null,
 
                                        CustomData?                        CustomData          = null,
@@ -1267,7 +1264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                        IEnumerable<KeyPair>?              SignKeys            = null,
                                        IEnumerable<SignInfo>?             SignInfos           = null,
-                                       IEnumerable<OCPP.Signature>?       Signatures          = null,
+                                       IEnumerable<Signature>?            Signatures          = null,
 
                                        Request_Id?                        RequestId           = null,
                                        DateTime?                          RequestTimestamp    = null,
@@ -1278,7 +1275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetInstalledCertificateIds(
                        new GetInstalledCertificateIdsRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            CertificateTypes,
 
                            SignKeys,
@@ -1298,12 +1295,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region DeleteCertificate           (DestinationNodeId, CertificateHashData, ...)
+        #region DeleteCertificate           (DestinationId, CertificateHashData, ...)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1317,7 +1314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.DeleteCertificateResponse>
 
             DeleteCertificate(this ICSMS2                   NetworkingNode,
-                              NetworkingNode_Id             DestinationNodeId,
+                              NetworkingNode_Id             DestinationId,
                               CertificateHashData           CertificateHashData,
 
                               CustomData?                   CustomData          = null,
@@ -1326,7 +1323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                               IEnumerable<KeyPair>?         SignKeys            = null,
                               IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<OCPP.Signature>?  Signatures          = null,
+                              IEnumerable<Signature>?       Signatures          = null,
 
                               Request_Id?                   RequestId           = null,
                               DateTime?                     RequestTimestamp    = null,
@@ -1337,7 +1334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.DeleteCertificate(
                        new DeleteCertificateRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            CertificateHashData,
 
                            SignKeys,
@@ -1357,12 +1354,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region NotifyCRLAvailability       (DestinationNodeId, NotifyCRLRequestId, Availability, Location, ...)
+        #region NotifyCRLAvailability       (DestinationId, NotifyCRLRequestId, Availability, Location, ...)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="NotifyCRLRequestId">An unique identification of this request.</param>
         /// <param name="Availability">An availability status of the certificate revocation list.</param>
         /// <param name="Location">An optional location of the certificate revocation list.</param>
@@ -1378,7 +1375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.NotifyCRLResponse>
 
             NotifyCRLAvailability(this ICSMS2                   NetworkingNode,
-                                  NetworkingNode_Id             DestinationNodeId,
+                                  NetworkingNode_Id             DestinationId,
                                   Int32                         NotifyCRLRequestId,
                                   NotifyCRLStatus               Availability,
                                   URL?                          Location,
@@ -1389,7 +1386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                   IEnumerable<KeyPair>?         SignKeys            = null,
                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                  IEnumerable<Signature>?       Signatures          = null,
 
                                   Request_Id?                   RequestId           = null,
                                   DateTime?                     RequestTimestamp    = null,
@@ -1400,7 +1397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.NotifyCRL(
                        new NotifyCRLRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            NotifyCRLRequestId,
                            Availability,
                            Location,
@@ -1423,12 +1420,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         #endregion
 
 
-        #region GetLocalListVersion         (DestinationNodeId, ...)
+        #region GetLocalListVersion         (DestinationId, ...)
 
         /// <summary>
         /// Return the local white list of the given charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1441,7 +1438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetLocalListVersionResponse>
 
             GetLocalListVersion(this ICSMS2                   NetworkingNode,
-                                NetworkingNode_Id             DestinationNodeId,
+                                NetworkingNode_Id             DestinationId,
 
                                 CustomData?                   CustomData          = null,
 
@@ -1449,7 +1446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                 IEnumerable<KeyPair>?         SignKeys            = null,
                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                IEnumerable<Signature>?       Signatures          = null,
 
                                 Request_Id?                   RequestId           = null,
                                 DateTime?                     RequestTimestamp    = null,
@@ -1460,7 +1457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetLocalListVersion(
                        new GetLocalListVersionRequest(
-                           DestinationNodeId,
+                           DestinationId,
 
                            SignKeys,
                            SignInfos,
@@ -1479,12 +1476,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region SendLocalList               (DestinationNodeId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList               (DestinationId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
         /// <summary>
         /// Set the local white liste at the given charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charging station. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
@@ -1500,7 +1497,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.SendLocalListResponse>
 
             SendLocalList(this ICSMS2                      NetworkingNode,
-                          NetworkingNode_Id                DestinationNodeId,
+                          NetworkingNode_Id                DestinationId,
                           UInt64                           ListVersion,
                           UpdateTypes                      UpdateType,
                           IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
@@ -1511,7 +1508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                           IEnumerable<KeyPair>?            SignKeys                 = null,
                           IEnumerable<SignInfo>?           SignInfos                = null,
-                          IEnumerable<OCPP.Signature>?     Signatures               = null,
+                          IEnumerable<Signature>?          Signatures               = null,
 
                           Request_Id?                      RequestId                = null,
                           DateTime?                        RequestTimestamp         = null,
@@ -1522,7 +1519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.SendLocalList(
                        new SendLocalListRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            ListVersion,
                            UpdateType,
                            LocalAuthorizationList,
@@ -1544,12 +1541,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region ClearCache                  (DestinationNodeId, ...)
+        #region ClearCache                  (DestinationId, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1562,7 +1559,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.ClearCacheResponse>
 
             ClearCache(this ICSMS2                   NetworkingNode,
-                       NetworkingNode_Id             DestinationNodeId,
+                       NetworkingNode_Id             DestinationId,
 
                        CustomData?                   CustomData          = null,
 
@@ -1570,7 +1567,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                        IEnumerable<KeyPair>?         SignKeys            = null,
                        IEnumerable<SignInfo>?        SignInfos           = null,
-                       IEnumerable<OCPP.Signature>?  Signatures          = null,
+                       IEnumerable<Signature>?       Signatures          = null,
 
                        Request_Id?                   RequestId           = null,
                        DateTime?                     RequestTimestamp    = null,
@@ -1581,7 +1578,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.ClearCache(
                        new ClearCacheRequest(
-                           DestinationNodeId,
+                           DestinationId,
 
                            SignKeys,
                            SignInfos,
@@ -1601,12 +1598,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         #endregion
 
 
-        #region ReserveNow                  (DestinationNodeId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow                  (DestinationId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>
         /// Create a charging reservation of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdToken">The identifier for which the charging station has to reserve a connector.</param>
@@ -1625,7 +1622,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.ReserveNowResponse>
 
             ReserveNow(this ICSMS2                   NetworkingNode,
-                       NetworkingNode_Id             DestinationNodeId,
+                       NetworkingNode_Id             DestinationId,
                        Reservation_Id                ReservationId,
                        DateTime                      ExpiryDate,
                        IdToken                       IdToken,
@@ -1639,7 +1636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                        IEnumerable<KeyPair>?         SignKeys            = null,
                        IEnumerable<SignInfo>?        SignInfos           = null,
-                       IEnumerable<OCPP.Signature>?  Signatures          = null,
+                       IEnumerable<Signature>?       Signatures          = null,
 
                        Request_Id?                   RequestId           = null,
                        DateTime?                     RequestTimestamp    = null,
@@ -1650,7 +1647,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.ReserveNow(
                        new ReserveNowRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            ReservationId,
                            ExpiryDate,
                            IdToken,
@@ -1675,12 +1672,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region CancelReservation           (DestinationNodeId, ReservationId, ...)
+        #region CancelReservation           (DestinationId, ReservationId, ...)
 
         /// <summary>
         /// Cancel the given charging reservation at the given charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1694,7 +1691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.CancelReservationResponse>
 
             CancelReservation(this ICSMS2                   NetworkingNode,
-                              NetworkingNode_Id             DestinationNodeId,
+                              NetworkingNode_Id             DestinationId,
                               Reservation_Id                ReservationId,
 
                               CustomData?                   CustomData          = null,
@@ -1703,7 +1700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                               IEnumerable<KeyPair>?         SignKeys            = null,
                               IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<OCPP.Signature>?  Signatures          = null,
+                              IEnumerable<Signature>?       Signatures          = null,
 
                               Request_Id?                   RequestId           = null,
                               DateTime?                     RequestTimestamp    = null,
@@ -1714,7 +1711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.CancelReservation(
                        new CancelReservationRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            ReservationId,
 
                            SignKeys,
@@ -1734,12 +1731,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region StartCharging               (DestinationNodeId, RequestStartTransactionRequestId, IdToken, ...)
+        #region StartCharging               (DestinationId, RequestStartTransactionRequestId, IdToken, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="RequestStartTransactionRequestId">Request identification given by the server to this start request. The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.</param>
         /// <param name="IdToken">The identification token to start the charging transaction.</param>
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
@@ -1758,7 +1755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.RequestStartTransactionResponse>
 
             StartCharging(this ICSMS2                   NetworkingNode,
-                          NetworkingNode_Id             DestinationNodeId,
+                          NetworkingNode_Id             DestinationId,
                           RemoteStart_Id                RequestStartTransactionRequestId,
                           IdToken                       IdToken,
                           EVSE_Id?                      EVSEId              = null,
@@ -1772,7 +1769,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                           IEnumerable<KeyPair>?         SignKeys            = null,
                           IEnumerable<SignInfo>?        SignInfos           = null,
-                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+                          IEnumerable<Signature>?       Signatures          = null,
 
                           Request_Id?                   RequestId           = null,
                           DateTime?                     RequestTimestamp    = null,
@@ -1783,7 +1780,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.RequestStartTransaction(
                        new RequestStartTransactionRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            RequestStartTransactionRequestId,
                            IdToken,
                            EVSEId,
@@ -1808,12 +1805,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region StopCharging                (DestinationNodeId, TransactionId, ...)
+        #region StopCharging                (DestinationId, TransactionId, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1827,7 +1824,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.RequestStopTransactionResponse>
 
             StopCharging(this ICSMS2                   NetworkingNode,
-                         NetworkingNode_Id             DestinationNodeId,
+                         NetworkingNode_Id             DestinationId,
                          Transaction_Id                TransactionId,
 
                          CustomData?                   CustomData          = null,
@@ -1836,7 +1833,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
                          IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<OCPP.Signature>?  Signatures          = null,
+                         IEnumerable<Signature>?       Signatures          = null,
 
                          Request_Id?                   RequestId           = null,
                          DateTime?                     RequestTimestamp    = null,
@@ -1847,7 +1844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.RequestStopTransaction(
                        new RequestStopTransactionRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            TransactionId,
 
                            SignKeys,
@@ -1867,12 +1864,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetTransactionStatus        (DestinationNodeId, ConnectorId, ChargingProfile, ...)
+        #region GetTransactionStatus        (DestinationId, ConnectorId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1886,7 +1883,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetTransactionStatusResponse>
 
             GetTransactionStatus(this ICSMS2                   NetworkingNode,
-                                 NetworkingNode_Id             DestinationNodeId,
+                                 NetworkingNode_Id             DestinationId,
                                  Transaction_Id?               TransactionId       = null,
 
                                  CustomData?                   CustomData          = null,
@@ -1895,7 +1892,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                  IEnumerable<KeyPair>?         SignKeys            = null,
                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                 IEnumerable<Signature>?       Signatures          = null,
 
                                  Request_Id?                   RequestId           = null,
                                  DateTime?                     RequestTimestamp    = null,
@@ -1906,7 +1903,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetTransactionStatus(
                        new GetTransactionStatusRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            TransactionId,
 
                            SignKeys,
@@ -1926,12 +1923,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region SetChargingProfile          (DestinationNodeId, EVSEId, ChargingProfile, ...)
+        #region SetChargingProfile          (DestinationId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -1946,7 +1943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.SetChargingProfileResponse>
 
             SetChargingProfile(this ICSMS2                   NetworkingNode,
-                               NetworkingNode_Id             DestinationNodeId,
+                               NetworkingNode_Id             DestinationId,
                                EVSE_Id                       EVSEId,
                                ChargingProfile               ChargingProfile,
 
@@ -1956,7 +1953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                IEnumerable<KeyPair>?         SignKeys            = null,
                                IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+                               IEnumerable<Signature>?       Signatures          = null,
 
                                Request_Id?                   RequestId           = null,
                                DateTime?                     RequestTimestamp    = null,
@@ -1967,7 +1964,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.SetChargingProfile(
                        new SetChargingProfileRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            EVSEId,
                            ChargingProfile,
 
@@ -1988,12 +1985,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetChargingProfiles         (DestinationNodeId, EVSEId, ChargingProfile, ...)
+        #region GetChargingProfiles         (DestinationId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -2008,7 +2005,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetChargingProfilesResponse>
 
             GetChargingProfiles(this ICSMS2                   NetworkingNode,
-                                NetworkingNode_Id             DestinationNodeId,
+                                NetworkingNode_Id             DestinationId,
                                 Int64                         GetChargingProfilesRequestId,
                                 ChargingProfileCriterion      ChargingProfile,
                                 EVSE_Id?                      EVSEId              = null,
@@ -2019,7 +2016,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                 IEnumerable<KeyPair>?         SignKeys            = null,
                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                IEnumerable<Signature>?       Signatures          = null,
 
                                 Request_Id?                   RequestId           = null,
                                 DateTime?                     RequestTimestamp    = null,
@@ -2030,7 +2027,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetChargingProfiles(
                        new GetChargingProfilesRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            GetChargingProfilesRequestId,
                            ChargingProfile,
                            EVSEId,
@@ -2052,12 +2049,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region ClearChargingProfile        (DestinationNodeId, ChargingProfileId, ChargingProfileCriteria, ...)
+        #region ClearChargingProfile        (DestinationId, ChargingProfileId, ChargingProfileCriteria, ...)
 
         /// <summary>
         /// Remove the charging profile at the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="ChargingProfileId">An optional identification of the charging profile to clear.</param>
         /// <param name="ChargingProfileCriteria">An optional specification of the charging profile to clear.</param>
         /// 
@@ -2072,7 +2069,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.ClearChargingProfileResponse>
 
             ClearChargingProfile(this ICSMS2                   NetworkingNode,
-                                 NetworkingNode_Id             DestinationNodeId,
+                                 NetworkingNode_Id             DestinationId,
                                  ChargingProfile_Id?           ChargingProfileId         = null,
                                  ClearChargingProfile?         ChargingProfileCriteria   = null,
 
@@ -2082,7 +2079,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                  IEnumerable<KeyPair>?         SignKeys                  = null,
                                  IEnumerable<SignInfo>?        SignInfos                 = null,
-                                 IEnumerable<OCPP.Signature>?  Signatures                = null,
+                                 IEnumerable<Signature>?       Signatures                = null,
 
                                  Request_Id?                   RequestId                 = null,
                                  DateTime?                     RequestTimestamp          = null,
@@ -2093,7 +2090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.ClearChargingProfile(
                        new ClearChargingProfileRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            ChargingProfileId,
                            ChargingProfileCriteria,
 
@@ -2114,12 +2111,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetCompositeSchedule        (DestinationNodeId, Duration, EVSEId, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule        (DestinationId, Duration, EVSEId, ChargingRateUnit = null, ...)
 
         /// <summary>
         /// Return the charging schedule of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
@@ -2135,7 +2132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetCompositeScheduleResponse>
 
             GetCompositeSchedule(this ICSMS2                   NetworkingNode,
-                                 NetworkingNode_Id             DestinationNodeId,
+                                 NetworkingNode_Id             DestinationId,
                                  TimeSpan                      Duration,
                                  EVSE_Id                       EVSEId,
                                  ChargingRateUnits?            ChargingRateUnit    = null,
@@ -2146,7 +2143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                  IEnumerable<KeyPair>?         SignKeys            = null,
                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                 IEnumerable<Signature>?       Signatures          = null,
 
                                  Request_Id?                   RequestId           = null,
                                  DateTime?                     RequestTimestamp    = null,
@@ -2157,7 +2154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetCompositeSchedule(
                        new GetCompositeScheduleRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            Duration,
                            EVSEId,
                            ChargingRateUnit,
@@ -2179,12 +2176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region UpdateDynamicSchedule       (DestinationNodeId, ChargingProfileId, Limit = null, ...)
+        #region UpdateDynamicSchedule       (DestinationId, ChargingProfileId, Limit = null, ...)
 
         /// <summary>
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
         /// 
         /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
@@ -2214,7 +2211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.UpdateDynamicScheduleResponse>
 
             UpdateDynamicSchedule(this ICSMS2                   NetworkingNode,
-                                  NetworkingNode_Id             DestinationNodeId,
+                                  NetworkingNode_Id             DestinationId,
                                   ChargingProfile_Id            ChargingProfileId,
 
                                   ChargingRateValue?            Limit                 = null,
@@ -2239,7 +2236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                   IEnumerable<KeyPair>?         SignKeys              = null,
                                   IEnumerable<SignInfo>?        SignInfos             = null,
-                                  IEnumerable<OCPP.Signature>?  Signatures            = null,
+                                  IEnumerable<Signature>?       Signatures            = null,
 
                                   Request_Id?                   RequestId             = null,
                                   DateTime?                     RequestTimestamp      = null,
@@ -2251,7 +2248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
                 => NetworkingNode.OCPP.OUT.UpdateDynamicSchedule(
                        new UpdateDynamicScheduleRequest(
 
-                           DestinationNodeId,
+                           DestinationId,
                            ChargingProfileId,
 
                            Limit,
@@ -2288,12 +2285,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer (DestinationNodeId, AllowedEnergyTransferModes, ...)
+        #region NotifyAllowedEnergyTransfer (DestinationId, AllowedEnergyTransferModes, ...)
 
         /// <summary>
         /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2307,7 +2304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.NotifyAllowedEnergyTransferResponse>
 
             NotifyAllowedEnergyTransfer(this ICSMS2                      NetworkingNode,
-                                        NetworkingNode_Id                DestinationNodeId,
+                                        NetworkingNode_Id                DestinationId,
                                         IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
                                         CustomData?                      CustomData          = null,
@@ -2316,7 +2313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                         IEnumerable<KeyPair>?            SignKeys            = null,
                                         IEnumerable<SignInfo>?           SignInfos           = null,
-                                        IEnumerable<OCPP.Signature>?     Signatures          = null,
+                                        IEnumerable<Signature>?          Signatures          = null,
 
                                         Request_Id?                      RequestId           = null,
                                         DateTime?                        RequestTimestamp    = null,
@@ -2327,7 +2324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.NotifyAllowedEnergyTransfer(
                        new NotifyAllowedEnergyTransferRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            AllowedEnergyTransferModes,
 
                            SignKeys,
@@ -2347,12 +2344,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region UsePriorityCharging         (DestinationNodeId, TransactionId, Activate, ...)
+        #region UsePriorityCharging         (DestinationId, TransactionId, Activate, ...)
 
         /// <summary>
         /// Switch to the priority charging profile.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -2367,7 +2364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.UsePriorityChargingResponse>
 
             UsePriorityCharging(this ICSMS2                   NetworkingNode,
-                                NetworkingNode_Id             DestinationNodeId,
+                                NetworkingNode_Id             DestinationId,
                                 Transaction_Id                TransactionId,
                                 Boolean                       Activate,
 
@@ -2377,7 +2374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                 IEnumerable<KeyPair>?         SignKeys            = null,
                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                IEnumerable<Signature>?       Signatures          = null,
 
                                 Request_Id?                   RequestId           = null,
                                 DateTime?                     RequestTimestamp    = null,
@@ -2388,7 +2385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.UsePriorityCharging(
                        new UsePriorityChargingRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            TransactionId,
                            Activate,
 
@@ -2409,12 +2406,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region UnlockConnector             (DestinationNodeId, EVSEId, ConnectorId, ...)
+        #region UnlockConnector             (DestinationId, EVSEId, ConnectorId, ...)
 
         /// <summary>
         /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2428,7 +2425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.UnlockConnectorResponse>
 
             UnlockConnector(this ICSMS2                   NetworkingNode,
-                            NetworkingNode_Id             DestinationNodeId,
+                            NetworkingNode_Id             DestinationId,
                             EVSE_Id                       EVSEId,
                             Connector_Id                  ConnectorId,
 
@@ -2438,7 +2435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                             IEnumerable<KeyPair>?         SignKeys            = null,
                             IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+                            IEnumerable<Signature>?       Signatures          = null,
 
                             Request_Id?                   RequestId           = null,
                             DateTime?                     RequestTimestamp    = null,
@@ -2449,7 +2446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.UnlockConnector(
                        new UnlockConnectorRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            EVSEId,
                            ConnectorId,
 
@@ -2471,14 +2468,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         #endregion
 
 
-        #region SendAFRRSignal              (DestinationNodeId, ActivationTimestamp, Signal, ...)
+        #region SendAFRRSignal              (DestinationId, ActivationTimestamp, Signal, ...)
 
         /// <summary>
         /// Send an aFRR signal to the charging station.
         /// The charging station uses the value of signal to select a matching power value
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">Ther value of the signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
@@ -2493,7 +2490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.AFRRSignalResponse>
 
             SendAFRRSignal(this ICSMS2                   NetworkingNode,
-                           NetworkingNode_Id             DestinationNodeId,
+                           NetworkingNode_Id             DestinationId,
                            DateTime                      ActivationTimestamp,
                            AFRR_Signal                   Signal,
 
@@ -2503,7 +2500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                            IEnumerable<KeyPair>?         SignKeys            = null,
                            IEnumerable<SignInfo>?        SignInfos           = null,
-                           IEnumerable<OCPP.Signature>?  Signatures          = null,
+                           IEnumerable<Signature>?       Signatures          = null,
 
                            Request_Id?                   RequestId           = null,
                            DateTime?                     RequestTimestamp    = null,
@@ -2514,7 +2511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.AFRRSignal(
                        new AFRRSignalRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            ActivationTimestamp,
                            Signal,
 
@@ -2536,7 +2533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         #endregion
 
 
-        #region SetDisplayMessage           (DestinationNodeId, Message, ...)
+        #region SetDisplayMessage           (DestinationId, Message, ...)
 
         /// <summary>
         /// Set a display message.
@@ -2554,7 +2551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.SetDisplayMessageResponse>
 
             SetDisplayMessage(this ICSMS2                   NetworkingNode,
-                              NetworkingNode_Id             DestinationNodeId,
+                              NetworkingNode_Id             DestinationId,
                               MessageInfo                   Message,
 
                               CustomData?                   CustomData          = null,
@@ -2563,7 +2560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                               IEnumerable<KeyPair>?         SignKeys            = null,
                               IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<OCPP.Signature>?  Signatures          = null,
+                              IEnumerable<Signature>?       Signatures          = null,
 
                               Request_Id?                   RequestId           = null,
                               DateTime?                     RequestTimestamp    = null,
@@ -2574,7 +2571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.SetDisplayMessage(
                        new SetDisplayMessageRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            Message,
 
                            SignKeys,
@@ -2594,7 +2591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetDisplayMessages          (DestinationNodeId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
+        #region GetDisplayMessages          (DestinationId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
 
         /// <summary>
         /// Get all display messages.
@@ -2615,7 +2612,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetDisplayMessagesResponse>
 
             GetDisplayMessages(this ICSMS2                      NetworkingNode,
-                               NetworkingNode_Id                DestinationNodeId,
+                               NetworkingNode_Id                DestinationId,
                                Int32                            GetDisplayMessagesRequestId,
                                IEnumerable<DisplayMessage_Id>?  Ids                 = null,
                                MessagePriority?                 Priority            = null,
@@ -2627,7 +2624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                IEnumerable<KeyPair>?            SignKeys            = null,
                                IEnumerable<SignInfo>?           SignInfos           = null,
-                               IEnumerable<OCPP.Signature>?     Signatures          = null,
+                               IEnumerable<Signature>?          Signatures          = null,
 
                                Request_Id?                      RequestId           = null,
                                DateTime?                        RequestTimestamp    = null,
@@ -2638,7 +2635,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetDisplayMessages(
                        new GetDisplayMessagesRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            GetDisplayMessagesRequestId,
                            Ids,
                            Priority,
@@ -2661,7 +2658,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region ClearDisplayMessage         (DestinationNodeId, DisplayMessageId, ...)
+        #region ClearDisplayMessage         (DestinationId, DisplayMessageId, ...)
 
         /// <summary>
         /// Remove a display message.
@@ -2679,7 +2676,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.ClearDisplayMessageResponse>
 
             ClearDisplayMessage(this ICSMS2                   NetworkingNode,
-                                NetworkingNode_Id             DestinationNodeId,
+                                NetworkingNode_Id             DestinationId,
                                 DisplayMessage_Id             DisplayMessageId,
 
                                 CustomData?                   CustomData          = null,
@@ -2688,7 +2685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                 IEnumerable<KeyPair>?         SignKeys            = null,
                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                IEnumerable<Signature>?       Signatures          = null,
 
                                 Request_Id?                   RequestId           = null,
                                 DateTime?                     RequestTimestamp    = null,
@@ -2699,7 +2696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.ClearDisplayMessage(
                        new ClearDisplayMessageRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            DisplayMessageId,
 
                            SignKeys,
@@ -2719,7 +2716,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region SendCostUpdated             (DestinationNodeId, TotalCost, TransactionId, ...)
+        #region SendCostUpdated             (DestinationId, TotalCost, TransactionId, ...)
 
         /// <summary>
         /// Send updated total costs.
@@ -2738,7 +2735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.CostUpdatedResponse>
 
             SendCostUpdated(this ICSMS2                   NetworkingNode,
-                            NetworkingNode_Id             DestinationNodeId,
+                            NetworkingNode_Id             DestinationId,
                             Decimal                       TotalCost,
                             Transaction_Id                TransactionId,
 
@@ -2748,7 +2745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                             IEnumerable<KeyPair>?         SignKeys            = null,
                             IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+                            IEnumerable<Signature>?       Signatures          = null,
 
                             Request_Id?                   RequestId           = null,
                             DateTime?                     RequestTimestamp    = null,
@@ -2759,7 +2756,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.CostUpdated(
                        new CostUpdatedRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            TotalCost,
                            TransactionId,
 
@@ -2780,7 +2777,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region RequestCustomerInformation  (DestinationNodeId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
+        #region RequestCustomerInformation  (DestinationId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
 
         /// <summary>
         /// Request customer information.
@@ -2803,7 +2800,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.CustomerInformationResponse>
 
             RequestCustomerInformation(this ICSMS2                   NetworkingNode,
-                                       NetworkingNode_Id             DestinationNodeId,
+                                       NetworkingNode_Id             DestinationId,
                                        Int64                         CustomerInformationRequestId,
                                        Boolean                       Report,
                                        Boolean                       Clear,
@@ -2817,7 +2814,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                        IEnumerable<KeyPair>?         SignKeys              = null,
                                        IEnumerable<SignInfo>?        SignInfos             = null,
-                                       IEnumerable<OCPP.Signature>?  Signatures            = null,
+                                       IEnumerable<Signature>?       Signatures            = null,
 
                                        Request_Id?                   RequestId             = null,
                                        DateTime?                     RequestTimestamp      = null,
@@ -2828,7 +2825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.CustomerInformation(
                        new CustomerInformationRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            CustomerInformationRequestId,
                            Report,
                            Clear,
@@ -2859,7 +2856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         // Common
 
-        #region TransferData                (DestinationNodeId, VendorId, MessageId = null, Data = null, ...)
+        #region TransferData                (DestinationId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Send the given vendor-specific data.
@@ -2884,12 +2881,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                          CustomData?                   CustomData          = null,
 
-                         NetworkingNode_Id?            DestinationNodeId   = null,
+                         NetworkingNode_Id?            DestinationId   = null,
                          NetworkPath?                  NetworkPath         = null,
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
                          IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<OCPP.Signature>?  Signatures          = null,
+                         IEnumerable<Signature>?       Signatures          = null,
 
                          Request_Id?                   RequestId           = null,
                          DateTime?                     RequestTimestamp    = null,
@@ -2901,7 +2898,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
                 => NetworkingNode.OCPP.OUT.DataTransfer(
                        new DataTransferRequest(
 
-                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+                           DestinationId ?? NetworkingNode_Id.CSMS,
 
                            VendorId,
                            MessageId,
@@ -2929,12 +2926,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData          (DestinationNodeId, VendorId, MessageId = null, Data = null, ...)
+        #region TransferBinaryData          (DestinationId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Send the given vendor-specific binary data.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
@@ -2950,7 +2947,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             TransferBinaryData(this ICSMS2                   NetworkingNode,
 
-                               NetworkingNode_Id             DestinationNodeId,
+                               NetworkingNode_Id             DestinationId,
                                Vendor_Id                     VendorId,
                                Message_Id?                   MessageId           = null,
                                Byte[]?                       Data                = null,
@@ -2960,7 +2957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                IEnumerable<KeyPair>?         SignKeys            = null,
                                IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+                               IEnumerable<Signature>?       Signatures          = null,
 
                                Request_Id?                   RequestId           = null,
                                DateTime?                     RequestTimestamp    = null,
@@ -2971,7 +2968,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.BinaryDataTransfer(
                        new BinaryDataTransferRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            VendorId,
                            MessageId,
                            Data,
@@ -2992,12 +2989,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetFile                     (DestinationNodeId, Filename, Priority = null, ...)
+        #region GetFile                     (DestinationId, Filename, Priority = null, ...)
 
         /// <summary>
         /// Request to download the given file from the given networking node.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="Filename">The name of the file including its absolute path.</param>
         /// <param name="Priority">The optional priority of the file request.</param>
         /// 
@@ -3008,11 +3005,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CS.GetFileResponse>
+        public static Task<GetFileResponse>
 
             GetFile(this ICSMS2                   NetworkingNode,
 
-                    NetworkingNode_Id             DestinationNodeId,
+                    NetworkingNode_Id             DestinationId,
                     FilePath                      Filename,
                     Byte?                         Priority            = null,
 
@@ -3022,7 +3019,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                     IEnumerable<KeyPair>?         SignKeys            = null,
                     IEnumerable<SignInfo>?        SignInfos           = null,
-                    IEnumerable<OCPP.Signature>?  Signatures          = null,
+                    IEnumerable<Signature>?       Signatures          = null,
 
                     Request_Id?                   RequestId           = null,
                     DateTime?                     RequestTimestamp    = null,
@@ -3032,8 +3029,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
 
                 => NetworkingNode.OCPP.OUT.GetFile(
-                       new OCPP.CSMS.GetFileRequest(
-                           DestinationNodeId,
+                       new GetFileRequest(
+                           DestinationId,
                            Filename,
                            Priority,
 
@@ -3054,12 +3051,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region SendFile                    (DestinationNodeId, Filename, FileContent, FileContentType = null, ...)
+        #region SendFile                    (DestinationId, Filename, FileContent, FileContentType = null, ...)
 
         /// <summary>
         /// Send the given file to the given networking node.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileContent">The file content.</param>
         /// <param name="FileContentType">An optional content/MIME type of the file.</param>
@@ -3075,17 +3072,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CS.SendFileResponse>
+        public static Task<SendFileResponse>
 
             SendFile(this ICSMS2                   NetworkingNode,
 
-                     NetworkingNode_Id             DestinationNodeId,
+                     NetworkingNode_Id             DestinationId,
                      FilePath                      FileName,
                      Byte[]                        FileContent,
                      ContentType?                  FileContentType     = null,
                      Byte[]?                       FileSHA256          = null,
                      Byte[]?                       FileSHA512          = null,
-                     IEnumerable<OCPP.Signature>?  FileSignatures      = null,
+                     IEnumerable<Signature>?       FileSignatures      = null,
                      Byte?                         Priority            = null,
 
                      CustomData?                   CustomData          = null,
@@ -3094,7 +3091,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                      IEnumerable<KeyPair>?         SignKeys            = null,
                      IEnumerable<SignInfo>?        SignInfos           = null,
-                     IEnumerable<OCPP.Signature>?  Signatures          = null,
+                     IEnumerable<Signature>?       Signatures          = null,
 
                      Request_Id?                   RequestId           = null,
                      DateTime?                     RequestTimestamp    = null,
@@ -3104,8 +3101,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
 
                 => NetworkingNode.OCPP.OUT.SendFile(
-                       new OCPP.CSMS.SendFileRequest(
-                           DestinationNodeId,
+                       new SendFileRequest(
+                           DestinationId,
                            FileName,
                            FileContent,
                            FileContentType,
@@ -3131,12 +3128,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region DeleteFile                  (DestinationNodeId, Filename, FileContent, FileContentType = null, ...)
+        #region DeleteFile                  (DestinationId, Filename, FileContent, FileContentType = null, ...)
 
         /// <summary>
         /// Delete the given file from the given networking node.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
         /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
@@ -3149,11 +3146,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CS.DeleteFileResponse>
+        public static Task<DeleteFileResponse>
 
             DeleteFile(this ICSMS2                   NetworkingNode,
 
-                       NetworkingNode_Id             DestinationNodeId,
+                       NetworkingNode_Id             DestinationId,
                        FilePath                      FileName,
                        Byte[]?                       FileSHA256          = null,
                        Byte[]?                       FileSHA512          = null,
@@ -3164,7 +3161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                        IEnumerable<KeyPair>?         SignKeys            = null,
                        IEnumerable<SignInfo>?        SignInfos           = null,
-                       IEnumerable<OCPP.Signature>?  Signatures          = null,
+                       IEnumerable<Signature>?       Signatures          = null,
 
                        Request_Id?                   RequestId           = null,
                        DateTime?                     RequestTimestamp    = null,
@@ -3174,8 +3171,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
 
                 => NetworkingNode.OCPP.OUT.DeleteFile(
-                       new OCPP.CSMS.DeleteFileRequest(
-                           DestinationNodeId,
+                       new DeleteFileRequest(
+                           DestinationId,
                            FileName,
                            FileSHA256,
                            FileSHA512,
@@ -3197,12 +3194,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region ListDirectory               (DestinationNodeId, Filename, FileContent, FileContentType = null, ...)
+        #region ListDirectory               (DestinationId, Filename, FileContent, FileContentType = null, ...)
 
         /// <summary>
         /// List the given directory of the given networking node.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="DirectoryPath">The absolute path of the directory to list.</param>
         /// <param name="Format">The optional response format of the directory listing.</param>
         /// 
@@ -3213,11 +3210,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CS.ListDirectoryResponse>
+        public static Task<ListDirectoryResponse>
 
             ListDirectory(this ICSMS2                   NetworkingNode,
 
-                          NetworkingNode_Id             DestinationNodeId,
+                          NetworkingNode_Id             DestinationId,
                           FilePath                      DirectoryPath,
                           ListDirectoryFormat?          Format                 = null,
                           Boolean?                      WithFileSizes          = null,
@@ -3231,7 +3228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                           IEnumerable<KeyPair>?         SignKeys               = null,
                           IEnumerable<SignInfo>?        SignInfos              = null,
-                          IEnumerable<OCPP.Signature>?  Signatures             = null,
+                          IEnumerable<Signature>?       Signatures             = null,
 
                           Request_Id?                   RequestId              = null,
                           DateTime?                     RequestTimestamp       = null,
@@ -3241,8 +3238,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
 
                 => NetworkingNode.OCPP.OUT.ListDirectory(
-                       new OCPP.CSMS.ListDirectoryRequest(
-                           DestinationNodeId,
+                       new ListDirectoryRequest(
+                           DestinationId,
                            DirectoryPath,
                            Format,
                            WithFileSizes,
@@ -3271,12 +3268,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         // E2E Security Extensions
 
-        #region TransferSecureData          (DestinationNodeId, VendorId, MessageId = null, Data = null, ...)
+        #region TransferSecureData          (DestinationId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given binary data to the given charging station.
         /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DestinationId">The networking node identification.</param>
         /// <param name="Parameter">Encryption parameters.</param>
         /// <param name="KeyId">The unique identification of the encryption key.</param>
         /// <param name="Payload">The unencrypted encapsulated security payload.</param>
@@ -3295,7 +3292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
             TransferSecureData(this ICSMS2                   CSMS,
 
-                               NetworkingNode_Id             DestinationNodeId,
+                               NetworkingNode_Id             DestinationId,
                                UInt16                        Parameter,
                                Byte[]                        Payload,
                                UInt16?                       KeyId               = null,
@@ -3305,7 +3302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                IEnumerable<KeyPair>?         SignKeys            = null,
                                IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+                               IEnumerable<Signature>?       Signatures          = null,
 
                                Request_Id?                   RequestId           = null,
                                DateTime?                     RequestTimestamp    = null,
@@ -3320,12 +3317,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 return CSMS.OCPP.OUT.SecureDataTransfer(
                            SecureDataTransferRequest.Encrypt(
-                               DestinationNodeId,
+                               DestinationId,
                                Parameter,
                                KeyId   ?? 0,
-                               Key     ?? CSMS.GetEncryptionKey    (DestinationNodeId, KeyId),
-                               Nonce   ?? CSMS.GetEncryptionNonce  (DestinationNodeId, KeyId),
-                               Counter ?? CSMS.GetEncryptionCounter(DestinationNodeId, KeyId),
+                               Key     ?? CSMS.GetEncryptionKey    (DestinationId, KeyId),
+                               Nonce   ?? CSMS.GetEncryptionNonce  (DestinationId, KeyId),
+                               Counter ?? CSMS.GetEncryptionCounter(DestinationId, KeyId),
                                Payload,
 
                                SignKeys,
@@ -3357,7 +3354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         // E2E Charging Tariffs Extensions
 
-        #region SetDefaultChargingTariff    (DestinationNodeId, ChargingTariff,          EVSEIds = null, ...)
+        #region SetDefaultChargingTariff    (DestinationId, ChargingTariff,          EVSEIds = null, ...)
 
         /// <summary>
         /// Set a default charging tariff for the charging station,
@@ -3377,7 +3374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.SetDefaultChargingTariffResponse>
 
             SetDefaultChargingTariff(this ICSMS2                   NetworkingNode,
-                                     NetworkingNode_Id             DestinationNodeId,
+                                     NetworkingNode_Id             DestinationId,
                                      ChargingTariff                ChargingTariff,
                                      IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
@@ -3387,7 +3384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                      IEnumerable<KeyPair>?         SignKeys            = null,
                                      IEnumerable<SignInfo>?        SignInfos           = null,
-                                     IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                     IEnumerable<Signature>?       Signatures          = null,
 
                                      Request_Id?                   RequestId           = null,
                                      DateTime?                     RequestTimestamp    = null,
@@ -3398,7 +3395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.SetDefaultChargingTariff(
                        new SetDefaultChargingTariffRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            ChargingTariff,
                            EVSEIds,
 
@@ -3419,7 +3416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region GetDefaultChargingTariff    (DestinationNodeId,                          EVSEIds = null, ...)
+        #region GetDefaultChargingTariff    (DestinationId,                          EVSEIds = null, ...)
 
         /// <summary>
         /// Get the default charging tariff(s) for the charging station and its EVSEs.
@@ -3437,7 +3434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.GetDefaultChargingTariffResponse>
 
             GetDefaultChargingTariff(this ICSMS2                   NetworkingNode,
-                                     NetworkingNode_Id             DestinationNodeId,
+                                     NetworkingNode_Id             DestinationId,
                                      IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
                                      CustomData?                   CustomData          = null,
@@ -3446,7 +3443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                      IEnumerable<KeyPair>?         SignKeys            = null,
                                      IEnumerable<SignInfo>?        SignInfos           = null,
-                                     IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                     IEnumerable<Signature>?       Signatures          = null,
 
                                      Request_Id?                   RequestId           = null,
                                      DateTime?                     RequestTimestamp    = null,
@@ -3457,7 +3454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.GetDefaultChargingTariff(
                        new GetDefaultChargingTariffRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            EVSEIds,
 
                            SignKeys,
@@ -3477,7 +3474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         #endregion
 
-        #region RemoveDefaultChargingTariff (DestinationNodeId, ChargingTariffId = null, EVSEIds = null, ...)
+        #region RemoveDefaultChargingTariff (DestinationId, ChargingTariffId = null, EVSEIds = null, ...)
 
         /// <summary>
         /// Remove the default charging tariff of the charging station,
@@ -3497,7 +3494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         public static Task<CS.RemoveDefaultChargingTariffResponse>
 
             RemoveDefaultChargingTariff(this ICSMS2                   NetworkingNode,
-                                        NetworkingNode_Id             DestinationNodeId,
+                                        NetworkingNode_Id             DestinationId,
                                         ChargingTariff_Id?            ChargingTariffId    = null,
                                         IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
@@ -3507,7 +3504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                         IEnumerable<KeyPair>?         SignKeys            = null,
                                         IEnumerable<SignInfo>?        SignInfos           = null,
-                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                        IEnumerable<Signature>?       Signatures          = null,
 
                                         Request_Id?                   RequestId           = null,
                                         DateTime?                     RequestTimestamp    = null,
@@ -3518,7 +3515,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                 => NetworkingNode.OCPP.OUT.RemoveDefaultChargingTariff(
                        new RemoveDefaultChargingTariffRequest(
-                           DestinationNodeId,
+                           DestinationId,
                            ChargingTariffId,
                            EVSEIds,
 
@@ -3559,7 +3556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.NN.NotifyNetworkTopologyResponse>
+        public static Task<NotifyNetworkTopologyResponse>
 
             NotifyNetworkTopology(this ICSMS2                   NetworkingNode,
 
@@ -3567,12 +3564,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
                                   CustomData?                   CustomData          = null,
 
-                                  NetworkingNode_Id?            DestinationNodeId   = null,
+                                  NetworkingNode_Id?            DestinationId   = null,
                                   NetworkPath?                  NetworkPath         = null,
 
                                   IEnumerable<KeyPair>?         SignKeys            = null,
                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                  IEnumerable<Signature>?       Signatures          = null,
 
                                   Request_Id?                   RequestId           = null,
                                   DateTime?                     RequestTimestamp    = null,
@@ -3582,9 +3579,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
 
                 => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
-                       new OCPP.NN.NotifyNetworkTopologyRequest(
+                       new NotifyNetworkTopologyRequest(
 
-                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+                           DestinationId ?? NetworkingNode_Id.CSMS,
 
                            NetworkTopologyInformation,
 
@@ -3626,14 +3623,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
 
         //    NotifyNetworkTopology(this INetworkingNode2         NetworkingNode,
 
-        //                          NetworkingNode_Id             DestinationNodeId,
+        //                          NetworkingNode_Id             DestinationId,
         //                          NetworkTopologyInformation    NetworkTopologyInformation,
 
         //                          CustomData?                   CustomData          = null,
 
         //                          IEnumerable<KeyPair>?         SignKeys            = null,
         //                          IEnumerable<SignInfo>?        SignInfos           = null,
-        //                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+        //                          IEnumerable<Signature>?       Signatures          = null,
 
         //                          Request_Id?                   RequestId           = null,
         //                          DateTime?                     RequestTimestamp    = null,
@@ -3645,7 +3642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS2
         //        => NetworkingNode.ocppOUT.NotifyNetworkTopology(
         //               new OCPP.NN.NotifyNetworkTopologyRequest(
 
-        //                   DestinationNodeId,
+        //                   DestinationId,
         //                   NetworkTopologyInformation,
 
         //                   SignKeys,

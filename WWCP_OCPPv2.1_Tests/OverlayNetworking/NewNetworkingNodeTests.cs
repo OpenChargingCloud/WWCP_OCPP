@@ -17,23 +17,15 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.tests.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.LocalController;
 
@@ -85,14 +77,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
 
 
 
-            var testCSMS01               = new TestCSMS(
+            var testCSMS01               = new TestCSMS2(
                                                Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
-                                               RequireAuthentication:   true,
+                                               VendorName:              "GraphDefined",
+                                               Model:                   "OCPPTest01",
                                                HTTPUploadPort:          IPPort.Parse(3416)
                                            );
 
-            var testBackendWebSockets01  = testCSMS01.AttachWebSocketService(
+            var testBackendWebSockets01  = testCSMS01.AttachWebSocketServer(
                                                TCPPort:                 IPPort.Parse(3415),
+                                               RequireAuthentication:   true,
                                                DisableWebSocketPings:   true,
                                                AutoStart:               true
                                            );
@@ -105,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
                                 RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + tn01.Id),
                                 HTTPAuthentication:      HTTPBasicAuthentication.Create(tn01.Id.ToString(), "1234abcd"),
                                 DisableWebSocketPings:   true,
-                                NetworkingMode:          OCPP.WebSockets.NetworkingMode.OverlayNetwork
+                                NetworkingMode:          NetworkingMode.OverlayNetwork
                             );
 
 
@@ -133,14 +127,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
                                                                      IMSI:    "1111"
                                                                  ),
                                        EVSEs:                    [
-                                                                     new ChargingStationEVSE(
+                                                                     new OCPPv2_1.CS.ChargingStationEVSE(
                                                                          Id:                  EVSE_Id.Parse(1),
                                                                          AdminStatus:         OperationalStatus.Operative,
                                                                          MeterType:           "MT1",
                                                                          MeterSerialNumber:   "MSN1",
                                                                          MeterPublicKey:      "MPK1",
                                                                          Connectors:          [
-                                                                                                  new ChargingStationConnector(
+                                                                                                  new OCPPv2_1.CS.ChargingStationConnector(
                                                                                                       Id:              Connector_Id.Parse(1),
                                                                                                       ConnectorType:   ConnectorType.sType2
                                                                                                   )
@@ -157,7 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
 
             server1.AddOrUpdateHTTPBasicAuth(chargingStation1.Id, "1234abcd");
 
-            var response = await chargingStation1.ConnectWebSocket(
+            var response = await chargingStation1.ConnectWebSocketClient(
+                                     NetworkingNodeId:       NetworkingNode_Id.CSMS,
                                      RemoteURL:              URL.Parse($"http://127.0.0.1:{server1.IPPort}/{chargingStation1.Id}"),
                                      HTTPAuthentication:     HTTPBasicAuthentication.Create(chargingStation1.Id.ToString(), "1234abcd"),
                                      DisableWebSocketPings:  true

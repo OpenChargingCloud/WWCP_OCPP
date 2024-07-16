@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using cloud.charging.open.protocols.OCPP;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
@@ -32,7 +26,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
-        public NetworkingNode_Id      NetworkingNodeId       { get; }
+        public NetworkingNode_Id      DestinationId          { get; }
 
         public IOCPPWebSocketClient?  OCPPWebSocketClient    { get; }
 
@@ -50,16 +44,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Constructor(s)
 
-        #region Reachability(NetworkingNodeId, OCPPWebSocketClient, Priority = 0, Timestamp = null, Timeout = null)
+        #region Reachability(DestinationId, OCPPWebSocketClient, Priority = 0, Timestamp = null, Timeout = null)
 
-        public Reachability(NetworkingNode_Id     NetworkingNodeId,
+        public Reachability(NetworkingNode_Id     DestinationId,
                             IOCPPWebSocketClient  OCPPWebSocketClient,
                             Byte?                 Priority    = 0,
                             DateTime?             Timestamp   = null,
                             DateTime?             Timeout     = null)
         {
 
-            this.NetworkingNodeId     = NetworkingNodeId;
+            this.DestinationId        = DestinationId;
             this.OCPPWebSocketClient  = OCPPWebSocketClient;
             this.Priority             = Priority  ?? 0;
             this.Timestamp            = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -69,16 +63,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Reachability(NetworkingNodeId, OCPPWebSocketServer, Priority = 0, Timestamp = null, Timeout = null)
+        #region Reachability(DestinationId, OCPPWebSocketServer, Priority = 0, Timestamp = null, Timeout = null)
 
-        public Reachability(NetworkingNode_Id     NetworkingNodeId,
+        public Reachability(NetworkingNode_Id     DestinationId,
                             IOCPPWebSocketServer  OCPPWebSocketServer,
                             Byte?                 Priority    = 0,
                             DateTime?             Timestamp   = null,
                             DateTime?             Timeout     = null)
         {
 
-            this.NetworkingNodeId     = NetworkingNodeId;
+            this.DestinationId        = DestinationId;
             this.OCPPWebSocketServer  = OCPPWebSocketServer;
             this.Priority             = Priority  ?? 0;
             this.Timestamp            = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -88,20 +82,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Reachability(NetworkingNodeId, NetworkingHub,       Priority = 0, Timestamp = null, Timeout = null)
+        #region Reachability(DestinationId, NetworkingHub,       Priority = 0, Timestamp = null, Timeout = null)
 
-        public Reachability(NetworkingNode_Id  NetworkingNodeId,
+        public Reachability(NetworkingNode_Id  DestinationId,
                             NetworkingNode_Id  NetworkingHub,
                             Byte?              Priority    = 0,
                             DateTime?          Timestamp   = null,
                             DateTime?          Timeout     = null)
         {
 
-            this.NetworkingNodeId     = NetworkingNodeId;
-            this.NetworkingHub        = NetworkingHub;
-            this.Priority             = Priority  ?? 0;
-            this.Timestamp            = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            this.Timeout              = Timeout;
+            this.DestinationId  = DestinationId;
+            this.NetworkingHub  = NetworkingHub;
+            this.Priority       = Priority  ?? 0;
+            this.Timestamp      = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            this.Timeout        = Timeout;
 
         }
 
@@ -119,13 +113,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             if (OCPPWebSocketClient is not null)
-                return $"'{NetworkingNodeId}' via HTTP Web Socker client '{OCPPWebSocketClient.RemoteURL}'";
+                return $"'{DestinationId}' via HTTP Web Socker client '{OCPPWebSocketClient.RemoteURL}'";
 
             if (OCPPWebSocketServer is not null)
-                return $"'{NetworkingNodeId}' via HTTP Web Socker server '{OCPPWebSocketServer.IPSocket}'";
+                return $"'{DestinationId}' via HTTP Web Socker server '{OCPPWebSocketServer.IPSocket}'";
 
             if (OCPPWebSocketClient is not null)
-                return $"'{NetworkingNodeId}' via networking hub '{NetworkingHub}'";
+                return $"'{DestinationId}' via networking hub '{NetworkingHub}'";
 
             return String.Empty;
 

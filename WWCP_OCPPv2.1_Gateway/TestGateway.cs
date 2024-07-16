@@ -59,6 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                            String?            SerialNumber                = null,
                            String?            SoftwareVersion             = null,
                            I18NString?        Description                 = null,
+                           CustomData?        CustomData                  = null,
 
                            SignaturePolicy?   SignaturePolicy             = null,
                            SignaturePolicy?   ForwardingSignaturePolicy   = null,
@@ -77,6 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                    SerialNumber,
                    SoftwareVersion,
                    Description,
+                   CustomData,
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
@@ -119,11 +121,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
             };
 
 
-            OCPP.FORWARD.OnDeleteFileRequest += (timestamp,
-                                                 sender,
-                                                 connection,
-                                                 request,
-                                                 cancellationToken) =>
+            OCPP.FORWARD.OnDeleteFileRequestFilter += (timestamp,
+                                                       sender,
+                                                       connection,
+                                                       request,
+                                                       cancellationToken) =>
 
                 Task.FromResult(
                     ForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
@@ -157,11 +159,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
             };
 
 
-            OCPP.FORWARD.OnGetFileRequest += (timestamp,
-                                              sender,
-                                              connection,
-                                              request,
-                                              cancellationToken) =>
+            OCPP.FORWARD.OnGetFileRequestFilter += (timestamp,
+                                                    sender,
+                                                    connection,
+                                                    request,
+                                                    cancellationToken) =>
 
                 Task.FromResult(
                     ForwardingDecision<GetFileRequest, GetFileResponse>.FORWARD(request)
@@ -190,11 +192,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
             };
 
 
-            OCPP.FORWARD.OnListDirectoryRequest += (timestamp,
-                                                    sender,
-                                                    connection,
-                                                    request,
-                                                    cancellationToken) =>
+            OCPP.FORWARD.OnListDirectoryRequestFilter += (timestamp,
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          cancellationToken) =>
 
                 Task.FromResult(
                     ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request)
@@ -222,11 +224,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
             };
 
 
-            OCPP.FORWARD.OnSendFileRequest += (timestamp,
-                                               sender,
-                                               connection,
-                                               request,
-                                               cancellationToken) =>
+            OCPP.FORWARD.OnSendFileRequestFilter += (timestamp,
+                                                     sender,
+                                                     connection,
+                                                     request,
+                                                     cancellationToken) =>
 
                 Task.FromResult(
                     ForwardingDecision<SendFileRequest, SendFileResponse>.FORWARD(request)
@@ -439,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                ? SecureDataTransferResponse.Encrypt(
                                      Request:                request,
                                      Status:                 SecureDataTransferStatus.Accepted,
-                                     DestinationNodeId:      request.NetworkPath.Source,
+                                     DestinationId:          request.NetworkPath.Source,
                                      Parameter:              0,
                                      KeyId:                  keyId,
                                      Key:                    GetEncryptionKey    (request.NetworkPath.Source, keyId),

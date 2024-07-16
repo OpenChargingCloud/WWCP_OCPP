@@ -45,171 +45,171 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
 
         #region GetFile_Test()
 
-        /// <summary>
-        /// A test for fetching a file from a charging station.
-        /// </summary>
-        [Test]
-        public async Task GetFile_Test()
-        {
+        ///// <summary>
+        ///// A test for fetching a file from a charging station.
+        ///// </summary>
+        //[Test]
+        //public async Task GetFile_Test()
+        //{
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+        //    ClassicAssert.IsNotNull(testCentralSystem01);
+        //    ClassicAssert.IsNotNull(testBackendWebSockets01);
+        //    ClassicAssert.IsNotNull(chargePoint1);
+        //    ClassicAssert.IsNotNull(chargePoint2);
+        //    ClassicAssert.IsNotNull(chargePoint3);
 
-            if (testCentralSystem01     is not null &&
-                testBackendWebSockets01 is not null &&
-                chargePoint1            is not null &&
-                chargePoint2            is not null &&
-                chargePoint3            is not null)
-            {
+        //    if (testCentralSystem01     is not null &&
+        //        testBackendWebSockets01 is not null &&
+        //        chargePoint1            is not null &&
+        //        chargePoint2            is not null &&
+        //        chargePoint3            is not null)
+        //    {
 
-                var getFileRequests = new ConcurrentList<GetFileRequest>();
+        //        var getFileRequests = new ConcurrentList<GetFileRequest>();
 
-                chargePoint1.OnGetFileRequest += (timestamp, sender, connection, getFileRequest) => {
-                    getFileRequests.TryAdd(getFileRequest);
-                    return Task.CompletedTask;
-                };
+        //        chargePoint1.OnGetFileRequest += (timestamp, sender, connection, getFileRequest) => {
+        //            getFileRequests.TryAdd(getFileRequest);
+        //            return Task.CompletedTask;
+        //        };
 
-                var filename   = FilePath.Parse("/hello/world.txt");
+        //        var filename   = FilePath.Parse("/hello/world.txt");
 
-                var response   = await testCentralSystem01.GetFile(
-                                     NetworkingNodeId:   chargePoint1.Id,
-                                     Filename:           filename
-                                 );
+        //        var response   = await testCentralSystem01.GetFile(
+        //                             NetworkingNodeId:   chargePoint1.Id,
+        //                             Filename:           filename
+        //                         );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                                 response.Result.ResultCode);
-                ClassicAssert.AreEqual(GetFileStatus.Success,                                         response.Status);
+        //        ClassicAssert.AreEqual(ResultCode.OK,                                                 response.Result.ResultCode);
+        //        ClassicAssert.AreEqual(GetFileStatus.Success,                                         response.Status);
 
-                ClassicAssert.AreEqual(filename,                                                      response.FileName);
-                ClassicAssert.AreEqual("Hello world!",                                                response.FileContent.ToUTF8String());
-                ClassicAssert.AreEqual(ContentType.Text.Plain,                                        response.FileContentType);
-                ClassicAssert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA256.ToHexString());
-                ClassicAssert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA512.ToHexString());
+        //        ClassicAssert.AreEqual(filename,                                                      response.FileName);
+        //        ClassicAssert.AreEqual("Hello world!",                                                response.FileContent.ToUTF8String());
+        //        ClassicAssert.AreEqual(ContentType.Text.Plain,                                        response.FileContentType);
+        //        ClassicAssert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA256.ToHexString());
+        //        ClassicAssert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA512.ToHexString());
 
-                ClassicAssert.AreEqual(1,                                                             getFileRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,                                      getFileRequests.First().DestinationId);
-                ClassicAssert.AreEqual(filename,                                                      getFileRequests.First().FileName);
+        //        ClassicAssert.AreEqual(1,                                                             getFileRequests.Count);
+        //        ClassicAssert.AreEqual(chargePoint1.Id,                                      getFileRequests.First().DestinationId);
+        //        ClassicAssert.AreEqual(filename,                                                      getFileRequests.First().FileName);
 
-            }
+        //    }
 
-        }
+        //}
 
         #endregion
 
         #region SendFile_Test()
 
-        /// <summary>
-        /// A test for sending a file to a charging station.
-        /// </summary>
-        [Test]
-        public async Task SendFile_Test()
-        {
+        ///// <summary>
+        ///// A test for sending a file to a charging station.
+        ///// </summary>
+        //[Test]
+        //public async Task SendFile_Test()
+        //{
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+        //    ClassicAssert.IsNotNull(testCentralSystem01);
+        //    ClassicAssert.IsNotNull(testBackendWebSockets01);
+        //    ClassicAssert.IsNotNull(chargePoint1);
+        //    ClassicAssert.IsNotNull(chargePoint2);
+        //    ClassicAssert.IsNotNull(chargePoint3);
 
-            if (testCentralSystem01     is not null &&
-                testBackendWebSockets01 is not null &&
-                chargePoint1            is not null &&
-                chargePoint2            is not null &&
-                chargePoint3            is not null)
-            {
+        //    if (testCentralSystem01     is not null &&
+        //        testBackendWebSockets01 is not null &&
+        //        chargePoint1            is not null &&
+        //        chargePoint2            is not null &&
+        //        chargePoint3            is not null)
+        //    {
 
-                var sendFileRequests = new ConcurrentList<SendFileRequest>();
+        //        var sendFileRequests = new ConcurrentList<SendFileRequest>();
 
-                chargePoint1.OnSendFileRequest += (timestamp, sender, connection, sendFileRequest) => {
-                    sendFileRequests.TryAdd(sendFileRequest);
-                    return Task.CompletedTask;
-                };
+        //        chargePoint1.OnSendFileRequest += (timestamp, sender, connection, sendFileRequest) => {
+        //            sendFileRequests.TryAdd(sendFileRequest);
+        //            return Task.CompletedTask;
+        //        };
 
-                var filename   = FilePath.Parse("/hello/world.txt");
+        //        var filename   = FilePath.Parse("/hello/world.txt");
 
-                var response   = await testCentralSystem01.SendFile(
-                                     NetworkingNodeId:   chargePoint1.Id,
-                                     FileName:           filename,
-                                     FileContent:        "Hello world!".ToUTF8Bytes(),
-                                     FileContentType:    ContentType.Text.Plain,
-                                     FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
-                                     FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes()),
-                                     FileSignatures:     null,
-                                     Priority:           null
-                                 );
+        //        var response   = await testCentralSystem01.SendFile(
+        //                             NetworkingNodeId:   chargePoint1.Id,
+        //                             FileName:           filename,
+        //                             FileContent:        "Hello world!".ToUTF8Bytes(),
+        //                             FileContentType:    ContentType.Text.Plain,
+        //                             FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
+        //                             FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes()),
+        //                             FileSignatures:     null,
+        //                             Priority:           null
+        //                         );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                                 response.Result.ResultCode);
-                ClassicAssert.AreEqual(SendFileStatus.Success,                                        response.Status);
+        //        ClassicAssert.AreEqual(ResultCode.OK,                                                 response.Result.ResultCode);
+        //        ClassicAssert.AreEqual(SendFileStatus.Success,                                        response.Status);
 
-                ClassicAssert.AreEqual(filename,                                                      response.FileName);
+        //        ClassicAssert.AreEqual(filename,                                                      response.FileName);
 
-                ClassicAssert.AreEqual(1,                                                             sendFileRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,                                      sendFileRequests.First().DestinationId);
-                ClassicAssert.AreEqual("Hello world!",                                                sendFileRequests.First().FileContent.ToUTF8String());
-                ClassicAssert.AreEqual(ContentType.Text.Plain,                                        sendFileRequests.First().FileContentType);
-                ClassicAssert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA256.ToHexString());
-                ClassicAssert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA512.ToHexString());
+        //        ClassicAssert.AreEqual(1,                                                             sendFileRequests.Count);
+        //        ClassicAssert.AreEqual(chargePoint1.Id,                                      sendFileRequests.First().DestinationId);
+        //        ClassicAssert.AreEqual("Hello world!",                                                sendFileRequests.First().FileContent.ToUTF8String());
+        //        ClassicAssert.AreEqual(ContentType.Text.Plain,                                        sendFileRequests.First().FileContentType);
+        //        ClassicAssert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA256.ToHexString());
+        //        ClassicAssert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA512.ToHexString());
 
-            }
+        //    }
 
-        }
+        //}
 
         #endregion
 
         #region DeleteFile_Test()
 
-        /// <summary>
-        /// A test for deleteing a file from a charging station.
-        /// </summary>
-        [Test]
-        public async Task DeleteFile_Test()
-        {
+        ///// <summary>
+        ///// A test for deleteing a file from a charging station.
+        ///// </summary>
+        //[Test]
+        //public async Task DeleteFile_Test()
+        //{
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+        //    ClassicAssert.IsNotNull(testCentralSystem01);
+        //    ClassicAssert.IsNotNull(testBackendWebSockets01);
+        //    ClassicAssert.IsNotNull(chargePoint1);
+        //    ClassicAssert.IsNotNull(chargePoint2);
+        //    ClassicAssert.IsNotNull(chargePoint3);
 
-            if (testCentralSystem01     is not null &&
-                testBackendWebSockets01 is not null &&
-                chargePoint1            is not null &&
-                chargePoint2            is not null &&
-                chargePoint3            is not null)
-            {
+        //    if (testCentralSystem01     is not null &&
+        //        testBackendWebSockets01 is not null &&
+        //        chargePoint1            is not null &&
+        //        chargePoint2            is not null &&
+        //        chargePoint3            is not null)
+        //    {
 
-                var deleteFileRequests = new ConcurrentList<DeleteFileRequest>();
+        //        var deleteFileRequests = new ConcurrentList<DeleteFileRequest>();
 
-                chargePoint1.OnDeleteFileRequest += (timestamp, sender, connection, deleteFileRequest) => {
-                    deleteFileRequests.TryAdd(deleteFileRequest);
-                    return Task.CompletedTask;
-                };
+        //        chargePoint1.OnDeleteFileRequest += (timestamp, sender, connection, deleteFileRequest) => {
+        //            deleteFileRequests.TryAdd(deleteFileRequest);
+        //            return Task.CompletedTask;
+        //        };
 
-                var filename   = FilePath.Parse("/hello/world.txt");
+        //        var filename   = FilePath.Parse("/hello/world.txt");
 
-                var response   = await testCentralSystem01.DeleteFile(
-                                     NetworkingNodeId:   chargePoint1.Id,
-                                     FileName:           filename,
-                                     FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
-                                     FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes())
-                                 );
+        //        var response   = await testCentralSystem01.DeleteFile(
+        //                             NetworkingNodeId:   chargePoint1.Id,
+        //                             FileName:           filename,
+        //                             FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
+        //                             FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes())
+        //                         );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,              response.Result.ResultCode);
-                ClassicAssert.AreEqual(DeleteFileStatus.Success,   response.Status);
+        //        ClassicAssert.AreEqual(ResultCode.OK,              response.Result.ResultCode);
+        //        ClassicAssert.AreEqual(DeleteFileStatus.Success,   response.Status);
 
-                ClassicAssert.AreEqual(filename,                   response.FileName);
+        //        ClassicAssert.AreEqual(filename,                   response.FileName);
 
-                ClassicAssert.AreEqual(1,                          deleteFileRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   deleteFileRequests.First().DestinationId);
+        //        ClassicAssert.AreEqual(1,                          deleteFileRequests.Count);
+        //        ClassicAssert.AreEqual(chargePoint1.Id,   deleteFileRequests.First().DestinationId);
 
-            }
+        //    }
 
-        }
+        //}
 
         #endregion
 

@@ -641,9 +641,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        public event OnBinaryDataTransferRequestReceivedDelegate?     OnIncomingBinaryDataTransferRequest;
-        public event OnBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
-        public event OnBinaryDataTransferResponseSentDelegate?    OnIncomingBinaryDataTransferResponse;
+        //public event OnBinaryDataTransferRequestReceivedDelegate?     OnIncomingBinaryDataTransferRequest;
+        //public event OnBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+        //public event OnBinaryDataTransferResponseSentDelegate?    OnIncomingBinaryDataTransferResponse;
 
         public event OnGetFileRequestDelegate?                        OnGetFileRequest;
         public event OnGetFileDelegate?                               OnGetFile;

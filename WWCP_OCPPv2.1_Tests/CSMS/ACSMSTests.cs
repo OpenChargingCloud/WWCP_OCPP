@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -41,13 +42,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #region Data
 
-        protected TestCSMS?                     testCSMS01;
-        protected TestCSMS?                     testCSMS02;
-        protected TestCSMS?                     testCSMS03;
+        protected TestCSMS2?                    testCSMS01;
+        protected TestCSMS2?                    testCSMS02;
+        protected TestCSMS2?                    testCSMS03;
 
-        protected CSMSWSServer?                 testBackendWebSockets01;
-        protected CSMSWSServer?                 testBackendWebSockets02;
-        protected CSMSWSServer?                 testBackendWebSockets03;
+        protected OCPPWebSocketServer?          testBackendWebSockets01;
+        protected OCPPWebSocketServer?          testBackendWebSockets02;
+        protected OCPPWebSocketServer?          testBackendWebSockets03;
 
 
         protected List<LogJSONRequest>?         csms1WebSocketJSONMessagesReceived;
@@ -103,9 +104,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             Timestamp.Reset();
 
-            testCSMS01      = new TestCSMS(
-                                  Id:                      OCPP.NetworkingNode_Id.Parse("OCPPTest01"),
-                                  RequireAuthentication:   true,
+            testCSMS01      = new TestCSMS2(
+                                  Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
+                                  VendorName:              "GraphDefined",
+                                  Model:                   "OCPPTest",
                                   HTTPUploadPort:          IPPort.Parse(9100),
                                   DNSClient:               new DNSClient(
                                                                SearchForIPv6DNSServers: false,
@@ -115,8 +117,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             ClassicAssert.IsNotNull(testCSMS01);
 
-            testBackendWebSockets01  = testCSMS01.AttachWebSocketService(
+            testBackendWebSockets01  = testCSMS01.AttachWebSocketServer(
                                            TCPPort:                 IPPort.Parse(9101),
+                                           RequireAuthentication:   true,
                                            DisableWebSocketPings:   true,
                                            AutoStart:               true
                                        );

@@ -17,11 +17,13 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -74,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new set default charging tariff request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="ChargingTariff">A charging tariff.</param>
         /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff applies to.</param>
         /// 
@@ -87,13 +89,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetDefaultChargingTariffRequest(NetworkingNode_Id        NetworkingNodeId,
+        public SetDefaultChargingTariffRequest(NetworkingNode_Id        DestinationId,
                                                ChargingTariff           ChargingTariff,
                                                IEnumerable<EVSE_Id>?    EVSEIds             = null,
 
                                                IEnumerable<KeyPair>?    SignKeys            = null,
                                                IEnumerable<SignInfo>?   SignInfos           = null,
-                                               IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                               IEnumerable<Signature>?       Signatures          = null,
 
                                                CustomData?              CustomData          = null,
 
@@ -104,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                NetworkPath?             NetworkPath         = null,
                                                CancellationToken        CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationId,
                    nameof(SetDefaultChargingTariffRequest)[..^7],
 
                    SignKeys,
@@ -143,19 +145,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomSetDefaultChargingTariffRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSetDefaultChargingTariffRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an setDefaultChargingTariffs request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomSetDefaultChargingTariffRequestParser">A delegate to parse custom setDefaultChargingTariffs requests.</param>
         public static SetDefaultChargingTariffRequest Parse(JObject                                                        JSON,
                                                             Request_Id                                                     RequestId,
-                                                            NetworkingNode_Id                                              NetworkingNodeId,
+                                                            NetworkingNode_Id                                              DestinationId,
                                                             NetworkPath                                                    NetworkPath,
                                                             CustomJObjectParserDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestParser   = null)
         {
@@ -163,12 +165,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         DestinationId,
                          NetworkPath,
                          out var setDefaultChargingTariffRequest,
                          out var errorResponse,
-                         CustomSetDefaultChargingTariffRequestParser) &&
-                setDefaultChargingTariffRequest is not null)
+                         CustomSetDefaultChargingTariffRequestParser))
             {
                 return setDefaultChargingTariffRequest;
             }
@@ -180,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out SetDefaultChargingTariffRequest, out ErrorResponse, CustomSetDefaultChargingTariffRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SetDefaultChargingTariffRequest, out ErrorResponse, CustomSetDefaultChargingTariffRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -189,20 +190,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetDefaultChargingTariffRequest">The parsed SetDefaultChargingTariffs request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                               JSON,
-                                       Request_Id                            RequestId,
-                                       NetworkingNode_Id                     NetworkingNodeId,
-                                       NetworkPath                           NetworkPath,
-                                       out SetDefaultChargingTariffRequest?  SetDefaultChargingTariffRequest,
-                                       out String?                           ErrorResponse)
+        public static Boolean TryParse(JObject                                                    JSON,
+                                       Request_Id                                                 RequestId,
+                                       NetworkingNode_Id                                          DestinationId,
+                                       NetworkPath                                                NetworkPath,
+                                       [NotNullWhen(true)]  out SetDefaultChargingTariffRequest?  SetDefaultChargingTariffRequest,
+                                       [NotNullWhen(false)] out String?                           ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        NetworkingNodeId,
+                        DestinationId,
                         NetworkPath,
                         out SetDefaultChargingTariffRequest,
                         out ErrorResponse,
@@ -214,17 +215,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetDefaultChargingTariffRequest">The parsed setDefaultChargingTariffs request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetDefaultChargingTariffRequestParser">A delegate to parse custom setDefaultChargingTariffs requests.</param>
         public static Boolean TryParse(JObject                                                        JSON,
                                        Request_Id                                                     RequestId,
-                                       NetworkingNode_Id                                              NetworkingNodeId,
+                                       NetworkingNode_Id                                              DestinationId,
                                        NetworkPath                                                    NetworkPath,
-                                       out SetDefaultChargingTariffRequest?                           SetDefaultChargingTariffRequest,
-                                       out String?                                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out SetDefaultChargingTariffRequest?      SetDefaultChargingTariffRequest,
+                                       [NotNullWhen(false)] out String?                               ErrorResponse,
                                        CustomJObjectParserDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestParser)
         {
 
@@ -265,8 +266,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              OCPP.Signature.TryParse,
-                                              out HashSet<OCPP.Signature> Signatures,
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -279,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
+                                           OCPPv2_1.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {
@@ -292,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetDefaultChargingTariffRequest = new SetDefaultChargingTariffRequest(
 
-                                                      NetworkingNodeId,
+                                                      DestinationId,
                                                       ChargingTariff,
                                                       EVSEIds,
 
@@ -359,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<EnvironmentalImpact>?              CustomEnvironmentalImpactSerializer               = null,
                               CustomJObjectSerializerDelegate<IdToken>?                          CustomIdTokenSerializer                           = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?                   CustomAdditionalInfoSerializer                    = null,
-                              CustomJObjectSerializerDelegate<OCPP.Signature>?                   CustomSignatureSerializer                         = null,
+                              CustomJObjectSerializerDelegate<Signature>?                        CustomSignatureSerializer                         = null,
                               CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                        = null)
         {
 

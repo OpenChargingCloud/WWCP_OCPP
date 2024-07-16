@@ -28,15 +28,15 @@ namespace cloud.charging.open.protocols.OCPP.NN
 
         #region BinaryDataTransfer      (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a BinaryDataTransfer request will be sent to a charging station.
-        /// </summary>
-        event OnBinaryDataTransferRequestSentDelegate?     OnBinaryDataTransferRequestSent;
+        ///// <summary>
+        ///// An event fired whenever a BinaryDataTransfer request will be sent to a charging station.
+        ///// </summary>
+        //event OnBinaryDataTransferRequestSentDelegate?     OnBinaryDataTransferRequestSent;
 
-        /// <summary>
-        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
-        /// </summary>
-        event OnBinaryDataTransferResponseSentDelegate?    OnBinaryDataTransferResponseSent;
+        ///// <summary>
+        ///// An event sent whenever a response to a BinaryDataTransfer request was sent.
+        ///// </summary>
+        //event OnBinaryDataTransferResponseSentDelegate?    OnBinaryDataTransferResponseSent;
 
         #endregion
 
@@ -45,15 +45,15 @@ namespace cloud.charging.open.protocols.OCPP.NN
 
         #region SecureDataTransfer      (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a SecureDataTransfer request will be sent to a charging station.
-        /// </summary>
-        event OnSecureDataTransferRequestSentDelegate?     OnSecureDataTransferRequestSent;
+        ///// <summary>
+        ///// An event fired whenever a SecureDataTransfer request will be sent to a charging station.
+        ///// </summary>
+        //event OnSecureDataTransferRequestSentDelegate?     OnSecureDataTransferRequestSent;
 
-        /// <summary>
-        /// An event sent whenever a response to a SecureDataTransfer request was sent.
-        /// </summary>
-        event OnSecureDataTransferResponseSentDelegate?    OnSecureDataTransferResponseSent;
+        ///// <summary>
+        ///// An event sent whenever a response to a SecureDataTransfer request was sent.
+        ///// </summary>
+        //event OnSecureDataTransferResponseSentDelegate?    OnSecureDataTransferResponseSent;
 
         #endregion
 
@@ -62,15 +62,15 @@ namespace cloud.charging.open.protocols.OCPP.NN
 
         #region NotifyNetworkTopology   (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a NotifyNetworkTopology request will be sent to a charging station.
-        /// </summary>
-        event OnNotifyNetworkTopologyRequestDelegate?              OnNotifyNetworkTopologyRequest;
+        ///// <summary>
+        ///// An event fired whenever a NotifyNetworkTopology request will be sent to a charging station.
+        ///// </summary>
+        //event OnNotifyNetworkTopologyRequestDelegate?              OnNotifyNetworkTopologyRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a NotifyNetworkTopology request was received.
-        /// </summary>
-        event OnNotifyNetworkTopologyResponseDelegate?             OnNotifyNetworkTopologyResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a NotifyNetworkTopology request was received.
+        ///// </summary>
+        //event OnNotifyNetworkTopologyResponseDelegate?             OnNotifyNetworkTopologyResponse;
 
         #endregion
 

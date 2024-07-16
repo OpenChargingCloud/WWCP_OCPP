@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     public delegate Task OnNetworkingNodeNewWebSocketConnectionDelegate(DateTime                           Timestamp,
                                                                         INetworkingNodeWebsocketsChannel   NetworkingNodeChannel,
                                                                         IWebSocketConnection               NewConnection,
-                                                                        NetworkingNode_Id                  NetworkingNodeId,
+                                                                        NetworkingNode_Id                  DestinationId,
                                                                         EventTracking_Id                   EventTrackingId,
                                                                         IEnumerable<String>                SharedSubprotocols,
                                                                         CancellationToken                  CancellationToken);
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     public delegate Task OnNetworkingNodeCloseMessageReceivedDelegate(DateTime                           Timestamp,
                                                                       INetworkingNodeWebsocketsChannel   NetworkingNodeChannel,
                                                                       IWebSocketConnection               Connection,
-                                                                      NetworkingNode_Id                  NetworkingNodeId,
+                                                                      NetworkingNode_Id                  DestinationId,
                                                                       EventTracking_Id                   EventTrackingId,
                                                                       WebSocketFrame.ClosingStatusCode   StatusCode,
                                                                       String?                            Reason,
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     public delegate Task OnNetworkingNodeTCPConnectionClosedDelegate(DateTime                           Timestamp,
                                                                      INetworkingNodeWebsocketsChannel   NetworkingNodeChannel,
                                                                      IWebSocketConnection               Connection,
-                                                                     NetworkingNode_Id                  NetworkingNodeId,
+                                                                     NetworkingNode_Id                  DestinationId,
                                                                      EventTracking_Id                   EventTrackingId,
                                                                      String?                            Reason,
                                                                      CancellationToken                  CancellationToken);

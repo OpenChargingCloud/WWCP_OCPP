@@ -20,7 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private readonly NN.IBaseNetworkingNode parentNetworkingNode;
+        private readonly IBaseNetworkingNode parentNetworkingNode;
 
         #endregion
 
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a new OCPP adapter for sending outgoing messages.
         /// </summary>
         /// <param name="NetworkingNode">The parent networking node.</param>
-        public OCPPWebSocketAdapterOUT(NN.IBaseNetworkingNode NetworkingNode)
+        public OCPPWebSocketAdapterOUT(IBaseNetworkingNode NetworkingNode)
         {
 
             this.parentNetworkingNode = NetworkingNode;
@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyJSONMessageResponseSent   (JSONResponseMessage,      SendMessageResult)
 
         public async Task NotifyJSONMessageResponseSent(OCPP_JSONResponseMessage  JSONResponseMessage,
-                                                        SendMessageResult     SendMessageResult)
+                                                        SendMessageResult         SendMessageResult)
         {
 
             var logger = OnJSONResponseMessageSent;

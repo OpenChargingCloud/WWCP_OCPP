@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            IEnumerable<KeyPair>?         SignKeys               = null,
                            IEnumerable<SignInfo>?        SignInfos              = null,
-                           IEnumerable<OCPP.Signature>?  Signatures             = null,
+                           IEnumerable<Signature>?       Signatures             = null,
 
                            CustomData?                   CustomData             = null)
 
@@ -394,8 +394,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              OCPP.Signature.TryParse,
-                                              out HashSet<OCPP.Signature> Signatures,
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -408,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
+                                           OCPPv2_1.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {
@@ -484,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
                               CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
                               CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
-                              CustomJObjectSerializerDelegate<OCPP.Signature>?       CustomSignatureSerializer             = null,
+                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 

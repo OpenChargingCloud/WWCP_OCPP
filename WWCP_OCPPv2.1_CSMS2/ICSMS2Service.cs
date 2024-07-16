@@ -17,15 +17,11 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>

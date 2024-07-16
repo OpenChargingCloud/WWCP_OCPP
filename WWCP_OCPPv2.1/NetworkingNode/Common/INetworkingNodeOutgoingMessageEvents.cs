@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The common interface of all networking node outgoing message events.
     /// </summary>
-    public interface INetworkingNodeOutgoingMessageEvents : OCPP.NN.INetworkingNodeOutgoingMessageEvents
+    public interface INetworkingNodeOutgoingMessageEvents
     {
 
         #region DataTransfer
@@ -29,12 +29,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent.
         /// </summary>
-        event OnDataTransferRequestSentDelegate?         OnDataTransferRequestSent;
+        event OnDataTransferRequestSentDelegate?              OnDataTransferRequestSent;
 
         /// <summary>
-        /// An event fired whenever a response to a DataTransfer request was received.
+        /// An event fired whenever a response to a DataTransfer request was sent.
         /// </summary>
-        event OnDataTransferResponseReceivedDelegate?    OnDataTransferResponseReceived;
+        event OnDataTransferResponseSentDelegate?             OnDataTransferResponseSent;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region BinaryDataTransfer      (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a BinaryDataTransfer request will be sent to a charging station.
+        /// </summary>
+        event OnBinaryDataTransferRequestSentDelegate?        OnBinaryDataTransferRequestSent;
+
+        /// <summary>
+        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
+        /// </summary>
+        event OnBinaryDataTransferResponseSentDelegate?       OnBinaryDataTransferResponseSent;
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region SecureDataTransfer      (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a SecureDataTransfer request will be sent to a charging station.
+        /// </summary>
+        event OnSecureDataTransferRequestSentDelegate?        OnSecureDataTransferRequestSent;
+
+        /// <summary>
+        /// An event sent whenever a response to a SecureDataTransfer request was sent.
+        /// </summary>
+        event OnSecureDataTransferResponseSentDelegate?       OnSecureDataTransferResponseSent;
+
+        #endregion
+
+
+        // Overlay Networking Extensions
+
+        #region NotifyNetworkTopology   (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyNetworkTopology request will be sent to a charging station.
+        /// </summary>
+        event OnNotifyNetworkTopologyRequestSentDelegate?     OnNotifyNetworkTopologyRequestSent;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyNetworkTopology request was received.
+        /// </summary>
+        event OnNotifyNetworkTopologyResponseSentDelegate?    OnNotifyNetworkTopologyResponseSent;
 
         #endregion
 

@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            (JObject json, [NotNullWhen(true)] out CustomData? customData, [NotNullWhen(false)] out String? errorResponse)
-                                                 => OCPP.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
+                                                 => OCPPv2_1.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {

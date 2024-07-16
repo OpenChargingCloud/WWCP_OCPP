@@ -28,29 +28,29 @@ namespace cloud.charging.open.protocols.OCPP.NN
 
     #region OnNotifyNetworkTopology (Request/-Response) Delegate
 
-    /// <summary>
-    /// A delegate called whenever a NotifyNetworkTopology request will be sent to the CSMS.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
-    public delegate Task OnNotifyNetworkTopologyRequestDelegate(DateTime                       Timestamp,
-                                                                IEventSender                   Sender,
-                                                                NotifyNetworkTopologyRequest   Request);
+    ///// <summary>
+    ///// A delegate called whenever a NotifyNetworkTopology request will be sent to the CSMS.
+    ///// </summary>
+    ///// <param name="Timestamp">The timestamp of the log request.</param>
+    ///// <param name="Sender">The sender of the request.</param>
+    ///// <param name="Request">The request.</param>
+    //public delegate Task OnNotifyNetworkTopologyRequestDelegate(DateTime                       Timestamp,
+    //                                                            IEventSender                   Sender,
+    //                                                            NotifyNetworkTopologyRequest   Request);
 
-    /// <summary>
-    /// A delegate called whenever a response to a NotifyNetworkTopology request was received.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnNotifyNetworkTopologyResponseDelegate(DateTime                        Timestamp,
-                                                                 IEventSender                    Sender,
-                                                                 NotifyNetworkTopologyRequest    Request,
-                                                                 NotifyNetworkTopologyResponse   Response,
-                                                                 TimeSpan                        Runtime);
+    ///// <summary>
+    ///// A delegate called whenever a response to a NotifyNetworkTopology request was received.
+    ///// </summary>
+    ///// <param name="Timestamp">The timestamp of the log request.</param>
+    ///// <param name="Sender">The sender of the request.</param>
+    ///// <param name="Request">The request.</param>
+    ///// <param name="Response">The response.</param>
+    ///// <param name="Runtime">The runtime of the request.</param>
+    //public delegate Task OnNotifyNetworkTopologyResponseDelegate(DateTime                        Timestamp,
+    //                                                             IEventSender                    Sender,
+    //                                                             NotifyNetworkTopologyRequest    Request,
+    //                                                             NotifyNetworkTopologyResponse   Response,
+    //                                                             TimeSpan                        Runtime);
 
     #endregion
 

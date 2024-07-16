@@ -61,9 +61,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public ForwardingResults   Result                  { get; }
 
         /// <summary>
-        /// The optional new request sent instead of the original request.
+        /// The optional new JSON request sent instead of the original request.
         /// </summary>
         public JObject?            NewJSONRequest          { get; set; }
+
+        /// <summary>
+        /// The optional new binary request sent instead of the original request.
+        /// </summary>
+        public Byte[]?             NewBinaryRequest        { get; set; }
 
         /// <summary>
         /// The optional new OCPP action.
@@ -180,8 +185,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-
-        
 
         #region (static) REJECT  (LogMessage = null, RequestContext = null)
 

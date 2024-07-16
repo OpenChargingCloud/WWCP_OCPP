@@ -315,19 +315,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #endregion
 
 
-        // Overlay Networking Extensions
-
-        #region NotifyNetworkTopology             (Request)
-
-        /// <summary>
-        /// Notify about the current network topology or a current change within the topology.
-        /// </summary>
-        /// <param name="Request">A NotifyNetworkTopology request.</param>
-        public Task<OCPP.NN.NotifyNetworkTopologyResponse> NotifyNetworkTopology(OCPP.NN.NotifyNetworkTopologyRequest Request);
-
-        #endregion
-
-
     }
 
 }

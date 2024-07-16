@@ -26,7 +26,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_PullDynamicScheduleUpdate(DateTime                   RequestTimestamp,
                                               IWebSocketConnection  WebSocketConnection,
                                               NetworkPath                NetworkPath,
-                                              NetworkingNode_Id          DestinationNodeId,
+                                              NetworkingNode_Id          DestinationId,
                                               EventTracking_Id           EventTrackingId,
                                               Request_Id                 RequestId,
                                               JObject                    JSONRequest,
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 OnPullDynamicScheduleUpdateWSRequest?.Invoke(startTime,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
-                                                             DestinationNodeId,
+                                                             DestinationId,
                                                              NetworkPath,
                                                              EventTrackingId,
                                                              RequestTimestamp,
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (PullDynamicScheduleUpdateRequest.TryParse(JSONRequest,
                                                               RequestId,
-                                                              DestinationNodeId,
+                                                              DestinationId,
                                                               NetworkPath,
                                                               out var request,
                                                               out var errorResponse,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 OnPullDynamicScheduleUpdateWSResponse?.Invoke(endTime,
                                                               parentNetworkingNode,
                                                               WebSocketConnection,
-                                                              DestinationNodeId,
+                                                              DestinationId,
                                                               NetworkPath,
                                                               EventTrackingId,
                                                               RequestTimestamp,

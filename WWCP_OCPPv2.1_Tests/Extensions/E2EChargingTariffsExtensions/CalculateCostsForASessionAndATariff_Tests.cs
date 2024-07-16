@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -184,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -247,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -468,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -531,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -756,7 +757,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -819,7 +820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -1061,7 +1062,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -1124,7 +1125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -1391,7 +1392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -1454,7 +1455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -1689,7 +1690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -1752,7 +1753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             DestinationNodeId:          chargingStationId,
+                                             DestinationId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),

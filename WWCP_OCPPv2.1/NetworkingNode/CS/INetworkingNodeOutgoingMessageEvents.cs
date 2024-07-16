@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all charging station clients.
     /// </summary>
-    public interface INetworkingNodeOutgoingMessageEvents : OCPP.NN.CS.INetworkingNodeOutgoingMessageEvents
+    public interface INetworkingNodeOutgoingMessageEvents
     {
 
         // Outgoing requests
@@ -191,13 +191,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         event OnPublishFirmwareStatusNotificationRequestSentDelegate?    OnPublishFirmwareStatusNotificationRequestSent;
 
         #endregion
-
-
-        /// <summary>
-        /// An event fired whenever a DataTransfer request be sent (to the CSMS).
-        /// </summary>
-        event OnDataTransferRequestSentDelegate?                         OnDataTransferRequestSent;
-
 
 
         // Outgoing responses

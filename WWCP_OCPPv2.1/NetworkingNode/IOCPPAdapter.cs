@@ -19,11 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.NN;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -113,6 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Custom JSON serializer delegates
 
         #region Charging Station Request  Messages
+
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.BootNotificationRequest>?                             CustomBootNotificationRequestSerializer                      { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.FirmwareStatusNotificationRequest>?                   CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest>?            CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
@@ -140,6 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReportChargingProfilesRequest>?                       CustomReportChargingProfilesRequestSerializer                { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyPriorityChargingRequest>?                       CustomNotifyPriorityChargingRequestSerializer                { get; set; }
+        CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifySettlementRequest>?                             CustomNotifySettlementRequestSerializer                      { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.PullDynamicScheduleUpdateRequest>?                    CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
 
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
@@ -363,7 +361,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
         CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?      CustomEVSEStatusInfoSerializer                               { get; set; }
         CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
-        CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
+        CustomJObjectSerializerDelegate<SignaturePolicy>?                                     CustomSignaturePolicySerializer                              { get; set; }
+        CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
         CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
         CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
         CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
@@ -449,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Binary Data Streams Extensions
-        CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                              { get; set; }
+        CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
 
 
         // E2E Security Extensions
@@ -737,7 +736,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         CustomJObjectParserDelegate<ChargingStation>?                                           CustomChargingStationParser                              { get; set; }
-        CustomJObjectParserDelegate<OCPP.Signature>?                                            CustomSignatureParser                                    { get; set; }
+        CustomJObjectParserDelegate<Signature>?                                                 CustomSignatureParser                                    { get; set; }
         CustomJObjectParserDelegate<CustomData>?                                                CustomCustomDataParser                                   { get; set; }
         CustomJObjectParserDelegate<StatusInfo>?                                                CustomStatusInfoParser                                   { get; set; }
 
@@ -765,27 +764,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        Boolean LookupNetworkingNode(NetworkingNode_Id DestinationNodeId, out Reachability? Reachability);
+        Boolean LookupNetworkingNode(NetworkingNode_Id DestinationId, out Reachability? Reachability);
 
-        void AddStaticRouting   (NetworkingNode_Id     DestinationNodeId,
+        void AddStaticRouting   (NetworkingNode_Id     DestinationId,
                                  IOCPPWebSocketClient  WebSocketClient,
                                  Byte?                 Priority    = 0,
                                  DateTime?             Timestamp   = null,
                                  DateTime?             Timeout     = null);
 
-        void AddStaticRouting   (NetworkingNode_Id     DestinationNodeId,
+        void AddStaticRouting   (NetworkingNode_Id     DestinationId,
                                  IOCPPWebSocketServer  WebSocketServer,
                                  Byte?                 Priority    = 0,
                                  DateTime?             Timestamp   = null,
                                  DateTime?             Timeout     = null);
 
-        void AddStaticRouting   (NetworkingNode_Id     DestinationNodeId,
+        void AddStaticRouting   (NetworkingNode_Id     DestinationId,
                                  NetworkingNode_Id     NetworkingHubId,
                                  Byte?                 Priority    = 0,
                                  DateTime?             Timestamp   = null,
                                  DateTime?             Timeout     = null);
 
-        void RemoveStaticRouting(NetworkingNode_Id     DestinationNodeId,
+        void RemoveStaticRouting(NetworkingNode_Id     DestinationId,
                                  NetworkingNode_Id?    NetworkingHubId   = null,
                                  Byte?                 Priority          = 0);
 

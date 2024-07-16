@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "detailed status info",
-                                           OCPP.StatusInfo.TryParse,
+                                           OCPPv2_1.StatusInfo.TryParse,
                                            out StatusInfo? StatusInfo,
                                            out ErrorResponse))
                 {
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
+                                           OCPPv2_1.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {

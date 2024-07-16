@@ -22,7 +22,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     public class UnlinkChargingStationsResult : AResult<ChargingStation, ChargingStation>

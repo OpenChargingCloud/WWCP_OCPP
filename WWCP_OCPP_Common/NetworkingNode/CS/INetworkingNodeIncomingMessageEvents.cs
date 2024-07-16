@@ -31,16 +31,16 @@ namespace cloud.charging.open.protocols.OCPP.NN.CS
 
 
 
-        // E2E Security Extensions
+        //// E2E Security Extensions
 
-        #region OnAddSignaturePolicy
+        //#region OnAddSignaturePolicy
 
-        /// <summary>
-        /// An event sent whenever an AddSignaturePolicy request was received.
-        /// </summary>
-        event OnAddSignaturePolicyDelegate  OnAddSignaturePolicy;
+        ///// <summary>
+        ///// An event sent whenever an AddSignaturePolicy request was received.
+        ///// </summary>
+        //event OnAddSignaturePolicyDelegate  OnAddSignaturePolicy;
 
-        #endregion
+        //#endregion
 
 
 

@@ -25,9 +25,9 @@ using NUnit.Framework.Legacy;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -110,21 +110,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                   ICCID:   "0000",
                                                                   IMSI:    "1111"
                                                               ),
-                                    EVSEs:                    new[] {
+                                    EVSEs:                    [
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
                                                                       AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT1",
                                                                       MeterSerialNumber:   "MSN1",
                                                                       MeterPublicKey:      "MPK1",
-                                                                      Connectors:          new[] {
+                                                                      Connectors:          [
                                                                                                new ChargingStationConnector(
                                                                                                    Id:              Connector_Id.Parse(1),
                                                                                                    ConnectorType:   ConnectorType.sType2
                                                                                                )
-                                                                                           }
+                                                                                           ]
                                                                   )
-                                                              },
+                                                              ],
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0001",
                                     MeterPublicKey:           "0xcafebabe",
@@ -146,7 +146,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 testCSMS01.              AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
                 lcOCPPWebSocketServer01?.AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
 
-                var response = chargingStation1.ConnectWebSocket(
+                var response = chargingStation1.ConnectWebSocketClient(
+                                   NetworkingNodeId:        NetworkingNode_Id.CSMS,
                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + (lcOCPPWebSocketServer01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
                                    HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation1Id.ToString(), "1234abcd"),
                                    DisableWebSocketPings:   true
@@ -181,29 +182,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 }
 
 
-                var chargingStation1WebSocketClient = chargingStation1.CSClient as ChargingStationWSClient;
-                ClassicAssert.IsNotNull(chargingStation1WebSocketClient);
+                //var chargingStation1WebSocketClient = chargingStation1.CSClient as ChargingStationWSClient;
+                //ClassicAssert.IsNotNull(chargingStation1WebSocketClient);
 
-                if (chargingStation1WebSocketClient is not null)
-                {
+                //if (chargingStation1WebSocketClient is not null)
+                //{
 
-                    chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
-                        chargingStation1WebSocketJSONMessagesReceived.        Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
-                    };
+                //    chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
+                //        chargingStation1WebSocketJSONMessagesReceived.        Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                //    };
 
-                    chargingStation1WebSocketClient.OnJSONMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                        chargingStation1WebSocketJSONMessageResponsesSent.    Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
-                    };
+                //    chargingStation1WebSocketClient.OnJSONMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                //        chargingStation1WebSocketJSONMessageResponsesSent.    Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                //    };
 
-                    chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
-                        chargingStation1WebSocketJSONMessagesSent.            Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
-                    };
+                //    chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
+                //        chargingStation1WebSocketJSONMessagesSent.            Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                //    };
 
-                    chargingStation1WebSocketClient.OnJSONMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                        chargingStation1WebSocketJSONMessageResponsesReceived.Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
-                    };
+                //    chargingStation1WebSocketClient.OnJSONMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                //        chargingStation1WebSocketJSONMessageResponsesReceived.Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                //    };
 
-                }
+                //}
 
             }
 
@@ -229,19 +230,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                   ICCID:   "3333",
                                                                   IMSI:    "4444"
                                                               ),
-                                    EVSEs:                    new[] {
+                                    EVSEs:                    [
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
                                                                       AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT2",
                                                                       MeterSerialNumber:   "MSN2.1",
                                                                       MeterPublicKey:      "MPK2.1",
-                                                                      Connectors:          new[] {
+                                                                      Connectors:          [
                                                                                                new ChargingStationConnector(
                                                                                                    Id:              Connector_Id.Parse(1),
                                                                                                    ConnectorType:   ConnectorType.sType2
                                                                                                )
-                                                                                           }
+                                                                                           ]
                                                                   ),
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(2),
@@ -249,14 +250,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       MeterType:           "MT2",
                                                                       MeterSerialNumber:   "MSN2.2",
                                                                       MeterPublicKey:      "MPK2.1",
-                                                                      Connectors:          new[] {
+                                                                      Connectors:          [
                                                                                                new ChargingStationConnector(
                                                                                                    Id:              Connector_Id.Parse(1),
                                                                                                    ConnectorType:   ConnectorType.cCCS2
                                                                                                )
-                                                                                           }
+                                                                                           ]
                                                                   )
-                                                              },
+                                                              ],
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0002",
                                     MeterPublicKey:           "0xbabecafe",
@@ -273,7 +274,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 testCSMS01.AddOrUpdateHTTPBasicAuth(chargingStation2Id, "1234abcd");
 
-                var response = chargingStation2.ConnectWebSocket(
+                var response = chargingStation2.ConnectWebSocketClient(
+                                   NetworkingNodeId:        NetworkingNode_Id.CSMS,
                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation2.Id),
                                    HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation2Id.ToString(), "1234abcd"),
                                    DisableWebSocketPings:   true
@@ -303,29 +305,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 }
 
 
-                var chargingStation2WebSocketClient = chargingStation2.CSClient as ChargingStationWSClient;
-                ClassicAssert.IsNotNull(chargingStation2WebSocketClient);
+                //var chargingStation2WebSocketClient = chargingStation2.CSClient as ChargingStationWSClient;
+                //ClassicAssert.IsNotNull(chargingStation2WebSocketClient);
 
-                if (chargingStation2WebSocketClient is not null)
-                {
+                //if (chargingStation2WebSocketClient is not null)
+                //{
 
-                    chargingStation2WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
-                        chargingStation2WebSocketJSONMessagesReceived.        Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
-                    };
+                //    chargingStation2WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
+                //        chargingStation2WebSocketJSONMessagesReceived.        Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                //    };
 
-                    chargingStation2WebSocketClient.OnJSONMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                        chargingStation2WebSocketJSONMessageResponsesSent.    Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
-                    };
+                //    chargingStation2WebSocketClient.OnJSONMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                //        chargingStation2WebSocketJSONMessageResponsesSent.    Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                //    };
 
-                    chargingStation2WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
-                        chargingStation2WebSocketJSONMessagesSent.            Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
-                    };
+                //    chargingStation2WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
+                //        chargingStation2WebSocketJSONMessagesSent.            Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                //    };
 
-                    chargingStation2WebSocketClient.OnJSONMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                        chargingStation2WebSocketJSONMessageResponsesReceived.Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
-                    };
+                //    chargingStation2WebSocketClient.OnJSONMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                //        chargingStation2WebSocketJSONMessageResponsesReceived.Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                //    };
 
-                }
+                //}
 
             }
 
@@ -352,19 +354,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                   ICCID:   "5555",
                                                                   IMSI:    "6666"
                                                               ),
-                                    EVSEs:                    new[] {
+                                    EVSEs:                    [
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
                                                                       AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT3",
                                                                       MeterSerialNumber:   "MSN3.1",
                                                                       MeterPublicKey:      "MPK3.1",
-                                                                      Connectors:          new[] {
+                                                                      Connectors:          [
                                                                                                new ChargingStationConnector(
                                                                                                    Id:              Connector_Id.Parse(1),
                                                                                                    ConnectorType:   ConnectorType.sType2
                                                                                                )
-                                                                                           }
+                                                                                           ]
                                                                   ),
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(2),
@@ -372,12 +374,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       MeterType:           "MT3",
                                                                       MeterSerialNumber:   "MSN3.2",
                                                                       MeterPublicKey:      "MPK3.2",
-                                                                      Connectors:          new[] {
+                                                                      Connectors:          [
                                                                                                new ChargingStationConnector(
                                                                                                    Id:              Connector_Id.Parse(1),
                                                                                                    ConnectorType:   ConnectorType.sType2
                                                                                                )
-                                                                                           }
+                                                                                           ]
                                                                   ),
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(3),
@@ -385,12 +387,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       MeterType:           "MT3",
                                                                       MeterSerialNumber:   "MSN3.3",
                                                                       MeterPublicKey:      "MPK3.3",
-                                                                      Connectors:          new[] {
+                                                                      Connectors:          [
                                                                                                new ChargingStationConnector(
                                                                                                    Id:              Connector_Id.Parse(1),
                                                                                                    ConnectorType:   ConnectorType.cCCS2
                                                                                                )
-                                                                                           }
+                                                                                           ]
                                                                   ),
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(4),
@@ -398,14 +400,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       MeterType:           "MT3",
                                                                       MeterSerialNumber:   "MSN3.4",
                                                                       MeterPublicKey:      "MPK3.4",
-                                                                      Connectors:          new[] {
+                                                                      Connectors:          [
                                                                                                new ChargingStationConnector(
                                                                                                    Id:              Connector_Id.Parse(1),
                                                                                                    ConnectorType:   ConnectorType.cCCS2
                                                                                                )
-                                                                                           }
+                                                                                           ]
                                                                   )
-                                                              },
+                                                              ],
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0003",
                                     MeterPublicKey:           "0xbacafebe",

@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnResetRequestsOUT  = new ConcurrentList<ResetRequest>();
                 var csResetRequests     = new ConcurrentList<ResetRequest>();
 
-                testCSMS01.             OnResetRequestSent += (timestamp, sender,             resetRequest) => {
+                testCSMS01.      OCPP.OUT.    OnResetRequestSent     += (timestamp, sender,             resetRequest) => {
                     csmsResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                localController1.OCPP.FORWARD.OnResetRequestLogging += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
+                localController1.OCPP.FORWARD.OnResetRequestLogging  += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
                     nnResetRequestsFWD.TryAdd(new Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>(resetRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -93,20 +93,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                chargingStation1.       OnResetRequest += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.OCPP.IN.     OnResetRequestReceived += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.AddStaticRouting(chargingStation1.Id,
-                                            localController1.Id);
+                testCSMS01.OCPP.AddStaticRouting(chargingStation1.Id,
+                                                 localController1.Id);
 
 
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
-                                     DestinationNodeId:   chargingStation1.Id,
+                                     DestinationId:   chargingStation1.Id,
                                      ResetType:           resetType,
                                      CustomData:          null
                                  );
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(csmsResetRequests. Count,                        Is.EqualTo(1), "The ResetRequest did not leave the CSMS!");
 
                     Assert.That(nnResetRequestsIN. Count,                        Is.EqualTo(1), "The ResetRequest did not reach the INPUT of the networking node!");
-                    Assert.That(nnResetRequestsIN. First().DestinationId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequestsIN. First().DestinationId,        Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id));
@@ -128,14 +128,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(nnResetRequestsFWD.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the FORWARD of the networking node!");
 
                     Assert.That(nnResetRequestsOUT.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the OUTPUT of the networking node!");
-                    Assert.That(nnResetRequestsOUT.First().DestinationId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequestsOUT.First().DestinationId,        Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id));
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id));
 
                     Assert.That(csResetRequests.   Count,                        Is.EqualTo(1), "The ResetRequest did not reach the charging station!");
                     // Because of 'standard' networking mode towards the charging station!
-                    Assert.That(csResetRequests.   First().DestinationId,    Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(csResetRequests.   First().DestinationId,        Is.EqualTo(NetworkingNode_Id.Zero));
                     Assert.That(csResetRequests.   First().NetworkPath.Length,   Is.EqualTo(0));
 
                 });
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnDataTransferRequestsOUT       = new ConcurrentList<DataTransferRequest>();
                 var csIncomingDataTransferRequests  = new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.             OnDataTransferRequestSent         += (timestamp, sender, binaryDataTransferRequest) => {
+                testCSMS01.OCPP.OUT.  OnDataTransferRequestSent             += (timestamp, sender, binaryDataTransferRequest) => {
                     csmsDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -203,15 +203,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                chargingStation1.       OnDataTransferRequestReceived += (timestamp, sender, connection, incomingDataTransferRequest) => {
+                chargingStation1.OCPP.IN.     OnDataTransferRequestReceived += (timestamp, sender, connection, incomingDataTransferRequest) => {
                     csIncomingDataTransferRequests.TryAdd(incomingDataTransferRequest);
                     return Task.CompletedTask;
                 };
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.AddStaticRouting(chargingStation1.Id,
-                                            localController1.Id);
+                testCSMS01.OCPP.AddStaticRouting(chargingStation1.Id,
+                                                 localController1.Id);
 
                 //chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
 
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
 
                 var response   = await testCSMS01.TransferData(
-                                           DestinationNodeId:   chargingStation1.Id,
+                                           DestinationId:   chargingStation1.Id,
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
                                            Data:                data
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(csmsDataTransferRequestsOUT.   Count,                        Is.EqualTo(1), "The DataTransfer did not leave the CSMS!");
 
                     Assert.That(nnDataTransferRequestsIN.      Count,                        Is.EqualTo(1), "The DataTransfer did not reach the networking node!");
-                    Assert.That(nnDataTransferRequestsIN.      First().DestinationId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnDataTransferRequestsIN.      First().DestinationId,        Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Source,   Is.EqualTo(testCSMS01.Id));
                     Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS01.Id));
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(nnDataTransferRequestsOUT.     Count,                        Is.EqualTo(1), "The DataTransfer did not reach the OUTPUT of the networking node!");
 
                     Assert.That(csIncomingDataTransferRequests.Count,                        Is.EqualTo(1), "The DataTransfer did not reach the charging station!");
-                    //Assert.That(csIncomingDataTransferRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    //Assert.That(csIncomingDataTransferRequests.First().DestinationId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     //Assert.That(csIncomingDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(2));
                     //Assert.That(csIncomingDataTransferRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     //Assert.That(csIncomingDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnBinaryDataTransferRequestsOUT       = new ConcurrentList<BinaryDataTransferRequest>();
                 var csIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                testCSMS01.             OnBinaryDataTransferRequestSent         += (timestamp, sender, binaryDataTransferRequest) => {
+                testCSMS01.      OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, binaryDataTransferRequest) => {
                     csmsBinaryDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -323,15 +323,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                chargingStation1.       OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
+                chargingStation1.OCPP.IN.     OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
                     csIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.AddStaticRouting(chargingStation1.Id,
-                                            localController1.Id);
+                testCSMS01.OCPP.AddStaticRouting(chargingStation1.Id,
+                                                 localController1.Id);
 
                 //chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
 
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
 
                 var response   = await testCSMS01.TransferBinaryData(
-                                           DestinationNodeId:   chargingStation1.Id,
+                                           DestinationId:   chargingStation1.Id,
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
                                            Data:                data,
@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(csmsBinaryDataTransferRequestsOUT.   Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not leave the CSMS!");
 
                     Assert.That(nnBinaryDataTransferRequestsIN.      Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the networking node!");
-                    Assert.That(nnBinaryDataTransferRequestsIN.      First().DestinationId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnBinaryDataTransferRequestsIN.      First().DestinationId,        Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Source,   Is.EqualTo(testCSMS01.Id));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS01.Id));
@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(nnBinaryDataTransferRequestsOUT.     Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the OUTPUT of the networking node!");
 
                     Assert.That(csIncomingBinaryDataTransferRequests.Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the charging station!");
-                    //Assert.That(csIncomingBinaryDataTransferRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    //Assert.That(csIncomingBinaryDataTransferRequests.First().DestinationId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     //Assert.That(csIncomingBinaryDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(2));
                     //Assert.That(csIncomingBinaryDataTransferRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     //Assert.That(csIncomingBinaryDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));

@@ -33,8 +33,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -56,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public delegate Task OnNetworkingNodeNewWebSocketConnectionDelegate        (DateTime                           Timestamp,
                                                                                 OCPPWebSocketServer                NetworkingNodeChannel,
                                                                                 WebSocketServerConnection          NewConnection,
-                                                                                NetworkingNode_Id                  NetworkingNodeId,
+                                                                                NetworkingNode_Id                  DestinationId,
                                                                                 IEnumerable<String>                SharedSubprotocols,
                                                                                 EventTracking_Id                   EventTrackingId,
                                                                                 CancellationToken                  CancellationToken);
@@ -75,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public delegate Task OnNetworkingNodeCloseMessageReceivedDelegate          (DateTime                           Timestamp,
                                                                                 OCPPWebSocketServer                NetworkingNodeChannel,
                                                                                 WebSocketServerConnection          Connection,
-                                                                                NetworkingNode_Id                  NetworkingNodeId,
+                                                                                NetworkingNode_Id                  DestinationId,
                                                                                 EventTracking_Id                   EventTrackingId,
                                                                                 WebSocketFrame.ClosingStatusCode   StatusCode,
                                                                                 String?                            Reason,
@@ -94,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public delegate Task OnNetworkingNodeTCPConnectionClosedDelegate           (DateTime                           Timestamp,
                                                                                 OCPPWebSocketServer                NetworkingNodeChannel,
                                                                                 WebSocketServerConnection          Connection,
-                                                                                NetworkingNode_Id                  NetworkingNodeId,
+                                                                                NetworkingNode_Id                  DestinationId,
                                                                                 EventTracking_Id                   EventTrackingId,
                                                                                 String?                            Reason,
                                                                                 CancellationToken                  CancellationToken);
@@ -114,8 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public  const           String                                                                               DefaultHTTPServiceName
-            = $"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API";
+        public  const           String                                                                               DefaultHTTPServiceName            = $"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API";
 
         /// <summary>
         /// The default HTTP server TCP port.
@@ -442,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 Connection.HTTPRequest?.SecWebSocketProtocol.Any() == false)
             {
 
-                DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket}: Missing 'Sec-WebSocket-Protocol' HTTP header!");
+                DebugX.Log($"{nameof(OCPPWebSocketServer)} connection from {Connection.RemoteSocket}: Missing 'Sec-WebSocket-Protocol' HTTP header!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
@@ -464,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var error = $"This WebSocket service only supports {SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", ")}!";
 
-                DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket}: {error}");
+                DebugX.Log($"{nameof(OCPPWebSocketServer)} connection from {Connection.RemoteSocket}: {error}");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
@@ -495,15 +493,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (NetworkingNodeLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
-                        DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
+                        DebugX.Log($"{nameof(OCPPWebSocketServer)} connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
                         return Task.FromResult<HTTPResponse?>(null);
                     }
                     else
-                        DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'!");
+                        DebugX.Log($"{nameof(OCPPWebSocketServer)} connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'!");
 
                 }
                 else
-                    DebugX.Log($"{nameof(AOCPPWebSocketServer)} connection from {Connection.RemoteSocket} missing authorization!");
+                    DebugX.Log($"{nameof(OCPPWebSocketServer)} connection from {Connection.RemoteSocket} missing authorization!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
@@ -908,7 +906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //requests.TryAdd(RequestMessage.RequestId,
                             //                SendRequestState.FromJSONRequest(
                             //                    Timestamp.Now,
-                            //                    RequestMessage.DestinationNodeId,
+                            //                    RequestMessage.DestinationId,
                             //                    RequestMessage.RequestTimeout ?? (RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout)),
                             //                    RequestMessage
                             //                ));
@@ -1005,7 +1003,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //responses.TryAdd(ResponseMessage.ResponseId,
                             //                SendResponseState.FromJSONResponse(
                             //                    Timestamp.Now,
-                            //                    ResponseMessage.DestinationNodeId,
+                            //                    ResponseMessage.DestinationId,
                             //                    ResponseMessage.ResponseTimeout ?? (ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout)),
                             //                    ResponseMessage
                             //                ));
@@ -1075,7 +1073,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(JSONRequestErrorMessage.DestinationNodeId).ToArray();
+                var webSocketConnections = LookupNetworkingNode(JSONRequestErrorMessage.DestinationId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
@@ -1102,7 +1100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //responses.TryAdd(ResponseMessage.ResponseId,
                             //                SendResponseState.FromJSONResponse(
                             //                    Timestamp.Now,
-                            //                    ResponseMessage.DestinationNodeId,
+                            //                    ResponseMessage.DestinationId,
                             //                    ResponseMessage.ResponseTimeout ?? (ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout)),
                             //                    ResponseMessage
                             //                ));
@@ -1172,7 +1170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(JSONResponseErrorMessage.DestinationNodeId).ToArray();
+                var webSocketConnections = LookupNetworkingNode(JSONResponseErrorMessage.DestinationId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
@@ -1199,7 +1197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //responses.TryAdd(ResponseMessage.ResponseId,
                             //                SendResponseState.FromJSONResponse(
                             //                    Timestamp.Now,
-                            //                    ResponseMessage.DestinationNodeId,
+                            //                    ResponseMessage.DestinationId,
                             //                    ResponseMessage.ResponseTimeout ?? (ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout)),
                             //                    ResponseMessage
                             //                ));
@@ -1297,7 +1295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //requests.TryAdd(RequestMessage.RequestId,
                             //                SendRequestState.FromJSONRequest(
                             //                    Timestamp.Now,
-                            //                    RequestMessage.DestinationNodeId,
+                            //                    RequestMessage.DestinationId,
                             //                    RequestMessage.RequestTimeout ?? (RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout)),
                             //                    RequestMessage
                             //                ));
@@ -1394,7 +1392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //responses.TryAdd(ResponseMessage.ResponseId,
                             //                SendResponseState.FromJSONResponse(
                             //                    Timestamp.Now,
-                            //                    ResponseMessage.DestinationNodeId,
+                            //                    ResponseMessage.DestinationId,
                             //                    ResponseMessage.ResponseTimeout ?? (ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout)),
                             //                    ResponseMessage
                             //                ));
@@ -1465,7 +1463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (OCPPAdapter.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
                 reachability is not null)
             {
-                lookUpNetworkingNodeId = reachability.NetworkingNodeId;
+                lookUpNetworkingNodeId = reachability.DestinationId;
             }
 
             if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
@@ -1480,20 +1478,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
-        public void AddStaticRouting(NetworkingNode_Id DestinationNodeId,
+        public void AddStaticRouting(NetworkingNode_Id DestinationId,
                                      NetworkingNode_Id NetworkingHubId)
         {
 
-            reachableViaNetworkingHubs.TryAdd(DestinationNodeId,
+            reachableViaNetworkingHubs.TryAdd(DestinationId,
                                               NetworkingHubId);
 
         }
 
-        public void RemoveStaticRouting(NetworkingNode_Id DestinationNodeId,
+        public void RemoveStaticRouting(NetworkingNode_Id DestinationId,
                                         NetworkingNode_Id NetworkingHubId)
         {
 
-            reachableViaNetworkingHubs.TryRemove(new KeyValuePair<NetworkingNode_Id, NetworkingNode_Id>(DestinationNodeId, NetworkingHubId));
+            reachableViaNetworkingHubs.TryRemove(new KeyValuePair<NetworkingNode_Id, NetworkingNode_Id>(DestinationId, NetworkingHubId));
 
         }
 

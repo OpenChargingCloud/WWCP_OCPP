@@ -27,6 +27,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -68,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var getFileRequests = new ConcurrentList<GetFileRequest>();
 
-                chargingStation1.OnGetFileRequest += (timestamp, sender, connection, getFileRequest) => {
+                chargingStation1.OCPP.IN.OnGetFileRequestReceived += (timestamp, sender, connection, getFileRequest) => {
                     getFileRequests.TryAdd(getFileRequest);
                     return Task.CompletedTask;
                 };
@@ -76,9 +77,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var filename   = FilePath.Parse("/hello/world.txt");
 
                 var response   = await testCSMS01.GetFile(
-                                     DestinationNodeId:  chargingStation1.Id,
-                                     FileName:           filename
-                                 );
+                                           DestinationId:  chargingStation1.Id,
+                                           FileName:       filename
+                                       );
 
 
                 Assert.Multiple(() => {
@@ -131,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var sendFileRequests = new ConcurrentList<SendFileRequest>();
 
-                chargingStation1.OnSendFileRequest += (timestamp, sender, connection, sendFileRequest) => {
+                chargingStation1.OCPP.IN.OnSendFileRequestReceived += (timestamp, sender, connection, sendFileRequest) => {
                     sendFileRequests.TryAdd(sendFileRequest);
                     return Task.CompletedTask;
                 };
@@ -139,15 +140,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var filename   = FilePath.Parse("/hello/world.txt");
 
                 var response   = await testCSMS01.SendFile(
-                                     DestinationNodeId:  chargingStation1.Id,
-                                     FileName:           filename,
-                                     FileContent:        "Hello world!".ToUTF8Bytes(),
-                                     FileContentType:    ContentType.Text.Plain,
-                                     FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
-                                     FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes()),
-                                     FileSignatures:     null,
-                                     Priority:           null
-                                 );
+                                           DestinationId:     chargingStation1.Id,
+                                           FileName:          filename,
+                                           FileContent:       "Hello world!".ToUTF8Bytes(),
+                                           FileContentType:   ContentType.Text.Plain,
+                                           FileSHA256:        SHA256.HashData("Hello world!".ToUTF8Bytes()),
+                                           FileSHA512:        SHA512.HashData("Hello world!".ToUTF8Bytes()),
+                                           FileSignatures:    null,
+                                           Priority:          null
+                                       );
 
 
                 Assert.Multiple(() => {
@@ -199,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var deleteFileRequests = new ConcurrentList<DeleteFileRequest>();
 
-                chargingStation1.OnDeleteFileRequest += (timestamp, sender, connection, deleteFileRequest) => {
+                chargingStation1.OCPP.IN.OnDeleteFileRequestReceived += (timestamp, sender, connection, deleteFileRequest) => {
                     deleteFileRequests.TryAdd(deleteFileRequest);
                     return Task.CompletedTask;
                 };
@@ -207,11 +208,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var filename   = FilePath.Parse("/hello/world.txt");
 
                 var response   = await testCSMS01.DeleteFile(
-                                     DestinationNodeId:  chargingStation1.Id,
-                                     FileName:           filename,
-                                     FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
-                                     FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes())
-                                 );
+                                           DestinationId:  chargingStation1.Id,
+                                           FileName:           filename,
+                                           FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
+                                           FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes())
+                                       );
 
 
                 Assert.Multiple(() => {

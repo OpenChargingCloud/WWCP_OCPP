@@ -7,16 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Extensions\BinaryStreamsExtensions\Messages\ChargingStation\.gitkeep" />
+    <None Remove="Devices\Gateway\.gitkeep" />
+    <None Remove="Devices\LocalController\.gitkeep" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Extensions\BinaryStreamsExtensions\Messages\ChargingStation\.gitkeep" />
+    <Compile Include="Devices\Gateway\.gitkeep" />
+    <Compile Include="Devices\LocalController\.gitkeep" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Devices\Common\" />
   </ItemGroup>
 
 </Project>

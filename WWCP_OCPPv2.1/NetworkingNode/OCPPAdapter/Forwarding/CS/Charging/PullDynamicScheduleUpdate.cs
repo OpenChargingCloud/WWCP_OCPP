@@ -22,9 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -77,9 +77,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnPullDynamicScheduleUpdateRequestFilterDelegate?      OnPullDynamicScheduleUpdateRequest;
+        public event OnPullDynamicScheduleUpdateRequestReceivedDelegate?    OnPullDynamicScheduleUpdateRequestReceived;
+        public event OnPullDynamicScheduleUpdateRequestFilterDelegate?      OnPullDynamicScheduleUpdateRequestFilter;
+        public event OnPullDynamicScheduleUpdateRequestFilteredDelegate?    OnPullDynamicScheduleUpdateRequestFiltered;
+        public event OnPullDynamicScheduleUpdateRequestSentDelegate?        OnPullDynamicScheduleUpdateRequestSent;
 
-        public event OnPullDynamicScheduleUpdateRequestFilteredDelegate?    OnPullDynamicScheduleUpdateRequestLogging;
+        public event OnPullDynamicScheduleUpdateResponseReceivedDelegate?   OnPullDynamicScheduleUpdateResponseReceived;
+        public event OnPullDynamicScheduleUpdateResponseSentDelegate?       OnPullDynamicScheduleUpdateResponseSent;
 
         #endregion
 
@@ -95,30 +99,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            JSONRequestMessage.RequestId,
                                                            JSONRequestMessage.DestinationId,
                                                            JSONRequestMessage.NetworkPath,
-                                                           out var Request,
+                                                           out var request,
                                                            out var errorResponse,
                                                            parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
+
             ForwardingDecision<PullDynamicScheduleUpdateRequest, PullDynamicScheduleUpdateResponse>? forwardingDecision = null;
 
-            #region Send OnPullDynamicScheduleUpdateRequest event
 
-            var requestFilter = OnPullDynamicScheduleUpdateRequest;
+            #region Send OnPullDynamicScheduleUpdateRequestReceived event
+
+            var receivedLogging = OnPullDynamicScheduleUpdateRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(receivedLogging.GetInvocationList().
+                                          OfType<OnPullDynamicScheduleUpdateRequestReceivedDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                         parentNetworkingNode,
+                                                                                         Connection,
+                                                                                         request)).
+                                          ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                "NetworkingNode",
+                                nameof(OnPullDynamicScheduleUpdateRequestReceived),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            #region Send OnPullDynamicScheduleUpdateRequestFilter event
+
+            var requestFilter = OnPullDynamicScheduleUpdateRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnPullDynamicScheduleUpdateRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
+                                                     OfType<OnPullDynamicScheduleUpdateRequestFilterDelegate>().
+                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                                    parentNetworkingNode,
+                                                                                                    Connection,
+                                                                                                    request,
+                                                                                                    CancellationToken)).
                                                      ToArray());
 
                     //ToDo: Find a good result!
@@ -129,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnPullDynamicScheduleUpdateRequest),
+                              nameof(OnPullDynamicScheduleUpdateRequestFilter),
                               e
                           );
                 }
@@ -142,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision is null && DefaultResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<PullDynamicScheduleUpdateRequest, PullDynamicScheduleUpdateResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -152,12 +188,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new PullDynamicScheduleUpdateResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<PullDynamicScheduleUpdateRequest, PullDynamicScheduleUpdateResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -172,21 +208,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnPullDynamicScheduleUpdateRequestLogging event
+            #region Send OnPullDynamicScheduleUpdateRequestFiltered event
 
-            var logger = OnPullDynamicScheduleUpdateRequestLogging;
+            var logger = OnPullDynamicScheduleUpdateRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnPullDynamicScheduleUpdateRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
+                                       OfType<OnPullDynamicScheduleUpdateRequestFilteredDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        parentNetworkingNode,
+                                                                                        Connection,
+                                                                                        request,
+                                                                                        forwardingDecision)).
                                        ToArray());
 
                 }
@@ -194,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               "NetworkingNode",
-                              nameof(OnPullDynamicScheduleUpdateRequestLogging),
+                              nameof(OnPullDynamicScheduleUpdateRequestFiltered),
                               e
                           );
                 }
@@ -202,6 +238,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
+
+            #region Send OnPullDynamicScheduleUpdateRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnPullDynamicScheduleUpdateRequestSent;
+                if (sentLogging is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(sentLogging.GetInvocationList().
+                                              OfType<OnPullDynamicScheduleUpdateRequestSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                             parentNetworkingNode,
+                                                                                             request)).
+                                              ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                    "NetworkingNode",
+                                    nameof(OnPullDynamicScheduleUpdateRequestSent),
+                                    e
+                                );
+                    }
+
+                }
+
+            }
+
+            #endregion
+
+
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             return forwardingDecision;
 

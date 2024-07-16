@@ -22,7 +22,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a ListDirectory request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnListDirectoryRequestDelegate?     OnListDirectoryRequest;
+        public event OnListDirectoryRequestSentDelegate?         OnListDirectoryRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ListDirectory request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnListDirectoryResponseDelegate?    OnListDirectoryResponse;
+        public event OnListDirectoryResponseReceivedDelegate?    OnListDirectoryResponseReceived;
 
         #endregion
 
@@ -63,20 +63,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
         {
 
-            #region Send OnListDirectoryRequest event
+            #region Send OnListDirectoryRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnListDirectoryRequest?.Invoke(startTime,
-                                               parentNetworkingNode,
-                                               Request);
+                OnListDirectoryRequestSent?.Invoke(startTime,
+                                                   parentNetworkingNode,
+                                                   Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnListDirectoryRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnListDirectoryRequestSent));
             }
 
             #endregion
@@ -134,23 +134,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            #region Send OnListDirectoryResponse event
+            #region Send OnListDirectoryResponseReceived event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnListDirectoryResponse?.Invoke(endTime,
-                                                parentNetworkingNode,
-                                                Request,
-                                                response,
-                                                endTime - startTime);
+                OnListDirectoryResponseReceived?.Invoke(endTime,
+                                                        parentNetworkingNode,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnListDirectoryResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnListDirectoryResponseReceived));
             }
 
             #endregion

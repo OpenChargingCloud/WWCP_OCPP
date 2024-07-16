@@ -78,21 +78,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ResetRequest(NetworkingNode_Id             NetworkingNodeId,
-                            ResetTypes                    ResetType,
+        public ResetRequest(NetworkingNode_Id        NetworkingNodeId,
+                            ResetTypes               ResetType,
 
-                            IEnumerable<KeyPair>?         SignKeys            = null,
-                            IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+                            IEnumerable<KeyPair>?    SignKeys            = null,
+                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            IEnumerable<Signature>?  Signatures          = null,
 
-                            CustomData?                   CustomData          = null,
+                            CustomData?              CustomData          = null,
 
-                            Request_Id?                   RequestId           = null,
-                            DateTime?                     RequestTimestamp    = null,
-                            TimeSpan?                     RequestTimeout      = null,
-                            EventTracking_Id?             EventTrackingId     = null,
-                            NetworkPath?                  NetworkPath         = null,
-                            CancellationToken             CancellationToken   = default)
+                            Request_Id?              RequestId           = null,
+                            DateTime?                RequestTimestamp    = null,
+                            TimeSpan?                RequestTimeout      = null,
+                            EventTracking_Id?        EventTrackingId     = null,
+                            NetworkPath?             NetworkPath         = null,
+                            CancellationToken        CancellationToken   = default)
 
             : base(NetworkingNodeId,
                    nameof(ResetRequest)[..^7],

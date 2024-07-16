@@ -22,7 +22,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a SendFile request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnSendFileRequestDelegate?     OnSendFileRequest;
+        public event OnSendFileRequestSentDelegate?         OnSendFileRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SendFile request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnSendFileResponseDelegate?    OnSendFileResponse;
+        public event OnSendFileResponseReceivedDelegate?    OnSendFileResponseReceived;
 
         #endregion
 
@@ -63,20 +63,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SendFileResponse> SendFile(SendFileRequest Request)
         {
 
-            #region Send OnSendFileRequest event
+            #region Send OnSendFileRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnSendFileRequest?.Invoke(startTime,
-                                          parentNetworkingNode,
-                                          Request);
+                OnSendFileRequestSent?.Invoke(startTime,
+                                              parentNetworkingNode,
+                                              Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendFileRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendFileRequestSent));
             }
 
             #endregion
@@ -134,23 +134,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            #region Send OnSendFileResponse event
+            #region Send OnSendFileResponseReceived event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnSendFileResponse?.Invoke(endTime,
-                                           parentNetworkingNode,
-                                           Request,
-                                           response,
-                                           endTime - startTime);
+                OnSendFileResponseReceived?.Invoke(endTime,
+                                                   parentNetworkingNode,
+                                                   Request,
+                                                   response,
+                                                   endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendFileResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendFileResponseReceived));
             }
 
             #endregion

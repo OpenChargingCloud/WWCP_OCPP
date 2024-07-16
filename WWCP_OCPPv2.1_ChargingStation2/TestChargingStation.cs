@@ -30,6 +30,7 @@ using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -39,7 +40,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A networking node for testing.
     /// </summary>
-    public partial class TestChargingStation : AChargingStation
+    public partial class TestChargingStation : AChargingStation,
+                                               IChargingStation
     {
 
         #region Properties
@@ -53,27 +55,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Create a new networking node for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this networking node.</param>
-        public TestChargingStation(NetworkingNode_Id  Id,
-                                   String             VendorName,
-                                   String             Model,
-                                   I18NString?        Description                 = null,
-                                   String?            SerialNumber                = null,
-                                   String?            FirmwareVersion             = null,
-                                   Modem?             Modem                       = null,
+        public TestChargingStation(NetworkingNode_Id                  Id,
+                                   String                             VendorName,
+                                   String                             Model,
+                                   I18NString?                        Description                 = null,
+                                   String?                            SerialNumber                = null,
+                                   String?                            FirmwareVersion             = null,
+                                   Modem?                             Modem                       = null,
 
-                                   SignaturePolicy?   SignaturePolicy             = null,
-                                   SignaturePolicy?   ForwardingSignaturePolicy   = null,
+                                   IEnumerable<ChargingStationEVSE>?  EVSEs                       = null,
 
-                                   IPPort?            HTTPUploadPort              = null,
-                                   IPPort?            HTTPDownloadPort            = null,
+                                   String?                            MeterType                   = null,
+                                   String?                            MeterSerialNumber           = null,
+                                   String?                            MeterPublicKey              = null,
 
-                                   Boolean            DisableSendHeartbeats       = false,
-                                   TimeSpan?          SendHeartbeatsEvery         = null,
-                                   TimeSpan?          DefaultRequestTimeout       = null,
+                                   CustomData?                        CustomData                  = null,
 
-                                   Boolean            DisableMaintenanceTasks     = false,
-                                   TimeSpan?          MaintenanceEvery            = null,
-                                   DNSClient?         DNSClient                   = null)
+                                   Boolean                            DisableSendHeartbeats       = false,
+                                   TimeSpan?                          SendHeartbeatsEvery         = null,
+                                   TimeSpan?                          DefaultRequestTimeout       = null,
+
+                                   IPPort?                            HTTPUploadPort              = null,
+                                   IPPort?                            HTTPDownloadPort            = null,
+
+                                   SignaturePolicy?                   SignaturePolicy             = null,
+                                   SignaturePolicy?                   ForwardingSignaturePolicy   = null,
+
+                                   Boolean                            DisableMaintenanceTasks     = false,
+                                   TimeSpan?                          MaintenanceEvery            = null,
+
+                                   IHTTPAuthentication?               HTTPAuthentication          = null,
+
+                                   DNSClient?                         DNSClient                   = null)
 
             : base(Id,
                    VendorName,
@@ -82,6 +95,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    SerialNumber,
                    FirmwareVersion,
                    Modem,
+
+                   EVSEs,
+
+                   MeterType,
+                   MeterSerialNumber,
+                   MeterPublicKey,
+
+                   CustomData,
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
@@ -189,17 +210,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             };
 
 
-            OCPP.FORWARD.OnDeleteFileRequest += (timestamp,
-                                                 sender,
-                                                 connection,
-                                                 request,
-                                                 cancellationToken) =>
+            OCPP.FORWARD.OnDeleteFileRequestFilter += (timestamp,
+                                                       sender,
+                                                       connection,
+                                                       request,
+                                                       cancellationToken) =>
 
                 Task.FromResult(
-                    new ForwardingDecision<DeleteFileRequest, DeleteFileResponse>(
-                        request,
-                        ForwardingResults.FORWARD
-                    )
+                    ForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -485,7 +503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? SecureDataTransferResponse.Encrypt(
                                      Request:                request,
                                      Status:                 SecureDataTransferStatus.Accepted,
-                                     DestinationNodeId:      request.NetworkPath.Source,
+                                     DestinationId:          request.NetworkPath.Source,
                                      Parameter:              0,
                                      KeyId:                  keyId,
                                      Key:                    GetEncryptionKey    (request.NetworkPath.Source, keyId),

@@ -31,8 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
 
 #endregion
@@ -234,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             this.OCPPAdapter     = OCPPAdapter;
-            this.NetworkingMode  = NetworkingMode ?? OCPP.WebSockets.NetworkingMode.Standard;
+            this.NetworkingMode  = NetworkingMode ?? NetworkingNode.NetworkingMode.Standard;
 
             //this.Logger          = new ChargePointwebsocketClient.CPClientLogger(this,
             //                                                                LoggingPath,
@@ -311,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (BinaryMessage.Length == 0)
             {
-                DebugX.Log($"Received an empty binary message within {nameof(AOCPPWebSocketClient)}!");
+                DebugX.Log($"Received an empty binary message within {nameof(OCPPWebSocketClient)}!");
                 return;
             }
 
@@ -330,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                DebugX.LogException(e, nameof(AOCPPWebSocketClient) + "." + nameof(ProcessWebSocketBinaryFrame));
+                DebugX.LogException(e, nameof(OCPPWebSocketClient) + "." + nameof(ProcessWebSocketBinaryFrame));
 
                 //OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                 //                        Request_Id.Zero,
@@ -377,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //requests.TryAdd(RequestMessage.RequestId,
                     //                SendRequestState.FromJSONRequest(
                     //                    Timestamp.Now,
-                    //                    RequestMessage.DestinationNodeId,
+                    //                    RequestMessage.DestinationId,
                     //                    RequestMessage.RequestTimeout ?? (RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout)),
                     //                    RequestMessage
                     //                ));
@@ -452,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //requests.TryAdd(ResponseMessage.ResponseId,
                     //                SendResponseState.FromJSONResponse(
                     //                    Timestamp.Now,
-                    //                    ResponseMessage.DestinationNodeId,
+                    //                    ResponseMessage.DestinationId,
                     //                    ResponseMessage.ResponseTimeout ?? (ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout)),
                     //                    ResponseMessage
                     //                ));
@@ -527,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //requests.TryAdd(ErrorMessage.ErrorId,
                     //                SendErrorState.FromJSONError(
                     //                    Timestamp.Now,
-                    //                    ErrorMessage.DestinationNodeId,
+                    //                    ErrorMessage.DestinationId,
                     //                    ErrorMessage.ErrorTimeout ?? (ErrorMessage.ErrorTimestamp + (ErrorTimeout ?? DefaultErrorTimeout)),
                     //                    ErrorMessage
                     //                ));
@@ -602,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //requests.TryAdd(ErrorMessage.ErrorId,
                     //                SendErrorState.FromJSONError(
                     //                    Timestamp.Now,
-                    //                    ErrorMessage.DestinationNodeId,
+                    //                    ErrorMessage.DestinationId,
                     //                    ErrorMessage.ErrorTimeout ?? (ErrorMessage.ErrorTimestamp + (ErrorTimeout ?? DefaultErrorTimeout)),
                     //                    ErrorMessage
                     //                ));
@@ -678,7 +677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //requests.TryAdd(RequestMessage.RequestId,
                     //                SendRequestState.FromJSONRequest(
                     //                    Timestamp.Now,
-                    //                    RequestMessage.DestinationNodeId,
+                    //                    RequestMessage.DestinationId,
                     //                    RequestMessage.RequestTimeout ?? (RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout)),
                     //                    RequestMessage
                     //                ));
@@ -753,7 +752,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //requests.TryAdd(ResponseMessage.ResponseId,
                     //                SendResponseState.FromJSONResponse(
                     //                    Timestamp.Now,
-                    //                    ResponseMessage.DestinationNodeId,
+                    //                    ResponseMessage.DestinationId,
                     //                    ResponseMessage.ResponseTimeout ?? (ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout)),
                     //                    ResponseMessage
                     //                ));

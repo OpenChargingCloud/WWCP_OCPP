@@ -21,11 +21,11 @@ using System.Collections.Concurrent;
 
 using Newtonsoft.Json;
 
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -65,10 +65,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        HTTPBasicAuthentication  AddOrUpdateHTTPBasicAuth (NetworkingNode_Id NetworkingNodeId,  String            Password);
-        void                     AddStaticRouting         (NetworkingNode_Id DestinationNodeId, NetworkingNode_Id NetworkingHubId);
+        HTTPBasicAuthentication  AddOrUpdateHTTPBasicAuth (NetworkingNode_Id DestinationId,  String            Password);
+        void                     AddStaticRouting         (NetworkingNode_Id DestinationId, NetworkingNode_Id NetworkingHubId);
         Boolean                  RemoveHTTPBasicAuth      (NetworkingNode_Id NetworkingNodeId);
-        void                     RemoveStaticRouting      (NetworkingNode_Id DestinationNodeId, NetworkingNode_Id NetworkingHubId);
+        void                     RemoveStaticRouting      (NetworkingNode_Id DestinationId, NetworkingNode_Id NetworkingHubId);
 
 
         Task<SendMessageResult> SendJSONRequest       (OCPP_JSONRequestMessage        JSONRequestMessage);

@@ -21,13 +21,11 @@ using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.NN;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -88,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
             InitNetworkingNode1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(localController1,           Is.Not.Null);
+                Assert.That(localController1,          Is.Not.Null);
                 Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(testCSMS01,                Is.Not.Null);
             });
@@ -104,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 var nnJSONResponseMessagesReceived       = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
 
-                localController1.OCPP.OUT.OnBootNotificationRequestSent      += (timestamp, sender,             bootNotificationRequest) => {
+                localController1.OCPP.OUT.OnBootNotificationRequestSent      += (timestamp, sender, bootNotificationRequest) => {
                     nnBootNotificationRequestsSent.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -114,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     return Task.CompletedTask;
                 };
 
-                testCSMS01.             OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
+                testCSMS01.      OCPP.IN. OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
                     csmsBootNotificationRequests.  TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -124,12 +122,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.ocppOUT.OnBootNotificationResponse    += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
+                //networkingNode1.ocppOUT.OnBootNotificationResponse          += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
                 //    nnBootNotificationResponses. TryAdd(bootNotificationResponse);
                 //    return Task.CompletedTask;
                 //};
 
-                localController1.OCPP.IN. OnBootNotificationResponseReceived += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
+                localController1.OCPP.IN. OnBootNotificationResponseReceived += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
                     nnBootNotificationResponsesReceived.   TryAdd(bootNotificationResponse);
                     return Task.CompletedTask;
                 };
@@ -146,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     // Networking Node Request OUT
                     Assert.That(nnBootNotificationRequestsSent.     Count,                    Is.EqualTo(1), "The BootNotification request did not leave the networking node!");
                     var nnBootNotificationRequest = nnBootNotificationRequestsSent.First();
-                    Assert.That(nnBootNotificationRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBootNotificationRequest.DestinationId,                      Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(1));
                     Assert.That(nnBootNotificationRequest.NetworkPath.Source,                 Is.EqualTo(localController1.Id));
                     Assert.That(nnBootNotificationRequest.NetworkPath.Last,                   Is.EqualTo(localController1.Id));
@@ -158,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     // CSMS Request IN
                     Assert.That(csmsBootNotificationRequests.       Count,                    Is.EqualTo(1), "The BootNotification request did not reach the CSMS!");
                     var csmsBootNotificationRequest = csmsBootNotificationRequests.First();
-                    Assert.That(csmsBootNotificationRequest.DestinationId,                Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsBootNotificationRequest.DestinationId,                    Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsBootNotificationRequest.NetworkPath.Length,               Is.EqualTo(1));
                     Assert.That(csmsBootNotificationRequest.NetworkPath.Source,               Is.EqualTo(localController1.Id));
                     Assert.That(csmsBootNotificationRequest.NetworkPath.Last,                 Is.EqualTo(localController1.Id));
@@ -223,12 +221,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
             InitNetworkingNode1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(localController1,           Is.Not.Null);
+                Assert.That(localController1,          Is.Not.Null);
                 Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(chargingStation1,          Is.Not.Null);
             });
 
-            if (localController1          is not null &&
+            if (localController1         is not null &&
                 lcOCPPWebSocketServer01  is not null &&
                 chargingStation1         is not null)
             {
@@ -249,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.        OnResetRequest                 += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.OCPP.IN. OnResetRequestReceived         += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.               TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -267,8 +265,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
                 var resetType  = ResetType.Immediate;
                 var response   = await localController1.Reset(
-                                           DestinationNodeId:  chargingStation1.Id,
-                                           ResetType:          resetType
+                                           DestinationId:  chargingStation1.Id,
+                                           ResetType:      resetType
                                        );
 
 
@@ -277,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     // Networking Node Request OUT
                     Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     var nnResetRequest = nnResetRequestsSent.First();
-                    Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequest.DestinationId,           Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(localController1.Id));
                     Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(localController1.Id));
@@ -289,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     // Charging Station Request IN
                     Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     var csResetRequest = csResetRequests.First();
-                    //Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation1.Id));   // Because of "standard" networking mode!
+                    //Assert.That(csResetRequest.DestinationId,       Is.EqualTo(chargingStation1.Id));   // Because of "standard" networking mode!
                     //Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     //Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode1.Id));    // Because of "standard" networking mode!
                     //Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode1.Id));    // Because of "standard" networking mode!
@@ -330,27 +328,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
             InitNetworkingNode1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,                       Is.Not.Null);
-                Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(localController1,                  Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
-                Assert.That(chargingStation1,                 Is.Not.Null);
-                Assert.That(chargingStation2,                 Is.Not.Null);
-                Assert.That(chargingStation3,                 Is.Not.Null);
+                Assert.That(testCSMS01,               Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(localController1,         Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer01,  Is.Not.Null);
+                Assert.That(chargingStation1,         Is.Not.Null);
+                Assert.That(chargingStation2,         Is.Not.Null);
+                Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01                     is not null &&
-                testBackendWebSockets01        is not null &&
-                localController1                is not null &&
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                localController1        is not null &&
                 lcOCPPWebSocketServer01 is not null &&
-                chargingStation1               is not null &&
-                chargingStation2               is not null &&
-                chargingStation3               is not null)
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
             {
 
                 var csmsNotifyNetworkTopologyRequests  = new ConcurrentList<NotifyNetworkTopologyRequest>();
 
-                testCSMS01.OnIncomingNotifyNetworkTopologyRequest += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyNetworkTopologyRequestReceived += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
                     csmsNotifyNetworkTopologyRequests.TryAdd(notifyNetworkTopologyRequest);
                     return Task.CompletedTask;
                 };
@@ -362,22 +360,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                                         NetworkingNode_Id.CSMS,
                                         new NetworkTopologyInformation(
                                             RoutingNode:   localController1.Id,
-                                            Routes:        new[] {
+                                            Routes:        [
                                                                new NetworkRoutingInformation(
-                                                                   NetworkingNodeId:   localController1.Id,
-                                                                   Priority:           23,
-                                                                   Uplink:             new NetworkLinkInformation(
-                                                                                           Capacity:     5000,
-                                                                                           Latency:      TimeSpan.FromMilliseconds(10),
-                                                                                           ErrorRate:    PercentageDouble.Parse(0.05)
-                                                                                       ),
-                                                                   Downlink:           new NetworkLinkInformation(
-                                                                                           Capacity:     15000,
-                                                                                           Latency:      TimeSpan.FromMilliseconds(23),
-                                                                                           ErrorRate:    PercentageDouble.Parse(0.42)
-                                                                                       )
+                                                                   DestinationId:   localController1.Id,
+                                                                   Priority:        23,
+                                                                   Uplink:          new NetworkLinkInformation(
+                                                                                        Capacity:     5000,
+                                                                                        Latency:      TimeSpan.FromMilliseconds(10),
+                                                                                        ErrorRate:    PercentageDouble.Parse(0.05)
+                                                                                    ),
+                                                                   Downlink:        new NetworkLinkInformation(
+                                                                                        Capacity:     15000,
+                                                                                        Latency:      TimeSpan.FromMilliseconds(23),
+                                                                                        ErrorRate:    PercentageDouble.Parse(0.42)
+                                                                                    )
                                                                )
-                                                           },
+                                                           ],
                                             NotBefore:     Timestamp.Now - TimeSpan.FromMinutes(5),
                                             NotAfter:      Timestamp.Now + TimeSpan.FromHours  (6),
                                             Priority:      5,
@@ -451,27 +449,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
             InitNetworkingNode1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,                       Is.Not.Null);
-                Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(localController1,                  Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
-                Assert.That(chargingStation1,                 Is.Not.Null);
-                Assert.That(chargingStation2,                 Is.Not.Null);
-                Assert.That(chargingStation3,                 Is.Not.Null);
+                Assert.That(testCSMS01,              Is.Not.Null);
+                Assert.That(testBackendWebSockets01, Is.Not.Null);
+                Assert.That(localController1,        Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer01, Is.Not.Null);
+                Assert.That(chargingStation1,        Is.Not.Null);
+                Assert.That(chargingStation2,        Is.Not.Null);
+                Assert.That(chargingStation3,        Is.Not.Null);
             });
 
-            if (testCSMS01                     is not null &&
-                testBackendWebSockets01        is not null &&
-                localController1                is not null &&
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                localController1        is not null &&
                 lcOCPPWebSocketServer01 is not null &&
-                chargingStation1               is not null &&
-                chargingStation2               is not null &&
-                chargingStation3               is not null)
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
             {
 
                 var csmsNotifyNetworkTopologyRequests  = new ConcurrentList<NotifyNetworkTopologyRequest>();
 
-                testCSMS01.OnIncomingNotifyNetworkTopologyRequest += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyNetworkTopologyRequestReceived += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
                     csmsNotifyNetworkTopologyRequests.TryAdd(notifyNetworkTopologyRequest);
                     return Task.CompletedTask;
                 };
@@ -479,25 +477,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
                 var reason    = BootReason.PowerUp;
                 var response  = await localController1.NotifyNetworkTopology(
-                                    DestinationNodeId:            NetworkingNode_Id.CSMS,
+                                    DestinationId:                NetworkingNode_Id.CSMS,
                                     NetworkTopologyInformation:   new NetworkTopologyInformation(
                                                                       RoutingNode:   localController1.Id,
-                                                                      Routes:        new[] {
+                                                                      Routes:        [
                                                                                          new NetworkRoutingInformation(
-                                                                                             NetworkingNodeId:   localController1.Id,
-                                                                                             Priority:           23,
-                                                                                             Uplink:             new NetworkLinkInformation(
-                                                                                                                     Capacity:     5000,
-                                                                                                                     Latency:      TimeSpan.FromMilliseconds(10),
-                                                                                                                     ErrorRate:    PercentageDouble.Parse(0.05)
-                                                                                                                 ),
-                                                                                             Downlink:           new NetworkLinkInformation(
-                                                                                                                     Capacity:     15000,
-                                                                                                                     Latency:      TimeSpan.FromMilliseconds(23),
-                                                                                                                     ErrorRate:    PercentageDouble.Parse(0.42)
-                                                                                                                 )
+                                                                                             DestinationId:   localController1.Id,
+                                                                                             Priority:        23,
+                                                                                             Uplink:          new NetworkLinkInformation(
+                                                                                                                  Capacity:     5000,
+                                                                                                                  Latency:      TimeSpan.FromMilliseconds(10),
+                                                                                                                  ErrorRate:    PercentageDouble.Parse(0.05)
+                                                                                                              ),
+                                                                                             Downlink:        new NetworkLinkInformation(
+                                                                                                                  Capacity:     15000,
+                                                                                                                  Latency:      TimeSpan.FromMilliseconds(23),
+                                                                                                                  ErrorRate:    PercentageDouble.Parse(0.42)
+                                                                                                              )
                                                                                          )
-                                                                                     },
+                                                                                     ],
                                                                       NotBefore:     Timestamp.Now - TimeSpan.FromMinutes(5),
                                                                       NotAfter:      Timestamp.Now + TimeSpan.FromHours  (6),
                                                                       Priority:      5,
@@ -514,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     Assert.That(csmsNotifyNetworkTopologyRequests.Count,                       Is.EqualTo(1), "The Network Topology Notification did not reach the CSMS!");
                     var csmsNotifyNetworkTopologyRequest = csmsNotifyNetworkTopologyRequests.First();
 
-                    Assert.That(csmsNotifyNetworkTopologyRequest.DestinationId,            Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsNotifyNetworkTopologyRequest.DestinationId,                Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsNotifyNetworkTopologyRequest.NetworkPath.Length,           Is.EqualTo(1));
                     Assert.That(csmsNotifyNetworkTopologyRequest.NetworkPath.Source,           Is.EqualTo(localController1.Id));
                     Assert.That(csmsNotifyNetworkTopologyRequest.NetworkPath.Last,             Is.EqualTo(localController1.Id));

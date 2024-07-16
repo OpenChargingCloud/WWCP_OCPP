@@ -41,223 +41,223 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<BinaryDataTransferRequest>?       CustomBinaryDataTransferRequestParser         { get; set; }
+        //public CustomBinaryParserDelegate<BinaryDataTransferRequest>?       CustomBinaryDataTransferRequestParser         { get; set; }
 
-        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
+        //public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
 
         #endregion
 
         #region Events
 
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer websocket request was received.
-        /// </summary>
-        public event WSClientBinaryRequestLogHandler?                  OnIncomingBinaryDataTransferWSRequest;
+        ///// <summary>
+        ///// An event sent whenever a BinaryDataTransfer websocket request was received.
+        ///// </summary>
+        //public event WSClientBinaryRequestLogHandler?                  OnIncomingBinaryDataTransferWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was received.
-        /// </summary>
-        public event OnBinaryDataTransferRequestReceivedDelegate?      OnIncomingBinaryDataTransferRequest;
+        ///// <summary>
+        ///// An event sent whenever a BinaryDataTransfer request was received.
+        ///// </summary>
+        //public event OnBinaryDataTransferRequestReceivedDelegate?      OnIncomingBinaryDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was received.
-        /// </summary>
-        public event OnBinaryDataTransferDelegate?             OnIncomingBinaryDataTransfer;
+        ///// <summary>
+        ///// An event sent whenever a BinaryDataTransfer request was received.
+        ///// </summary>
+        //public event OnBinaryDataTransferDelegate?             OnIncomingBinaryDataTransfer;
 
-        /// <summary>
-        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event OnBinaryDataTransferResponseSentDelegate?     OnIncomingBinaryDataTransferResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a BinaryDataTransfer request was sent.
+        ///// </summary>
+        //public event OnBinaryDataTransferResponseSentDelegate?     OnIncomingBinaryDataTransferResponse;
 
-        /// <summary>
-        /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event WSClientBinaryRequestBinaryResponseLogHandler?    OnIncomingBinaryDataTransferWSResponse;
+        ///// <summary>
+        ///// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
+        ///// </summary>
+        //public event WSClientBinaryRequestBinaryResponseLogHandler?    OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 
 
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_BinaryResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        //public async Task<Tuple<OCPP_BinaryResponseMessage?,
+        //                        OCPP_JSONRequestErrorMessage?>>
 
-            Receive_BinaryDataTransfer(DateTime                   RequestTimestamp,
-                                       WebSocketClientConnection  WebSocketConnection,
-                                       NetworkingNode_Id          DestinationNodeId,
-                                       NetworkPath                NetworkPath,
-                                       EventTracking_Id           EventTrackingId,
-                                       Request_Id                 RequestId,
-                                       Byte[]                     RequestBinary,
-                                       CancellationToken          CancellationToken)
+        //    Receive_BinaryDataTransfer(DateTime                   RequestTimestamp,
+        //                               WebSocketClientConnection  WebSocketConnection,
+        //                               NetworkingNode_Id          DestinationNodeId,
+        //                               NetworkPath                NetworkPath,
+        //                               EventTracking_Id           EventTrackingId,
+        //                               Request_Id                 RequestId,
+        //                               Byte[]                     RequestBinary,
+        //                               CancellationToken          CancellationToken)
 
-        {
+        //{
 
-            #region Send OnIncomingBinaryDataTransferWSRequest event
+        //    #region Send OnIncomingBinaryDataTransferWSRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnIncomingBinaryDataTransferWSRequest?.Invoke(startTime,
-                                                              WebSocketConnection,
-                                                              DestinationNodeId,
-                                                              NetworkPath,
-                                                              EventTrackingId,
-                                                              RequestBinary);
+        //        OnIncomingBinaryDataTransferWSRequest?.Invoke(startTime,
+        //                                                      WebSocketConnection,
+        //                                                      DestinationNodeId,
+        //                                                      NetworkPath,
+        //                                                      EventTrackingId,
+        //                                                      RequestBinary);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingBinaryDataTransferWSRequest));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingBinaryDataTransferWSRequest));
+        //    }
 
-            #endregion
+        //    #endregion
 
-            OCPP_BinaryResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?       OCPPErrorResponse   = null;
+        //    OCPP_BinaryResponseMessage?  OCPPResponse        = null;
+        //    OCPP_JSONRequestErrorMessage?       OCPPErrorResponse   = null;
 
-            try
-            {
+        //    try
+        //    {
 
-                if (BinaryDataTransferRequest.TryParse(RequestBinary,
-                                                       RequestId,
-                                                       DestinationNodeId,
-                                                       NetworkPath,
-                                                       out var request,
-                                                       out var errorResponse,
-                                                       CustomBinaryDataTransferRequestParser)) {
+        //        if (BinaryDataTransferRequest.TryParse(RequestBinary,
+        //                                               RequestId,
+        //                                               DestinationNodeId,
+        //                                               NetworkPath,
+        //                                               out var request,
+        //                                               out var errorResponse,
+        //                                               CustomBinaryDataTransferRequestParser)) {
 
-                    #region Send OnIncomingBinaryDataTransferRequest event
+        //            #region Send OnIncomingBinaryDataTransferRequest event
 
-                    try
-                    {
+        //            try
+        //            {
 
-                        OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    WebSocketConnection,
-                                                                    request);
+        //                OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
+        //                                                            this,
+        //                                                            WebSocketConnection,
+        //                                                            request);
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingBinaryDataTransferRequest));
-                    }
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingBinaryDataTransferRequest));
+        //            }
 
-                    #endregion
+        //            #endregion
 
-                    #region Call async subscribers
+        //            #region Call async subscribers
 
-                   BinaryDataTransferResponse? response = null;
+        //           BinaryDataTransferResponse? response = null;
 
-                    var results = OnIncomingBinaryDataTransfer?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                            this,
-                                                                                                                            WebSocketConnection,
-                                                                                                                            request,
-                                                                                                                            CancellationToken)).
-                                      ToArray();
+        //            var results = OnIncomingBinaryDataTransfer?.
+        //                              GetInvocationList()?.
+        //                              SafeSelect(subscriber => (subscriber as OnBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
+        //                                                                                                                    this,
+        //                                                                                                                    WebSocketConnection,
+        //                                                                                                                    request,
+        //                                                                                                                    CancellationToken)).
+        //                              ToArray();
 
-                    if (results?.Length > 0)
-                    {
+        //            if (results?.Length > 0)
+        //            {
 
-                        await Task.WhenAll(results!);
+        //                await Task.WhenAll(results!);
 
-                        response = results.FirstOrDefault()?.Result;
+        //                response = results.FirstOrDefault()?.Result;
 
-                    }
+        //            }
 
-                    response ??= BinaryDataTransferResponse.Failed(request);
+        //            response ??= BinaryDataTransferResponse.Failed(request);
 
-                    #endregion
+        //            #endregion
 
-                    #region Send OnIncomingBinaryDataTransferResponse event
+        //            #region Send OnIncomingBinaryDataTransferResponse event
 
-                    try
-                    {
+        //            try
+        //            {
 
-                        OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
-                                                                     this,
-                                                                     WebSocketConnection,
-                                                                     request,
-                                                                     response,
-                                                                     response.Runtime);
+        //                OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
+        //                                                             this,
+        //                                                             WebSocketConnection,
+        //                                                             request,
+        //                                                             response,
+        //                                                             response.Runtime);
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingBinaryDataTransferResponse));
-                    }
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingBinaryDataTransferResponse));
+        //            }
 
-                    #endregion
+        //            #endregion
 
-                    OCPPResponse  = OCPP_BinaryResponseMessage.From(
-                                       NetworkingMode.Standard,
-                                       NetworkPath.Source,
-                                       NetworkPath.Empty,
-                                       RequestId,
-                                       response.ToBinary(
-                                           CustomBinaryDataTransferResponseSerializer,
-                                           null, //CustomCustomDataSerializer,
-                                           CustomBinarySignatureSerializer,
-                                           IncludeSignatures: true
-                                       )
-                                   );
+        //            OCPPResponse  = OCPP_BinaryResponseMessage.From(
+        //                               NetworkingMode.Standard,
+        //                               NetworkPath.Source,
+        //                               NetworkPath.Empty,
+        //                               RequestId,
+        //                               response.ToBinary(
+        //                                   CustomBinaryDataTransferResponseSerializer,
+        //                                   null, //CustomCustomDataSerializer,
+        //                                   CustomBinarySignatureSerializer,
+        //                                   IncludeSignatures: true
+        //                               )
+        //                           );
 
-                }
+        //        }
 
-                else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_BinaryDataTransfer)[8..],
-                                            RequestBinary,
-                                            errorResponse
-                                        );
+        //        else
+        //            OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
+        //                                    RequestId,
+        //                                    nameof(Receive_BinaryDataTransfer)[8..],
+        //                                    RequestBinary,
+        //                                    errorResponse
+        //                                );
 
-            }
-            catch (Exception e)
-            {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_BinaryDataTransfer)[8..],
-                                        RequestBinary,
-                                        e
-                                    );
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
+        //                                RequestId,
+        //                                nameof(Receive_BinaryDataTransfer)[8..],
+        //                                RequestBinary,
+        //                                e
+        //                            );
+        //    }
 
-            #region Send OnIncomingBinaryDataTransferWSResponse event
+        //    #region Send OnIncomingBinaryDataTransferWSResponse event
 
-            try
-            {
+        //    try
+        //    {
 
-                var endTime = Timestamp.Now;
+        //        var endTime = Timestamp.Now;
 
-                OnIncomingBinaryDataTransferWSResponse?.Invoke(endTime,
-                                                               WebSocketConnection,
-                                                               DestinationNodeId,
-                                                               NetworkPath,
-                                                               EventTrackingId,
-                                                               RequestTimestamp,
-                                                               RequestBinary,
-                                                               OCPPResponse?.Payload,
-                                                               OCPPErrorResponse?.ToJSON(),
-                                                               endTime - startTime);
+        //        OnIncomingBinaryDataTransferWSResponse?.Invoke(endTime,
+        //                                                       WebSocketConnection,
+        //                                                       DestinationNodeId,
+        //                                                       NetworkPath,
+        //                                                       EventTrackingId,
+        //                                                       RequestTimestamp,
+        //                                                       RequestBinary,
+        //                                                       OCPPResponse?.Payload,
+        //                                                       OCPPErrorResponse?.ToJSON(),
+        //                                                       endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingBinaryDataTransferWSResponse));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingBinaryDataTransferWSResponse));
+        //    }
 
-            #endregion
+        //    #endregion
 
-            return new Tuple<OCPP_BinaryResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+        //    return new Tuple<OCPP_BinaryResponseMessage?,
+        //                     OCPP_JSONRequestErrorMessage?>(OCPPResponse,
+        //                                             OCPPErrorResponse);
 
-        }
+        //}
 
         #endregion
 

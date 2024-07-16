@@ -24,43 +24,43 @@ namespace cloud.charging.open.protocols.OCPP.NN
     public interface INetworkingNodeOutgoingMessages
     {
 
-        // Binary Data Streams Extensions
+        //// Binary Data Streams Extensions
 
-        #region BinaryDataTransfer (Request)
+        //#region BinaryDataTransfer (Request)
 
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A BinaryDataTransfer request.</param>
-        Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
+        ///// <summary>
+        ///// Send the given vendor-specific binary data.
+        ///// </summary>
+        ///// <param name="Request">A BinaryDataTransfer request.</param>
+        //Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
 
-        #endregion
-
-
-        // E2E Security Extensions
-
-        #region SecureDataTransfer (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A SecureDataTransfer request.</param>
-        Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request);
-
-        #endregion
+        //#endregion
 
 
-        // Networking Overlay Extensions
+        //// E2E Security Extensions
 
-        #region NotifyNetworkTopology        (Request)
+        //#region SecureDataTransfer (Request)
 
-        /// <summary>
-        /// Notify about the current network topology or a current change within the topology.
-        /// </summary>
-        /// <param name="Request">A reset request.</param>
-        Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request);
+        ///// <summary>
+        ///// Send the given vendor-specific binary data.
+        ///// </summary>
+        ///// <param name="Request">A SecureDataTransfer request.</param>
+        //Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request);
 
-        #endregion
+        //#endregion
+
+
+        //// Networking Overlay Extensions
+
+        //#region NotifyNetworkTopology        (Request)
+
+        ///// <summary>
+        ///// Notify about the current network topology or a current change within the topology.
+        ///// </summary>
+        ///// <param name="Request">A reset request.</param>
+        //Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request);
+
+        //#endregion
 
 
     }

@@ -22,7 +22,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnDeleteSignaturePolicyRequestDelegate?     OnDeleteSignaturePolicyRequest;
+        public event OnDeleteSignaturePolicyRequestSentDelegate?         OnDeleteSignaturePolicyRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnDeleteSignaturePolicyResponseDelegate?    OnDeleteSignaturePolicyResponse;
+        public event OnDeleteSignaturePolicyResponseReceivedDelegate?    OnDeleteSignaturePolicyResponseReceived;
 
         #endregion
 
@@ -63,20 +63,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
         {
 
-            #region Send OnDeleteSignaturePolicyRequest event
+            #region Send OnDeleteSignaturePolicyRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDeleteSignaturePolicyRequest?.Invoke(startTime,
-                                                       parentNetworkingNode,
-                                                       Request);
+                OnDeleteSignaturePolicyRequestSent?.Invoke(startTime,
+                                                           parentNetworkingNode,
+                                                           Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteSignaturePolicyRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteSignaturePolicyRequestSent));
             }
 
             #endregion
@@ -140,23 +140,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            #region Send OnDeleteSignaturePolicyResponse event
+            #region Send OnDeleteSignaturePolicyResponseReceived event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnDeleteSignaturePolicyResponse?.Invoke(endTime,
-                                                        parentNetworkingNode,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
+                OnDeleteSignaturePolicyResponseReceived?.Invoke(endTime,
+                                                                parentNetworkingNode,
+                                                                Request,
+                                                                response,
+                                                                endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteSignaturePolicyResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteSignaturePolicyResponseReceived));
             }
 
             #endregion

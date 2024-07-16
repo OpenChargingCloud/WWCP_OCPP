@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all NetworkingNode CSMS servers.
     /// </summary>
-    public interface INetworkingNodeIncomingMessages : OCPP.NN.CSMS.INetworkingNodeIncomingMessages
+    public interface INetworkingNodeIncomingMessages
     {
 
         #region OnBootNotification

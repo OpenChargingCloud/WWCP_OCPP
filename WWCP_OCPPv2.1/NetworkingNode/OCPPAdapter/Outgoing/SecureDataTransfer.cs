@@ -21,7 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     if (!SecureDataTransferResponse.TryParse(Request,
                                                              sendRequestState.BinaryResponse.Payload,
-                                                             sendRequestState.DestinationNodeId,
+                                                             sendRequestState.DestinationId,
                                                              sendRequestState.NetworkPath,
                                                              out response,
                                                              out var errorResponse,

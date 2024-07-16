@@ -32,9 +32,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The reserve now request.</param>
-    public delegate Task OnGetDefaultChargingTariffRequestDelegate(DateTime                          Timestamp,
-                                                                   IEventSender                      Sender,
-                                                                   GetDefaultChargingTariffRequest   Request);
+    public delegate Task OnGetDefaultChargingTariffRequestSentDelegate(DateTime                          Timestamp,
+                                                                       IEventSender                      Sender,
+                                                                       GetDefaultChargingTariffRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a GetDefaultChargingTariff request was received.
@@ -44,10 +44,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnGetDefaultChargingTariffResponseDelegate(DateTime                           Timestamp,
-                                                                    IEventSender                       Sender,
-                                                                    GetDefaultChargingTariffRequest    Request,
-                                                                    GetDefaultChargingTariffResponse   Response,
-                                                                    TimeSpan                           Runtime);
+    public delegate Task OnGetDefaultChargingTariffResponseReceivedDelegate(DateTime                           Timestamp,
+                                                                            IEventSender                       Sender,
+                                                                            GetDefaultChargingTariffRequest    Request,
+                                                                            GetDefaultChargingTariffResponse   Response,
+                                                                            TimeSpan                           Runtime);
 
 }

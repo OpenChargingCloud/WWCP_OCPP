@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all charging station servers.
     /// </summary>
-    public interface INetworkingNodeIncomingMessageEvents : OCPP.NN.CS.INetworkingNodeIncomingMessageEvents
+    public interface INetworkingNodeIncomingMessageEvents
     {
 
         // Incoming requests
@@ -441,10 +441,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #endregion
 
 
-        /// <summary>
-        /// An event fired whenever a response to a DataTransfer request was received.
-        /// </summary>
-        event OnDataTransferResponseReceivedDelegate?                         OnDataTransferResponseReceived;
+
+
+
+
+
+
+
+
+        event OnGetDefaultChargingTariffRequestReceivedDelegate     OnGetDefaultChargingTariffRequestReceived;
+        event OnRemoveDefaultChargingTariffRequestReceivedDelegate  OnRemoveDefaultChargingTariffRequestReceived;
+        event OnSetDefaultChargingTariffRequestReceivedDelegate     OnSetDefaultChargingTariffRequestReceived;
+
 
 
     }

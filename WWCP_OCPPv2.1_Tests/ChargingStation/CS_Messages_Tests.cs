@@ -26,7 +26,6 @@ using org.GraphDefined.Vanaheimr.Styx;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
@@ -100,16 +99,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var bootNotificationRequests= new ConcurrentList<BootNotificationRequest>();
 
-                testCSMS01.OnBootNotificationRequestReceived += (timestamp, sender, connection,  bootNotificationRequest) => {
+                testCSMS01.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection,  bootNotificationRequest) => {
                     bootNotificationRequests.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
                 var reason    = BootReason.PowerUp;
                 var response  = await chargingStation1.SendBootNotification(
-                                    BootReason:   reason,
-                                    CustomData:   null
-                                );
+                                          BootReason:   reason,
+                                          CustomData:   null
+                                      );
 
                 Assert.Multiple(() => {
 
@@ -172,16 +171,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var firmwareStatusNotificationRequests= new ConcurrentList<CS.FirmwareStatusNotificationRequest>();
 
-                testCSMS01.OnFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, firmwareStatusNotificationRequest) => {
+                testCSMS01.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, firmwareStatusNotificationRequest) => {
                     firmwareStatusNotificationRequests.TryAdd(firmwareStatusNotificationRequest);
                     return Task.CompletedTask;
                 };
 
                 var status    = FirmwareStatus.Installed;
                 var response  = await chargingStation1.SendFirmwareStatusNotification(
-                                    Status:       status,
-                                    CustomData:   null
-                                );
+                                          Status:       status,
+                                          CustomData:   null
+                                      );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -219,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var publishFirmwareStatusNotificationRequests = new ConcurrentList<CS.PublishFirmwareStatusNotificationRequest>();
 
-                testCSMS01.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, publishFirmwareStatusNotificationRequest) => {
+                testCSMS01.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, publishFirmwareStatusNotificationRequest) => {
                     publishFirmwareStatusNotificationRequests.TryAdd(publishFirmwareStatusNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -228,11 +227,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var url1      = URL.Parse("https://example.org/firmware.bin");
 
                 var response  = await chargingStation1.SendPublishFirmwareStatusNotification(
-                                    Status:                                       status,
-                                    PublishFirmwareStatusNotificationRequestId:   0,
-                                    DownloadLocations:                            new[] { url1 },
-                                    CustomData:                                   null
-                                );
+                                          Status:                                       status,
+                                          PublishFirmwareStatusNotificationRequestId:   0,
+                                          DownloadLocations:                            new[] { url1 },
+                                          CustomData:                                   null
+                                      );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -270,15 +269,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var heartbeatRequests= new ConcurrentList<CS.HeartbeatRequest>();
 
-                testCSMS01.OnHeartbeatRequestReceived += (timestamp, sender, connection, heartbeatRequest) => {
+                testCSMS01.OCPP.IN.OnHeartbeatRequestReceived += (timestamp, sender, connection, heartbeatRequest) => {
                     heartbeatRequests.TryAdd(heartbeatRequest);
                     return Task.CompletedTask;
                 };
 
 
                 var response = await chargingStation1.SendHeartbeat(
-                                   CustomData:   null
-                               );
+                                         CustomData:   null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -316,48 +315,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyEventRequests= new ConcurrentList<CS.NotifyEventRequest>();
 
-                testCSMS01.OnNotifyEventRequestReceived += (timestamp, sender, connection, notifyEventRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyEventRequestReceived += (timestamp, sender, connection, notifyEventRequest) => {
                     notifyEventRequests.TryAdd(notifyEventRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.NotifyEvent(
-                                   GeneratedAt:      Timestamp.Now,
-                                   SequenceNumber:   1,
-                                   EventData:        new[] {
-                                                         new EventData(
-                                                             EventId:                 Event_Id.NewRandom,
-                                                             Timestamp:               Timestamp.Now,
-                                                             Trigger:                 EventTriggers.Alerting,
-                                                             ActualValue:             "ALERTA!",
-                                                             EventNotificationType:   EventNotificationType.HardWiredMonitor,
-                                                             Component:               new Component(
-                                                                                          Name:         "Alert System!",
-                                                                                          Instance:     "Alert System #1",
-                                                                                          EVSE:         new EVSE(
-                                                                                                            Id:            EVSE_Id.Parse(1),
-                                                                                                            ConnectorId:   Connector_Id.Parse(1),
-                                                                                                            CustomData:    null
-                                                                                                        ),
-                                                                                          CustomData:   null
-                                                                                      ),
-                                                             Variable:                new Variable(
-                                                                                          Name:         "Temperature Sensors",
-                                                                                          Instance:     "Temperature Sensor #1",
-                                                                                          CustomData:   null
-                                                                                      ),
-                                                             Cause:                   Event_Id.NewRandom,
-                                                             TechCode:                "Tech Code #1",
-                                                             TechInfo:                "Tech Info #1",
-                                                             Cleared:                 false,
-                                                             TransactionId:           Transaction_Id.       NewRandom,
-                                                             VariableMonitoringId:    VariableMonitoring_Id.NewRandom,
-                                                             CustomData:              null
-                                                         )
-                                                     },
-                                   ToBeContinued:    false,
-                                   CustomData:       null
-                               );
+                                         GeneratedAt:      Timestamp.Now,
+                                         SequenceNumber:   1,
+                                         EventData:        new[] {
+                                                               new EventData(
+                                                                   EventId:                 Event_Id.NewRandom,
+                                                                   Timestamp:               Timestamp.Now,
+                                                                   Trigger:                 EventTriggers.Alerting,
+                                                                   ActualValue:             "ALERTA!",
+                                                                   EventNotificationType:   EventNotificationType.HardWiredMonitor,
+                                                                   Component:               new Component(
+                                                                                                Name:         "Alert System!",
+                                                                                                Instance:     "Alert System #1",
+                                                                                                EVSE:         new EVSE(
+                                                                                                                  Id:            EVSE_Id.Parse(1),
+                                                                                                                  ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                  CustomData:    null
+                                                                                                              ),
+                                                                                                CustomData:   null
+                                                                                            ),
+                                                                   Variable:                new Variable(
+                                                                                                Name:         "Temperature Sensors",
+                                                                                                Instance:     "Temperature Sensor #1",
+                                                                                                CustomData:   null
+                                                                                            ),
+                                                                   Cause:                   Event_Id.NewRandom,
+                                                                   TechCode:                "Tech Code #1",
+                                                                   TechInfo:                "Tech Info #1",
+                                                                   Cleared:                 false,
+                                                                   TransactionId:           Transaction_Id.       NewRandom,
+                                                                   VariableMonitoringId:    VariableMonitoring_Id.NewRandom,
+                                                                   CustomData:              null
+                                                               )
+                                                           },
+                                         ToBeContinued:    false,
+                                         CustomData:       null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -394,17 +393,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var securityEventNotificationRequests= new ConcurrentList<CS.SecurityEventNotificationRequest>();
 
-                testCSMS01.OnSecurityEventNotificationRequestReceived += (timestamp, sender, connection, securityEventNotificationRequest) => {
+                testCSMS01.OCPP.IN.OnSecurityEventNotificationRequestReceived += (timestamp, sender, connection, securityEventNotificationRequest) => {
                     securityEventNotificationRequests.TryAdd(securityEventNotificationRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.SendSecurityEventNotification(
-                                   Type:         SecurityEventType.MemoryExhaustion,
-                                   Timestamp:    Timestamp.Now,
-                                   TechInfo:     "Too many open TCP sockets!",
-                                   CustomData:   null
-                               );
+                                         Type:         SecurityEventType.MemoryExhaustion,
+                                         Timestamp:    Timestamp.Now,
+                                         TechInfo:     "Too many open TCP sockets!",
+                                         CustomData:   null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -441,59 +440,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyReportRequests= new ConcurrentList<CS.NotifyReportRequest>();
 
-                testCSMS01.OnNotifyReportRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyReportRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
                     notifyReportRequests.TryAdd(notifyReportRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.NotifyReport(
-                                   NotifyReportRequestId:   1,
-                                   SequenceNumber:          1,
-                                   GeneratedAt:             Timestamp.Now,
-                                   ReportData:              new[] {
-                                                                new ReportData(
-                                                                    Component:                 new Component(
-                                                                                                   Name:                 "Alert System!",
-                                                                                                   Instance:             "Alert System #1",
-                                                                                                   EVSE:                 new EVSE(
-                                                                                                                             Id:            EVSE_Id.Parse(1),
-                                                                                                                             ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                             CustomData:    null
-                                                                                                                         ),
-                                                                                                   CustomData:           null
-                                                                                               ),
-                                                                    Variable:                  new Variable(
-                                                                                                   Name:                 "Temperature Sensors",
-                                                                                                   Instance:             "Temperature Sensor #1",
-                                                                                                   CustomData:           null
-                                                                                               ),
-                                                                    VariableAttributes:        new[] {
-                                                                                                   new VariableAttribute(
-                                                                                                       Type:             AttributeTypes.Actual,
-                                                                                                       Value:            "123",
-                                                                                                       Mutability:       MutabilityTypes.ReadWrite,
-                                                                                                       Persistent:       true,
-                                                                                                       Constant:         false,
-                                                                                                       CustomData:       null
-                                                                                                   )
-                                                                                               },
-                                                                    VariableCharacteristics:   new VariableCharacteristics(
-                                                                                                   DataType:             DataTypes.Decimal,
-                                                                                                   SupportsMonitoring:   true,
-                                                                                                   Unit:                 UnitsOfMeasure.Celsius(
-                                                                                                                             Multiplier:   1,
-                                                                                                                             CustomData:   null
-                                                                                                                         ),
-                                                                                                   MinLimit:             0.1M,
-                                                                                                   MaxLimit:             9.9M,
-                                                                                                   ValuesList:           new[] { "" },
-                                                                                                   CustomData:           null
-                                                                                               ),
-                                                                    CustomData:                null
-                                                                )
-                                                            },
-                                   CustomData:              null
-                               );
+                                         NotifyReportRequestId:   1,
+                                         SequenceNumber:          1,
+                                         GeneratedAt:             Timestamp.Now,
+                                         ReportData:              new[] {
+                                                                      new ReportData(
+                                                                          Component:                 new Component(
+                                                                                                         Name:                 "Alert System!",
+                                                                                                         Instance:             "Alert System #1",
+                                                                                                         EVSE:                 new EVSE(
+                                                                                                                                   Id:            EVSE_Id.Parse(1),
+                                                                                                                                   ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                                   CustomData:    null
+                                                                                                                               ),
+                                                                                                         CustomData:           null
+                                                                                                     ),
+                                                                          Variable:                  new Variable(
+                                                                                                         Name:                 "Temperature Sensors",
+                                                                                                         Instance:             "Temperature Sensor #1",
+                                                                                                         CustomData:           null
+                                                                                                     ),
+                                                                          VariableAttributes:        [
+                                                                                                         new VariableAttribute(
+                                                                                                             Type:             AttributeTypes.Actual,
+                                                                                                             Value:            "123",
+                                                                                                             Mutability:       MutabilityTypes.ReadWrite,
+                                                                                                             Persistent:       true,
+                                                                                                             Constant:         false,
+                                                                                                             CustomData:       null
+                                                                                                         )
+                                                                                                     ],
+                                                                          VariableCharacteristics:   new VariableCharacteristics(
+                                                                                                         DataType:             DataTypes.Decimal,
+                                                                                                         SupportsMonitoring:   true,
+                                                                                                         Unit:                 UnitsOfMeasure.Celsius(
+                                                                                                                                   Multiplier:   1,
+                                                                                                                                   CustomData:   null
+                                                                                                                               ),
+                                                                                                         MinLimit:             0.1M,
+                                                                                                         MaxLimit:             9.9M,
+                                                                                                         ValuesList:           [ "" ],
+                                                                                                         CustomData:           null
+                                                                                                     ),
+                                                                          CustomData:                null
+                                                                      )
+                                                                  },
+                                         CustomData:              null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -530,48 +529,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyMonitoringReportRequests= new ConcurrentList<CS.NotifyMonitoringReportRequest>();
 
-                testCSMS01.OnNotifyMonitoringReportRequestReceived += (timestamp, sender, connection, notifyMonitoringReportRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyMonitoringReportRequestReceived += (timestamp, sender, connection, notifyMonitoringReportRequest) => {
                     notifyMonitoringReportRequests.TryAdd(notifyMonitoringReportRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.NotifyMonitoringReport(
-                                   NotifyMonitoringReportRequestId:   1,
-                                   SequenceNumber:                    1,
-                                   GeneratedAt:                       Timestamp.Now,
-                                   MonitoringData:                    new[] {
-                                                                          new MonitoringData(
-                                                                              Component:             new Component(
-                                                                                                         Name:             "Alert System!",
-                                                                                                         Instance:         "Alert System #1",
-                                                                                                         EVSE:             new EVSE(
-                                                                                                                               Id:            EVSE_Id.Parse(1),
-                                                                                                                               ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                               CustomData:    null
-                                                                                                                           ),
-                                                                                                         CustomData:       null
-                                                                                                     ),
-                                                                              Variable:              new Variable(
-                                                                                                         Name:             "Temperature Sensors",
-                                                                                                         Instance:         "Temperature Sensor #1",
-                                                                                                         CustomData:       null
-                                                                                                     ),
-                                                                              VariableMonitorings:   new[] {
-                                                                                                         new VariableMonitoring(
-                                                                                                             Id:            VariableMonitoring_Id.NewRandom,
-                                                                                                             Transaction:   true,
-                                                                                                             Value:         1.01M,
-                                                                                                             Type:          MonitorType.Periodic,
-                                                                                                             Severity:      Severities.Warning,
-                                                                                                             CustomData:    null
-                                                                                                         )
-                                                                                                     },
-                                                                              CustomData:            null
-                                                                          )
-                                                                      },
-                                   ToBeContinued:                     false,
-                                   CustomData:                        null
-                               );
+                                         NotifyMonitoringReportRequestId:   1,
+                                         SequenceNumber:                    1,
+                                         GeneratedAt:                       Timestamp.Now,
+                                         MonitoringData:                    new[] {
+                                                                                new MonitoringData(
+                                                                                    Component:             new Component(
+                                                                                                               Name:             "Alert System!",
+                                                                                                               Instance:         "Alert System #1",
+                                                                                                               EVSE:             new EVSE(
+                                                                                                                                     Id:            EVSE_Id.Parse(1),
+                                                                                                                                     ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                                     CustomData:    null
+                                                                                                                                 ),
+                                                                                                               CustomData:       null
+                                                                                                           ),
+                                                                                    Variable:              new Variable(
+                                                                                                               Name:             "Temperature Sensors",
+                                                                                                               Instance:         "Temperature Sensor #1",
+                                                                                                               CustomData:       null
+                                                                                                           ),
+                                                                                    VariableMonitorings:   new[] {
+                                                                                                               new VariableMonitoring(
+                                                                                                                   Id:            VariableMonitoring_Id.NewRandom,
+                                                                                                                   Transaction:   true,
+                                                                                                                   Value:         1.01M,
+                                                                                                                   Type:          MonitorType.Periodic,
+                                                                                                                   Severity:      Severities.Warning,
+                                                                                                                   CustomData:    null
+                                                                                                               )
+                                                                                                           },
+                                                                                    CustomData:            null
+                                                                                )
+                                                                            },
+                                         ToBeContinued:                     false,
+                                         CustomData:                        null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -608,16 +607,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var securityEventNotificationRequests= new ConcurrentList<CS.LogStatusNotificationRequest>();
 
-                testCSMS01.OnLogStatusNotificationRequestReceived += (timestamp, sender, connection, securityEventNotificationRequest) => {
+                testCSMS01.OCPP.IN.OnLogStatusNotificationRequestReceived += (timestamp, sender, connection, securityEventNotificationRequest) => {
                     securityEventNotificationRequests.TryAdd(securityEventNotificationRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.SendLogStatusNotification(
-                                   Status:         UploadLogStatus.Uploaded,
-                                   LogRequestId:   1,
-                                   CustomData:     null
-                               );
+                                         Status:         UploadLogStatus.Uploaded,
+                                         LogRequestId:   1,
+                                         CustomData:     null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -655,7 +654,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var dataTransferRequests= new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                testCSMS01.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -665,11 +664,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var data       = RandomExtensions.RandomString(40);
 
                 var response   = await chargingStation1.TransferData(
-                                     VendorId:    vendorId,
-                                     MessageId:   messageId,
-                                     Data:        data,
-                                     CustomData:  null
-                                 );
+                                           VendorId:    vendorId,
+                                           MessageId:   messageId,
+                                           Data:        data,
+                                           CustomData:  null
+                                       );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,    response.Result.ResultCode);
@@ -710,7 +709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var dataTransferRequests= new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                testCSMS01.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -725,11 +724,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                  );
 
                 var response   = await chargingStation1.TransferData(
-                                     VendorId:    vendorId,
-                                     MessageId:   messageId,
-                                     Data:        data,
-                                     CustomData:  null
-                                 );
+                                           VendorId:    vendorId,
+                                           MessageId:   messageId,
+                                           Data:        data,
+                                           CustomData:  null
+                                       );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,                  response.Result.ResultCode);
@@ -772,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var dataTransferRequests= new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                testCSMS01.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -784,11 +783,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                  );
 
                 var response   = await chargingStation1.TransferData(
-                                     VendorId:    vendorId,
-                                     MessageId:   messageId,
-                                     Data:        data,
-                                     CustomData:  null
-                                 );
+                                           VendorId:    vendorId,
+                                           MessageId:   messageId,
+                                           Data:        data,
+                                           CustomData:  null
+                                       );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,             response.Result.ResultCode);
@@ -832,17 +831,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyReportRequests= new ConcurrentList<CS.SignCertificateRequest>();
 
-                testCSMS01.OnSignCertificateRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
+                testCSMS01.OCPP.IN.OnSignCertificateRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
                     notifyReportRequests.TryAdd(notifyReportRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.SendCertificateSigningRequest(
-                                   CSR:                        "0x1234",
-                                   SignCertificateRequestId:   1,
-                                   CertificateType:            CertificateSigningUse.ChargingStationCertificate,
-                                   CustomData:                 null
-                               );
+                                         CSR:                        "0x1234",
+                                         SignCertificateRequestId:   1,
+                                         CertificateType:            CertificateSigningUse.ChargingStationCertificate,
+                                         CustomData:                 null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -879,17 +878,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyReportRequests= new ConcurrentList<CS.Get15118EVCertificateRequest>();
 
-                testCSMS01.OnGet15118EVCertificateRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
+                testCSMS01.OCPP.IN.OnGet15118EVCertificateRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
                     notifyReportRequests.TryAdd(notifyReportRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.Get15118EVCertificate(
-                                   ISO15118SchemaVersion:   ISO15118SchemaVersion.Parse("15118-20:BastelBrothers"),
-                                   CertificateAction:       CertificateAction.Install,
-                                   EXIRequest:              EXIData.Parse("0x1234"),
-                                   CustomData:              null
-                               );
+                                         ISO15118SchemaVersion:   ISO15118SchemaVersion.Parse("15118-20:BastelBrothers"),
+                                         CertificateAction:       CertificateAction.Install,
+                                         EXIRequest:              EXIData.Parse("0x1234"),
+                                         CustomData:              null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
@@ -928,22 +927,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyReportRequests= new ConcurrentList<CS.GetCertificateStatusRequest>();
 
-                testCSMS01.OnGetCertificateStatusRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
+                testCSMS01.OCPP.IN.OnGetCertificateStatusRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
                     notifyReportRequests.TryAdd(notifyReportRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.GetCertificateStatus(
-                                   OCSPRequestData:   new OCSPRequestData(
-                                                          HashAlgorithm:    HashAlgorithms.SHA256,
-                                                          IssuerNameHash:   "0x1234",
-                                                          IssuerKeyHash:    "0x5678",
-                                                          SerialNumber:     "12345678",
-                                                          ResponderURL:     URL.Parse("https://example.org/12345678"),
-                                                          CustomData:       null
-                                                      ),
-                                   CustomData:        null
-                               );
+                                         OCSPRequestData:   new OCSPRequestData(
+                                                                HashAlgorithm:    HashAlgorithms.SHA256,
+                                                                IssuerNameHash:   "0x1234",
+                                                                IssuerKeyHash:    "0x5678",
+                                                                SerialNumber:     "12345678",
+                                                                ResponderURL:     URL.Parse("https://example.org/12345678"),
+                                                                CustomData:       null
+                                                            ),
+                                         CustomData:        null
+                                     );
 
                 Assert.Multiple(() => {
 
@@ -983,21 +982,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var getCRLRequests= new ConcurrentList<CS.GetCRLRequest>();
 
-                testCSMS01.OnGetCRLRequestReceived += (timestamp, sender, connection, getCRLRequest) => {
+                testCSMS01.OCPP.IN.OnGetCRLRequestReceived += (timestamp, sender, connection, getCRLRequest) => {
                     getCRLRequests.TryAdd(getCRLRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.GetCRLRequest(
-                                   GetCRLRequestId:       1,
-                                   CertificateHashData:   new CertificateHashData(
-                                                              HashAlgorithm:         HashAlgorithms.SHA256,
-                                                              IssuerNameHash:       "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
-                                                              IssuerPublicKeyHash:  "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
-                                                              SerialNumber:         "23"
-                                                          ),
-                                   CustomData:            null
-                               );
+                                         GetCRLRequestId:       1,
+                                         CertificateHashData:   new CertificateHashData(
+                                                                    HashAlgorithm:         HashAlgorithms.SHA256,
+                                                                    IssuerNameHash:       "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
+                                                                    IssuerPublicKeyHash:  "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
+                                                                    SerialNumber:         "23"
+                                                                ),
+                                         CustomData:            null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -1035,16 +1034,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var securityEventNotificationRequests= new ConcurrentList<CS.ReservationStatusUpdateRequest>();
 
-                testCSMS01.OnReservationStatusUpdateRequestReceived += (timestamp, sender, connection, securityEventNotificationRequest) => {
+                testCSMS01.OCPP.IN.OnReservationStatusUpdateRequestReceived += (timestamp, sender, connection, securityEventNotificationRequest) => {
                     securityEventNotificationRequests.TryAdd(securityEventNotificationRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.SendReservationStatusUpdate(
-                                   ReservationId:             Reservation_Id.NewRandom,
-                                   ReservationUpdateStatus:   ReservationUpdateStatus.Expired,
-                                   CustomData:                null
-                               );
+                                         ReservationId:             Reservation_Id.NewRandom,
+                                         ReservationUpdateStatus:   ReservationUpdateStatus.Expired,
+                                         CustomData:                null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -1083,7 +1082,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var authorizeRequests= new ConcurrentList<CS.AuthorizeRequest>();
 
-                testCSMS01.OnAuthorizeRequestReceived += (timestamp, sender, connection, authorizeRequest) => {
+                testCSMS01.OCPP.IN.OnAuthorizeRequestReceived += (timestamp, sender, connection, authorizeRequest) => {
                     authorizeRequests.TryAdd(authorizeRequest);
                     return Task.CompletedTask;
                 };
@@ -1091,11 +1090,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var idToken   = IdToken.NewRandomRFID();
                 var response  = await chargingStation1.Authorize(
-                                    IdToken:                       idToken,
-                                    Certificate:                   null,
-                                    ISO15118CertificateHashData:   null,
-                                    CustomData:                    null
-                                );
+                                          IdToken:                       idToken,
+                                          Certificate:                   null,
+                                          ISO15118CertificateHashData:   null,
+                                          CustomData:                    null
+                                      );
 
 
                 Assert.Multiple(() => {
@@ -1139,7 +1138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyEVChargingNeedsRequests= new ConcurrentList<CS.NotifyEVChargingNeedsRequest>();
 
-                testCSMS01.OnNotifyEVChargingNeedsRequestReceived += (timestamp, sender, connection, notifyEVChargingNeedsRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived += (timestamp, sender, connection, notifyEVChargingNeedsRequest) => {
                     notifyEVChargingNeedsRequests.TryAdd(notifyEVChargingNeedsRequest);
                     return Task.CompletedTask;
                 };
@@ -1208,7 +1207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var transactionEventRequests= new ConcurrentList<CS.TransactionEventRequest>();
 
-                testCSMS01.OnTransactionEventRequestReceived += (timestamp, sender, connection, transactionEventRequest) => {
+                testCSMS01.OCPP.IN.OnTransactionEventRequestReceived += (timestamp, sender, connection, transactionEventRequest) => {
                     transactionEventRequests.TryAdd(transactionEventRequest);
                     return Task.CompletedTask;
                 };
@@ -1222,62 +1221,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var response        = await chargingStation1.SendTransactionEvent(
 
-                                          EventType:               TransactionEvents.Started,
-                                          Timestamp:               startTimestamp,
-                                          TriggerReason:           TriggerReason.Authorized,
-                                          SequenceNumber:          0,
-                                          TransactionInfo:         new Transaction(
-                                                                       TransactionId:       Transaction_Id.NewRandom,
-                                                                       ChargingState:       ChargingStates.Charging,
-                                                                       TimeSpentCharging:   TimeSpan.FromSeconds(3),
-                                                                       StoppedReason:       null,
-                                                                       RemoteStartId:       null,
-                                                                       CustomData:          null
-                                                                   ),
+                                                EventType:               TransactionEvents.Started,
+                                                Timestamp:               startTimestamp,
+                                                TriggerReason:           TriggerReason.Authorized,
+                                                SequenceNumber:          0,
+                                                TransactionInfo:         new Transaction(
+                                                                             TransactionId:       Transaction_Id.NewRandom,
+                                                                             ChargingState:       ChargingStates.Charging,
+                                                                             TimeSpentCharging:   TimeSpan.FromSeconds(3),
+                                                                             StoppedReason:       null,
+                                                                             RemoteStartId:       null,
+                                                                             CustomData:          null
+                                                                         ),
 
-                                          Offline:                 null,
-                                          NumberOfPhasesUsed:      null,
-                                          CableMaxCurrent:         null,
-                                          ReservationId:           reservationId,
-                                          IdToken:                 idToken,
-                                          EVSE:                    new EVSE(
-                                                                       Id:                  evseId,
-                                                                       ConnectorId:         connectorId,
-                                                                       CustomData:          null
-                                                                   ),
-                                          MeterValues:             new[] {
-                                                                       new MeterValue(
-                                                                           SampledValues:   new[] {
+                                                Offline:                 null,
+                                                NumberOfPhasesUsed:      null,
+                                                CableMaxCurrent:         null,
+                                                ReservationId:           reservationId,
+                                                IdToken:                 idToken,
+                                                EVSE:                    new EVSE(
+                                                                             Id:                  evseId,
+                                                                             ConnectorId:         connectorId,
+                                                                             CustomData:          null
+                                                                         ),
+                                                MeterValues:             new[] {
+                                                                             new MeterValue(
+                                                                                 SampledValues:   new[] {
 
-                                                                                                new SampledValue(
-                                                                                                    Value:                 meterStart,
-                                                                                                    Context:               ReadingContext.TransactionBegin,
-                                                                                                    Measurand:             Measurand.Energy_Active_Export_Interval,
-                                                                                                    Phase:                 Phases.L1,
-                                                                                                    MeasurementLocation:   MeasurementLocation.Outlet,
-                                                                                                    SignedMeterValue:      new SignedMeterValue(
-                                                                                                                               SignedMeterData:   meterStart.ToString(),
-                                                                                                                               SigningMethod:     "secp256r1",
-                                                                                                                               EncodingMethod:    "base64",
-                                                                                                                               PublicKey:         "0x1234",
-                                                                                                                               CustomData:        null
-                                                                                                                           ),
-                                                                                                    UnitOfMeasure:         UnitsOfMeasure.kW(
-                                                                                                                               Multiplier:   0,
-                                                                                                                               CustomData:   null
-                                                                                                                           ),
-                                                                                                    CustomData:            null
-                                                                                                )
+                                                                                                      new SampledValue(
+                                                                                                          Value:                 meterStart,
+                                                                                                          Context:               ReadingContext.TransactionBegin,
+                                                                                                          Measurand:             Measurand.Energy_Active_Export_Interval,
+                                                                                                          Phase:                 Phases.L1,
+                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                          SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                     SignedMeterData:   meterStart.ToString(),
+                                                                                                                                     SigningMethod:     "secp256r1",
+                                                                                                                                     EncodingMethod:    "base64",
+                                                                                                                                     PublicKey:         "0x1234",
+                                                                                                                                     CustomData:        null
+                                                                                                                                 ),
+                                                                                                          UnitOfMeasure:         UnitsOfMeasure.kW(
+                                                                                                                                     Multiplier:   0,
+                                                                                                                                     CustomData:   null
+                                                                                                                                 ),
+                                                                                                          CustomData:            null
+                                                                                                      )
 
-                                                                                            },
-                                                                           Timestamp:       startTimestamp,
-                                                                           CustomData:      null
-                                                                       )
-                                                                   },
-                                          PreconditioningStatus:   PreconditioningStatus.Ready,
-                                          CustomData:              null
+                                                                                                  },
+                                                                                 Timestamp:       startTimestamp,
+                                                                                 CustomData:      null
+                                                                             )
+                                                                         },
+                                                PreconditioningStatus:   PreconditioningStatus.Ready,
+                                                CustomData:              null
 
-                                      );
+                                            );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,                 response.Result.ResultCode);
@@ -1321,7 +1320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var statusNotificationRequests= new ConcurrentList<CS.StatusNotificationRequest>();
 
-                testCSMS01.OnStatusNotificationRequestReceived += (timestamp, sender, connection, statusNotificationRequest) => {
+                testCSMS01.OCPP.IN.OnStatusNotificationRequestReceived += (timestamp, sender, connection, statusNotificationRequest) => {
                     statusNotificationRequests.TryAdd(statusNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -1332,12 +1331,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var statusTimestamp  = Timestamp.Now;
 
                 var response         = await chargingStation1.SendStatusNotification(
-                                           EVSEId:        evseId,
-                                           ConnectorId:   connectorId,
-                                           Timestamp:     statusTimestamp,
-                                           Status:        connectorStatus,
-                                           CustomData:    null
-                                       );
+                                                 EVSEId:        evseId,
+                                                 ConnectorId:   connectorId,
+                                                 Timestamp:     statusTimestamp,
+                                                 Status:        connectorStatus,
+                                                 CustomData:    null
+                                             );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,                response.Result.ResultCode);
@@ -1384,7 +1383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var meterValuesRequests= new ConcurrentList<CS.MeterValuesRequest>();
 
-                testCSMS01.OnMeterValuesRequestReceived += (timestamp, sender, connection, meterValuesRequest) => {
+                testCSMS01.OCPP.IN.OnMeterValuesRequestReceived += (timestamp, sender, connection, meterValuesRequest) => {
                     meterValuesRequests.TryAdd(meterValuesRequest);
                     return Task.CompletedTask;
                 };
@@ -1393,7 +1392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var meterValues  = new[] {
                                        new MeterValue(
                                            Timestamp.Now - TimeSpan.FromMinutes(5),
-                                           new[] {
+                                           [
                                                new SampledValue(
                                                    Value:                 1.01M,
                                                    Context:               ReadingContext.TransactionBegin,
@@ -1432,11 +1431,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                           ),
                                                    CustomData:            null
                                                )
-                                           }
+                                           ]
                                        ),
                                        new MeterValue(
                                            Timestamp.Now,
-                                           new[] {
+                                           [
                                                new SampledValue(
                                                    Value:                 2.01M,
                                                    Context:               ReadingContext.TransactionEnd,
@@ -1475,15 +1474,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                           ),
                                                    CustomData:            null
                                                )
-                                           }
+                                           ]
                                        )
                                    };
 
                 var response     = await chargingStation1.SendMeterValues(
-                                       EVSEId:        evseId,
-                                       MeterValues:   meterValues,
-                                       CustomData:    null
-                                   );
+                                             EVSEId:        evseId,
+                                             MeterValues:   meterValues,
+                                             CustomData:    null
+                                         );
 
 
                 var clientCloseMessage = chargingStation1.ClientCloseMessage;
@@ -1571,7 +1570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyChargingLimitRequests= new ConcurrentList<CS.NotifyChargingLimitRequest>();
 
-                testCSMS01.OnNotifyChargingLimitRequestReceived += (timestamp, sender, connection, notifyChargingLimitRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyChargingLimitRequestReceived += (timestamp, sender, connection, notifyChargingLimitRequest) => {
                     notifyChargingLimitRequests.TryAdd(notifyChargingLimitRequest);
                     return Task.CompletedTask;
                 };
@@ -1587,7 +1586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                   new ChargingSchedule(
                                                                       Id:                        ChargingSchedule_Id.NewRandom(),
                                                                       ChargingRateUnit:          ChargingRateUnits.Watts,
-                                                                      ChargingSchedulePeriods:   new[] {
+                                                                      ChargingSchedulePeriods:   [
                                                                                                      new ChargingSchedulePeriod(
                                                                                                          StartPeriod:      TimeSpan.Zero,
                                                                                                          Limit:            ChargingRateValue.Parse(
@@ -1598,13 +1597,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                          PhaseToUse:       PhasesToUse.Three,
                                                                                                          CustomData:       null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                       StartSchedule:             Timestamp.Now,
                                                                       Duration:                  TimeSpan.FromMinutes(30),
                                                                       MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
                                                                       SalesTariff:               new SalesTariff(
                                                                                                      Id:                   SalesTariff_Id.NewRandom,
-                                                                                                     SalesTariffEntries:   new[] {
+                                                                                                     SalesTariffEntries:   [
                                                                                                                                new SalesTariffEntry(
                                                                                                                                    RelativeTimeInterval:   new RelativeTimeInterval(
                                                                                                                                                                Start:        TimeSpan.Zero,
@@ -1612,23 +1611,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                                                                                CustomData:   null
                                                                                                                                                            ),
                                                                                                                                    EPriceLevel:            1,
-                                                                                                                                   ConsumptionCosts:       new[] {
+                                                                                                                                   ConsumptionCosts:       [
                                                                                                                                                                new ConsumptionCost(
                                                                                                                                                                    StartValue:   1,
-                                                                                                                                                                   Costs:        new[] {
+                                                                                                                                                                   Costs:        [
                                                                                                                                                                                      new Cost(
                                                                                                                                                                                          CostKind:           CostKinds.CarbonDioxideEmission,
                                                                                                                                                                                          Amount:             200,
                                                                                                                                                                                          AmountMultiplier:   23,
                                                                                                                                                                                          CustomData:         null
                                                                                                                                                                                      )
-                                                                                                                                                                                 },
+                                                                                                                                                                                 ],
                                                                                                                                                                    CustomData:   null
                                                                                                                                                                )
-                                                                                                                                                           },
+                                                                                                                                                           ],
                                                                                                                                    CustomData:             null
                                                                                                                                )
-                                                                                                                           },
+                                                                                                                           ],
                                                                                                      Description:          "Green Charging ++",
                                                                                                      NumEPriceLevels:      1,
                                                                                                      CustomData:           null
@@ -1675,16 +1674,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var transactionEventRequests= new ConcurrentList<CS.ClearedChargingLimitRequest>();
 
-                testCSMS01.OnClearedChargingLimitRequestReceived += (timestamp, sender, connection, transactionEventRequest) => {
+                testCSMS01.OCPP.IN.OnClearedChargingLimitRequestReceived += (timestamp, sender, connection, transactionEventRequest) => {
                     transactionEventRequests.TryAdd(transactionEventRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.SendClearedChargingLimit(
-                                   ChargingLimitSource:   ChargingLimitSource.SO,
-                                   EVSEId:                EVSE_Id.Parse("1"),
-                                   CustomData:            null
-                               );
+                                         ChargingLimitSource:   ChargingLimitSource.SO,
+                                         EVSEId:                EVSE_Id.Parse("1"),
+                                         CustomData:            null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -1721,80 +1720,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var transactionEventRequests= new ConcurrentList<CS.ReportChargingProfilesRequest>();
 
-                testCSMS01.OnReportChargingProfilesRequestReceived += (timestamp, sender, connection, transactionEventRequest) => {
+                testCSMS01.OCPP.IN.OnReportChargingProfilesRequestReceived += (timestamp, sender, connection, transactionEventRequest) => {
                     transactionEventRequests.TryAdd(transactionEventRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.ReportChargingProfiles(
-                                   ReportChargingProfilesRequestId:   1,
-                                   ChargingLimitSource:               ChargingLimitSource.SO,
-                                   EVSEId:                            EVSE_Id.Parse("1"),
-                                   ChargingProfiles:                  new[] {
-                                                                          new ChargingProfile(
-                                                                              ChargingProfileId:        ChargingProfile_Id.NewRandom,
-                                                                              StackLevel:               1,
-                                                                              ChargingProfilePurpose:   ChargingProfilePurpose.TxDefaultProfile,
-                                                                              ChargingProfileKind:      ChargingProfileKinds.   Absolute,
-                                                                              ChargingSchedules:        new[] {
-                                                                                                            new ChargingSchedule(
-                                                                                                                Id:                        ChargingSchedule_Id.NewRandom(),
-                                                                                                                ChargingRateUnit:          ChargingRateUnits.Watts,
-                                                                                                                ChargingSchedulePeriods:   new[] {
-                                                                                                                                               new ChargingSchedulePeriod(
-                                                                                                                                                   StartPeriod:      TimeSpan.Zero,
-                                                                                                                                                   Limit:            ChargingRateValue.Parse(
-                                                                                                                                                                         20,
-                                                                                                                                                                         ChargingRateUnits.Watts
-                                                                                                                                                                     ),
-                                                                                                                                                   NumberOfPhases:   3,
-                                                                                                                                                   PhaseToUse:       PhasesToUse.Three,
-                                                                                                                                                   CustomData:       null
-                                                                                                                                               )
-                                                                                                                                           },
-                                                                                                                StartSchedule:             Timestamp.Now,
-                                                                                                                Duration:                  TimeSpan.FromMinutes(30),
-                                                                                                                MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
-                                                                                                                SalesTariff:               new SalesTariff(
-                                                                                                                                               Id:                   SalesTariff_Id.NewRandom,
-                                                                                                                                               SalesTariffEntries:   new[] {
-                                                                                                                                                                         new SalesTariffEntry(
-                                                                                                                                                                             RelativeTimeInterval:   new RelativeTimeInterval(
-                                                                                                                                                                                                         Start:        TimeSpan.Zero,
-                                                                                                                                                                                                         Duration:     TimeSpan.FromMinutes(30),
-                                                                                                                                                                                                         CustomData:   null
-                                                                                                                                                                                                     ),
-                                                                                                                                                                             EPriceLevel:            1,
-                                                                                                                                                                             ConsumptionCosts:       new[] {
-                                                                                                                                                                                                         new ConsumptionCost(
-                                                                                                                                                                                                             StartValue:   1,
-                                                                                                                                                                                                             Costs:        new[] {
-                                                                                                                                                                                                                               new Cost(
-                                                                                                                                                                                                                                   CostKind:           CostKinds.CarbonDioxideEmission,
-                                                                                                                                                                                                                                   Amount:             200,
-                                                                                                                                                                                                                                   AmountMultiplier:   23,
-                                                                                                                                                                                                                                   CustomData:         null
-                                                                                                                                                                                                                               )
-                                                                                                                                                                                                                           },
-                                                                                                                                                                                                             CustomData:   null
-                                                                                                                                                                                                         )
-                                                                                                                                                                                                     },
-                                                                                                                                                                             CustomData:             null
-                                                                                                                                                                         )
-                                                                                                                                                                     },
-                                                                                                                                               Description:          "Green Charging ++",
-                                                                                                                                               NumEPriceLevels:      1,
-                                                                                                                                               CustomData:           null
-                                                                                                                                           ),
-                                                                                                                CustomData:                null
-                                                                                                            )
-                                                                                                        },
-                                                                              CustomData:               null
-                                                                          )
-                                                                      },
-                                   ToBeContinued:                     false,
-                                   CustomData:                        null
-                               );
+                                         ReportChargingProfilesRequestId:   1,
+                                         ChargingLimitSource:               ChargingLimitSource.SO,
+                                         EVSEId:                            EVSE_Id.Parse("1"),
+                                         ChargingProfiles:                  new[] {
+                                                                                new ChargingProfile(
+                                                                                    ChargingProfileId:        ChargingProfile_Id.NewRandom,
+                                                                                    StackLevel:               1,
+                                                                                    ChargingProfilePurpose:   ChargingProfilePurpose.TxDefaultProfile,
+                                                                                    ChargingProfileKind:      ChargingProfileKinds.   Absolute,
+                                                                                    ChargingSchedules:        [
+                                                                                                                  new ChargingSchedule(
+                                                                                                                      Id:                        ChargingSchedule_Id.NewRandom(),
+                                                                                                                      ChargingRateUnit:          ChargingRateUnits.Watts,
+                                                                                                                      ChargingSchedulePeriods:   [
+                                                                                                                                                     new ChargingSchedulePeriod(
+                                                                                                                                                         StartPeriod:      TimeSpan.Zero,
+                                                                                                                                                         Limit:            ChargingRateValue.Parse(
+                                                                                                                                                                               20,
+                                                                                                                                                                               ChargingRateUnits.Watts
+                                                                                                                                                                           ),
+                                                                                                                                                         NumberOfPhases:   3,
+                                                                                                                                                         PhaseToUse:       PhasesToUse.Three,
+                                                                                                                                                         CustomData:       null
+                                                                                                                                                     )
+                                                                                                                                                 ],
+                                                                                                                      StartSchedule:             Timestamp.Now,
+                                                                                                                      Duration:                  TimeSpan.FromMinutes(30),
+                                                                                                                      MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
+                                                                                                                      SalesTariff:               new SalesTariff(
+                                                                                                                                                     Id:                   SalesTariff_Id.NewRandom,
+                                                                                                                                                     SalesTariffEntries:   [
+                                                                                                                                                                               new SalesTariffEntry(
+                                                                                                                                                                                   RelativeTimeInterval:   new RelativeTimeInterval(
+                                                                                                                                                                                                               Start:        TimeSpan.Zero,
+                                                                                                                                                                                                               Duration:     TimeSpan.FromMinutes(30),
+                                                                                                                                                                                                               CustomData:   null
+                                                                                                                                                                                                           ),
+                                                                                                                                                                                   EPriceLevel:            1,
+                                                                                                                                                                                   ConsumptionCosts:       [
+                                                                                                                                                                                                               new ConsumptionCost(
+                                                                                                                                                                                                                   StartValue:   1,
+                                                                                                                                                                                                                   Costs:        [
+                                                                                                                                                                                                                                     new Cost(
+                                                                                                                                                                                                                                         CostKind:           CostKinds.CarbonDioxideEmission,
+                                                                                                                                                                                                                                         Amount:             200,
+                                                                                                                                                                                                                                         AmountMultiplier:   23,
+                                                                                                                                                                                                                                         CustomData:         null
+                                                                                                                                                                                                                                     )
+                                                                                                                                                                                                                                 ],
+                                                                                                                                                                                                                   CustomData:   null
+                                                                                                                                                                                                               )
+                                                                                                                                                                                                           ],
+                                                                                                                                                                                   CustomData:             null
+                                                                                                                                                                               )
+                                                                                                                                                                           ],
+                                                                                                                                                     Description:          "Green Charging ++",
+                                                                                                                                                     NumEPriceLevels:      1,
+                                                                                                                                                     CustomData:           null
+                                                                                                                                                 ),
+                                                                                                                      CustomData:                null
+                                                                                                                  )
+                                                                                                              ],
+                                                                                    CustomData:               null
+                                                                                )
+                                                                            },
+                                         ToBeContinued:                     false,
+                                         CustomData:                        null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -1831,72 +1830,72 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyEVChargingScheduleRequests= new ConcurrentList<CS.NotifyEVChargingScheduleRequest>();
 
-                testCSMS01.OnNotifyEVChargingScheduleRequestReceived += (timestamp, sender, connection, notifyEVChargingScheduleRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived += (timestamp, sender, connection, notifyEVChargingScheduleRequest) => {
                     notifyEVChargingScheduleRequests.TryAdd(notifyEVChargingScheduleRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.NotifyEVChargingSchedule(
 
-                                   TimeBase:                            Timestamp.Now,
-                                   EVSEId:                              EVSE_Id.Parse("1"),
-                                   ChargingSchedule:                    new ChargingSchedule(
-                                                                            Id:                        ChargingSchedule_Id.NewRandom(),
-                                                                            ChargingRateUnit:          ChargingRateUnits.Watts,
-                                                                            ChargingSchedulePeriods:   new[] {
-                                                                                                           new ChargingSchedulePeriod(
-                                                                                                               StartPeriod:      TimeSpan.Zero,
-                                                                                                               Limit:            ChargingRateValue.Parse(
-                                                                                                                                     20,
-                                                                                                                                     ChargingRateUnits.Watts
-                                                                                                                                 ),
-                                                                                                               NumberOfPhases:   3,
-                                                                                                               PhaseToUse:       PhasesToUse.Three,
-                                                                                                               CustomData:       null
-                                                                                                           )
-                                                                                                       },
-                                                                            StartSchedule:             Timestamp.Now,
-                                                                            Duration:                  TimeSpan.FromMinutes(30),
-                                                                            MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
-                                                                            SalesTariff:               new SalesTariff(
-                                                                                                           Id:                   SalesTariff_Id.NewRandom,
-                                                                                                           SalesTariffEntries:   new[] {
-                                                                                                                                     new SalesTariffEntry(
-                                                                                                                                         RelativeTimeInterval:   new RelativeTimeInterval(
-                                                                                                                                                                     Start:        TimeSpan.Zero,
-                                                                                                                                                                     Duration:     TimeSpan.FromMinutes(30),
-                                                                                                                                                                     CustomData:   null
-                                                                                                                                                                 ),
-                                                                                                                                         EPriceLevel:            1,
-                                                                                                                                         ConsumptionCosts:       new[] {
-                                                                                                                                                                     new ConsumptionCost(
-                                                                                                                                                                         StartValue:   1,
-                                                                                                                                                                         Costs:        new[] {
-                                                                                                                                                                                           new Cost(
-                                                                                                                                                                                               CostKind:           CostKinds.CarbonDioxideEmission,
-                                                                                                                                                                                               Amount:             200,
-                                                                                                                                                                                               AmountMultiplier:   23,
-                                                                                                                                                                                               CustomData:         null
-                                                                                                                                                                                           )
-                                                                                                                                                                                       },
-                                                                                                                                                                         CustomData:   null
-                                                                                                                                                                     )
-                                                                                                                                                                 },
-                                                                                                                                         CustomData:             null
-                                                                                                                                     )
-                                                                                                                                 },
-                                                                                                           Description:          "Green Charging ++",
-                                                                                                           NumEPriceLevels:      1,
-                                                                                                           CustomData:           null
-                                                                                                       ),
-                                                                            CustomData:                null
-                                                                        ),
-                                   SelectedScheduleTupleId:             1,
-                                   PowerToleranceAcceptance:            true,
+                                         TimeBase:                            Timestamp.Now,
+                                         EVSEId:                              EVSE_Id.Parse("1"),
+                                         ChargingSchedule:                    new ChargingSchedule(
+                                                                                  Id:                        ChargingSchedule_Id.NewRandom(),
+                                                                                  ChargingRateUnit:          ChargingRateUnits.Watts,
+                                                                                  ChargingSchedulePeriods:   [
+                                                                                                                 new ChargingSchedulePeriod(
+                                                                                                                     StartPeriod:      TimeSpan.Zero,
+                                                                                                                     Limit:            ChargingRateValue.Parse(
+                                                                                                                                           20,
+                                                                                                                                           ChargingRateUnits.Watts
+                                                                                                                                       ),
+                                                                                                                     NumberOfPhases:   3,
+                                                                                                                     PhaseToUse:       PhasesToUse.Three,
+                                                                                                                     CustomData:       null
+                                                                                                                 )
+                                                                                                             ],
+                                                                                  StartSchedule:             Timestamp.Now,
+                                                                                  Duration:                  TimeSpan.FromMinutes(30),
+                                                                                  MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
+                                                                                  SalesTariff:               new SalesTariff(
+                                                                                                                 Id:                   SalesTariff_Id.NewRandom,
+                                                                                                                 SalesTariffEntries:   [
+                                                                                                                                           new SalesTariffEntry(
+                                                                                                                                               RelativeTimeInterval:   new RelativeTimeInterval(
+                                                                                                                                                                           Start:        TimeSpan.Zero,
+                                                                                                                                                                           Duration:     TimeSpan.FromMinutes(30),
+                                                                                                                                                                           CustomData:   null
+                                                                                                                                                                       ),
+                                                                                                                                               EPriceLevel:            1,
+                                                                                                                                               ConsumptionCosts:       [
+                                                                                                                                                                           new ConsumptionCost(
+                                                                                                                                                                               StartValue:   1,
+                                                                                                                                                                               Costs:        [
+                                                                                                                                                                                                 new Cost(
+                                                                                                                                                                                                     CostKind:           CostKinds.CarbonDioxideEmission,
+                                                                                                                                                                                                     Amount:             200,
+                                                                                                                                                                                                     AmountMultiplier:   23,
+                                                                                                                                                                                                     CustomData:         null
+                                                                                                                                                                                                 )
+                                                                                                                                                                                             ],
+                                                                                                                                                                               CustomData:   null
+                                                                                                                                                                           )
+                                                                                                                                                                       ],
+                                                                                                                                               CustomData:             null
+                                                                                                                                           )
+                                                                                                                                       ],
+                                                                                                                 Description:          "Green Charging ++",
+                                                                                                                 NumEPriceLevels:      1,
+                                                                                                                 CustomData:           null
+                                                                                                             ),
+                                                                                  CustomData:                null
+                                                                              ),
+                                         SelectedScheduleTupleId:             1,
+                                         PowerToleranceAcceptance:            true,
 
-                                   CustomData:                          null
+                                         CustomData:                          null
 
-                               );
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,            response.Result.ResultCode);
@@ -1934,16 +1933,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyPriorityChargingRequests= new ConcurrentList<CS.NotifyPriorityChargingRequest>();
 
-                testCSMS01.OnNotifyPriorityChargingRequestReceived += (timestamp, sender, connection, notifyPriorityChargingRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyPriorityChargingRequestReceived += (timestamp, sender, connection, notifyPriorityChargingRequest) => {
                     notifyPriorityChargingRequests.TryAdd(notifyPriorityChargingRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.NotifyPriorityCharging(
-                                   TransactionId:                     Transaction_Id.Parse("1234"),
-                                   Activated:                         true,
-                                   CustomData:                        null
-                               );
+                                         TransactionId:                     Transaction_Id.Parse("1234"),
+                                         Activated:                         true,
+                                         CustomData:                        null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -1980,27 +1979,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyPriorityChargingRequests= new ConcurrentList<CS.NotifySettlementRequest>();
 
-                testCSMS01.OnNotifySettlementRequestReceived += (timestamp, sender, connection, notifyPriorityChargingRequest) => {
+                testCSMS01.OCPP.IN.OnNotifySettlementRequestReceived += (timestamp, sender, connection, notifyPriorityChargingRequest) => {
                     notifyPriorityChargingRequests.TryAdd(notifyPriorityChargingRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.NotifySettlement(
 
-                                   PaymentReference:      PaymentReference.Parse("pref_123"),
-                                   PaymentStatus:         PaymentStatus.Settled,
-                                   SettlementAmount:      23.5m,
-                                   SettlementTimestamp:   Timestamp.Now,
+                                         PaymentReference:      PaymentReference.Parse("pref_123"),
+                                         PaymentStatus:         PaymentStatus.Settled,
+                                         SettlementAmount:      23.5m,
+                                         SettlementTimestamp:   Timestamp.Now,
 
-                                   TransactionId:         Transaction_Id.Parse("1234"),
-                                   StatusInfo:            "status...infoo!",
-                                   ReceiptId:             ReceiptId.Parse("rid123"),
-                                   ReceiptURL:            URL.Parse("https://example.org/payments/123"),
-                                   InvoiceNumber:         InvoiceNumber.Parse("inum123"),
+                                         TransactionId:         Transaction_Id.Parse("1234"),
+                                         StatusInfo:            "status...infoo!",
+                                         ReceiptId:             ReceiptId.Parse("rid123"),
+                                         ReceiptURL:            URL.Parse("https://example.org/payments/123"),
+                                         InvoiceNumber:         InvoiceNumber.Parse("inum123"),
 
-                                   CustomData:            null
+                                         CustomData:            null
 
-                               );
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
@@ -2037,15 +2036,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var pullDynamicScheduleUpdateRequests= new ConcurrentList<CS.PullDynamicScheduleUpdateRequest>();
 
-                testCSMS01.OnPullDynamicScheduleUpdateRequestReceived += (timestamp, sender, connection, pullDynamicScheduleUpdateRequest) => {
+                testCSMS01.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived += (timestamp, sender, connection, pullDynamicScheduleUpdateRequest) => {
                     pullDynamicScheduleUpdateRequests.TryAdd(pullDynamicScheduleUpdateRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.PullDynamicScheduleUpdate(
-                                   ChargingProfileId:   ChargingProfile_Id.Parse(235),
-                                   CustomData:          null
-                               );
+                                         ChargingProfileId:   ChargingProfile_Id.Parse(235),
+                                         CustomData:          null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,                                            response.Result.ResultCode);
@@ -2101,7 +2100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyDisplayMessagesRequests= new ConcurrentList<CS.NotifyDisplayMessagesRequest>();
 
-                testCSMS01.OnNotifyDisplayMessagesRequestReceived += (timestamp, sender, connection, notifyDisplayMessagesRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp, sender, connection, notifyDisplayMessagesRequest) => {
                     notifyDisplayMessagesRequests.TryAdd(notifyDisplayMessagesRequest);
                     return Task.CompletedTask;
                 };
@@ -2173,19 +2172,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyCustomerInformationRequests= new ConcurrentList<CS.NotifyCustomerInformationRequest>();
 
-                testCSMS01.OnNotifyCustomerInformationRequestReceived += (timestamp, sender, connection, notifyCustomerInformationRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp, sender, connection, notifyCustomerInformationRequest) => {
                     notifyCustomerInformationRequests.TryAdd(notifyCustomerInformationRequest);
                     return Task.CompletedTask;
                 };
 
                 var response = await chargingStation1.NotifyCustomerInformation(
-                                   NotifyCustomerInformationRequestId:   1,
-                                   Data:                                 "Hello World!",
-                                   SequenceNumber:                       1,
-                                   GeneratedAt:                          Timestamp.Now,
-                                   ToBeContinued:                        false,
-                                   CustomData:                           null
-                               );
+                                         NotifyCustomerInformationRequestId:   1,
+                                         Data:                                 "Hello World!",
+                                         SequenceNumber:                       1,
+                                         GeneratedAt:                          Timestamp.Now,
+                                         ToBeContinued:                        false,
+                                         CustomData:                           null
+                                     );
 
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);

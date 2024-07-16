@@ -37,128 +37,128 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Custom binary serializer delegates
 
-        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
+        //public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<BinaryDataTransferResponse>?     CustomBinaryDataTransferResponseParser       { get; set; }
+        //public CustomBinaryParserDelegate<BinaryDataTransferResponse>?     CustomBinaryDataTransferResponseParser       { get; set; }
 
         #endregion
 
         #region Events
 
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event OnBinaryDataTransferRequestSentDelegate?     OnBinaryDataTransferRequestSent;
+        ///// <summary>
+        ///// An event sent whenever a BinaryDataTransfer request was sent.
+        ///// </summary>
+        //public event OnBinaryDataTransferRequestSentDelegate?     OnBinaryDataTransferRequestSent;
 
-        /// <summary>
-        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponseReceived;
+        ///// <summary>
+        ///// An event sent whenever a response to a BinaryDataTransfer request was sent.
+        ///// </summary>
+        //public event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponseReceived;
 
         #endregion
 
 
         #region BinaryDataTransfer(Request)
 
-        public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
-        {
+        //public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
+        //{
 
-            #region Send OnBinaryDataTransferRequest event
+        //    #region Send OnBinaryDataTransferRequest event
 
-            var startTime = Timestamp.Now;
+        //    var startTime = Timestamp.Now;
 
-            try
-            {
+        //    try
+        //    {
 
-                OnBinaryDataTransferRequestSent?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBinaryDataTransferRequestSent));
-            }
+        //        OnBinaryDataTransferRequestSent?.Invoke(startTime,
+        //                                            this,
+        //                                            Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBinaryDataTransferRequestSent));
+        //    }
 
-            #endregion
-
-
-            BinaryDataTransferResponse? response = null;
-
-            try
-            {
-
-                var sendRequestState = await SendBinaryAndWait(
-                                                 Request.EventTrackingId,
-                                                 Request.DestinationId,
-                                                 Request.NetworkPath,
-                                                 Request.RequestId,
-                                                 Request.Action,
-                                                 Request.ToBinary(
-                                                     CustomBinaryDataTransferRequestSerializer,
-                                                     CustomBinarySignatureSerializer
-                                                 ),
-                                                 Request.RequestTimeout
-                                             );
-
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.BinaryResponse is not null)
-                {
-
-                    if (!BinaryDataTransferResponse.TryParse(Request,
-                                                             sendRequestState.BinaryResponse.Payload,
-                                                             out response,
-                                                             out var errorResponse,
-                                                             CustomBinaryDataTransferResponseParser))
-                    {
-                        response = new BinaryDataTransferResponse(
-                                           Request,
-                                           Result.Format(errorResponse)
-                                       );
-                    }
-
-                }
-
-                response ??= new BinaryDataTransferResponse(
-                                 Request,
-                                 BinaryDataTransferStatus.Rejected
-                             );// Result.FromSendRequestState(sendRequestState));
-
-            }
-            catch (Exception e)
-            {
-
-                response = new BinaryDataTransferResponse(
-                               Request,
-                               Result.FromException(e)
-                           );
-
-            }
+        //    #endregion
 
 
-            #region Send OnBinaryDataTransferResponse event
+        //    BinaryDataTransferResponse? response = null;
 
-            var endTime = Timestamp.Now;
+        //    try
+        //    {
 
-            try
-            {
+        //        var sendRequestState = await SendBinaryAndWait(
+        //                                         Request.EventTrackingId,
+        //                                         Request.DestinationId,
+        //                                         Request.NetworkPath,
+        //                                         Request.RequestId,
+        //                                         Request.Action,
+        //                                         Request.ToBinary(
+        //                                             CustomBinaryDataTransferRequestSerializer,
+        //                                             CustomBinarySignatureSerializer
+        //                                         ),
+        //                                         Request.RequestTimeout
+        //                                     );
 
-                OnBinaryDataTransferResponseReceived?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
+        //        if (sendRequestState.NoErrors &&
+        //            sendRequestState.BinaryResponse is not null)
+        //        {
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBinaryDataTransferResponseReceived));
-            }
+        //            if (!BinaryDataTransferResponse.TryParse(Request,
+        //                                                     sendRequestState.BinaryResponse.Payload,
+        //                                                     out response,
+        //                                                     out var errorResponse,
+        //                                                     CustomBinaryDataTransferResponseParser))
+        //            {
+        //                response = new BinaryDataTransferResponse(
+        //                                   Request,
+        //                                   Result.Format(errorResponse)
+        //                               );
+        //            }
 
-            #endregion
+        //        }
 
-            return response;
+        //        response ??= new BinaryDataTransferResponse(
+        //                         Request,
+        //                         BinaryDataTransferStatus.Rejected
+        //                     );// Result.FromSendRequestState(sendRequestState));
 
-        }
+        //    }
+        //    catch (Exception e)
+        //    {
+
+        //        response = new BinaryDataTransferResponse(
+        //                       Request,
+        //                       Result.FromException(e)
+        //                   );
+
+        //    }
+
+
+        //    #region Send OnBinaryDataTransferResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnBinaryDataTransferResponseReceived?.Invoke(endTime,
+        //                                             this,
+        //                                             Request,
+        //                                             response,
+        //                                             endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBinaryDataTransferResponseReceived));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
 
         #endregion
 

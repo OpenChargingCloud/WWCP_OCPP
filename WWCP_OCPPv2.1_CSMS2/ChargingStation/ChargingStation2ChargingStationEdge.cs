@@ -21,7 +21,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     [Flags]
@@ -44,11 +44,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="ChargingStationB">The target of the edge</param>
         /// <param name="PrivacyLevel">The level of privacy of this edge.</param>
         /// <param name="Created">The creation timestamp of the miniedge.</param>
-        public ChargingStation2ChargingStationEdge(ChargingStation                     ChargingStationA,
-                                       ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
-                                       ChargingStation                     ChargingStationB,
-                                       PrivacyLevel                  PrivacyLevel  = PrivacyLevel.Private,
-                                       DateTime?                     Created       = null)
+        public ChargingStation2ChargingStationEdge(ChargingStation                           ChargingStationA,
+                                                   ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                                   ChargingStation                           ChargingStationB,
+                                                   PrivacyLevel                              PrivacyLevel   = PrivacyLevel.Private,
+                                                   DateTime?                                 Created        = null)
 
             : base(ChargingStationA ?? throw new ArgumentNullException(nameof(ChargingStationA), "The given charging station must not be null!"),
                    EdgeLabel,

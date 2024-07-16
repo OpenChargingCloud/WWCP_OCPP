@@ -21,12 +21,11 @@ using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.LC;
 
 #endregion
 
@@ -85,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                chargingStation.        OnResetRequest                 += (timestamp, sender, connection, resetRequest) => {
+                chargingStation.OCPP.IN. OnResetRequestReceived         += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.               TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -103,8 +102,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await localController.Reset(
-                                           DestinationNodeId:  chargingStation.Id,
-                                           ResetType:          resetType
+                                           DestinationId:  chargingStation.Id,
+                                           ResetType:      resetType
                                        );
 
 
@@ -113,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request OUT
                     Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
                     var nnResetRequest = nnResetRequestsSent.First();
-                    Assert.That(nnResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnResetRequest.DestinationId,           Is.EqualTo(chargingStation.Id));
                     Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
                     Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(localController.Id));
                     Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(localController.Id));
@@ -129,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request IN
                     Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     var csResetRequest = csResetRequests.First();
-                    //Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
+                    //Assert.That(csResetRequest.DestinationId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
                     //Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     //Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
                     //Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
@@ -198,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                chargingStation.        OnDataTransferRequestReceived  += (timestamp, sender, connection, dataTransferRequest) => {
+                chargingStation.OCPP.IN. OnDataTransferRequestReceived  += (timestamp, sender, connection, dataTransferRequest) => {
                     csDataTransferRequests.         TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -218,11 +217,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!";
                 var response   = await localController.TransferData(
-                                           DestinationNodeId:   chargingStation.Id,
-                                           VendorId:            vendorId,
-                                           MessageId:           messageId,
-                                           Data:                data,
-                                           CustomData:          null
+                                           DestinationId:   chargingStation.Id,
+                                           VendorId:        vendorId,
+                                           MessageId:       messageId,
+                                           Data:            data,
+                                           CustomData:      null
                                        );
 
 
@@ -231,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request OUT
                     Assert.That(nnDataTransferRequestsSent.           Count,   Is.EqualTo(1), "The DataTransfer request did not leave the networking node!");
                     var nnDataTransferRequest = nnDataTransferRequestsSent.First();
-                    Assert.That(nnDataTransferRequest.DestinationId,       Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnDataTransferRequest.DestinationId,           Is.EqualTo(chargingStation.Id));
                     Assert.That(nnDataTransferRequest.NetworkPath.Length,      Is.EqualTo(1));
                     Assert.That(nnDataTransferRequest.NetworkPath.Source,      Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferRequest.NetworkPath.Last,        Is.EqualTo(localController.Id));
@@ -249,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request IN
                     Assert.That(csDataTransferRequests.               Count,   Is.EqualTo(1), "The DataTransfer request did not reach the charging station!");
                     var csDataTransferRequest = csDataTransferRequests.First();
-                    //Assert.That(csDataTransferRequest.DestinationNodeId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
+                    //Assert.That(csDataTransferRequest.DestinationId,       Is.EqualTo(chargingStation.Id));   // Because of "standard" networking mode!
                     //Assert.That(csDataTransferRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
                     //Assert.That(csDataTransferRequest.NetworkPath.Source,      Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
                     //Assert.That(csDataTransferRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!

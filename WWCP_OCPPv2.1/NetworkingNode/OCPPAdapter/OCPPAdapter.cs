@@ -27,7 +27,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.NN;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -406,7 +406,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?      CustomEVSEStatusInfoSerializer                               { get; set; }
         public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<SignaturePolicy>?                                     CustomSignaturePolicySerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
         public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
@@ -492,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                              { get; set; }
+        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
 
 
         // E2E Security Extensions
@@ -781,7 +782,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         public CustomJObjectParserDelegate<OCPPv2_1.ChargingStation>?                                  CustomChargingStationParser                              { get; set; }
-        public CustomJObjectParserDelegate<OCPP.Signature>?                                            CustomSignatureParser                                    { get; set; }
+        public CustomJObjectParserDelegate<Signature>?                                                 CustomSignatureParser                                    { get; set; }
         public CustomJObjectParserDelegate<CustomData>?                                                CustomCustomDataParser                                   { get; set; }
         public CustomJObjectParserDelegate<StatusInfo>?                                                CustomStatusInfoParser                                   { get; set; }
 
@@ -801,15 +802,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// 
         /// <param name="SignaturePolicy">An optional signature policy.</param>
         /// <param name="ForwardingSignaturePolicy">An optional signature policy when forwarding OCPP messages.</param>
-        public OCPPAdapter(NN.IBaseNetworkingNode  NetworkingNode,
+        public OCPPAdapter(IBaseNetworkingNode  NetworkingNode,
 
-                           Boolean                 DisableSendHeartbeats       = false,
-                           TimeSpan?               SendHeartbeatsEvery         = null,
+                           Boolean              DisableSendHeartbeats       = false,
+                           TimeSpan?            SendHeartbeatsEvery         = null,
 
-                           TimeSpan?               DefaultRequestTimeout       = null,
+                           TimeSpan?            DefaultRequestTimeout       = null,
 
-                           SignaturePolicy?        SignaturePolicy             = null,
-                           SignaturePolicy?        ForwardingSignaturePolicy   = null)
+                           SignaturePolicy?     SignaturePolicy             = null,
+                           SignaturePolicy?     ForwardingSignaturePolicy   = null)
 
         {
 
@@ -952,7 +953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return SendRequestState.FromJSONRequest(
 
                        RequestTimestamp:         JSONRequestMessage.RequestTimestamp,
-                       DestinationNodeId:        JSONRequestMessage.DestinationId,
+                       DestinationId:        JSONRequestMessage.DestinationId,
                        Timeout:                  JSONRequestMessage.RequestTimeout,
                        JSONRequest:              JSONRequestMessage,
                        SendMessageResult:        sendMessageResult,
@@ -1005,7 +1006,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SendMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
-            if (LookupNetworkingNode(JSONRequestErrorMessage.DestinationNodeId, out var reachability) &&
+            if (LookupNetworkingNode(JSONRequestErrorMessage.DestinationId, out var reachability) &&
                 reachability is not null)
             {
 
@@ -1028,7 +1029,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SendMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
         {
 
-            if (LookupNetworkingNode(JSONResponseErrorMessage.DestinationNodeId, out var reachability) &&
+            if (LookupNetworkingNode(JSONResponseErrorMessage.DestinationId, out var reachability) &&
                 reachability is not null)
             {
 
@@ -1166,7 +1167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return SendRequestState.FromBinaryRequest(
 
                        RequestTimestamp:         BinaryRequestMessage.RequestTimestamp,
-                       NetworkingNodeId:         BinaryRequestMessage.DestinationId,
+                       DestinationId:            BinaryRequestMessage.DestinationId,
                        Timeout:                  BinaryRequestMessage.RequestTimeout,
                        BinaryRequest:            BinaryRequestMessage,
                        SendMessageResult:        sendMessageResult,
@@ -1311,12 +1312,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        #region LookupNetworkingNode (DestinationNodeId, out Reachability)
+        #region LookupNetworkingNode (DestinationId, out Reachability)
 
-        public Boolean LookupNetworkingNode(NetworkingNode_Id DestinationNodeId, out Reachability? Reachability)
+        public Boolean LookupNetworkingNode(NetworkingNode_Id DestinationId, out Reachability? Reachability)
         {
 
-            if (reachableNetworkingNodes.TryGetValue(DestinationNodeId, out var reachabilityList) &&
+            if (reachableNetworkingNodes.TryGetValue(DestinationId, out var reachabilityList) &&
                 reachabilityList is not null &&
                 reachabilityList.Count > 0)
             {
@@ -1366,9 +1367,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region AddStaticRouting     (DestinationNodeId, WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
+        #region AddStaticRouting     (DestinationId, WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
 
-        public void AddStaticRouting(NetworkingNode_Id     DestinationNodeId,
+        public void AddStaticRouting(NetworkingNode_Id     DestinationId,
                                      IOCPPWebSocketClient  WebSocketClient,
                                      Byte?                 Priority    = 0,
                                      DateTime?             Timestamp   = null,
@@ -1376,7 +1377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             var reachability = new Reachability(
-                                   DestinationNodeId,
+                                   DestinationId,
                                    WebSocketClient,
                                    Priority,
                                    Timeout
@@ -1384,7 +1385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             reachableNetworkingNodes.AddOrUpdate(
 
-                DestinationNodeId,
+                DestinationId,
 
                 (id)                   => [reachability],
 
@@ -1409,16 +1410,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             );
 
-            //csmsChannel.Item1.AddStaticRouting(DestinationNodeId,
+            //csmsChannel.Item1.AddStaticRouting(DestinationId,
             //                                   NetworkingHubId);
 
         }
 
         #endregion
 
-        #region AddStaticRouting     (DestinationNodeId, WebSocketServer,        Priority = 0, Timestamp = null, Timeout = null)
+        #region AddStaticRouting     (DestinationId, WebSocketServer,        Priority = 0, Timestamp = null, Timeout = null)
 
-        public void AddStaticRouting(NetworkingNode_Id     DestinationNodeId,
+        public void AddStaticRouting(NetworkingNode_Id     DestinationId,
                                      IOCPPWebSocketServer  WebSocketServer,
                                      Byte?                 Priority    = 0,
                                      DateTime?             Timestamp   = null,
@@ -1426,7 +1427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             var reachability = new Reachability(
-                                   DestinationNodeId,
+                                   DestinationId,
                                    WebSocketServer,
                                    Priority,
                                    Timeout
@@ -1434,7 +1435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             reachableNetworkingNodes.AddOrUpdate(
 
-                DestinationNodeId,
+                DestinationId,
 
                 (id)                   => [reachability],
 
@@ -1459,16 +1460,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             );
 
-            //csmsChannel.Item1.AddStaticRouting(DestinationNodeId,
+            //csmsChannel.Item1.AddStaticRouting(DestinationId,
             //                                   NetworkingHubId);
 
         }
 
         #endregion
 
-        #region AddStaticRouting     (DestinationNodeId, NetworkingHubId,        Priority = 0, Timestamp = null, Timeout = null)
+        #region AddStaticRouting     (DestinationId, NetworkingHubId,        Priority = 0, Timestamp = null, Timeout = null)
 
-        public void AddStaticRouting(NetworkingNode_Id  DestinationNodeId,
+        public void AddStaticRouting(NetworkingNode_Id  DestinationId,
                                      NetworkingNode_Id  NetworkingHubId,
                                      Byte?              Priority    = 0,
                                      DateTime?          Timestamp   = null,
@@ -1476,7 +1477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             var reachability = new Reachability(
-                                   DestinationNodeId,
+                                   DestinationId,
                                    NetworkingHubId,
                                    Priority,
                                    Timeout
@@ -1484,7 +1485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             reachableNetworkingNodes.AddOrUpdate(
 
-                DestinationNodeId,
+                DestinationId,
 
                 (id)                   => [reachability],
 
@@ -1509,27 +1510,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             );
 
-            //csmsChannel.Item1.AddStaticRouting(DestinationNodeId,
+            //csmsChannel.Item1.AddStaticRouting(DestinationId,
             //                                   NetworkingHubId);
 
         }
 
         #endregion
 
-        #region RemoveStaticRouting  (DestinationNodeId, NetworkingHubId = null, Priority = 0)
+        #region RemoveStaticRouting  (DestinationId, NetworkingHubId = null, Priority = 0)
 
-        public void RemoveStaticRouting(NetworkingNode_Id   DestinationNodeId,
+        public void RemoveStaticRouting(NetworkingNode_Id   DestinationId,
                                         NetworkingNode_Id?  NetworkingHubId   = null,
                                         Byte?               Priority          = 0)
         {
 
             if (!NetworkingHubId.HasValue)
             {
-                reachableNetworkingNodes.TryRemove(DestinationNodeId, out _);
+                reachableNetworkingNodes.TryRemove(DestinationId, out _);
                 return;
             }
 
-            if (reachableNetworkingNodes.TryGetValue(DestinationNodeId, out var reachabilityList) &&
+            if (reachableNetworkingNodes.TryGetValue(DestinationId, out var reachabilityList) &&
                 reachabilityList is not null &&
                 reachabilityList.Count > 0)
             {
@@ -1539,17 +1540,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (updatedReachabilityList.Count > 0)
                     reachableNetworkingNodes.TryUpdate(
-                        DestinationNodeId,
+                        DestinationId,
                         updatedReachabilityList,
                         reachabilityList
                     );
 
                 else
-                    reachableNetworkingNodes.TryRemove(DestinationNodeId, out _);
+                    reachableNetworkingNodes.TryRemove(DestinationId, out _);
 
             }
 
-            //csmsChannel.Item1.RemoveStaticRouting(DestinationNodeId,
+            //csmsChannel.Item1.RemoveStaticRouting(DestinationId,
             //                                      NetworkingHubId);
 
         }
