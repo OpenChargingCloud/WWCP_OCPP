@@ -31,7 +31,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public abstract class ANetworkingNode : IBaseNetworkingNode
+    public abstract class ANetworkingNode : INetworkingNode
     {
 
         #region Data
@@ -178,8 +178,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
-
-
 
 
         #region NextRequestId

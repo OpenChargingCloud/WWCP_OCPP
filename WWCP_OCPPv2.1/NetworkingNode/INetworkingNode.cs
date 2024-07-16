@@ -15,13 +15,20 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
     /// The common interface of all networking node.
     /// </summary>
-    public interface INetworkingNode
+    public interface INetworkingNode : IEventSender
     {
 
         CustomData?                CustomData               { get; }
@@ -29,6 +36,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         IOCPPAdapter               OCPP                     { get; }
 
         NetworkingNode_Id          Id                       { get; }
+
+        /// <summary>
+        /// An optional multi-language networking node description.
+        /// </summary>
+        [Optional]
+        I18NString?                Description              { get; }
 
         Request_Id                 NextRequestId            { get; }
 
@@ -40,6 +53,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         UInt64  GetEncryptionNonce   (NetworkingNode_Id DestinationId, UInt16? KeyId = null);
         UInt64  GetEncryptionCounter (NetworkingNode_Id DestinationId, UInt16? KeyId = null);
+
+
+
+        String? ClientCloseMessage { get; }
+
+
+
+        Task HandleErrors(String     Module,
+                          String     Caller,
+                          Exception  ExceptionOccured);
+
+        Task HandleErrors(String     Module,
+                          String     Caller,
+                          String     ErrorResponse);
 
 
     }

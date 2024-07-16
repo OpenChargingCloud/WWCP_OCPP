@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The common interface of all charging station management systems.
+    /// The common interface of all Charging Station Management Systems.
     /// </summary>
     public interface ICSMS : INetworkingNode
     {

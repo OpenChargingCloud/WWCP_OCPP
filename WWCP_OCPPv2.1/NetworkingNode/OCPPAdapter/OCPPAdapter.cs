@@ -803,15 +803,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// 
         /// <param name="SignaturePolicy">An optional signature policy.</param>
         /// <param name="ForwardingSignaturePolicy">An optional signature policy when forwarding OCPP messages.</param>
-        public OCPPAdapter(IBaseNetworkingNode  NetworkingNode,
+        public OCPPAdapter(INetworkingNode   NetworkingNode,
 
-                           Boolean              DisableSendHeartbeats       = false,
-                           TimeSpan?            SendHeartbeatsEvery         = null,
+                           Boolean           DisableSendHeartbeats       = false,
+                           TimeSpan?         SendHeartbeatsEvery         = null,
 
-                           TimeSpan?            DefaultRequestTimeout       = null,
+                           TimeSpan?         DefaultRequestTimeout       = null,
 
-                           SignaturePolicy?     SignaturePolicy             = null,
-                           SignaturePolicy?     ForwardingSignaturePolicy   = null)
+                           SignaturePolicy?  SignaturePolicy             = null,
+                           SignaturePolicy?  ForwardingSignaturePolicy   = null)
 
         {
 

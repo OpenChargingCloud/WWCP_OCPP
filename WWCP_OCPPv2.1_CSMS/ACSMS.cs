@@ -488,6 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                      Boolean                   DisableMaintenanceTasks     = false,
                      TimeSpan?                 MaintenanceEvery            = null,
+
                      DNSClient?                DNSClient                   = null)
 
             : base(Id,

@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private readonly IBaseNetworkingNode parentNetworkingNode;
+        private readonly INetworkingNode parentNetworkingNode;
 
         #endregion
 
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a new OCPP adapter for sending outgoing messages.
         /// </summary>
         /// <param name="NetworkingNode">The parent networking node.</param>
-        public OCPPWebSocketAdapterOUT(IBaseNetworkingNode NetworkingNode)
+        public OCPPWebSocketAdapterOUT(INetworkingNode NetworkingNode)
         {
 
             this.parentNetworkingNode = NetworkingNode;
