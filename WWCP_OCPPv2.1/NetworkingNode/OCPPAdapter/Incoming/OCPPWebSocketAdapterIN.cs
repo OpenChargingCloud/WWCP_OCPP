@@ -59,27 +59,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a JSON request was received.
         /// </summary>
-        public event OnJSONRequestMessageReceivedDelegate?         OnJSONRequestMessageReceived;
+        public event OnJSONRequestMessageReceivedDelegate?           OnJSONRequestMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON response was received.
         /// </summary>
-        public event OnJSONResponseMessageReceivedDelegate?        OnJSONResponseMessageReceived;
+        public event OnJSONResponseMessageReceivedDelegate?          OnJSONResponseMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON request error was received.
         /// </summary>
-        public event OnJSONRequestErrorMessageReceivedDelegate?    OnJSONRequestErrorMessageReceived;
+        public event OnJSONRequestErrorMessageReceivedDelegate?      OnJSONRequestErrorMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON response error was received.
         /// </summary>
-        public event OnJSONResponseErrorMessageReceivedDelegate?   OnJSONResponseErrorMessageReceived;
+        public event OnJSONResponseErrorMessageReceivedDelegate?     OnJSONResponseErrorMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON send message was received.
         /// </summary>
-        public event OnJSONSendMessageReceivedDelegate?            OnJSONSendMessageReceived;
+        public event OnJSONSendMessageReceivedDelegate?              OnJSONSendMessageReceived;
 
         #endregion
 
@@ -88,17 +88,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary request was received.
         /// </summary>
-        public event OnBinaryRequestMessageReceivedDelegate?     OnBinaryRequestMessageReceived;
+        public event OnBinaryRequestMessageReceivedDelegate?         OnBinaryRequestMessageReceived;
 
         /// <summary>
         /// An event sent whenever a binary response was received.
         /// </summary>
-        public event OnBinaryResponseMessageReceivedDelegate?    OnBinaryResponseMessageReceived;
+        public event OnBinaryResponseMessageReceivedDelegate?        OnBinaryResponseMessageReceived;
 
         ///// <summary>
-        ///// An event sent whenever a binary error response was received.
+        ///// An event sent whenever a binary request error was received.
         ///// </summary>
-        //public event OnBinaryErrorResponseReceivedDelegate?      OnBinaryErrorResponseReceived;
+        //public event OnBinaryRequestErrorMessageReceivedDelegate?    OnBinaryRequestErrorMessageReceived;
+
+        ///// <summary>
+        ///// An event sent whenever a binary response error was received.
+        ///// </summary>
+        //public event OnBinaryResponseErrorMessageReceivedDelegate?   OnBinaryResponseErrorMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a binary send message was received.
+        /// </summary>
+        public event OnBinarySendMessageReceivedDelegate?            OnBinarySendMessageReceived;
 
         #endregion
 

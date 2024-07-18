@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a OnQRCodeScanned request was received.
         /// </summary>
-        event OnQRCodeScannedRequestReceivedDelegate OnQRCodeScannedRequestReceived;
+        event OnQRCodeScannedDelegate OnQRCodeScanned;
 
         #endregion
 

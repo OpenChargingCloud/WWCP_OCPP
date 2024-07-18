@@ -64,6 +64,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #region Charging
 
         /// <summary>
+        /// An event sent whenever a QRCodeScanned request was received.
+        /// </summary>
+        event OnQRCodeScannedRequestReceivedDelegate                  OnQRCodeScannedRequestReceived;
+
+        /// <summary>
         /// An event sent whenever a CancelReservation request was received.
         /// </summary>
         event OnCancelReservationRequestReceivedDelegate              OnCancelReservationRequestReceived;
@@ -280,6 +285,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
+        /// <summary>
+        /// An event sent whenever a DataTransfer request was received.
+        /// </summary>
+        event OnDataTransferRequestReceivedDelegate?                  OnDataTransferRequestReceived;
+
+
 
         // Incoming responses
 
@@ -440,19 +451,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-
-
-
-
-
-
-
+        /// <summary>
+        /// An event fired whenever a response to a DataTransfer request was received.
+        /// </summary>
+        event OnDataTransferResponseReceivedDelegate?               OnDataTransferResponseReceived;
 
 
         event OnGetDefaultChargingTariffRequestReceivedDelegate     OnGetDefaultChargingTariffRequestReceived;
         event OnRemoveDefaultChargingTariffRequestReceivedDelegate  OnRemoveDefaultChargingTariffRequestReceived;
         event OnSetDefaultChargingTariffRequestReceivedDelegate     OnSetDefaultChargingTariffRequestReceived;
-
 
 
     }

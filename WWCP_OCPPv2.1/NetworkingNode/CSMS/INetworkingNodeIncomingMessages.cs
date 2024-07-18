@@ -111,6 +111,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a DataTransfer request was received.
+        /// </summary>
+        event OnDataTransferDelegate                           OnDataTransfer;
+
+        #endregion
+
 
         #region OnSignCertificate
 

@@ -32,43 +32,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Delegates
 
 
-    public delegate Task OnJSONRequestMessageReceivedDelegate       (DateTime                       Timestamp,
-                                                                     IOCPPWebSocketAdapterIN        Server,
-                                                                     OCPP_JSONRequestMessage        JSONRequestMessage);
+    public delegate Task OnJSONRequestMessageReceivedDelegate         (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_JSONRequestMessage          JSONRequestMessage);
 
-    public delegate Task OnJSONResponseMessageReceivedDelegate      (DateTime                       Timestamp,
-                                                                     IOCPPWebSocketAdapterIN        Server,
-                                                                     OCPP_JSONResponseMessage       JSONResponseMessage);
+    public delegate Task OnJSONResponseMessageReceivedDelegate        (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_JSONResponseMessage         JSONResponseMessage);
 
-    public delegate Task OnJSONRequestErrorMessageReceivedDelegate  (DateTime                       Timestamp,
-                                                                     IOCPPWebSocketAdapterIN        Server,
-                                                                     OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage);
+    public delegate Task OnJSONRequestErrorMessageReceivedDelegate    (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage);
 
-    public delegate Task OnJSONResponseErrorMessageReceivedDelegate (DateTime                       Timestamp,
-                                                                     IOCPPWebSocketAdapterIN        Server,
-                                                                     OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage);
+    public delegate Task OnJSONResponseErrorMessageReceivedDelegate   (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage);
 
-    public delegate Task OnJSONSendMessageReceivedDelegate          (DateTime                       Timestamp,
-                                                                     IOCPPWebSocketAdapterIN        Server,
-                                                                     OCPP_JSONSendMessage           JSONSendMessage);
+    public delegate Task OnJSONSendMessageReceivedDelegate            (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_JSONSendMessage             JSONSendMessage);
 
 
 
-    public delegate Task OnBinaryRequestMessageReceivedDelegate     (DateTime                       Timestamp,
-                                                                     IOCPPWebSocketAdapterIN        Server,
-                                                                     OCPP_BinaryRequestMessage      BinaryRequestMessage);
+    public delegate Task OnBinaryRequestMessageReceivedDelegate       (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_BinaryRequestMessage        BinaryRequestMessage);
 
-    public delegate Task OnBinaryResponseMessageReceivedDelegate    (DateTime                       Timestamp,
-                                                                     IOCPPWebSocketAdapterIN        Server,
-                                                                     OCPP_BinaryResponseMessage     BinaryResponseMessage);
+    public delegate Task OnBinaryResponseMessageReceivedDelegate      (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_BinaryResponseMessage       BinaryResponseMessage);
 
-    //public delegate Task OnBinaryErrorResponseReceivedDelegate    (DateTime                      Timestamp,
-    //                                                               IOCPPWebSocketAdapterIN       Server,
-    //                                                               OCPP_BinaryErrorMessage       BinaryErrorMessage);
+    //public delegate Task OnBinaryRequestErrorMessageReceivedDelegate  (DateTime                         Timestamp,
+    //                                                                   IOCPPWebSocketAdapterIN          Server,
+    //                                                                   OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage);
 
-    public delegate Task OnBinarySendMessageReceivedDelegate        (DateTime                       Timestamp,
-                                                                     IOCPPWebSocketAdapterIN        Server,
-                                                                     OCPP_BinarySendMessage         BinarySendMessage);
+    //public delegate Task OnBinaryResponseErrorMessageReceivedDelegate (DateTime                         Timestamp,
+    //                                                                   IOCPPWebSocketAdapterIN          Server,
+    //                                                                   OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
+
+    public delegate Task OnBinarySendMessageReceivedDelegate          (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_BinarySendMessage           BinarySendMessage);
 
     #endregion
 
@@ -106,22 +110,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a JSON request was received.
         /// </summary>
-        event OnJSONRequestMessageReceivedDelegate?         OnJSONRequestMessageReceived;
+        event OnJSONRequestMessageReceivedDelegate?           OnJSONRequestMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON response was received.
         /// </summary>
-        event OnJSONResponseMessageReceivedDelegate?        OnJSONResponseMessageReceived;
+        event OnJSONResponseMessageReceivedDelegate?          OnJSONResponseMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON request error was received.
         /// </summary>
-        event OnJSONRequestErrorMessageReceivedDelegate?    OnJSONRequestErrorMessageReceived;
+        event OnJSONRequestErrorMessageReceivedDelegate?      OnJSONRequestErrorMessageReceived;
 
         /// <summary>
         /// An event sent whenever a JSON response error was received.
         /// </summary>
-        event OnJSONResponseErrorMessageReceivedDelegate?   OnJSONResponseErrorMessageReceived;
+        event OnJSONResponseErrorMessageReceivedDelegate?     OnJSONResponseErrorMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a JSON send message was received.
+        /// </summary>
+        event OnJSONSendMessageReceivedDelegate?              OnJSONSendMessageReceived;
 
         #endregion
 
@@ -130,17 +139,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary request was received.
         /// </summary>
-        event OnBinaryRequestMessageReceivedDelegate?     OnBinaryRequestMessageReceived;
+        event OnBinaryRequestMessageReceivedDelegate?         OnBinaryRequestMessageReceived;
 
         /// <summary>
         /// An event sent whenever a binary response was received.
         /// </summary>
-        event OnBinaryResponseMessageReceivedDelegate?    OnBinaryResponseMessageReceived;
+        event OnBinaryResponseMessageReceivedDelegate?        OnBinaryResponseMessageReceived;
 
         ///// <summary>
-        ///// An event sent whenever a binary error response was received.
+        ///// An event sent whenever a binary request error was received.
         ///// </summary>
-        //event OnBinaryErrorResponseReceivedDelegate?      OnBinaryErrorResponseReceived;
+        //event OnBinaryRequestErrorMessageReceivedDelegate?    OnBinaryRequestErrorMessageReceived;
+
+        ///// <summary>
+        ///// An event sent whenever a binary response error was received.
+        ///// </summary>
+        //event OnBinaryResponseErrorMessageReceivedDelegate?   OnBinaryResponseErrorMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a binary send message was received.
+        /// </summary>
+        event OnBinarySendMessageReceivedDelegate?            OnBinarySendMessageReceived;
 
         #endregion
 
@@ -163,28 +182,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //event OnNetworkingNodeTCPConnectionClosedDelegate?       OnNetworkingNodeTCPConnectionClosed;
 
         #endregion
-
-
-
-        #region OnDataTransfer       (RequestReceived/-ResponseSent)
-
-        /// <summary>
-        /// An event sent whenever a DataTransfer request was received.
-        /// </summary>
-        event OnDataTransferRequestReceivedDelegate?           OnDataTransferRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a DataTransfer request was received.
-        /// </summary>
-        event OnDataTransferDelegate                           OnDataTransfer;
-
-        /// <summary>
-        /// An event fired whenever a response to a DataTransfer request was received.
-        /// </summary>
-        event OnDataTransferResponseReceivedDelegate?          OnDataTransferResponseReceived;
-
-        #endregion
-
 
         #endregion
 
