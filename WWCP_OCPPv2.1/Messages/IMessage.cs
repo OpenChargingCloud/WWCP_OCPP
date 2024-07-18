@@ -27,9 +27,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The common interface of all request messages.
+    /// The common interface of all "send" messages.
     /// </summary>
-    public interface IRequest : ISignableMessage
+    public interface IMessage : ISignableMessage
     {
 
         /// <summary>
@@ -45,25 +45,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         NetworkPath        NetworkPath          { get; }
 
         /// <summary>
-        /// The request identification.
+        /// The message identification.
         /// </summary>
         [Mandatory]
-        Request_Id         RequestId            { get; }
+        Request_Id         MessageId            { get; }
 
         /// <summary>
-        /// The timestamp of the request message creation.
+        /// The timestamp of the message creation.
         /// </summary>
         [Mandatory]
-        DateTime           RequestTimestamp     { get; }
+        DateTime           SentTimestamp        { get; }
 
         /// <summary>
-        /// The timeout of this request.
-        /// </summary>
-        [Mandatory]
-        TimeSpan           RequestTimeout       { get; }
-
-        /// <summary>
-        /// The event tracking identification for correlating this request with other events.
+        /// The event tracking identification for correlating this message with other events.
         /// </summary>
         [Mandatory]
         EventTracking_Id   EventTrackingId      { get; }
@@ -81,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         CustomData?        CustomData           { get; }
 
         /// <summary>
-        /// An optional token to cancel this request.
+        /// An optional token to cancel this message.
         /// </summary>
         CancellationToken  CancellationToken    { get; }
 

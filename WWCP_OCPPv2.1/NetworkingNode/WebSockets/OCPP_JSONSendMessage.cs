@@ -32,47 +32,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
     /// <summary>
-    /// An OCPP JSON request message transport container.
+    /// An OCPP JSON send message transport container.
     /// </summary>
-    /// <param name="RequestTimestamp">The request time stamp.</param>
+    /// <param name="MessageTimestamp">The message sent time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
     /// <param name="NetworkingMode">The networking mode to use.</param>
     /// <param name="DestinationId">The networking node identification or Any- or Multicast address of the message destination.</param>
-    /// <param name="NetworkPath">The (recorded) path of the request through the overlay network.</param>
-    /// <param name="RequestId">An unique request identification.</param>
+    /// <param name="NetworkPath">The (recorded) path of the message through the overlay network.</param>
+    /// <param name="MessageId">An unique message identification.</param>
     /// <param name="Action">An OCPP action/method name.</param>
     /// <param name="Payload">A JSON request message payload.</param>
-    /// <param name="RequestTimeout">The request time out.</param>
     /// <param name="ErrorMessage">An optional error message, e.g. during sending of the message.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class OCPP_JSONRequestMessage(DateTime           RequestTimestamp,
-                                         EventTracking_Id   EventTrackingId,
-                                         NetworkingMode     NetworkingMode,
-                                         NetworkingNode_Id  DestinationId,
-                                         NetworkPath        NetworkPath,
-                                         Request_Id         RequestId,
-                                         String             Action,
-                                         JObject            Payload,
-                                         DateTime?          RequestTimeout      = null,
-                                         String?            ErrorMessage        = null,
-                                         CancellationToken  CancellationToken   = default)
+    public class OCPP_JSONSendMessage(DateTime           MessageTimestamp,
+                                      EventTracking_Id   EventTrackingId,
+                                      NetworkingMode     NetworkingMode,
+                                      NetworkingNode_Id  DestinationId,
+                                      NetworkPath        NetworkPath,
+                                      Request_Id         MessageId,
+                                      String             Action,
+                                      JObject            Payload,
+                                      String?            ErrorMessage        = null,
+                                      CancellationToken  CancellationToken   = default)
     {
-
-        #region Data
-
-        public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(333);
-
-        #endregion
 
         #region Properties
 
         /// <summary>
-        /// The request time stamp.
+        /// The message sent time stamp.
         /// </summary>
-        public DateTime           RequestTimestamp     { get; }      = RequestTimestamp;
+        public DateTime           MessageTimestamp     { get; }      = MessageTimestamp;
 
         /// <summary>
-        /// The event tracking identification for correlating this request message with other events.
+        /// The event tracking identification for correlating this message with other events.
         /// </summary>
         public EventTracking_Id   EventTrackingId      { get; }      = EventTrackingId;
 
@@ -87,14 +79,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         public NetworkingNode_Id  DestinationId        { get; }      = DestinationId;
 
         /// <summary>
-        /// The (recorded) path of the request through the overlay network.
+        /// The (recorded) path of the message through the overlay network.
         /// </summary>
         public NetworkPath        NetworkPath          { get; }      = NetworkPath;
 
         /// <summary>
-        /// The unique request identification.
+        /// The unique message identification.
         /// </summary>
-        public Request_Id         RequestId            { get; }      = RequestId;
+        public Request_Id         MessageId            { get; }      = MessageId;
 
         /// <summary>
         /// An OCPP action/method name.
@@ -102,14 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         public String             Action               { get; }      = Action;
 
         /// <summary>
-        /// The JSON request message payload.
+        /// The JSON send message payload.
         /// </summary>
         public JObject            Payload              { get; }      = Payload;
-
-        /// <summary>
-        /// The request time out.
-        /// </summary>
-        public DateTime           RequestTimeout       { get; set; } = RequestTimeout ?? (RequestTimestamp + DefaultTimeout);
 
         /// <summary>
         /// The optional error message, e.g. during sending of the message.
@@ -123,13 +110,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
 
         /// <summary>
-        /// The request message has no errors.
+        /// The message has no errors.
         /// </summary>
         public Boolean            NoErrors
             => ErrorMessage is null;
 
         /// <summary>
-        /// The request message has errors.
+        /// The message has errors.
         /// </summary>
         public Boolean            HasErrors
             => ErrorMessage is not null;
@@ -137,51 +124,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
-        #region (static) FromRequest(Request, SerializedRequest)
+        #region (static) FromMessage(Message, SerializedMessage)
 
         /// <summary>
-        /// Create a new OCPP JSON request message transport container based on the given JSON request.
+        /// Create a new OCPP JSON send message transport container based on the given JSON message.
         /// </summary>
-        /// <param name="Request">A request message.</param>
-        /// <param name="SerializedRequest">The serialized request message.</param>
-        public static OCPP_JSONRequestMessage FromRequest(IRequest  Request,
-                                                          JObject   SerializedRequest)
+        /// <param name="Message">A send message.</param>
+        /// <param name="SerializedMessage">The serialized send message.</param>
+        public static OCPP_JSONSendMessage FromMessage(IRequest  Message,
+                                                       JObject   SerializedMessage)
 
             => new (Timestamp.Now,
-                    Request.EventTrackingId,
+                    Message.EventTrackingId,
                     NetworkingMode.Unknown,
-                    Request.DestinationId,
-                    Request.NetworkPath,
-                    Request.RequestId,
-                    Request.Action,
-                    SerializedRequest,
-                    Timestamp.Now + Request.RequestTimeout,
+                    Message.DestinationId,
+                    Message.NetworkPath,
+                    Message.RequestId,
+                    Message.Action,
+                    SerializedMessage,
                     null,
-                    Request.CancellationToken);
+                    Message.CancellationToken);
 
         #endregion
 
 
-        #region TryParse(JSONArray, out RequestMessage, out ErrorResponse, ImplicitSourceNodeId = null)
+        #region TryParse(JSONArray, out SendMessage, out ErrorResponse, ImplicitSourceNodeId = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a request message.
+        /// Try to parse the given JSON representation of a send message.
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
-        /// <param name="RequestMessage">The parsed OCPP WebSocket request message.</param>
+        /// <param name="SendMessage">The parsed OCPP WebSocket send message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
-        public static Boolean TryParse(JArray                                             JSONArray,
-                                       [NotNullWhen(true)]  out OCPP_JSONRequestMessage?  RequestMessage,
-                                       [NotNullWhen(false)] out String?                   ErrorResponse,
-                                       DateTime?                                          RequestTimestamp       = null,
-                                       DateTime?                                          RequestTimeout         = null,
-                                       EventTracking_Id?                                  EventTrackingId        = null,
-                                       NetworkingNode_Id?                                 ImplicitSourceNodeId   = null,
-                                       CancellationToken                                  CancellationToken      = default)
+        public static Boolean TryParse(JArray                                          JSONArray,
+                                       [NotNullWhen(true)]  out OCPP_JSONSendMessage?  SendMessage,
+                                       [NotNullWhen(false)] out String?                ErrorResponse,
+                                       DateTime?                                       MessageTimestamp       = null,
+                                       EventTracking_Id?                               EventTrackingId        = null,
+                                       NetworkingNode_Id?                              ImplicitSourceNodeId   = null,
+                                       CancellationToken                               CancellationToken      = default)
         {
 
-            RequestMessage  = null;
+            SendMessage  = null;
             ErrorResponse   = null;
 
             try
@@ -190,26 +175,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 #region OCPP standard mode
 
                 // [
-                //     2,                  // MessageType: CALL
-                //    "19223201",          // RequestId
-                //    "BootNotification",  // Action
+                //     6,                           // MessageType: SEND
+                //    "19223201",                   // MessageId
+                //    "NotifyPeriodicEventStream",  // Action
                 //    {
-                //        "chargePointVendor": "VendorX",
-                //        "chargePointModel":  "SingleSocketCharger"
+                //        "id":       123,
+                //        "pending":  0,
+                //        "data":     [ {"t": 1710863410, "v": 230.4}, {"t": 1710863420, "v": 230.2} ]
                 //    }
                 // ]
 
                 if (JSONArray.Count            == 4                   &&
                     JSONArray[0].Type          == JTokenType.Integer  &&
-                    JSONArray[0].Value<Byte>() == 2                   &&
+                    JSONArray[0].Value<Byte>() == 6                   &&
                     JSONArray[1].Type          == JTokenType.String   &&
                     JSONArray[2].Type          == JTokenType.String   &&
                     JSONArray[3].Type          == JTokenType.Object)
                 {
 
-                    if (!Request_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var requestId))
+                    if (!Request_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var messageId))
                     {
-                        ErrorResponse = $"Could not parse the given request identification: {JSONArray[1]}";
+                        ErrorResponse = $"Could not parse the given message identification: {JSONArray[1]}";
                         return false;
                     }
 
@@ -235,16 +221,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     }
 
 
-                    RequestMessage = new OCPP_JSONRequestMessage(
-                                         RequestTimestamp ?? Timestamp.Now,
+                    SendMessage = new OCPP_JSONSendMessage(
+                                         MessageTimestamp ?? Timestamp.Now,
                                          EventTrackingId  ?? EventTracking_Id.New,
                                          NetworkingMode.Standard,
                                          NetworkingNode_Id.Zero,
                                          networkPath,
-                                         requestId,
+                                         messageId,
                                          action,
                                          payload,
-                                         RequestTimeout,
                                          null,
                                          CancellationToken
                                      );
@@ -258,20 +243,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 #region OCPP Overlay Network mode
 
                 // [
-                //    2,                   // MessageType: CALL
-                //    DestinationId,
+                //     6,                           // MessageType: SEND
+                //     DestinationId,
                 //    [ NetworkPath ],
-                //    "19223201",          // RequestId
-                //    "BootNotification",  // Action
+                //    "19223201",                   // RequestId
+                //    "NotifyPeriodicEventStream",  // Action
                 //    {
-                //        "chargePointVendor": "VendorX",
-                //        "chargePointModel":  "SingleSocketCharger"
+                //        "id":       123,
+                //        "pending":  0,
+                //        "data":     [ {"t": 1710863410, "v": 230.4}, {"t": 1710863420, "v": 230.2} ]
                 //    }
                 // ]
 
                 if (JSONArray.Count            == 6                   &&
                     JSONArray[0].Type          == JTokenType.Integer  &&
-                    JSONArray[0].Value<Byte>() == 2                   &&
+                    JSONArray[0].Value<Byte>() == 6                   &&
                     JSONArray[1].Type          == JTokenType.String   &&
                     JSONArray[2].Type          == JTokenType.Array    &&
                     JSONArray[3].Type          == JTokenType.String   &&
@@ -308,9 +294,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     }
 
 
-                    if (!Request_Id.       TryParse(JSONArray[3]?.Value<String>() ?? "", out var requestId))
+                    if (!Request_Id.       TryParse(JSONArray[3]?.Value<String>() ?? "", out var messageId))
                     {
-                        ErrorResponse = $"Could not parse the given request identification: {JSONArray[3]}";
+                        ErrorResponse = $"Could not parse the given message identification: {JSONArray[3]}";
                         return false;
                     }
 
@@ -327,16 +313,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         return false;
                     }
 
-                    RequestMessage = new OCPP_JSONRequestMessage(
+                    SendMessage = new OCPP_JSONSendMessage(
                                          Timestamp.Now,
                                          EventTracking_Id.New,
                                          NetworkingMode.OverlayNetwork,
                                          destinationId,
                                          networkPath,
-                                         requestId,
+                                         messageId,
                                          action,
                                          payload,
-                                         RequestTimeout,
                                          null,
                                          CancellationToken
                                      );
@@ -350,11 +335,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             }
             catch (Exception e)
             {
-                ErrorResponse = $"Could not parse the given JSON request message: {e.Message}";
+                ErrorResponse = $"Could not parse the given JSON send message: {e.Message}";
                 return false;
             }
 
-            ErrorResponse = $"Could not parse the given JSON request message: {JSONArray}";
+            ErrorResponse = $"Could not parse the given JSON send message: {JSONArray}";
             return false;
 
         }
@@ -373,18 +358,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                    #region OCPP Standard Mode
 
                    // [
-                   //     2,                   // MessageType: CALL
-                   //    "19223201",           // RequestId
-                   //    "BootNotification",   // Action
+                   //     6,                           // MessageType: SEND
+                   //    "19223201",                   // MessageId
+                   //    "NotifyPeriodicEventStream",  // Action
                    //    {
-                   //        "chargingStation":  { ... },
-                   //        "reason":           "FirmwareUpdate"
+                   //        "id":       123,
+                   //        "pending":  0,
+                   //        "data":     [ {"t": 1710863410, "v": 230.4}, {"t": 1710863420, "v": 230.2} ]
                    //    }
                    // ]
                    NetworkingMode.Unknown or
                    NetworkingMode.Standard
-                       => new (2,
-                               RequestId.ToString(),
+                       => new (6,
+                               MessageId.ToString(),
                                Action,
                                Payload),
 
@@ -393,20 +379,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                    #region OCPP Overlay Network Mode
 
                    // [
-                   //     2,                    // MessageType: CALL
-                   //     "CSMS",               // Destination Identification/Any-/Multicast
-                   //     [ "CS01", "NN01" ],   // Network Source Path
-                   //    "19223201",            // RequestId
-                   //    "BootNotification",    // Action
+                   //     6,                           // MessageType: SEND
+                   //     DestinationId,
+                   //    [ NetworkPath ],
+                   //    "19223201",                   // RequestId
+                   //    "NotifyPeriodicEventStream",  // Action
                    //    {
-                   //        "chargingStation":  { ... },
-                   //        "reason":           "FirmwareUpdate"
+                   //        "id":       123,
+                   //        "pending":  0,
+                   //        "data":     [ {"t": 1710863410, "v": 230.4}, {"t": 1710863420, "v": 230.2} ]
                    //    }
                    // ]
-                   _   => new (2,
+                   _   => new (6,
                                DestinationId.ToString(),
                                NetworkPath.  ToJSON(),
-                               RequestId.    ToString(),
+                               MessageId.    ToString(),
                                Action,
                                Payload)
 
@@ -425,19 +412,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <param name="NewDestinationId">An optional new destination identification.</param>
         /// <param name="NewNetworkPath">An optional new (source) network path.</param>
         /// <param name="NewNetworkingMode">An optional new networking mode.</param>
-        public OCPP_JSONRequestMessage ChangeNetworking(NetworkingNode_Id?  NewDestinationId    = null,
-                                                        NetworkPath?        NewNetworkPath      = null,
-                                                        NetworkingMode?     NewNetworkingMode   = null)
+        public OCPP_JSONSendMessage ChangeNetworking(NetworkingNode_Id?  NewDestinationId    = null,
+                                                     NetworkPath?        NewNetworkPath      = null,
+                                                     NetworkingMode?     NewNetworkingMode   = null)
 
-            => new (RequestTimestamp,
+            => new (MessageTimestamp,
                     EventTrackingId,
                     NewNetworkingMode ?? NetworkingMode,
                     NewDestinationId  ?? DestinationId,
                     NewNetworkPath    ?? NetworkPath,
-                    RequestId,
+                    MessageId,
                     Action,
                     Payload,
-                    RequestTimeout,
                     ErrorMessage,
                     CancellationToken);
 
@@ -449,17 +435,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Change the destination identification.
         /// </summary>
         /// <param name="NewDestinationId">A new destination identification.</param>
-        public OCPP_JSONRequestMessage ChangeDestionationId(NetworkingNode_Id NewDestinationId)
+        public OCPP_JSONSendMessage ChangeDestionationId(NetworkingNode_Id NewDestinationId)
 
-            => new (RequestTimestamp,
+            => new (MessageTimestamp,
                     EventTrackingId,
                     NetworkingMode,
                     NewDestinationId,
                     NetworkPath,
-                    RequestId,
+                    MessageId,
                     Action,
                     Payload,
-                    RequestTimeout,
                     ErrorMessage,
                     CancellationToken);
 
@@ -471,17 +456,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Append the given networking node identification to the network path.
         /// </summary>
         /// <param name="NetworkingNodeId">A networking node identification to append.</param>
-        public OCPP_JSONRequestMessage AppendToNetworkPath(NetworkingNode_Id NetworkingNodeId)
+        public OCPP_JSONSendMessage AppendToNetworkPath(NetworkingNode_Id NetworkingNodeId)
 
-            => new (RequestTimestamp,
+            => new (MessageTimestamp,
                     EventTrackingId,
                     NetworkingMode,
                     DestinationId,
                     NetworkPath.Append(NetworkingNodeId),
-                    RequestId,
+                    MessageId,
                     Action,
                     Payload,
-                    RequestTimeout,
                     ErrorMessage,
                     CancellationToken);
 
@@ -495,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         public override String ToString()
 
-            => $"REQUEST[{Action}/{RequestId}] => {Payload.ToString(Newtonsoft.Json.Formatting.None)}";
+            => $"SEND: {Action} ({MessageId}) => {Payload.ToString(Newtonsoft.Json.Formatting.None)}";
 
         #endregion
 

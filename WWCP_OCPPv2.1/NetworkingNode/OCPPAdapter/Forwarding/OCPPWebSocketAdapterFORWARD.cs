@@ -359,6 +359,171 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region ProcessJSONSendMessage          (JSONSendMessage,          WebSocketConnection)
+
+        public async Task ProcessJSONSendMessage(OCPP_JSONSendMessage  JSONSendMessage,
+                                                 IWebSocketConnection  WebSocketConnection)
+        {
+
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONSendMessage.DestinationId))
+                return;
+
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(JSONSendMessage.DestinationId))
+                return;
+
+
+            #region Try to call the matching 'incoming message processor'...
+
+            if (forwardingMessageProcessorsLookup.TryGetValue(JSONSendMessage.Action, out var methodInfo) &&
+                methodInfo is not null)
+            {
+
+                //ToDo: Maybe this could be done via code generation!
+                var result = methodInfo.Invoke(
+                                 this,
+                                 [
+                                     JSONSendMessage,
+                                     WebSocketConnection,
+                                     JSONSendMessage.CancellationToken
+                                 ]
+                             );
+
+                if (result is Task<ForwardingDecision> forwardingProcessor)
+                {
+
+                    var forwardingDecision = await forwardingProcessor;
+
+                    #region FORWARD
+
+                    if (forwardingDecision.Result == ForwardingResults.FORWARD)
+                    {
+
+                        var newJSONSendMessage = JSONSendMessage.AppendToNetworkPath(parentNetworkingNode.Id);
+
+                        //expectedResponses.TryAdd(
+                        //    newJSONRequestMessage.MessageId,
+                        //    new ResponseInfo(
+                        //        newJSONRequestMessage.MessageId,
+                        //        forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                        //        newJSONRequestMessage.NetworkPath.Source,
+                        //        newJSONRequestMessage.RequestTimeout
+                        //    )
+                        //);
+
+                        await parentNetworkingNode.OCPP.OUT.SendJSONSendMessage(newJSONSendMessage);
+
+                    }
+
+                    #endregion
+
+                    #region REPLACE
+
+                    if (forwardingDecision.Result == ForwardingResults.REPLACE)
+                    {
+
+                        var newJSONSendMessage = forwardingDecision.NewJSONRequest is null
+                                                        ? JSONSendMessage.AppendToNetworkPath(parentNetworkingNode.Id)
+                                                        : new OCPP_JSONSendMessage(
+                                                              JSONSendMessage.MessageTimestamp,
+                                                              JSONSendMessage.EventTrackingId,
+                                                              JSONSendMessage.NetworkingMode,
+                                                              forwardingDecision.NewDestinationId ?? JSONSendMessage.DestinationId,
+                                                              JSONSendMessage.NetworkPath.Append(parentNetworkingNode.Id),
+                                                              JSONSendMessage.MessageId,
+                                                              forwardingDecision.NewAction        ?? JSONSendMessage.Action,
+                                                              forwardingDecision.NewJSONRequest, // <-- !!!
+                                                              JSONSendMessage.ErrorMessage,
+                                                              JSONSendMessage.CancellationToken
+                                                          );
+
+                        //expectedResponses.TryAdd(
+                        //    newJSONSendMessage.MessageId,
+                        //    new ResponseInfo(
+                        //        newJSONSendMessage.MessageId,
+                        //        forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                        //        newJSONSendMessage.NetworkPath.Source,
+                        //        newJSONSendMessage.RequestTimeout
+                        //    )
+                        //);
+
+                        await parentNetworkingNode.OCPP.OUT.SendJSONSendMessage(newJSONSendMessage);
+
+                    }
+
+                    #endregion
+
+                    #region REJECT
+
+                    else if (forwardingDecision.Result == ForwardingResults.REJECT &&
+                             forwardingDecision.JSONRejectResponse is not null)
+                    {
+
+                        await parentNetworkingNode.OCPP.SendJSONRequestError(
+                                  new OCPP_JSONRequestErrorMessage(
+                                      Timestamp.Now,
+                                      JSONSendMessage.EventTrackingId,
+                                      NetworkingMode.Unknown,
+                                      JSONSendMessage.NetworkPath.Source,
+                                      NetworkPath.From(parentNetworkingNode.Id),
+                                      JSONSendMessage.MessageId,
+                                      ResultCode.Filtered,
+                                      forwardingDecision.RejectMessage,
+                                      forwardingDecision.RejectDetails,
+                                      JSONSendMessage.CancellationToken
+                                  )
+                              );
+
+                    }
+
+                    #endregion
+
+                    #region DROP
+
+                    else
+                    {
+                        // Just ignore the request!
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    DebugX.Log($"Received undefined '{JSONSendMessage.Action}' JSON send message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+
+            }
+
+            #endregion
+
+            #region ...or error!
+
+            else
+            {
+
+                DebugX.Log($"Received unknown '{JSONSendMessage.Action}' JSON send message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+
+                //OCPPErrorResponse = new OCPP_JSONErrorMessage(
+                //                        Timestamp.Now,
+                //                        EventTracking_Id.New,
+                //                        NetworkingMode.Unknown,
+                //                        NetworkingNode_Id.Zero,
+                //                        NetworkPath.Empty,
+                //                        jsonRequest.RequestId,
+                //                        ResultCode.ProtocolError,
+                //                        $"The OCPP message '{jsonRequest.Action}' is unkown!",
+                //                        new JObject(
+                //                            new JProperty("request", JSONMessage)
+                //                        )
+                //                    );
+
+            }
+
+            #endregion
+
+        }
+
+        #endregion
+
 
         #region ProcessBinaryRequestMessage     (BinaryRequestMessage,     WebSocketConnection)
 
@@ -411,6 +576,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
+        #region ProcessBinarySendMessage        (BinarySendMessage,        WebSocketConnection)
+
+        public async Task ProcessBinarySendMessage(OCPP_BinarySendMessage  BinarySendMessage,
+                                                   IWebSocketConnection    WebSocketConnection)
+        {
+
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinarySendMessage.DestinationId))
+                return;
+
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinarySendMessage.DestinationId))
+                return;
+
+            await parentNetworkingNode.OCPP.SendBinarySendMessage(BinarySendMessage);
+
+        }
+
+        #endregion
+
 
 
         #region HandleErrors(Module, Caller, ExceptionOccured)

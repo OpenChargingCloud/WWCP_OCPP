@@ -566,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         public JArray ToJSON()
 
             // [
-            //     4,            // MessageType: CALLERROR (Server-to-Client)
+            //     4,            // MessageType: CALLERROR
             //    "19223201",    // RequestId from request
             //    "<errorCode>",
             //    "<errorDescription>",
@@ -616,7 +616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         public override String ToString()
 
-            => $"{RequestId} => {ErrorCode}";
+            => $"REQUEST ERROR[{RequestId}] => {ErrorCode}: {ErrorDescription}";
 
         #endregion
 

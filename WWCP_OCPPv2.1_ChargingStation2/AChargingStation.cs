@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using System.Collections.Concurrent;
 
 #endregion
 
@@ -191,6 +192,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         private readonly  Timer       SendHeartbeatsTimer;
 
+        public ConcurrentDictionary<String, List<ComponentConfig>> ComponentConfigs = [];
+
+        public List<UserRole> UserRoles = [];
+
         #endregion
 
         #region Properties
@@ -269,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
 
-        private readonly Dictionary<EVSE_Id, ChargingStationEVSE> evses;
+        protected readonly Dictionary<EVSE_Id, ChargingStationEVSE> evses;
 
         public IEnumerable<ChargingStationEVSE> EVSEs
             => evses.Values;
@@ -907,6 +912,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                           );
 
             #endregion
+
+
+            #region Register Component Configurations
+
+            AddComponent(new OCPPCommCtrlr(
+                             DefaultMessageTimeout:              TimeSpan.FromSeconds(30),
+                             FileTransferProtocols:              [ FileTransferProtocol.HTTPS ],
+                             NetworkConfigurationPriority:       [ "1" ],
+                             NetworkProfileConnectionAttempts:   3,
+                             OfflineThreshold:                   TimeSpan.FromSeconds(30),
+                             MessageAttempts:                    5,
+                             MessageAttemptInterval:             TimeSpan.FromSeconds(30),
+                             UnlockOnEVSideDisconnect:           true,
+                             ResetRetries:                       3
+                         ));
+
+            AddComponent(new SecurityCtrlr(
+                             OrganizationName:                   "GraphDefined CSO",
+                             CertificateEntries:                 128,
+                             SecurityProfile:                    SecurityProfiles.SecurityProfile2,
+
+                             Identity:                           "CS001",
+                             BasicAuthPassword:                  "s3cur3!",
+                             AdditionalRootCertificateCheck:     false,
+                             MaxCertificateChainSize:            128
+                         ));
+
+            // A CSMS can request a report of the CustomizationCtrlr component to get a list of all customizations that are supported by the charging station.
+
+            #endregion
+
+            #region Register User Roles
+
+            var ur1 = KeyPair.GenerateKeys()!;
+
+            UserRoles.Add(new UserRole(
+
+                              KeyPair:                 ur1,
+                              ComponentAccessRights:   null,
+
+                              //SignerName:              null,
+                              //Description:             null,
+                              //Timestamp:               null,
+
+                              CustomData:              null
+
+                          ));
+
+            #endregion
+
 
 
             OCPP.IN.OnBootNotificationResponseReceived += (timestamp, sender, request, response, runtime) => {
@@ -1583,6 +1638,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         }
 
         #endregion
+
+
+
+
+        public void AddComponent(ComponentConfig Component)
+        {
+
+            ComponentConfigs.AddOrUpdate(
+                                 Component.Name,
+                                 name => [Component],
+                                 (name, list) => list.AddAndReturnList(Component)
+                             );
+
+        }
+
+
+
+
 
 
 

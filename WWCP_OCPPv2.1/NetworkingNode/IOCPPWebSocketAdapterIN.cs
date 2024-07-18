@@ -48,6 +48,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                      IOCPPWebSocketAdapterIN        Server,
                                                                      OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage);
 
+    public delegate Task OnJSONSendMessageReceivedDelegate          (DateTime                       Timestamp,
+                                                                     IOCPPWebSocketAdapterIN        Server,
+                                                                     OCPP_JSONSendMessage           JSONSendMessage);
+
 
 
     public delegate Task OnBinaryRequestMessageReceivedDelegate     (DateTime                       Timestamp,
@@ -61,6 +65,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //public delegate Task OnBinaryErrorResponseReceivedDelegate    (DateTime                      Timestamp,
     //                                                               IOCPPWebSocketAdapterIN       Server,
     //                                                               OCPP_BinaryErrorMessage       BinaryErrorMessage);
+
+    public delegate Task OnBinarySendMessageReceivedDelegate        (DateTime                       Timestamp,
+                                                                     IOCPPWebSocketAdapterIN        Server,
+                                                                     OCPP_BinarySendMessage         BinarySendMessage);
 
     #endregion
 

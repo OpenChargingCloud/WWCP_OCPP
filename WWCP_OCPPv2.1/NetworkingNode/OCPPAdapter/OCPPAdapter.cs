@@ -1048,6 +1048,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region SendJSONSendMessage      (JSONRequestMessage)
+
+        public async Task<SendMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
+        {
+
+            var sendOCPPMessageResult = SendMessageResult.TransmissionFailed;
+
+            if (LookupNetworkingNode(JSONSendMessage.DestinationId, out var reachability) &&
+                reachability is not null)
+            {
+
+                if      (reachability.OCPPWebSocketClient is not null)
+                    sendOCPPMessageResult = await reachability.OCPPWebSocketClient.SendJSONSendMessage(JSONSendMessage);
+
+                else if (reachability.OCPPWebSocketServer is not null)
+                    sendOCPPMessageResult = await reachability.OCPPWebSocketServer.SendJSONSendMessage(JSONSendMessage);
+
+                return sendOCPPMessageResult;
+
+            }
+
+            return SendMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
 
         #region SendBinaryRequest        (BinaryRequestMessage)
 
@@ -1215,6 +1242,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
+        #region SendBinarySendMessage    (BinarySendMessage)
+
+        public async Task<SendMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
+        {
+
+            var sendOCPPMessageResult = SendMessageResult.TransmissionFailed;
+
+            if (LookupNetworkingNode(BinarySendMessage.DestinationId, out var reachability) &&
+                reachability is not null)
+            {
+
+                if      (reachability.OCPPWebSocketClient is not null)
+                    sendOCPPMessageResult = await reachability.OCPPWebSocketClient.SendBinarySendMessage(BinarySendMessage);
+
+                else if (reachability.OCPPWebSocketServer is not null)
+                    sendOCPPMessageResult = await reachability.OCPPWebSocketServer.SendBinarySendMessage(BinarySendMessage);
+
+                return sendOCPPMessageResult;
+
+            }
+
+            return SendMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
 
 
         #region ReceiveJSONResponse      (JSONResponseMessage)

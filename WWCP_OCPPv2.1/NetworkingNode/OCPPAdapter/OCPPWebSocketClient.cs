@@ -649,6 +649,81 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region SendJSONSendMessage   (JSONSendMessage)
+
+        /// <summary>
+        /// Send (and forget) the given JSON OCPP send message.
+        /// </summary>
+        /// <param name="JSONSendMessage">A JSON OCPP send message.</param>
+        public async Task<SendMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
+        {
+
+            try
+            {
+
+                JSONSendMessage.NetworkingMode = NetworkingMode;
+                //RequestMessage.RequestTimeout ??= RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout);
+
+                var ocppTextMessage = JSONSendMessage.ToJSON().ToString(Formatting.None);
+
+                if (SendStatus.Success == await SendTextMessage(
+                                                    ocppTextMessage,
+                                                    JSONSendMessage.EventTrackingId,
+                                                    JSONSendMessage.CancellationToken
+                                                ))
+                {
+
+                    //requests.TryAdd(RequestMessage.RequestId,
+                    //                SendRequestState.FromJSONRequest(
+                    //                    Timestamp.Now,
+                    //                    RequestMessage.DestinationId,
+                    //                    RequestMessage.RequestTimeout ?? (RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout)),
+                    //                    RequestMessage
+                    //                ));
+
+                    #region OnJSONMessageRequestSent
+
+                    //var onJSONMessageRequestSent = OnJSONMessageRequestSent;
+                    //if (onJSONMessageRequestSent is not null)
+                    //{
+                    //    try
+                    //    {
+
+                    //        await Task.WhenAll(onJSONMessageRequestSent.GetInvocationList().
+                    //                               OfType<OnWebSocketTextMessageDelegate>().
+                    //                               Select(loggingDelegate => loggingDelegate.Invoke(
+                    //                                                              Timestamp.Now,
+                    //                                                              this,
+                    //                                                              webSocketConnection.Item1,
+                    //                                                              EventTrackingId,
+                    //                                                              ocppTextMessage,
+                    //                                                              CancellationToken
+                    //                                                          )).
+                    //                               ToArray());
+
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnJSONMessageRequestSent));
+                    //    }
+                    //}
+
+                    #endregion
+
+                }
+
+                return SendMessageResult.Success;
+
+            }
+            catch (Exception)
+            {
+                return SendMessageResult.TransmissionFailed;
+            }
+
+        }
+
+        #endregion
+
 
         #region SendBinaryRequest     (BinaryRequestMessage)
 
@@ -781,6 +856,81 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    catch (Exception e)
                     //    {
                     //        DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnBinaryMessageResponseSent));
+                    //    }
+                    //}
+
+                    #endregion
+
+                }
+
+                return SendMessageResult.Success;
+
+            }
+            catch (Exception)
+            {
+                return SendMessageResult.TransmissionFailed;
+            }
+
+        }
+
+        #endregion
+
+        #region SendBinarySendMessage (BinarySendMessage)
+
+        /// <summary>
+        /// Send (and forget) the given binary OCPP send message.
+        /// </summary>
+        /// <param name="BinarySendMessage">A binary OCPP send message.</param>
+        public async Task<SendMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
+        {
+
+            try
+            {
+
+                BinarySendMessage.NetworkingMode = NetworkingMode;
+                //RequestMessage.RequestTimeout ??= RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout);
+
+                var ocppBinaryMessage = BinarySendMessage.ToByteArray();
+
+                if (SendStatus.Success == await SendBinaryMessage(
+                                                    ocppBinaryMessage,
+                                                    BinarySendMessage.EventTrackingId,
+                                                    BinarySendMessage.CancellationToken
+                                                ))
+                {
+
+                    //requests.TryAdd(RequestMessage.RequestId,
+                    //                SendRequestState.FromJSONRequest(
+                    //                    Timestamp.Now,
+                    //                    RequestMessage.DestinationId,
+                    //                    RequestMessage.RequestTimeout ?? (RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout)),
+                    //                    RequestMessage
+                    //                ));
+
+                    #region OnBinaryMessageRequestSent
+
+                    //var onBinaryMessageRequestSent = OnBinaryMessageRequestSent;
+                    //if (onBinaryMessageRequestSent is not null)
+                    //{
+                    //    try
+                    //    {
+
+                    //        await Task.WhenAll(onBinaryMessageRequestSent.GetInvocationList().
+                    //                               OfType<OnWebSocketTextMessageDelegate>().
+                    //                               Select(loggingDelegate => loggingDelegate.Invoke(
+                    //                                                              Timestamp.Now,
+                    //                                                              this,
+                    //                                                              webSocketConnection.Item1,
+                    //                                                              EventTrackingId,
+                    //                                                              ocppTextMessage,
+                    //                                                              CancellationToken
+                    //                                                          )).
+                    //                               ToArray());
+
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnBinaryMessageRequestSent));
                     //    }
                     //}
 

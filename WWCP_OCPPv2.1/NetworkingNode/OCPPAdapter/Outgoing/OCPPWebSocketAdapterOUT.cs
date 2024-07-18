@@ -45,22 +45,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a JSON request was sent.
         /// </summary>
-        public event OnJSONRequestMessageSentDelegate?        OnJSONRequestMessageSent;
+        public event OnJSONRequestMessageSentDelegate?          OnJSONRequestMessageSent;
 
         /// <summary>
         /// An event sent whenever a JSON response was sent.
         /// </summary>
-        public event OnJSONResponseMessageSentDelegate?       OnJSONResponseMessageSent;
+        public event OnJSONResponseMessageSentDelegate?         OnJSONResponseMessageSent;
 
         /// <summary>
         /// An event sent whenever a JSON request error was sent.
         /// </summary>
-        public event OnJSONRequestErrorMessageSentDelegate?   OnJSONRequestErrorMessageSent;
+        public event OnJSONRequestErrorMessageSentDelegate?     OnJSONRequestErrorMessageSent;
 
         /// <summary>
         /// An event sent whenever a JSON response error was sent.
         /// </summary>
-        public event OnJSONResponseErrorMessageSentDelegate?  OnJSONResponseErrorMessageSent;
+        public event OnJSONResponseErrorMessageSentDelegate?    OnJSONResponseErrorMessageSent;
+
+        /// <summary>
+        /// An event sent whenever a JSON send message was sent.
+        /// </summary>
+        public event OnJSONSendMessageSentDelegate?             OnJSONSendMessageSent;
 
         #endregion
 
@@ -69,12 +74,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary request was sent.
         /// </summary>
-        public event OnBinaryRequestMessageSentDelegate?       OnBinaryRequestMessageSent;
+        public event OnBinaryRequestMessageSentDelegate?        OnBinaryRequestMessageSent;
 
         /// <summary>
         /// An event sent whenever a binary response was sent.
         /// </summary>
-        public event OnBinaryResponseMessageSentDelegate?      OnBinaryResponseMessageSent;
+        public event OnBinaryResponseMessageSentDelegate?       OnBinaryResponseMessageSent;
+
+        ///// <summary>
+        ///// An event sent whenever a JSON request error was sent.
+        ///// </summary>
+        //public event OnBinaryRequestErrorMessageSentDelegate?   OnBinaryRequestErrorMessageSent;
+
+        ///// <summary>
+        ///// An event sent whenever a JSON response error was sent.
+        ///// </summary>
+        //public event OnBinaryResponseErrorMessageSentDelegate?  OnBinaryResponseErrorMessageSent;
+
+        /// <summary>
+        /// An event sent whenever a binary send message was sent.
+        /// </summary>
+        public event OnBinarySendMessageSentDelegate?           OnBinarySendMessageSent;
 
         #endregion
 
@@ -109,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONRequest(JSONRequestMessage);
 
-            #region OnJSONMessageRequestSent
+            #region OnJSONRequestMessageSent
 
             var logger = OnJSONRequestMessageSent;
             if (logger is not null)
@@ -318,6 +338,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region SendJSONSendMessage      (JSONSendMessage)
+
+        /// <summary>
+        /// Send (and forget) the given JSON send message.
+        /// </summary>
+        /// <param name="JSONSendMessage">A JSON send message.</param>
+        public async Task<SendMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
+        {
+
+            var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONSendMessage(JSONSendMessage);
+
+            #region OnJSONSendMessageSent
+
+            var logger = OnJSONSendMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                           OfType<OnJSONSendMessageSentDelegate>().
+                                           Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                         Timestamp.Now,
+                                                                         this,
+                                                                         JSONSendMessage,
+                                                                         sendMessageResult
+                                                                     )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnJSONSendMessageSent));
+                }
+            }
+
+            #endregion
+
+            return sendMessageResult;
+
+        }
+
+        #endregion
+
 
         #region SendBinaryRequest        (BinaryRequestMessage)
 
@@ -330,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage);
 
-            #region OnBinaryMessageRequestSent
+            #region OnBinaryRequestMessageSent
 
             var logger = OnBinaryRequestMessageSent;
             if (logger is not null)
@@ -440,6 +504,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             );
                 }
 
+            }
+
+            #endregion
+
+            return sendMessageResult;
+
+        }
+
+        #endregion
+
+        #region SendBinarySendMessage    (BinarySendMessage)
+
+        /// <summary>
+        /// Send (and forget) the given binary send message.
+        /// </summary>
+        /// <param name="BinarySendMessage">A binary send message.</param>
+        public async Task<SendMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
+        {
+
+            var sendMessageResult = await parentNetworkingNode.OCPP.SendBinarySendMessage(BinarySendMessage);
+
+            #region OnBinarySendMessageSent
+
+            var logger = OnBinarySendMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                           OfType<OnBinarySendMessageSentDelegate>().
+                                           Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                         Timestamp.Now,
+                                                                         this,
+                                                                         BinarySendMessage,
+                                                                         sendMessageResult
+                                                                     )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBinarySendMessageSent));
+                }
             }
 
             #endregion

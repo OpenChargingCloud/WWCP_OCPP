@@ -41,11 +41,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                IChargingStation
     {
 
-        #region Properties
-
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
@@ -546,61 +541,7486 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
 
-            // CSMS
+            
 
-            #region OnBinaryDataTransfer
 
-            OCPP.IN.OnBootNotification += (timestamp,
-                                           sender,
-                                           connection,
-                                           request,
-                                           cancellationToken) => {
 
-                DebugX.Log($"'{Id}': Incoming BootNotification request: {request.ChargingStation.SerialNumber}, {request.Reason}");
 
-                // ChargingStation
-                // Reason
+
+
+
+
+
+
+
+
+
+
+
+
+            #region OnReset
+
+            OCPP.IN.OnReset += async (timestamp,
+                                      sender,
+                                      connection,
+                                      request,
+                                      cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
+
+                // ResetType
+
+                ResetResponse? response = null;
+
+                // Reset entire charging station
+                if (!request.EVSEId.HasValue)
+                {
+
+                    response = new ResetResponse(
+                                    Request:      request,
+                                    Status:       ResetStatus.Accepted,
+                                    StatusInfo:   null,
+                                    CustomData:   null
+                                );
+
+                }
+
+                // Only reset the given EVSE
+                else if (evses.ContainsKey(request.EVSEId.Value))
+                {
+
+                    response = new ResetResponse(
+                                   Request:      request,
+                                   Status:       ResetStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                // Unknown EVSE
+                else
+                {
+
+                    response = new ResetResponse(
+                                    Request:      request,
+                                    Status:       ResetStatus.Rejected,
+                                    StatusInfo:   null,
+                                    CustomData:   null
+                                );
+
+                }
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUpdateFirmware
+
+            OCPP.IN.OnUpdateFirmware += (timestamp,
+                                         sender,
+                                         connection,
+                                         request,
+                                         cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming UpdateFirmware request ({request.UpdateFirmwareRequestId}) for '" + request.Firmware.FirmwareURL + "'.");
+
+                // Firmware,
+                // UpdateFirmwareRequestId
+                // Retries
+                // RetryIntervals
 
                 return Task.FromResult(
-                           new BootNotificationResponse(
-                               Request:       request,
-                               NetworkPath:   NetworkPath.From(Id),
-                               Status:        RegistrationStatus.Accepted,
-                               CurrentTime:   Timestamp.Now,
-                               Interval:      TimeSpan.FromMinutes(5)
+                           new UpdateFirmwareResponse(
+                               Request:      request,
+                               Status:       UpdateFirmwareStatus.Accepted,
+                               StatusInfo:   null,
+                               CustomData:   null
                            )
                        );
 
             };
 
+            #endregion
 
-            OCPP.FORWARD.OnBinaryDataTransferRequestFilter += (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request,
-                                                               cancellationToken) =>
+            #region OnPublishFirmware
 
-                Task.FromResult(
-                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                        request,
-                        ForwardingResults.FORWARD
-                    )
-                );
+            OCPP.IN.OnPublishFirmware += (timestamp,
+                                          sender,
+                                          connection,
+                                          request,
+                                          cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming PublishFirmware request ({request.PublishFirmwareRequestId}) for '" + request.DownloadLocation + "'.");
+
+                // PublishFirmwareRequestId
+                // DownloadLocation
+                // MD5Checksum
+                // Retries
+                // RetryInterval
+
+                return Task.FromResult(
+                           new PublishFirmwareResponse(
+                               Request:      request,
+                               Status:       GenericStatus.Accepted,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
 
             #endregion
 
-            OCPP.FORWARD.OnBootNotificationRequestFilter += (timestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             cancellationToken) =>
+            #region OnUnpublishFirmware
 
-                Task.FromResult(
-                    new ForwardingDecision<OCPPv2_1.CS.BootNotificationRequest, BootNotificationResponse>(
-                        request,
-                        ForwardingResults.FORWARD
-                    )
-                );
+            OCPP.IN.OnUnpublishFirmware += (timestamp,
+                                            sender,
+                                            connection,
+                                            request,
+                                            cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming UnpublishFirmware request for '" + request.MD5Checksum + "'.");
+
+                // MD5Checksum
+
+                return Task.FromResult(
+                           new UnpublishFirmwareResponse(
+                               Request:      request,
+                               Status:       UnpublishFirmwareStatus.Unpublished,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetBaseReport
+
+            OCPP.IN.OnGetBaseReport += (timestamp,
+                                        sender,
+                                        connection,
+                                        request,
+                                        cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming GetBaseReport request ({request.GetBaseReportRequestId}) accepted.");
+
+                // GetBaseReportRequestId
+                // ReportBase
+
+                return Task.FromResult(
+                           new GetBaseReportResponse(
+                               Request:      request,
+                               Status:       GenericDeviceModelStatus.Accepted,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetReport
+
+            OCPP.IN.OnGetReport += (timestamp,
+                                    sender,
+                                    connection,
+                                    request,
+                                    cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming GetReport request ({request.GetReportRequestId}) accepted.");
+
+                // GetReportRequestId
+                // ComponentCriteria
+                // ComponentVariables
+
+                return Task.FromResult(
+                           new GetReportResponse(
+                               Request:      request,
+                               Status:       GenericDeviceModelStatus.Accepted,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetLog
+
+            OCPP.IN.OnGetLog += (timestamp,
+                                 sender,
+                                 connection,
+                                 request,
+                                 cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming GetLog request ({request.LogRequestId}) accepted.");
+
+                // LogType
+                // LogRequestId
+                // Log
+                // Retries
+                // RetryInterval
+
+                return Task.FromResult(
+                           new GetLogResponse(
+                               Request:      request,
+                               Status:       LogStatus.Accepted,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetVariables
+
+            OCPP.IN.OnSetVariables += (timestamp,
+                                       sender,
+                                       connection,
+                                       request,
+                                       cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming SetVariables request accepted.");
+
+                // VariableData
+
+                var setVariableResults = new List<SetVariableResult>();
+
+                     if (request.DataConsistencyModel == null ||
+                         request.DataConsistencyModel == DataConsistencyModel.IndependentRequests)
+                {
+                    foreach (var setVariableData in request.VariableData)
+                    {
+
+                        var componentInstanceFound  = false;
+                        var variableFound           = false;
+                        var variableInstanceFound   = false;
+
+                        if (ComponentConfigs.TryGetValue(setVariableData.Component.Name, out var componentConfigList))
+                        {
+
+                            foreach (var componentConfig in componentConfigList)
+                            {
+                                if (componentConfig.Instance == setVariableData.Component.Instance)
+                                {
+
+                                    componentInstanceFound = true;
+
+                                    foreach (var variableConfig in componentConfig.VariableConfigs)
+                                    {
+
+                                        if (variableConfig.Name == setVariableData.Variable.Name)
+                                        {
+
+                                            variableFound = true;
+
+                                            if (variableConfig.Instance == setVariableData.Variable.Instance)
+                                            {
+
+                                                variableInstanceFound = true;
+
+                                                if (variableConfig.Attributes?.Mutability == MutabilityTypes.ReadOnly)
+                                                    setVariableResults.Add(new SetVariableResult(
+                                                                               AttributeStatus:       SetVariableStatus.Rejected,
+                                                                               Component:             setVariableData.Component,
+                                                                               Variable:              setVariableData.Variable,
+                                                                               AttributeType:         variableConfig.Attributes?.Type,
+                                                                               AttributeStatusInfo:   new StatusInfo(
+                                                                                                          "error",
+                                                                                                          $"{setVariableData.Component.Name}{(setVariableData.Component.Instance is not null ? $"({setVariableData.Component.Instance})" : "")}/" +
+                                                                                                          $"{setVariableData.Variable.Name}{(setVariableData.Variable.Instance is not null ? $"({setVariableData.Variable.Instance})" : "")} is read-only!"
+                                                                                                      )
+                                                                           ));
+
+                                                else // Mutability == ReadWrite | WriteOnly
+                                                {
+
+                                                    //ToDo: Check User Access Rights!
+
+                                                    var rr = variableConfig.Set(setVariableData.AttributeValue,
+                                                                                setVariableData.OldAttributeValue);
+
+                                                    if (rr.ErrorMessage is not null)
+                                                        setVariableResults.Add(new SetVariableResult(
+                                                                               AttributeStatus:       SetVariableStatus.Rejected,
+                                                                               Component:             setVariableData.Component,
+                                                                               Variable:              setVariableData.Variable,
+                                                                               AttributeType:         variableConfig.Attributes?.Type,
+                                                                               AttributeStatusInfo:   new StatusInfo("error", rr.ErrorMessage),
+                                                                               CustomData:            null
+                                                                           ));
+
+                                                    else
+                                                        setVariableResults.Add(new SetVariableResult(
+                                                                               AttributeStatus:       SetVariableStatus.Accepted,
+                                                                               Component:             setVariableData.Component,
+                                                                               Variable:              setVariableData.Variable,
+                                                                               AttributeType:         variableConfig.Attributes?.Type,
+                                                                               AttributeStatusInfo:   null,
+                                                                               CustomData:            null
+                                                                           ));
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                    if (!variableFound)
+                                        setVariableResults.Add(
+                                            new SetVariableResult(
+                                                AttributeStatus:   SetVariableStatus.UnknownVariable,
+                                                Component:         setVariableData.Component,
+                                                Variable:          setVariableData.Variable
+                                            )
+                                        );
+
+                                    else if (!variableInstanceFound)
+                                        setVariableResults.Add(
+                                            new SetVariableResult(
+                                                AttributeStatus:   SetVariableStatus.UnknownVariable,
+                                                Component:         setVariableData.Component,
+                                                Variable:          setVariableData.Variable
+                                            )
+                                        );
+
+                                }
+                            }
+
+                            if (!componentInstanceFound)
+                                setVariableResults.Add(
+                                    new SetVariableResult(
+                                        AttributeStatus:   SetVariableStatus.UnknownComponent,
+                                        Component:         setVariableData.Component,
+                                        Variable:          setVariableData.Variable
+                                    )
+                                );
+
+                        }
+
+                        else
+                            setVariableResults.Add(
+                                new SetVariableResult(
+                                    AttributeStatus:      SetVariableStatus.UnknownComponent,
+                                    Component:            setVariableData.Component,
+                                    Variable:             setVariableData.Variable,
+                                    AttributeStatusInfo:  new StatusInfo(
+                                                              "error",
+                                                              $"Unknown component '{setVariableData.Component.Name}'!"
+                                                          )
+                                )
+                            );
+
+                    }
+                }
+
+                else if (request.DataConsistencyModel == DataConsistencyModel.BASE)
+                {
+
+                }
+
+                else if (request.DataConsistencyModel == DataConsistencyModel.ACID)
+                {
+
+                }
+
+                else
+                    setVariableResults.AddRange(request.VariableData.Select(setVariableData => new SetVariableResult(
+                                                                                                   AttributeStatus:       SetVariableStatus.Rejected,
+                                                                                                   Component:             setVariableData.Component,
+                                                                                                   Variable:              setVariableData.Variable,
+                                                                                                   AttributeType:         setVariableData.AttributeType,
+                                                                                                   AttributeStatusInfo:   new StatusInfo(
+                                                                                                                              "error",
+                                                                                                                              $"Unknown data consistency model '{request.DataConsistencyModel}'!"
+                                                                                                                          )
+                                                                                               )));
+
+
+                return Task.FromResult(
+                           new SetVariablesResponse(
+                               Request:             request,
+                               SetVariableResults:  setVariableResults,
+                               CustomData:          null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetVariables
+
+            OCPP.IN.OnGetVariables += (timestamp,
+                                       sender,
+                                       connection,
+                                       request,
+                                       cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming GetVariables request accepted.");
+
+                var getVariableResults = new List<GetVariableResult>();
+
+                foreach (var getVariableData in request.VariableData)
+                {
+
+                    var componentInstanceFound  = false;
+                    var variableFound           = false;
+                    var variableInstanceFound   = false;
+
+                    if (ComponentConfigs.TryGetValue(getVariableData.Component.Name, out var componentConfigList))
+                    {
+
+                        foreach (var componentConfig in componentConfigList)
+                        {
+                            if (componentConfig.Instance == getVariableData.Component.Instance)
+                            {
+
+                                componentInstanceFound = true;
+
+                                foreach (var variableConfig in componentConfig.VariableConfigs)
+                                {
+
+                                    if (variableConfig.Name == getVariableData.Variable.Name)
+                                    {
+
+                                        variableFound = true;
+
+                                        if (variableConfig.Instance == getVariableData.Variable.Instance)
+                                        {
+
+                                            variableInstanceFound = true;
+
+                                            getVariableResults.Add(new GetVariableResult(
+                                                                       AttributeStatus:       GetVariableStatus.Accepted,
+                                                                       Component:             getVariableData.Component,
+                                                                       Variable:              getVariableData.Variable,
+                                                                       AttributeValue:        variableConfig.Value,
+                                                                       AttributeType:         variableConfig.Attributes?.Type,
+                                                                       AttributeStatusInfo:   null,
+                                                                       CustomData:            null
+                                                                   ));
+
+                                        }
+
+                                    }
+
+                                }
+
+                                if (!variableFound)
+                                    getVariableResults.Add(
+                                        new GetVariableResult(
+                                            AttributeStatus:      GetVariableStatus.UnknownVariable,
+                                            Component:            getVariableData.Component,
+                                            Variable:             getVariableData.Variable,
+                                            AttributeStatusInfo:  new StatusInfo(
+                                                                      "error",
+                                                                      $"Variable '{getVariableData.Variable.Name}' of component '{getVariableData.Component}' not found!"
+                                                                  )
+                                        )
+                                    );
+
+                                else if (!variableInstanceFound)
+                                    getVariableResults.Add(
+                                        new GetVariableResult(
+                                            AttributeStatus:      GetVariableStatus.UnknownVariable,
+                                            Component:            getVariableData.Component,
+                                            Variable:             getVariableData.Variable,
+                                            AttributeStatusInfo:  new StatusInfo(
+                                                                      "error",
+                                                                      $"Instance '{getVariableData.Variable.Instance}' of variable '{getVariableData.Component}' / '{getVariableData.Variable.Name}' not found!"
+                                                                  )
+                                        )
+                                    );
+
+                            }
+                        }
+
+                        if (!componentInstanceFound)
+                            getVariableResults.Add(
+                                new GetVariableResult(
+                                    AttributeStatus:      GetVariableStatus.UnknownComponent,
+                                    Component:            getVariableData.Component,
+                                    Variable:             getVariableData.Variable,
+                                    AttributeStatusInfo:  new StatusInfo(
+                                                                "error",
+                                                                $"Instance of component '{getVariableData.Component.Name}' not found!"
+                                                            )
+                                )
+                            );
+
+                    }
+
+                    else
+                        getVariableResults.Add(
+                            new GetVariableResult(
+                                AttributeStatus:      GetVariableStatus.UnknownComponent,
+                                Component:            getVariableData.Component,
+                                Variable:             getVariableData.Variable,
+                                AttributeStatusInfo:  new StatusInfo(
+                                                          "error",
+                                                          $"Unknown component '{getVariableData.Component.Name}'!"
+                                                      )
+                            )
+                        );
+
+                }
+
+                return Task.FromResult(
+                           new GetVariablesResponse(
+                               Request:     request,
+                               Results:     getVariableResults,
+                               CustomData:  null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetMonitoringBase
+
+            OCPP.IN.OnSetMonitoringBase += (timestamp,
+                                            sender,
+                                            connection,
+                                            request,
+                                            cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringBase request accepted.");
+
+                // MonitoringBase
+
+                return Task.FromResult(
+                           new SetMonitoringBaseResponse(
+                               Request:      request,
+                               Status:       GenericDeviceModelStatus.Accepted,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetMonitoringReport
+
+            OCPP.IN.OnGetMonitoringReport += (timestamp,
+                                              sender,
+                                              connection,
+                                              request,
+                                              cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming GetMonitoringReport request ({request.GetMonitoringReportRequestId}) accepted.");
+
+                // GetMonitoringReportRequestId
+                // MonitoringCriteria
+                // ComponentVariables
+
+                return Task.FromResult(
+                           new GetMonitoringReportResponse(
+                               Request:      request,
+                               Status:       GenericDeviceModelStatus.Accepted,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetMonitoringLevel
+
+            OCPP.IN.OnSetMonitoringLevel += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
+
+                // Severity
+
+                return Task.FromResult(
+                           new SetMonitoringLevelResponse(
+                               Request:      request,
+                               Status:       GenericStatus.Accepted,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetVariableMonitoring
+
+            OCPP.IN.OnSetVariableMonitoring += (timestamp,
+                                                sender,
+                                                connection,
+                                                request,
+                                                cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
+
+                // MonitoringData
+
+                return Task.FromResult(
+                           new SetVariableMonitoringResponse(
+                               Request:                request,
+                               SetMonitoringResults:   request.MonitoringData.Select(setMonitoringData => new SetMonitoringResult(
+                                                                                                              Status:                 SetMonitoringStatus.Accepted,
+                                                                                                              MonitorType:            setMonitoringData.MonitorType,
+                                                                                                              Severity:               setMonitoringData.Severity,
+                                                                                                              Component:              setMonitoringData.Component,
+                                                                                                              Variable:               setMonitoringData.Variable,
+                                                                                                              VariableMonitoringId:   setMonitoringData.VariableMonitoringId,
+                                                                                                              StatusInfo:             null,
+                                                                                                              CustomData:             null
+                                                                                                          )),
+                               CustomData:             null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnClearVariableMonitoring
+
+            OCPP.IN.OnClearVariableMonitoring += (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming ClearVariableMonitoring request (VariableMonitoringIds: {request.VariableMonitoringIds.AggregateWith(", ")})");
+
+                // VariableMonitoringIds
+
+                return Task.FromResult(
+                           new ClearVariableMonitoringResponse(
+                               Request:                  request,
+                               ClearMonitoringResults:   request.VariableMonitoringIds.Select(variableMonitoringId => new ClearMonitoringResult(
+                                                                                                                          Status:       ClearMonitoringStatus.Accepted,
+                                                                                                                          Id:           variableMonitoringId,
+                                                                                                                          StatusInfo:   null,
+                                                                                                                          CustomData:   null
+                                                                                                                      )),
+                               CustomData:               null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetNetworkProfile
+
+            OCPP.IN.OnSetNetworkProfile += (timestamp,
+                                            sender,
+                                            connection,
+                                            request,
+                                            cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming SetNetworkProfile request for configuration slot {request.ConfigurationSlot}!");
+
+                // ConfigurationSlot
+                // NetworkConnectionProfile
+
+                return Task.FromResult(
+                           new SetNetworkProfileResponse(
+                               Request:      request,
+                               Status:       SetNetworkProfileStatus.Accepted,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnChangeAvailability
+
+            OCPP.IN.OnChangeAvailability += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                ChangeAvailabilityResponse? response = null;
+
+                DebugX.Log($"Charging station '{Id}': Incoming ChangeAvailability request {request.OperationalStatus.AsText()}{(request.EVSE is not null ? $" for EVSE '{request.EVSE.Id}'{(request.EVSE.ConnectorId.HasValue ? $"/{request.EVSE.ConnectorId}" : "")}" : "")}!");
+
+                // OperationalStatus
+                // EVSE
+
+                // Operational status of the entire charging station
+                if (request.EVSE is null)
+                {
+
+                    response = new ChangeAvailabilityResponse(
+                                   Request:      request,
+                                   Status:       ChangeAvailabilityStatus.Accepted,
+                                   CustomData:   null
+                               );
+
+                }
+
+                // Operational status for an EVSE and maybe a connector
+                else
+                {
+
+                    if (!evses.TryGetValue(request.EVSE.Id, out var evse))
+                    {
+
+                        // Unknown EVSE identification
+                        response = new ChangeAvailabilityResponse(
+                                       Request:      request,
+                                       Status:       ChangeAvailabilityStatus.Rejected,
+                                       CustomData:   null
+                                   );
+
+                    }
+                    else
+                    {
+
+                        if (request.EVSE.ConnectorId.HasValue &&
+                           !evse.Connectors.Any(connector => connector.Id == request.EVSE.ConnectorId.Value))
+                        {
+
+                            // Unknown connector identification
+                            response = new ChangeAvailabilityResponse(
+                                           Request:      request,
+                                           Status:       ChangeAvailabilityStatus.Rejected,
+                                           CustomData:   null
+                                       );
+
+                        }
+                        else
+                        {
+
+                            response = new ChangeAvailabilityResponse(
+                                           Request:      request,
+                                           Status:       ChangeAvailabilityStatus.Accepted,
+                                           CustomData:   null
+                                       );
+
+                        }
+
+                    }
+
+                }
+
+                return Task.FromResult(response);
+
+            };
+
+            #endregion
+
+            #region OnTriggerMessage
+
+            OCPP.IN.OnTriggerMessage += (timestamp,
+                                         sender,
+                                         connection,
+                                         request,
+                                         cancellationToken) => {
+
+                TriggerMessageResponse? response = null;
+
+                DebugX.Log($"Charging station '{Id}': Incoming TriggerMessage request for '{request.RequestedMessage}'{(request.EVSE is not null ? $" at EVSE '{request.EVSE.Id}'" : "")}!");
+
+                // RequestedMessage
+                // EVSE
+
+                _ = Task.Run(async () => {
+
+                    if (request.RequestedMessage == MessageTrigger.BootNotification)
+                    {
+                        await this.SendBootNotification(
+                                  BootReason: BootReason.Triggered,
+                                  CustomData: null
+                              );
+                    }
+
+
+                        // LogStatusNotification
+                        // DiagnosticsStatusNotification
+                        // FirmwareStatusNotification
+
+                        // Seems not to be allowed any more!
+                        //case MessageTriggers.Heartbeat:
+                        //    await this.SendHeartbeat(
+                        //              CustomData:   null
+                        //          );
+                        //    break;
+
+                        // MeterValues
+                        // SignChargingStationCertificate
+
+                    else if (request.RequestedMessage == MessageTrigger.StatusNotification &&
+                             request.EVSE is not null)
+                    {
+                        await this.SendStatusNotification(
+                                  EVSEId:        request.EVSE.Id,
+                                  ConnectorId:   Connector_Id.Parse(1),
+                                  Timestamp:     Timestamp.Now,
+                                  Status:        evses[request.EVSE.Id].Status,
+                                  CustomData:    null
+                              );
+                    }
+
+                },
+                CancellationToken.None);
+
+
+                if (request.RequestedMessage == MessageTrigger.BootNotification ||
+                    request.RequestedMessage == MessageTrigger.LogStatusNotification ||
+                    request.RequestedMessage == MessageTrigger.DiagnosticsStatusNotification ||
+                    request.RequestedMessage == MessageTrigger.FirmwareStatusNotification ||
+                  //MessageTriggers.Heartbeat
+                    request.RequestedMessage == MessageTrigger.SignChargingStationCertificate)
+                {
+
+                    response = new TriggerMessageResponse(
+                                   request,
+                                   TriggerMessageStatus.Accepted
+                               );
+
+                }
+
+
+
+                if (response == null &&
+                   (request.RequestedMessage == MessageTrigger.MeterValues ||
+                    request.RequestedMessage == MessageTrigger.StatusNotification))
+                {
+
+                    response = request.EVSE is not null
+
+                                   ? new TriggerMessageResponse(
+                                         request,
+                                         TriggerMessageStatus.Accepted
+                                     )
+
+                                   : new TriggerMessageResponse(
+                                         request,
+                                         TriggerMessageStatus.Rejected
+                                     );
+
+                }
+
+                response ??= new TriggerMessageResponse(
+                                 request,
+                                 TriggerMessageStatus.Rejected
+                             );
+
+                return Task.FromResult(response);
+
+            };
+
+            #endregion
+
+            #region OnIncomingDataTransfer
+
+            OCPP.IN.OnDataTransfer += (timestamp,
+                                       sender,
+                                       connection,
+                                       request,
+                                       cancellationToken) => {
+
+                DataTransferResponse? response = null;
+
+                DebugX.Log($"Charging Station '{Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data ?? "-"}!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                var responseData = request.Data;
+
+                if (request.Data is not null)
+                {
+
+                    if      (request.Data.Type == JTokenType.String)
+                        responseData = request.Data.ToString().Reverse();
+
+                    else if (request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                   property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
+                }
+
+                if (request.VendorId == Vendor_Id.GraphDefined)
+                {
+                    response = new DataTransferResponse(
+                                   request,
+                                   DataTransferStatus.Accepted,
+                                   responseData
+                               );
+                }
+                else
+                    response = new DataTransferResponse(
+                                   request,
+                                   DataTransferStatus.Rejected
+                               );
+
+                return Task.FromResult(response);
+
+            };
+
+            #endregion
+
+
+            #region OnCertificateSigned
+
+            OCPP.IN.OnCertificateSigned += (timestamp,
+                                            sender,
+                                            connection,
+                                            request,
+                                            cancellationToken) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming CertificateSigned request{(request.CertificateType.HasValue ? $"(certificate type: {request.CertificateType.Value})" : "")}!");
+
+                // CertificateChain
+                // CertificateType
+
+                return Task.FromResult(
+                           new CertificateSignedResponse(
+                               Request:      request,
+                               Status:       request.CertificateChain.FirstOrDefault()?.Parsed is not null
+                                                 ? CertificateSignedStatus.Accepted
+                                                 : CertificateSignedStatus.Rejected,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+/*
+            #region OnInstallCertificate
+
+            ChargingStationServer.OnInstallCertificate += async (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
+
+                #region Send OnInstallCertificateRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnInstallCertificateRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnInstallCertificateRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnInstallCertificateRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                InstallCertificateResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomInstallCertificateRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new InstallCertificateResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming InstallCertificate request (certificate type: {request.CertificateType}!");
+
+                    // CertificateType
+                    // Certificate
+
+                    var success = certificates.AddOrUpdate(request.CertificateType,
+                                                               a    => request.Certificate,
+                                                              (b,c) => request.Certificate);
+
+                    response = new InstallCertificateResponse(
+                                   Request:      request,
+                                   Status:       request.Certificate?.Parsed is not null
+                                                     ? CertificateStatus.Accepted
+                                                     : CertificateStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomInstallCertificateResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnInstallCertificateResponse event
+
+                var responseLogger = OnInstallCertificateResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnInstallCertificateResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnInstallCertificateResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetInstalledCertificateIds
+
+            ChargingStationServer.OnGetInstalledCertificateIds += async (timestamp,
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         cancellationToken) => {
+
+                #region Send OnGetInstalledCertificateIdsRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetInstalledCertificateIdsRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetInstalledCertificateIdsRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetInstalledCertificateIdsRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                GetInstalledCertificateIdsResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomGetInstalledCertificateIdsRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new GetInstalledCertificateIdsResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming GetInstalledCertificateIds request for certificate types: {request.CertificateTypes.Select(certificateType => certificateType).AggregateWith(", ")}!");
+
+                    // CertificateTypes
+
+                    var certs = new List<CertificateHashData>();
+
+                    foreach (var certificateType in request.CertificateTypes)
+                    {
+
+                        if (certificates.TryGetValue(InstallCertificateUse.Parse(certificateType.ToString()), out var cert))
+                            certs.Add(new CertificateHashData(
+                                          HashAlgorithm:         HashAlgorithms.SHA256,
+                                          IssuerNameHash:        cert.Parsed?.Issuer               ?? "-",
+                                          IssuerPublicKeyHash:   cert.Parsed?.GetPublicKeyString() ?? "-",
+                                          SerialNumber:          cert.Parsed?.SerialNumber         ?? "-",
+                                          CustomData:            null
+                                      ));
+
+                    }
+
+                    response = new GetInstalledCertificateIdsResponse(
+                                   Request:                    request,
+                                   Status:                     GetInstalledCertificateStatus.Accepted,
+                                   CertificateHashDataChain:   certs,
+                                   StatusInfo:                 null,
+                                   CustomData:                 null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetInstalledCertificateIdsResponseSerializer,
+                        CustomCertificateHashDataSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetInstalledCertificateIdsResponse event
+
+                var responseLogger = OnGetInstalledCertificateIdsResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetInstalledCertificateIdsResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetInstalledCertificateIdsResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnDeleteCertificate
+
+            ChargingStationServer.OnDeleteCertificate += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnDeleteCertificateRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnDeleteCertificateRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnDeleteCertificateRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteCertificateRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                DeleteCertificateResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomDeleteCertificateRequestSerializer,
+                             CustomCertificateHashDataSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new DeleteCertificateResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming DeleteCertificate request!");
+
+                    // CertificateHashData
+
+                    var certKV  = certificates.FirstOrDefault(certificateKV => request.CertificateHashData.SerialNumber == certificateKV.Value.Parsed?.SerialNumber);
+
+                    var success = certificates.TryRemove(certKV);
+
+                    response = new DeleteCertificateResponse(
+                                   Request:      request,
+                                   Status:       success
+                                                     ? DeleteCertificateStatus.Accepted
+                                                     : DeleteCertificateStatus.NotFound,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomDeleteCertificateResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnDeleteCertificateResponse event
+
+                var responseLogger = OnDeleteCertificateResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnDeleteCertificateResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteCertificateResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnNotifyCRL
+
+            ChargingStationServer.OnNotifyCRL += async (timestamp,
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        cancellationToken) => {
+
+                #region Send OnNotifyCRLRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnNotifyCRLRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnNotifyCRLRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnNotifyCRLRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                NotifyCRLResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomNotifyCRLRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new NotifyCRLResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming NotifyCRL request!");
+
+                    // NotifyCRLRequestId
+                    // Availability
+                    // Location
+
+                    response = new NotifyCRLResponse(
+                                   Request:      request,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyCRLResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnNotifyCRLResponse event
+
+                var responseLogger = OnNotifyCRLResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnNotifyCRLResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnNotifyCRLResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            #region OnGetLocalListVersion
+
+            ChargingStationServer.OnGetLocalListVersion += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
+
+                #region Send OnGetLocalListVersionRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetLocalListVersionRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetLocalListVersionRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetLocalListVersionRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                GetLocalListVersionResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomGetLocalListVersionRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new GetLocalListVersionResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming GetLocalListVersion request!");
+
+                    // none
+
+                    response = new GetLocalListVersionResponse(
+                                   Request:         request,
+                                   VersionNumber:   0,
+                                   CustomData:      null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetLocalListVersionResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetLocalListVersionResponse event
+
+                var responseLogger = OnGetLocalListVersionResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetLocalListVersionResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetLocalListVersionResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSendLocalList
+
+            ChargingStationServer.OnSendLocalList += async (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
+
+                #region Send OnSendLocalListRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnSendLocalListRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSendLocalListRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSendLocalListRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                SendLocalListResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomSendLocalListRequestSerializer,
+                             CustomAuthorizationDataSerializer,
+                             CustomIdTokenSerializer,
+                             CustomAdditionalInfoSerializer,
+                             CustomIdTokenInfoSerializer,
+                             CustomMessageContentSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new SendLocalListResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming SendLocalList request: '{request.UpdateType.AsText()}' version '{request.VersionNumber}'!");
+
+                    // VersionNumber
+                    // UpdateType
+                    // LocalAuthorizationList
+
+                    response = new SendLocalListResponse(
+                                   Request:      request,
+                                   Status:       SendLocalListStatus.Accepted,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSendLocalListResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnSendLocalListResponse event
+
+                var responseLogger = OnSendLocalListResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSendLocalListResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSendLocalListResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnClearCache
+
+            ChargingStationServer.OnClearCache += async (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
+
+                #region Send OnClearCacheRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnClearCacheRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnClearCacheRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearCacheRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                ClearCacheResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomClearCacheRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new ClearCacheResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming ClearCache request!");
+
+                    // none
+
+                    response = new ClearCacheResponse(
+                                   Request:      request,
+                                   Status:       ClearCacheStatus.Accepted,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomClearCacheResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnClearCacheResponse event
+
+                var responseLogger = OnClearCacheResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnClearCacheResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearCacheResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            #region OnQRCodeScanned
+
+            ChargingStationServer.OnQRCodeScanned += async (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
+
+                #region Send OnQRCodeScannedRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnQRCodeScannedRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnQRCodeScannedRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnQRCodeScannedRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                QRCodeScannedResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomQRCodeScannedRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new QRCodeScannedResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming QRCodeScanned request (EVSE id: {request.EVSEId}, timeout: '{request.Timeout.TotalSeconds} secs)!");
+
+                    response = new QRCodeScannedResponse(
+                                   Request:     request,
+                                   CustomData:  null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomQRCodeScannedResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnQRCodeScannedResponse event
+
+                var responseLogger = OnQRCodeScannedResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnQRCodeScannedResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnQRCodeScannedResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnReserveNow
+
+            ChargingStationServer.OnReserveNow += async (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
+
+                #region Send OnReserveNowRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnReserveNowRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnReserveNowRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnReserveNowRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                ReserveNowResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomReserveNowRequestSerializer,
+                             CustomIdTokenSerializer,
+                             CustomAdditionalInfoSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new ReserveNowResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming ReserveNow request (reservation id: {request.Id}, idToken: '{request.IdToken.Value}'{(request.EVSEId.HasValue ? $", evseId: '{request.EVSEId.Value}'" : "")})!");
+
+                    // ReservationId
+                    // ExpiryDate
+                    // IdToken
+                    // ConnectorType
+                    // EVSEId
+                    // GroupIdToken
+
+                    var success = reservations.TryAdd(request.Id,
+                                                      request.Id);
+
+                    response = new ReserveNowResponse(
+                                   Request:      request,
+                                   Status:       success
+                                                     ? ReservationStatus.Accepted
+                                                     : ReservationStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomReserveNowResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnReserveNowResponse event
+
+                var responseLogger = OnReserveNowResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnReserveNowResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnReserveNowResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnCancelReservation
+
+            ChargingStationServer.OnCancelReservation += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnCancelReservationRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnCancelReservationRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnCancelReservationRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCancelReservationRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                CancelReservationResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomCancelReservationRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new CancelReservationResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    var success = reservations.ContainsKey(request.ReservationId)
+                                      ? reservations.TryRemove(request.ReservationId, out _)
+                                      : true;
+
+                    DebugX.Log($"Charging station '{Id}': Incoming CancelReservation request for reservation id '{request.ReservationId}': {(success ? "accepted" : "rejected")}!");
+
+                    // ReservationId
+
+                    response = new CancelReservationResponse(
+                                   Request:      request,
+                                   Status:       success
+                                                     ? CancelReservationStatus.Accepted
+                                                     : CancelReservationStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomCancelReservationResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnCancelReservationResponse event
+
+                var responseLogger = OnCancelReservationResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnCancelReservationResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCancelReservationResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnRequestStartTransaction
+
+            ChargingStationServer.OnRequestStartTransaction += async (timestamp,
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      cancellationToken) => {
+
+                #region Send OnRequestStartTransactionRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnRequestStartTransactionRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnRequestStartTransactionRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRequestStartTransactionRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                RequestStartTransactionResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+
+                             CustomRequestStartTransactionRequestSerializer,
+                             CustomIdTokenSerializer,
+                             CustomAdditionalInfoSerializer,
+                             CustomChargingProfileSerializer,
+                             CustomLimitBeyondSoCSerializer,
+                             CustomChargingScheduleSerializer,
+                             CustomChargingSchedulePeriodSerializer,
+                             CustomV2XFreqWattEntrySerializer,
+                             CustomV2XSignalWattEntrySerializer,
+                             CustomSalesTariffSerializer,
+                             CustomSalesTariffEntrySerializer,
+                             CustomRelativeTimeIntervalSerializer,
+                             CustomConsumptionCostSerializer,
+                             CustomCostSerializer,
+
+                             CustomAbsolutePriceScheduleSerializer,
+                             CustomPriceRuleStackSerializer,
+                             CustomPriceRuleSerializer,
+                             CustomTaxRuleSerializer,
+                             CustomOverstayRuleListSerializer,
+                             CustomOverstayRuleSerializer,
+                             CustomAdditionalServiceSerializer,
+
+                             CustomPriceLevelScheduleSerializer,
+                             CustomPriceLevelScheduleEntrySerializer,
+
+                             CustomTransactionLimitsSerializer,
+
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new RequestStartTransactionResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming RequestStartTransaction for '{(request.EVSEId?.ToString() ?? "-")}'!");
+
+                    // ToDo: lock(evses)
+
+                    if (request.EVSEId.HasValue &&
+                        evses.TryGetValue(request.EVSEId.Value, out var evse) &&
+                        !evse.IsCharging)
+                    {
+
+                        evse.IsCharging              = true;
+                        evse.TransactionId           = Transaction_Id.NewRandom;
+                        evse.RemoteStartId           = request.RequestStartTransactionRequestId;
+
+                        evse.StartTimestamp          = Timestamp.Now;
+                        evse.MeterStartValue         = 0;
+                        evse.SignedStartMeterValue   = "0";
+
+                        evse.StopTimestamp           = null;
+                        evse.MeterStopValue          = null;
+                        evse.SignedStopMeterValue    = null;
+
+                        evse.IdToken                 = request.IdToken;
+                        evse.GroupIdToken            = request.GroupIdToken;
+                        evse.ChargingProfile         = request.ChargingProfile;
+
+                        _ = Task.Run(async () => {
+
+                            await Task.Delay(500);
+
+                            await this.SendTransactionEvent(
+
+                                      EventType:            TransactionEvents.Started,
+                                      Timestamp:            evse.StartTimestamp.Value,
+                                      TriggerReason:        TriggerReason.RemoteStart,
+                                      SequenceNumber:       1,
+                                      TransactionInfo:      new Transaction(
+                                                                TransactionId:       evse.TransactionId.Value,
+                                                                ChargingState:       ChargingStates.Charging,
+                                                                TimeSpentCharging:   TimeSpan.Zero,
+                                                                StoppedReason:       null,
+                                                                RemoteStartId:       request.RequestStartTransactionRequestId,
+                                                                CustomData:          null
+                                                            ),
+
+                                      Offline:              false,
+                                      NumberOfPhasesUsed:   3,
+                                      CableMaxCurrent:      Ampere.ParseA(32),
+                                      ReservationId:        evse.ReservationId,
+                                      IdToken:              evse.IdToken,
+                                      EVSE:                 new EVSE(
+                                                                Id:            evse.Id,
+                                                                ConnectorId:   evse.Connectors.First().Id,
+                                                                CustomData:    null
+                                                            ),
+                                      MeterValues:          new[] {
+                                                                new MeterValue(
+                                                                    Timestamp:       evse.StartTimestamp.Value,
+                                                                    SampledValues:   new[] {
+                                                                                         new SampledValue(
+                                                                                             Value:                 evse.MeterStartValue.Value,
+                                                                                             Context:               ReadingContext.TransactionBegin,
+                                                                                             Measurand:             Measurand.Current_Export,
+                                                                                             Phase:                 null,
+                                                                                             MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                             SignedMeterValue:      new SignedMeterValue(
+                                                                                                                        SignedMeterData:   evse.SignedStartMeterValue,
+                                                                                                                        SigningMethod:     "secp256r1",
+                                                                                                                        EncodingMethod:    "base64",
+                                                                                                                        PublicKey:         "04cafebabe",
+                                                                                                                        CustomData:        null
+                                                                                                                    ),
+                                                                                             UnitOfMeasure:         null,
+                                                                                             CustomData:            null
+                                                                                         )
+                                                                                     }
+                                                                )
+                                                            },
+                                      CustomData:           null
+
+                                  );
+
+                        },
+                        CancellationToken.None);
+
+                        response = new RequestStartTransactionResponse(
+                                       Request:         request,
+                                       Status:          RequestStartStopStatus.Accepted,
+                                       TransactionId:   evse.TransactionId,
+                                       StatusInfo:      null,
+                                       CustomData:      null
+                                   );
+
+                    }
+                    else
+                        response = new RequestStartTransactionResponse(
+                                       request,
+                                       RequestStartStopStatus.Rejected
+                                   );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomRequestStartTransactionResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnRequestStartTransactionResponse event
+
+                var responseLogger = OnRequestStartTransactionResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnRequestStartTransactionResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRequestStartTransactionResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnRequestStopTransaction
+
+            ChargingStationServer.OnRequestStopTransaction += async (timestamp,
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     cancellationToken) => {
+
+                #region Send OnRequestStopTransactionRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnRequestStopTransactionRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnRequestStopTransactionRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRequestStopTransactionRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                RequestStopTransactionResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomRequestStopTransactionRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new RequestStopTransactionResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming RequestStopTransaction for '{request.TransactionId}'!");
+
+                    // TransactionId
+
+                    // ToDo: lock(evses)
+
+                    var evse = evses.Values.FirstOrDefault(evse => request.TransactionId == evse.TransactionId);
+
+                    if (evse is not null)
+                    {
+
+                        evse.IsCharging             = false;
+
+                        evse.StopTimestamp          = Timestamp.Now;
+                        evse.MeterStopValue         = 123;
+                        evse.SignedStopMeterValue   = "123";
+
+                        _ = Task.Run(async () => {
+
+                            await this.SendTransactionEvent(
+
+                                      EventType:            TransactionEvents.Ended,
+                                      Timestamp:            evse.StopTimestamp.Value,
+                                      TriggerReason:        TriggerReason.RemoteStop,
+                                      SequenceNumber:       2,
+                                      TransactionInfo:      new Transaction(
+                                                                TransactionId:       evse.TransactionId!.Value,
+                                                                ChargingState:       ChargingStates.Idle,
+                                                                TimeSpentCharging:   evse.StopTimestamp - evse.StartTimestamp,
+                                                                StoppedReason:       StopTransactionReason.Remote,
+                                                                RemoteStartId:       evse.RemoteStartId,
+                                                                CustomData:          null
+                                                            ),
+
+                                      Offline:              false,
+                                      NumberOfPhasesUsed:   3,
+                                      CableMaxCurrent:      Ampere.ParseA(32),
+                                      ReservationId:        evse.ReservationId,
+                                      IdToken:              evse.IdToken,
+                                      EVSE:                 new EVSE(
+                                                                Id:            evse.Id,
+                                                                ConnectorId:   evse.Connectors.First().Id,
+                                                                CustomData:    null
+                                                            ),
+                                      MeterValues:          [
+                                                                new MeterValue(
+                                                                    Timestamp:       evse.StopTimestamp.Value,
+                                                                    SampledValues:   [
+                                                                                         new SampledValue(
+                                                                                             Value:                 evse.MeterStopValue.Value,
+                                                                                             Context:               ReadingContext.TransactionEnd,
+                                                                                             Measurand:             Measurand.Current_Export,
+                                                                                             Phase:                 null,
+                                                                                             MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                             SignedMeterValue:      new SignedMeterValue(
+                                                                                                                        SignedMeterData:   evse.SignedStopMeterValue,
+                                                                                                                        SigningMethod:     "secp256r1",
+                                                                                                                        EncodingMethod:    "base64",
+                                                                                                                        PublicKey:         "04cafebabe",
+                                                                                                                        CustomData:        null
+                                                                                                                    ),
+                                                                                             UnitOfMeasure:         null,
+                                                                                             CustomData:            null
+                                                                                         )
+                                                                                     ]
+                                                                )
+                                                            ],
+                                      CustomData:           null
+
+                                  );
+
+                        },
+                        CancellationToken.None);
+
+                        response = new RequestStopTransactionResponse(
+                                       request,
+                                       RequestStartStopStatus.Accepted
+                                   );
+
+                    }
+                    else
+                        response = new RequestStopTransactionResponse(
+                                       request,
+                                       RequestStartStopStatus.Rejected
+                                   );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomRequestStopTransactionResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnRequestStopTransactionResponse event
+
+                var responseLogger = OnRequestStopTransactionResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnRequestStopTransactionResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRequestStopTransactionResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetTransactionStatus
+
+            ChargingStationServer.OnGetTransactionStatus += async (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
+
+                #region Send OnGetTransactionStatusRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetTransactionStatusRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetTransactionStatusRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetTransactionStatusRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                GetTransactionStatusResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomGetTransactionStatusRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new GetTransactionStatusResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming GetTransactionStatus for '{request.TransactionId}'!");
+
+                    // TransactionId
+
+                    if (request.TransactionId.HasValue)
+                    {
+
+                        var foundEVSE =  evses.Values.FirstOrDefault(evse => request.TransactionId == evse.TransactionId);
+
+                        if (foundEVSE is not null)
+                        {
+
+                            response = new GetTransactionStatusResponse(
+                                           request,
+                                           MessagesInQueue:    false,
+                                           OngoingIndicator:   true
+                                       );
+
+                        }
+                        else
+                        {
+
+                            response = new GetTransactionStatusResponse(
+                                           request,
+                                           MessagesInQueue:    false,
+                                           OngoingIndicator:   true
+                                       );
+
+                        }
+
+                    }
+                    else
+                    {
+
+                        response = new GetTransactionStatusResponse(
+                                       request,
+                                       MessagesInQueue:    false,
+                                       OngoingIndicator:   true
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetTransactionStatusResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetTransactionStatusResponse event
+
+                var responseLogger = OnGetTransactionStatusResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetTransactionStatusResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetTransactionStatusResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSetChargingProfile
+
+            ChargingStationServer.OnSetChargingProfile += async (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
+
+                #region Send OnSetChargingProfileRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnSetChargingProfileRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetChargingProfileRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetChargingProfileRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                SetChargingProfileResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+
+                             CustomSetChargingProfileRequestSerializer,
+                             CustomChargingProfileSerializer,
+                             CustomLimitBeyondSoCSerializer,
+                             CustomChargingScheduleSerializer,
+                             CustomChargingSchedulePeriodSerializer,
+                             CustomV2XFreqWattEntrySerializer,
+                             CustomV2XSignalWattEntrySerializer,
+                             CustomSalesTariffSerializer,
+                             CustomSalesTariffEntrySerializer,
+                             CustomRelativeTimeIntervalSerializer,
+                             CustomConsumptionCostSerializer,
+                             CustomCostSerializer,
+
+                             CustomAbsolutePriceScheduleSerializer,
+                             CustomPriceRuleStackSerializer,
+                             CustomPriceRuleSerializer,
+                             CustomTaxRuleSerializer,
+                             CustomOverstayRuleListSerializer,
+                             CustomOverstayRuleSerializer,
+                             CustomAdditionalServiceSerializer,
+
+                             CustomPriceLevelScheduleSerializer,
+                             CustomPriceLevelScheduleEntrySerializer,
+
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new SetChargingProfileResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming SetChargingProfile for '{request.EVSEId}'!");
+
+                    // EVSEId
+                    // ChargingProfile
+
+                    // ToDo: lock(connectors)
+
+                    if (request.EVSEId.Value == 0)
+                    {
+
+                        foreach (var evse in evses.Values)
+                        {
+
+                            if (!request.ChargingProfile.TransactionId.HasValue)
+                                evse.ChargingProfile = request.ChargingProfile;
+
+                            else if (evse.TransactionId == request.ChargingProfile.TransactionId.Value)
+                                evse.ChargingProfile = request.ChargingProfile;
+
+                        }
+
+                        response = new SetChargingProfileResponse(
+                                       request,
+                                       ChargingProfileStatus.Accepted
+                                   );
+
+                    }
+                    else if (evses.ContainsKey(request.EVSEId))
+                    {
+
+                        evses[request.EVSEId].ChargingProfile = request.ChargingProfile;
+
+                        response = new SetChargingProfileResponse(
+                                       request,
+                                       ChargingProfileStatus.Accepted
+                                   );
+
+                    }
+                    else
+                        response = new SetChargingProfileResponse(
+                                       request,
+                                       ChargingProfileStatus.Rejected
+                                   );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetChargingProfileResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnSetChargingProfileResponse event
+
+                var responseLogger = OnSetChargingProfileResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetChargingProfileResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetChargingProfileResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetChargingProfiles
+
+            ChargingStationServer.OnGetChargingProfiles += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
+
+                #region Send OnGetChargingProfilesRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetChargingProfilesRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetChargingProfilesRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetChargingProfilesRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                GetChargingProfilesResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomGetChargingProfilesRequestSerializer,
+                             CustomChargingProfileCriterionSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new GetChargingProfilesResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming GetChargingProfiles request ({request.GetChargingProfilesRequestId}) for '{request.EVSEId}'!");
+
+                    // GetChargingProfilesRequestId
+                    // ChargingProfile
+                    // EVSEId
+
+                    if (request.EVSEId.HasValue && evses.ContainsKey(request.EVSEId.Value))
+                    {
+
+                        //evses[Request.EVSEId.Value].ChargingProfile = Request.ChargingProfile;
+
+                        response = new GetChargingProfilesResponse(
+                                       request,
+                                       GetChargingProfileStatus.Accepted
+                                   );
+
+                    }
+                    else
+                       response = new GetChargingProfilesResponse(
+                                      request,
+                                      GetChargingProfileStatus.Unknown
+                                  );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetChargingProfilesResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetChargingProfilesResponse event
+
+                var responseLogger = OnGetChargingProfilesResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetChargingProfilesResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetChargingProfilesResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnClearChargingProfile
+
+            ChargingStationServer.OnClearChargingProfile += async (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
+
+                #region Send OnClearChargingProfileRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnClearChargingProfileRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnClearChargingProfileRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearChargingProfileRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                ClearChargingProfileResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomClearChargingProfileRequestSerializer,
+                             CustomClearChargingProfileSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new ClearChargingProfileResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming ClearChargingProfile request for charging profile identification '{request.ChargingProfileId}'!");
+
+                    // ChargingProfileId
+                    // ChargingProfileCriteria
+
+                    response = new ClearChargingProfileResponse(
+                                   Request:      request,
+                                   Status:       ClearChargingProfileStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomClearChargingProfileResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnClearChargingProfileResponse event
+
+                var responseLogger = OnClearChargingProfileResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnClearChargingProfileResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearChargingProfileResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetCompositeSchedule
+
+            ChargingStationServer.OnGetCompositeSchedule += async (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
+
+                #region Send OnGetCompositeScheduleRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetCompositeScheduleRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetCompositeScheduleRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetCompositeScheduleRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                GetCompositeScheduleResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomGetCompositeScheduleRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new GetCompositeScheduleResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming GetCompositeSchedule request for the next {request.Duration.TotalMinutes} minutes of EVSE '{request.EVSEId}'!");
+
+                    // Duration,
+                    // EVSEId,
+                    // ChargingRateUnit
+
+                    response = new GetCompositeScheduleResponse(
+                                   Request:      request,
+                                   Status:       GenericStatus.Accepted,
+                                   Schedule:     null,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetCompositeScheduleResponseSerializer,
+                        CustomCompositeScheduleSerializer,
+                        CustomChargingSchedulePeriodSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetCompositeScheduleResponse event
+
+                var responseLogger = OnGetCompositeScheduleResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetCompositeScheduleResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetCompositeScheduleResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUpdateDynamicSchedule
+
+            ChargingStationServer.OnUpdateDynamicSchedule += async (timestamp,
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    cancellationToken) => {
+
+                #region Send OnUpdateDynamicScheduleRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnUpdateDynamicScheduleRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUpdateDynamicScheduleRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateDynamicScheduleRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                UpdateDynamicScheduleResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomUpdateDynamicScheduleRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new UpdateDynamicScheduleResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming UpdateDynamicSchedule request for charging profile '{request.ChargingProfileId}'!");
+
+                    // ChargingProfileId
+
+                    // Limit
+                    // Limit_L2
+                    // Limit_L3
+
+                    // DischargeLimit
+                    // DischargeLimit_L2
+                    // DischargeLimit_L3
+
+                    // Setpoint
+                    // Setpoint_L2
+                    // Setpoint_L3
+
+                    // SetpointReactive
+                    // SetpointReactive_L2
+                    // SetpointReactive_L3
+
+                    response = new UpdateDynamicScheduleResponse(
+                                   Request:      request,
+                                   Status:       ChargingProfileStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUpdateDynamicScheduleResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnUpdateDynamicScheduleResponse event
+
+                var responseLogger = OnUpdateDynamicScheduleResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUpdateDynamicScheduleResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateDynamicScheduleResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnNotifyAllowedEnergyTransfer
+
+            ChargingStationServer.OnNotifyAllowedEnergyTransfer += async (timestamp,
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          cancellationToken) => {
+
+                #region Send OnNotifyAllowedEnergyTransferRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnNotifyAllowedEnergyTransferRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnNotifyAllowedEnergyTransferRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnNotifyAllowedEnergyTransferRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                NotifyAllowedEnergyTransferResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomNotifyAllowedEnergyTransferRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new NotifyAllowedEnergyTransferResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming NotifyAllowedEnergyTransfer request allowing energy transfer modes: '{request.AllowedEnergyTransferModes.Select(mode => mode.ToString()).AggregateWith(", ")}'!");
+
+                    // AllowedEnergyTransferModes
+
+                    response = new NotifyAllowedEnergyTransferResponse(
+                                   Request:      request,
+                                   Status:       NotifyAllowedEnergyTransferStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyAllowedEnergyTransferResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnNotifyAllowedEnergyTransferResponse event
+
+                var responseLogger = OnNotifyAllowedEnergyTransferResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnNotifyAllowedEnergyTransferResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnNotifyAllowedEnergyTransferResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUsePriorityCharging
+
+            ChargingStationServer.OnUsePriorityCharging += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
+
+                #region Send OnUsePriorityChargingRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnUsePriorityChargingRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUsePriorityChargingRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUsePriorityChargingRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                UsePriorityChargingResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomUsePriorityChargingRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new UsePriorityChargingResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming UsePriorityCharging request for transaction '{request.TransactionId}': {(request.Activate ? "active" : "disabled")}!");
+
+                    // TransactionId
+                    // Activate
+
+                    response = new UsePriorityChargingResponse(
+                                   Request:      request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUsePriorityChargingResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnUsePriorityChargingResponse event
+
+                var responseLogger = OnUsePriorityChargingResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUsePriorityChargingResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUsePriorityChargingResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUnlockConnector
+
+            ChargingStationServer.OnUnlockConnector += async (timestamp,
+                                                              sender,
+                                                              connection,
+                                                              request,
+                                                              cancellationToken) => {
+
+                #region Send OnUnlockConnectorRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnUnlockConnectorRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUnlockConnectorRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUnlockConnectorRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                UnlockConnectorResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomUnlockConnectorRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new UnlockConnectorResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming UnlockConnector request for EVSE '{request.EVSEId}' and connector '{request.ConnectorId}'!");
+
+                    // EVSEId
+                    // ConnectorId
+
+                    // ToDo: lock(connectors)
+
+                    if (evses.TryGetValue    (request.EVSEId,      out var evse) &&
+                        evse. TryGetConnector(request.ConnectorId, out var connector))
+                    {
+
+                        // What to do here?!
+
+                        response = new UnlockConnectorResponse(
+                                       Request:      request,
+                                       Status:       UnlockStatus.Unlocked,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+                    else
+                        response = new UnlockConnectorResponse(
+                                       Request:      request,
+                                       Status:       UnlockStatus.UnlockFailed,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUnlockConnectorResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnUnlockConnectorResponse event
+
+                var responseLogger = OnUnlockConnectorResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUnlockConnectorResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUnlockConnectorResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            #region OnAFRRSignal
+
+            ChargingStationServer.OnAFRRSignal += async (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
+
+                #region Send OnAFRRSignalRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnAFRRSignalRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnAFRRSignalRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAFRRSignalRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                AFRRSignalResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomAFRRSignalRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new AFRRSignalResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming AFRRSignal '{request.Signal}' for timestamp '{request.ActivationTimestamp}'!");
+
+                    // ActivationTimestamp
+                    // Signal
+
+                    response = new AFRRSignalResponse(
+                                   Request:      request,
+                                   Status:       request.ActivationTimestamp < Timestamp.Now - TimeSpan.FromDays(1)
+                                                     ? GenericStatus.Rejected
+                                                     : GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomAFRRSignalResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnAFRRSignalResponse event
+
+                var responseLogger = OnAFRRSignalResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnAFRRSignalResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAFRRSignalResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            #region OnSetDisplayMessage
+
+            ChargingStationServer.OnSetDisplayMessage += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnSetDisplayMessageRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnSetDisplayMessageRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetDisplayMessageRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetDisplayMessageRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                SetDisplayMessageResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomSetDisplayMessageRequestSerializer,
+                             CustomMessageInfoSerializer,
+                             CustomMessageContentSerializer,
+                             CustomComponentSerializer,
+                             CustomEVSESerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new SetDisplayMessageResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming SetDisplayMessage '{request.Message.Message.Content}'!");
+
+                    // Message
+
+                    if (displayMessages.TryAdd(request.Message.Id,
+                                               request.Message)) {
+
+                        response = new SetDisplayMessageResponse(
+                                       Request:      request,
+                                       Status:       DisplayMessageStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                    else
+                        response = new SetDisplayMessageResponse(
+                                       Request:      request,
+                                       Status:       DisplayMessageStatus.Rejected,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetDisplayMessageResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnSetDisplayMessageResponse event
+
+                var responseLogger = OnSetDisplayMessageResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetDisplayMessageResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetDisplayMessageResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetDisplayMessages
+
+            ChargingStationServer.OnGetDisplayMessages += async (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
+
+                #region Send OnGetDisplayMessagesRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetDisplayMessagesRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetDisplayMessagesRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetDisplayMessagesRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                GetDisplayMessagesResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomGetDisplayMessagesRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new GetDisplayMessagesResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming GetDisplayMessages request ({request.GetDisplayMessagesRequestId})!");
+
+                    // GetDisplayMessagesRequestId
+                    // Ids
+                    // Priority
+                    // State
+
+                    _ = Task.Run(async () => {
+
+                        var filteredDisplayMessages = displayMessages.Values.
+                                                          Where(displayMessage =>  request.Ids is null || !request.Ids.Any() || request.Ids.Contains(displayMessage.Id)).
+                                                          Where(displayMessage => !request.State.   HasValue || (displayMessage.State.HasValue && displayMessage.State.Value == request.State.   Value)).
+                                                          Where(displayMessage => !request.Priority.HasValue ||  displayMessage.Priority                                     == request.Priority.Value).
+                                                          ToArray();
+
+                        await this.NotifyDisplayMessages(
+                                  NotifyDisplayMessagesRequestId:   request.GetDisplayMessagesRequestId,
+                                  MessageInfos:                     filteredDisplayMessages,
+                                  ToBeContinued:                    false,
+                                  CustomData:                       null
+                              );
+
+                    },
+                    CancellationToken.None);
+
+                    response = new GetDisplayMessagesResponse(
+                                   request,
+                                   GetDisplayMessagesStatus.Accepted
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetDisplayMessagesResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetDisplayMessagesResponse event
+
+                var responseLogger = OnGetDisplayMessagesResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetDisplayMessagesResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetDisplayMessagesResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnClearDisplayMessage
+
+            ChargingStationServer.OnClearDisplayMessage += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
+
+                #region Send OnClearDisplayMessageRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnClearDisplayMessageRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnClearDisplayMessageRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearDisplayMessageRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                ClearDisplayMessageResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomClearDisplayMessageRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new ClearDisplayMessageResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming ClearDisplayMessage request ({request.DisplayMessageId})!");
+
+                    // DisplayMessageId
+
+                    if (displayMessages.TryGetValue(request.DisplayMessageId, out var messageInfo) &&
+                        displayMessages.TryRemove(new KeyValuePair<DisplayMessage_Id, MessageInfo>(request.DisplayMessageId, messageInfo))) {
+
+                        response = new ClearDisplayMessageResponse(
+                                       request,
+                                       ClearMessageStatus.Accepted
+                                   );
+
+                    }
+
+                    else
+                        response = new ClearDisplayMessageResponse(
+                                       request,
+                                       ClearMessageStatus.Unknown
+                                   );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomClearDisplayMessageResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnClearDisplayMessageResponse event
+
+                var responseLogger = OnClearDisplayMessageResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnClearDisplayMessageResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearDisplayMessageResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnCostUpdated
+
+            ChargingStationServer.OnCostUpdated += async (timestamp,
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          cancellationToken) => {
+
+                #region Send OnCostUpdatedRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnCostUpdatedRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnCostUpdatedRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCostUpdatedRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                CostUpdatedResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomCostUpdatedRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new CostUpdatedResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming CostUpdated request '{request.TotalCost}' for transaction '{request.TransactionId}'!");
+
+                    // TotalCost
+                    // TransactionId
+
+                    if (transactions.ContainsKey(request.TransactionId)) {
+
+                        totalCosts.AddOrUpdate(request.TransactionId,
+                                               request.TotalCost,
+                                               (transactionId, totalCost) => request.TotalCost);
+
+                        response = new CostUpdatedResponse(
+                                       request
+                                   );
+
+                    }
+
+                    else
+                        response = new CostUpdatedResponse(
+                                       request,
+                                       Result.GenericError($"Unknown transaction identification '{request.TransactionId}'!")
+                                   );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomCostUpdatedResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnCostUpdatedResponse event
+
+                var responseLogger = OnCostUpdatedResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnCostUpdatedResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCostUpdatedResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnCustomerInformation
+
+            ChargingStationServer.OnCustomerInformation += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
+
+                #region Send OnCustomerInformationRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnCustomerInformationRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnCustomerInformationRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCustomerInformationRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                CustomerInformationResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomCustomerInformationRequestSerializer,
+                             CustomIdTokenSerializer,
+                             CustomAdditionalInfoSerializer,
+                             CustomCertificateHashDataSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new CustomerInformationResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    var command   = new String[] {
+
+                                        request.Report
+                                            ? "report"
+                                            : "",
+
+                                        request.Clear
+                                            ? "clear"
+                                            : "",
+
+                                    }.Where(text => text.IsNotNullOrEmpty()).
+                                      AggregateWith(" and ");
+
+                    var customer  = request.IdToken is not null
+                                       ? $"IdToken: {request.IdToken.Value}"
+                                       : request.CustomerCertificate is not null
+                                             ? $"certificate s/n: {request.CustomerCertificate.SerialNumber}"
+                                             : request.CustomerIdentifier.HasValue
+                                                   ? $"customer identifier: {request.CustomerIdentifier.Value}"
+                                                   : "-";
+
+
+                    DebugX.Log($"Charging station '{Id}': Incoming CustomerInformation request ({request.CustomerInformationRequestId}) to {command} for customer '{customer}'!");
+
+                    // CustomerInformationRequestId
+                    // Report
+                    // Clear
+                    // CustomerIdentifier
+                    // IdToken
+                    // CustomerCertificate
+
+                    _ = Task.Run(async () => {
+
+                        await this.NotifyCustomerInformation(
+                                  NotifyCustomerInformationRequestId:   request.CustomerInformationRequestId,
+                                  Data:                                 customer,
+                                  SequenceNumber:                       1,
+                                  GeneratedAt:                          Timestamp.Now,
+                                  ToBeContinued:                        false,
+                                  CustomData:                           null
+                              );
+
+                    },
+                    CancellationToken.None);
+
+                    response = new CustomerInformationResponse(
+                                   request,
+                                   CustomerInformationStatus.Accepted
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomCustomerInformationResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnCustomerInformationResponse event
+
+                var responseLogger = OnCustomerInformationResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnCustomerInformationResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCustomerInformationResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            // Binary Data Streams Extensions
+
+            #region OnIncomingBinaryDataTransfer
+
+            ChargingStationServer.OnIncomingBinaryDataTransfer += async (timestamp,
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         cancellationToken) => {
+
+                #region Send OnBinaryDataTransferRequest event
+
+                var startTime = Timestamp.Now;
+
+                var onIncomingBinaryDataTransferRequest = OnIncomingBinaryDataTransferRequest;
+                if (onIncomingBinaryDataTransferRequest is not null)
+                {
+
+                    var requestLoggerTasks = onIncomingBinaryDataTransferRequest.GetInvocationList().
+                                                 OfType <OnBinaryDataTransferRequestReceivedDelegate>().
+                                                 Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                   this,
+                                                                                                   connection,
+                                                                                                   request)).
+                                                 ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnIncomingBinaryDataTransferRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                BinaryDataTransferResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToBinary(
+                             CustomIncomingBinaryDataTransferRequestSerializer,
+                             CustomBinarySignatureSerializer,
+                             IncludeSignatures: false
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new BinaryDataTransferResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+
+                    // VendorId
+                    // MessageId
+                    // Data
+
+                    var responseBinaryData = request.Data;
+
+                    if (request.Data is not null)
+                        responseBinaryData = request.Data.Reverse();
+
+                    response = request.VendorId == Vendor_Id.GraphDefined
+
+                                   ? new BinaryDataTransferResponse(
+                                         Request:                request,
+                                         Status:                 BinaryDataTransferStatus.Accepted,
+                                         AdditionalStatusInfo:   null,
+                                         Data:                   responseBinaryData
+                                     )
+
+                                   : new BinaryDataTransferResponse(
+                                         Request:                request,
+                                         Status:                 BinaryDataTransferStatus.Rejected,
+                                         AdditionalStatusInfo:   null,
+                                         Data:                   responseBinaryData
+                                     );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToBinary(
+                        CustomIncomingBinaryDataTransferResponseSerializer,
+                        null, //CustomStatusInfoSerializer,
+                        CustomBinarySignatureSerializer,
+                        IncludeSignatures: false
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnBinaryDataTransferResponse event
+
+                var responseLogger = OnIncomingBinaryDataTransferResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnBinaryDataTransferResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnIncomingBinaryDataTransferResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetFile
+
+            ChargingStationServer.OnGetFile += async (timestamp,
+                                                      sender,
+                                                      connection,
+                                                      request,
+                                                      cancellationToken) => {
+
+                #region Send OnGetFileRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetFileRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnGetFileRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetFileRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.GetFileResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomGetFileRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.GetFileResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging Station '{Id}': Incoming GetFile request: {request.FileName}!");
+
+                    response = request.FileName.ToString() == "/hello/world.txt"
+
+                                   ? new OCPP.CS.GetFileResponse(
+                                         Request:           request,
+                                         FileName:          request.FileName,
+                                         Status:            GetFileStatus.Success,
+                                         FileContent:       "Hello world!".ToUTF8Bytes(),
+                                         FileContentType:   ContentType.Text.Plain,
+                                         FileSHA256:        SHA256.HashData("Hello world!".ToUTF8Bytes()),
+                                         FileSHA512:        SHA512.HashData("Hello world!".ToUTF8Bytes())
+                                     )
+
+                                   : new OCPP.CS.GetFileResponse(
+                                         Request:           request,
+                                         FileName:          request.FileName,
+                                         Status:            GetFileStatus.NotFound
+                                     );
+
+                }
+
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToBinary(
+                        CustomGetFileResponseSerializer,
+                        null, //CustomStatusInfoSerializer,
+                        CustomBinarySignatureSerializer,
+                        IncludeSignatures: false
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetFileResponse event
+
+                var responseLogger = OnGetFileResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnGetFileResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetFileResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSendFile
+
+            ChargingStationServer.OnSendFile += async (timestamp,
+                                                       sender,
+                                                       connection,
+                                                       request,
+                                                       cancellationToken) => {
+
+                #region Send OnSendFileRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnSendFileRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnSendFileRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSendFileRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.SendFileResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToBinary(
+                             CustomSendFileRequestSerializer,
+                             CustomBinarySignatureSerializer,
+                             IncludeSignatures: false
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.SendFileResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging Station '{Id}': Incoming SendFile request: {request.FileName}!");
+
+                    response = request.FileName.ToString() == "/hello/world.txt"
+
+                                   ? new OCPP.CS.SendFileResponse(
+                                         Request:      request,
+                                         FileName:     request.FileName,
+                                         Status:       SendFileStatus.Success,
+                                         CustomData:   null
+                                     )
+
+                                   : new OCPP.CS.SendFileResponse(
+                                         Request:      request,
+                                         FileName:     request.FileName,
+                                         Status:       SendFileStatus.NotFound,
+                                         CustomData:   null
+                                     );
+
+                }
+
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSendFileResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnSendFileResponse event
+
+                var responseLogger = OnSendFileResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnSendFileResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSendFileResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnDeleteFile
+
+            ChargingStationServer.OnDeleteFile += async (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
+
+                #region Send OnDeleteFileRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnDeleteFileRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnDeleteFileRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteFileRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.DeleteFileResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomDeleteFileRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.DeleteFileResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging Station '{Id}': Incoming DeleteFile request: {request.FileName}!");
+
+                    response = request.FileName.ToString() == "/hello/world.txt"
+
+                                   ? new OCPP.CS.DeleteFileResponse(
+                                         Request:      request,
+                                         FileName:     request.FileName,
+                                         Status:       DeleteFileStatus.Success,
+                                         CustomData:   null
+                                     )
+
+                                   : new OCPP.CS.DeleteFileResponse(
+                                         Request:      request,
+                                         FileName:     request.FileName,
+                                         Status:       DeleteFileStatus.NotFound,
+                                         CustomData:   null
+                                     );
+
+                }
+
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomDeleteFileResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnDeleteFileResponse event
+
+                var responseLogger = OnDeleteFileResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnDeleteFileResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteFileResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnListDirectory
+
+            ChargingStationServer.OnListDirectory += async (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
+
+                #region Send OnListDirectoryRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnListDirectoryRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnListDirectoryRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnListDirectoryRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.ListDirectoryResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomListDirectoryRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.ListDirectoryResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    var directoryListing = new DirectoryListing();
+                    directoryListing.AddFile("/hello/world.txt");
+
+                    DebugX.Log($"Charging Station '{Id}': Incoming ListDirectory request: {request.DirectoryPath}!");
+
+                    response = request.DirectoryPath.ToString() == "/hello"
+
+                                   ? new OCPP.CS.ListDirectoryResponse(
+                                         Request:            request,
+                                         DirectoryPath:      request.DirectoryPath,
+                                         Status:             ListDirectoryStatus.Success,
+                                         DirectoryListing:   new DirectoryListing(),
+                                         CustomData:         null
+                                     )
+
+                                   : new OCPP.CS.ListDirectoryResponse(
+                                         Request:            request,
+                                         DirectoryPath:      request.DirectoryPath,
+                                         Status:             ListDirectoryStatus.NotFound,
+                                         DirectoryListing:   null,
+                                         CustomData:         null
+                                     );
+
+                }
+
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomListDirectoryResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnListDirectoryResponse event
+
+                var responseLogger = OnListDirectoryResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnListDirectoryResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnListDirectoryResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            // E2E Security Extensions
+
+            #region OnAddSignaturePolicy
+
+            ChargingStationServer.OnAddSignaturePolicy += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnAddSignaturePolicyRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnAddSignaturePolicyRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnAddSignaturePolicyRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAddSignaturePolicyRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.AddSignaturePolicyResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             //CustomAddSignaturePolicyRequestSerializer,
+                             //CustomMessageInfoSerializer,
+                             //CustomMessageContentSerializer,
+                             //CustomComponentSerializer,
+                             //CustomEVSESerializer,
+                             //CustomSignatureSerializer,
+                             //CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.AddSignaturePolicyResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming AddSignaturePolicy!");
+
+                    // Message
+
+
+                        response = new OCPP.CS.AddSignaturePolicyResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomAddSignaturePolicyResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnAddSignaturePolicyResponse event
+
+                var responseLogger = OnAddSignaturePolicyResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnAddSignaturePolicyResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAddSignaturePolicyResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUpdateSignaturePolicy
+
+            ChargingStationServer.OnUpdateSignaturePolicy += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnUpdateSignaturePolicyRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnUpdateSignaturePolicyRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnUpdateSignaturePolicyRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateSignaturePolicyRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                OCPP.CS.UpdateSignaturePolicyResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             //CustomUpdateSignaturePolicyRequestSerializer,
+                             //CustomMessageInfoSerializer,
+                             //CustomMessageContentSerializer,
+                             //CustomComponentSerializer,
+                             //CustomEVSESerializer,
+                             //CustomSignatureSerializer,
+                             //CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.UpdateSignaturePolicyResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming UpdateSignaturePolicy!");
+
+                    // Message
+
+                    response = new OCPP.CS.UpdateSignaturePolicyResponse(
+                                   Request:      request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUpdateSignaturePolicyResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnUpdateSignaturePolicyResponse event
+
+                var responseLogger = OnUpdateSignaturePolicyResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnUpdateSignaturePolicyResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateSignaturePolicyResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnDeleteSignaturePolicy
+
+            ChargingStationServer.OnDeleteSignaturePolicy += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnDeleteSignaturePolicyRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnDeleteSignaturePolicyRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnDeleteSignaturePolicyRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteSignaturePolicyRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.DeleteSignaturePolicyResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             //CustomDeleteSignaturePolicyRequestSerializer,
+                             //CustomMessageInfoSerializer,
+                             //CustomMessageContentSerializer,
+                             //CustomComponentSerializer,
+                             //CustomEVSESerializer,
+                             //CustomSignatureSerializer,
+                             //CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.DeleteSignaturePolicyResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming DeleteSignaturePolicy!");
+
+                    // Message
+
+                    response = new OCPP.CS.DeleteSignaturePolicyResponse(
+                                   Request:      request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomDeleteSignaturePolicyResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnDeleteSignaturePolicyResponse event
+
+                var responseLogger = OnDeleteSignaturePolicyResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnDeleteSignaturePolicyResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteSignaturePolicyResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnAddUserRole
+
+            ChargingStationServer.OnAddUserRole += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnAddUserRoleRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnAddUserRoleRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnAddUserRoleRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAddUserRoleRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.AddUserRoleResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             //CustomAddUserRoleRequestSerializer,
+                             //CustomMessageInfoSerializer,
+                             //CustomMessageContentSerializer,
+                             //CustomComponentSerializer,
+                             //CustomEVSESerializer,
+                             //CustomSignatureSerializer,
+                             //CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.AddUserRoleResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming AddUserRole!");
+
+                    // Message
+
+                    response = new OCPP.CS.AddUserRoleResponse(
+                                   Request:      request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomAddUserRoleResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnAddUserRoleResponse event
+
+                var responseLogger = OnAddUserRoleResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnAddUserRoleResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAddUserRoleResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUpdateUserRole
+
+            ChargingStationServer.OnUpdateUserRole += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnUpdateUserRoleRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnUpdateUserRoleRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnUpdateUserRoleRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateUserRoleRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.UpdateUserRoleResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             //CustomUpdateUserRoleRequestSerializer,
+                             //CustomMessageInfoSerializer,
+                             //CustomMessageContentSerializer,
+                             //CustomComponentSerializer,
+                             //CustomEVSESerializer,
+                             //CustomSignatureSerializer,
+                             //CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.UpdateUserRoleResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming UpdateUserRole!");
+
+                    // Message
+
+                    response = new OCPP.CS.UpdateUserRoleResponse(
+                                   Request:      request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUpdateUserRoleResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnUpdateUserRoleResponse event
+
+                var responseLogger = OnUpdateUserRoleResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnUpdateUserRoleResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateUserRoleResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnDeleteUserRole
+
+            ChargingStationServer.OnDeleteUserRole += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnDeleteUserRoleRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnDeleteUserRoleRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnDeleteUserRoleRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteUserRoleRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.DeleteUserRoleResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             //CustomDeleteUserRoleRequestSerializer,
+                             //CustomMessageInfoSerializer,
+                             //CustomMessageContentSerializer,
+                             //CustomComponentSerializer,
+                             //CustomEVSESerializer,
+                             //CustomSignatureSerializer,
+                             //CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.DeleteUserRoleResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming DeleteUserRole!");
+
+                    // Message
+
+                    response = new OCPP.CS.DeleteUserRoleResponse(
+                                   Request:      request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomDeleteUserRoleResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnDeleteUserRoleResponse event
+
+                var responseLogger = OnDeleteUserRoleResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnDeleteUserRoleResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteUserRoleResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            // E2E Charging Tariffs Extensions
+
+            #region OnSetDefaultChargingTariff
+
+            ChargingStationServer.OnSetDefaultChargingTariff += async (timestamp,
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       cancellationToken) => {
+
+                #region Send OnSetDefaultChargingTariffRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnSetDefaultChargingTariffRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetDefaultChargingTariffRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetDefaultChargingTariffRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                SetDefaultChargingTariffResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomSetDefaultChargingTariffRequestSerializer,
+                             CustomChargingTariffSerializer,
+                             CustomPriceSerializer,
+                             CustomTariffElementSerializer,
+                             CustomPriceComponentSerializer,
+                             CustomTaxRateSerializer,
+                             CustomTariffRestrictionsSerializer,
+                             CustomEnergyMixSerializer,
+                             CustomEnergySourceSerializer,
+                             CustomEnvironmentalImpactSerializer,
+                             CustomIdTokenSerializer,
+                             CustomAdditionalInfoSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new SetDefaultChargingTariffResponse(
+                                   Request:   request,
+                                   Result:    Result.SignatureError(
+                                                  $"Invalid signature: {errorResponse}"
+                                              )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming SetDefaultChargingTariff!");
+
+                    List<EVSEStatusInfo<SetDefaultChargingTariffStatus>>? evseStatusInfos = null;
+
+                    if (!request.ChargingTariff.Verify(out var err))
+                    {
+                        response = new SetDefaultChargingTariffResponse(
+                                       Request:      request,
+                                       Status:       SetDefaultChargingTariffStatus.InvalidSignature,
+                                       StatusInfo:   new StatusInfo(
+                                                         ReasonCode:       "Invalid charging tariff signature(s)!",
+                                                         AdditionalInfo:   err,
+                                                         CustomData:       null
+                                                     ),
+                                       CustomData:   null
+                                   );
+                    }
+
+                    else if (!request.EVSEIds.Any())
+                    {
+
+                        foreach (var evse in evses.Values)
+                            evse.DefaultChargingTariff = request.ChargingTariff;
+
+                        response = new SetDefaultChargingTariffResponse(
+                                       Request:           request,
+                                       Status:            SetDefaultChargingTariffStatus.Accepted,
+                                       StatusInfo:        null,
+                                       EVSEStatusInfos:   null,
+                                       CustomData:        null
+                                   );
+
+                    }
+
+                    else
+                    {
+
+                        foreach (var evseId in request.EVSEIds)
+                        {
+                            if (!evses.ContainsKey(evseId))
+                            {
+                                response = new SetDefaultChargingTariffResponse(
+                                               Request:   request,
+                                               Result:    Result.SignatureError(
+                                                              $"Invalid EVSE identification: {evseId}"
+                                                          )
+                                           );
+                            }
+                        }
+
+                        if (response == null)
+                        {
+
+                            evseStatusInfos = new List<EVSEStatusInfo<SetDefaultChargingTariffStatus>>();
+
+                            foreach (var evseId in request.EVSEIds)
+                            {
+
+                                evses[evseId].DefaultChargingTariff = request.ChargingTariff;
+
+                                evseStatusInfos.Add(new EVSEStatusInfo<SetDefaultChargingTariffStatus>(
+                                                        EVSEId:           evseId,
+                                                        Status:           SetDefaultChargingTariffStatus.Accepted,
+                                                        ReasonCode:       null,
+                                                        AdditionalInfo:   null,
+                                                        CustomData:       null
+                                                    ));
+
+                            }
+
+                            response = new SetDefaultChargingTariffResponse(
+                                           Request:           request,
+                                           Status:            SetDefaultChargingTariffStatus.Accepted,
+                                           StatusInfo:        null,
+                                           EVSEStatusInfos:   evseStatusInfos,
+                                           CustomData:        null
+                                       );
+
+                        }
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetDefaultChargingTariffResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomEVSEStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnSetDefaultChargingTariffResponse event
+
+                var responseLogger = OnSetDefaultChargingTariffResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetDefaultChargingTariffResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetDefaultChargingTariffResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetDefaultChargingTariff
+
+            ChargingStationServer.OnGetDefaultChargingTariff += async (timestamp,
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       cancellationToken) => {
+
+                #region Send OnGetDefaultChargingTariffRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetDefaultChargingTariffRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetDefaultChargingTariffRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetDefaultChargingTariffRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                GetDefaultChargingTariffResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomGetDefaultChargingTariffRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new GetDefaultChargingTariffResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming GetDefaultChargingTariff!");
+
+                    var chargingTariffGroups  = request.EVSEIds.Any()
+                                                    ? evses.Values.Where(evse => request.EVSEIds.Contains(evse.Id)).GroupBy(evse => evse.DefaultChargingTariff?.Id.ToString() ?? "")
+                                                    : evses.Values.                                                 GroupBy(evse => evse.DefaultChargingTariff?.Id.ToString() ?? "");
+
+                    var chargingTariffMap     = chargingTariffGroups.
+                                                    Where (group => group.Key != "").
+                                                    Select(group => new KeyValuePair<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
+                                                                        group.First().DefaultChargingTariff!.Id,
+                                                                        group.Select(evse => evse.Id)
+                                                                    ));
+
+                    response                  = new GetDefaultChargingTariffResponse(
+                                                    Request:             request,
+                                                    Status:              GenericStatus.Accepted,
+                                                    StatusInfo:          null,
+                                                    ChargingTariffs:     chargingTariffGroups.
+                                                                             Where (group => group.Key != "").
+                                                                             Select(group => group.First().DefaultChargingTariff).
+                                                                             Cast<ChargingTariff>(),
+                                                    ChargingTariffMap:   chargingTariffMap.Any()
+                                                                             ? new ReadOnlyDictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
+                                                                                   new Dictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
+                                                                                       chargingTariffMap
+                                                                                   )
+                                                                               )
+                                                                             : null,
+                                                    CustomData:          null
+                                                );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetDefaultChargingTariffResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomChargingTariffSerializer,
+                        CustomPriceSerializer,
+                        CustomTariffElementSerializer,
+                        CustomPriceComponentSerializer,
+                        CustomTaxRateSerializer,
+                        CustomTariffRestrictionsSerializer,
+                        CustomEnergyMixSerializer,
+                        CustomEnergySourceSerializer,
+                        CustomEnvironmentalImpactSerializer,
+                        CustomIdTokenSerializer,
+                        CustomAdditionalInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetDefaultChargingTariffResponse event
+
+                var responseLogger = OnGetDefaultChargingTariffResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetDefaultChargingTariffResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetDefaultChargingTariffResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnRemoveDefaultChargingTariff
+
+            ChargingStationServer.OnRemoveDefaultChargingTariff += async (timestamp,
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          cancellationToken) => {
+
+                #region Send OnRemoveDefaultChargingTariffRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnRemoveDefaultChargingTariffRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnRemoveDefaultChargingTariffRequestReceivedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRemoveDefaultChargingTariffRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                RemoveDefaultChargingTariffResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomRemoveDefaultChargingTariffRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new RemoveDefaultChargingTariffResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    DebugX.Log($"Charging station '{Id}': Incoming RemoveDefaultChargingTariff!");
+
+                    var evseIds          = request.EVSEIds.Any()
+                                               ? request.EVSEIds
+                                               : evses.Keys;
+
+                    var evseStatusInfos  = new List<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>();
+
+                    foreach (var evseId in evseIds)
+                    {
+
+                        if (evses[evseId].DefaultChargingTariff is null)
+                        {
+                            evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
+                                                    evseId,
+                                                    RemoveDefaultChargingTariffStatus.NotFound
+                                                ));
+                            continue;
+                        }
+
+                        if (!request.ChargingTariffId.HasValue)
+                        {
+                            evses[evseId].DefaultChargingTariff = null;
+                            continue;
+                        }
+
+                        var chargingTariff = evses[evseId].DefaultChargingTariff;
+
+                        if (chargingTariff is null)
+                        {
+                            evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
+                                                    evseId,
+                                                    RemoveDefaultChargingTariffStatus.Accepted
+                                                ));
+                            continue;
+                        }
+
+                        if (chargingTariff.Id == request.ChargingTariffId.Value)
+                        {
+                            evses[evseId].DefaultChargingTariff = null;
+                            evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
+                                                    evseId,
+                                                    RemoveDefaultChargingTariffStatus.Accepted
+                                                ));
+                            continue;
+                        }
+
+                        evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
+                                                evseId,
+                                                RemoveDefaultChargingTariffStatus.NotFound
+                                            ));
+
+                    }
+
+                    response = new RemoveDefaultChargingTariffResponse(
+                                   Request:           request,
+                                   Status:            RemoveDefaultChargingTariffStatus.Accepted,
+                                   StatusInfo:        null,
+                                   EVSEStatusInfos:   evseStatusInfos,
+                                   CustomData:        null
+                               );
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomRemoveDefaultChargingTariffResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomEVSEStatusInfoSerializer2,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnRemoveDefaultChargingTariffResponse event
+
+                var responseLogger = OnRemoveDefaultChargingTariffResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnRemoveDefaultChargingTariffResponseSentDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRemoveDefaultChargingTariffResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+*/
 
 
         }

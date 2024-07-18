@@ -749,10 +749,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         Task<SendMessageResult> SendJSONResponse         (OCPP_JSONResponseMessage       JSONResponseMessage);
         Task<SendMessageResult> SendJSONRequestError     (OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage);
         Task<SendMessageResult> SendJSONResponseError    (OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage);
+        Task<SendMessageResult> SendJSONSendMessage      (OCPP_JSONSendMessage           JSONSendMessage);
 
         Task<SendMessageResult> SendBinaryRequest        (OCPP_BinaryRequestMessage      BinaryRequestMessage);
         Task<SendRequestState>  SendBinaryRequestAndWait (OCPP_BinaryRequestMessage      BinaryRequestMessage, Action<SendMessageResult>? SendMessageResultDelegate = null);
         Task<SendMessageResult> SendBinaryResponse       (OCPP_BinaryResponseMessage     BinaryResponseMessage);
+        Task<SendMessageResult> SendBinarySendMessage    (OCPP_BinarySendMessage         BinarySendMessage);
 
 
         Boolean ReceiveJSONResponse      (OCPP_JSONResponseMessage       JSONResponseMessage);

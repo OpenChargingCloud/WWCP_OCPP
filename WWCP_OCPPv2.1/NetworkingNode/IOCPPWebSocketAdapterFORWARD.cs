@@ -36,11 +36,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
-        ForwardingResults           DefaultForwardingResult        { get; set; }
+        ForwardingResults           DefaultForwardingResult    { get; set; }
 
-        HashSet<NetworkingNode_Id>  AnycastIdsAllowed    { get; }
+        HashSet<NetworkingNode_Id>  AnycastIdsAllowed          { get; }
 
-        HashSet<NetworkingNode_Id>  AnycastIdsDenied     { get; }
+        HashSet<NetworkingNode_Id>  AnycastIdsDenied           { get; }
 
         #endregion
 
@@ -513,10 +513,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         Task ProcessJSONResponseMessage      (OCPP_JSONResponseMessage       JSONResponseMessage,       IWebSocketConnection WebSocketConnection);
         Task ProcessJSONRequestErrorMessage  (OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage,   IWebSocketConnection WebSocketConnection);
         Task ProcessJSONResponseErrorMessage (OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,  IWebSocketConnection WebSocketConnection);
+        Task ProcessJSONSendMessage          (OCPP_JSONSendMessage           JSONSendMessage,           IWebSocketConnection WebSocketConnection);
 
 
         Task ProcessBinaryRequestMessage     (OCPP_BinaryRequestMessage      BinaryRequestMessage,      IWebSocketConnection WebSocketConnection);
         Task ProcessBinaryResponseMessage    (OCPP_BinaryResponseMessage     BinaryResponseMessage,     IWebSocketConnection WebSocketConnection);
+        Task ProcessBinarySendMessage        (OCPP_BinarySendMessage         BinarySendMessage,         IWebSocketConnection WebSocketConnection);
 
 
         #region Common
