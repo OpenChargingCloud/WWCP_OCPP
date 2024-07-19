@@ -395,10 +395,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public event NetworkingNode.CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
-        /// <summary>
-        /// An event sent whenever the error response to a JSON message was sent.
-        /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+        ///// <summary>
+        ///// An event sent whenever the error response to a JSON message was sent.
+        ///// </summary>
+        //public event NetworkingNode.CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
 
 
         /// <summary>
@@ -411,10 +411,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public event NetworkingNode.CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
 
-        /// <summary>
-        /// An event sent whenever an error response to a JSON message request was received.
-        /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+        ///// <summary>
+        ///// An event sent whenever an error response to a JSON message request was received.
+        ///// </summary>
+        //public event NetworkingNode.CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
 
         #endregion
 

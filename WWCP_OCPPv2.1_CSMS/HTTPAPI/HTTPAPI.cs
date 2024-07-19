@@ -401,23 +401,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnJSONErrorResponseSent
 
-            NetworkingNode.OnJSONErrorResponseSent += (timestamp,
-                                                       webSocketServer,
-                                                       webSocketConnection,
-                                                       eventTrackingId,
-                                                       requestTimestamp,
-                                                       jsonRequestMessage,
-                                                       binaryRequestMessage,
-                                                       responseTimestamp,
-                                                       responseMessage,
-                                                       cancellationToken) =>
+            //NetworkingNode.OnJSONErrorResponseSent += (timestamp,
+            //                                           webSocketServer,
+            //                                           webSocketConnection,
+            //                                           eventTrackingId,
+            //                                           requestTimestamp,
+            //                                           jsonRequestMessage,
+            //                                           binaryRequestMessage,
+            //                                           responseTimestamp,
+            //                                           responseMessage,
+            //                                           cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
 
             #endregion
 
@@ -469,23 +469,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnJSONErrorResponseReceived
 
-            NetworkingNode.OnJSONErrorResponseReceived += (timestamp,
-                                                           webSocketServer,
-                                                           webSocketConnection,
-                                                           eventTrackingId,
-                                                           requestTimestamp,
-                                                           jsonRequestMessage,
-                                                           binaryRequestMessage,
-                                                           responseTimestamp,
-                                                           responseMessage,
-                                                           cancellationToken) =>
+            //NetworkingNode.OnJSONErrorResponseReceived += (timestamp,
+            //                                               webSocketServer,
+            //                                               webSocketConnection,
+            //                                               eventTrackingId,
+            //                                               requestTimestamp,
+            //                                               jsonRequestMessage,
+            //                                               binaryRequestMessage,
+            //                                               responseTimestamp,
+            //                                               responseMessage,
+            //                                               cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
 
             #endregion
 

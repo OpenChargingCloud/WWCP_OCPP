@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>WWCP_OCPPv2._1_ChargingStation</RootNamespace>
+    <RootNamespace>WWCP_OCPPv2._1_ChargingStation2</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -12,7 +12,6 @@
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.scss" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
@@ -23,11 +22,6 @@
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.html" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
-    <None Remove="WebSockets\Outgoing\BinaryDataStreamsExtensions\.gitkeep" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="WebSockets\Outgoing\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,7 +29,6 @@
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
-    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.scss" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
@@ -59,5 +52,9 @@
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="tsc" />
+  </Target>
 
 </Project>

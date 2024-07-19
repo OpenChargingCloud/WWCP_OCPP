@@ -29,103 +29,103 @@ using cloud.charging.open.protocols.OCPP;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 {
 
-    /// <summary>
-    /// The delegate for the HTTP WebSocket request log.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="Server">The sending WebSocket server.</param>
-    /// <param name="JSONRequest">The incoming JSON request.</param>
-    public delegate Task WebSocketJSONRequestLogHandler          (DateTime                    Timestamp,
-                                                                  INetworkingNodeChannel      Server,
-                                                                  IWebSocketConnection        Connection,
-                                                                  NetworkingNode_Id           DestinationId,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  JObject                     JSONRequest);
+//    /// <summary>
+//    /// The delegate for the HTTP WebSocket request log.
+//    /// </summary>
+//    /// <param name="Timestamp">The timestamp of the incoming request.</param>
+//    /// <param name="Server">The sending WebSocket server.</param>
+//    /// <param name="JSONRequest">The incoming JSON request.</param>
+//    public delegate Task WebSocketJSONRequestLogHandler          (DateTime                    Timestamp,
+//                                                                  INetworkingNode             Server,
+//                                                                  IWebSocketConnection        Connection,
+//                                                                  NetworkingNode_Id           DestinationId,
+//                                                                  EventTracking_Id            EventTrackingId,
+//                                                                  DateTime                    RequestTimestamp,
+//                                                                  JObject                     JSONRequest);
 
-    /// <summary>
-    /// The delegate for the HTTP WebSocket request log.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="Server">The sending WebSocket server.</param>
-    /// <param name="BinaryRequest">The incoming binary request.</param>
-    public delegate Task WebSocketBinaryRequestLogHandler        (DateTime                    Timestamp,
-                                                                  INetworkingNodeChannel      Server,
-                                                                  IWebSocketConnection        Connection,
-                                                                  NetworkingNode_Id           DestinationId,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  Byte[]                      BinaryRequest);
-
-
-
-    // Responses
-
-    public delegate Task WebSocketJSONRequestJSONResponseLogHandler    (DateTime                    Timestamp,
-                                                                        INetworkingNodeChannel      Server,
-                                                                        IWebSocketConnection        Connection,
-                                                                        NetworkingNode_Id           DestinationId,
-                                                                        EventTracking_Id            EventTrackingId,
-                                                                        DateTime                    RequestTimestamp,
-                                                                        JObject                     JSONRequest,
-                                                                        DateTime                    ResponseTimestamp,
-                                                                        JObject?                    JSONResponse,
-                                                                        JArray?                     ErrorResponse,
-                                                                        TimeSpan                    Runtime);
-
-    public delegate Task WebSocketJSONRequestBinaryResponseLogHandler  (DateTime                    Timestamp,
-                                                                        INetworkingNodeChannel      Server,
-                                                                        IWebSocketConnection        Connection,
-                                                                        NetworkingNode_Id           DestinationId,
-                                                                        EventTracking_Id            EventTrackingId,
-                                                                        DateTime                    RequestTimestamp,
-                                                                        JObject                     JSONRequest,
-                                                                        DateTime                    ResponseTimestamp,
-                                                                        Byte[]?                     BinaryResponse,
-                                                                        JArray?                     ErrorResponse,
-                                                                        TimeSpan                    Runtime);
-
-    public delegate Task WebSocketBinaryRequestJSONResponseLogHandler  (DateTime                    Timestamp,
-                                                                        INetworkingNodeChannel      Server,
-                                                                        IWebSocketConnection        Connection,
-                                                                        NetworkingNode_Id           DestinationId,
-                                                                        EventTracking_Id            EventTrackingId,
-                                                                        DateTime                    RequestTimestamp,
-                                                                        Byte[]                      BinaryRequest,
-                                                                        DateTime                    ResponseTimestamp,
-                                                                        JObject?                    JSONResponse,
-                                                                        JArray?                     ErrorResponse,
-                                                                        TimeSpan                    Runtime);
-
-    public delegate Task WebSocketBinaryRequestBinaryResponseLogHandler(DateTime                    Timestamp,
-                                                                        INetworkingNodeChannel      Server,
-                                                                        IWebSocketConnection        Connection,
-                                                                        NetworkingNode_Id           DestinationId,
-                                                                        EventTracking_Id            EventTrackingId,
-                                                                        DateTime                    RequestTimestamp,
-                                                                        Byte[]                      BinaryRequest,
-                                                                        DateTime                    ResponseTimestamp,
-                                                                        Byte[]?                     BinaryResponse,
-                                                                        JArray?                     ErrorResponse,
-                                                                        TimeSpan                    Runtime);
+//    /// <summary>
+//    /// The delegate for the HTTP WebSocket request log.
+//    /// </summary>
+//    /// <param name="Timestamp">The timestamp of the incoming request.</param>
+//    /// <param name="Server">The sending WebSocket server.</param>
+//    /// <param name="BinaryRequest">The incoming binary request.</param>
+//    public delegate Task WebSocketBinaryRequestLogHandler        (DateTime                    Timestamp,
+//                                                                  INetworkingNodeChannel      Server,
+//                                                                  IWebSocketConnection        Connection,
+//                                                                  NetworkingNode_Id           DestinationId,
+//                                                                  EventTracking_Id            EventTrackingId,
+//                                                                  DateTime                    RequestTimestamp,
+//                                                                  Byte[]                      BinaryRequest);
 
 
+
+//    // Responses
+
+//    public delegate Task WebSocketJSONRequestJSONResponseLogHandler    (DateTime                    Timestamp,
+//                                                                        INetworkingNodeChannel      Server,
+//                                                                        IWebSocketConnection        Connection,
+//                                                                        NetworkingNode_Id           DestinationId,
+//                                                                        EventTracking_Id            EventTrackingId,
+//                                                                        DateTime                    RequestTimestamp,
+//                                                                        JObject                     JSONRequest,
+//                                                                        DateTime                    ResponseTimestamp,
+//                                                                        JObject?                    JSONResponse,
+//                                                                        JArray?                     ErrorResponse,
+//                                                                        TimeSpan                    Runtime);
+
+//    public delegate Task WebSocketJSONRequestBinaryResponseLogHandler  (DateTime                    Timestamp,
+//                                                                        INetworkingNodeChannel      Server,
+//                                                                        IWebSocketConnection        Connection,
+//                                                                        NetworkingNode_Id           DestinationId,
+//                                                                        EventTracking_Id            EventTrackingId,
+//                                                                        DateTime                    RequestTimestamp,
+//                                                                        JObject                     JSONRequest,
+//                                                                        DateTime                    ResponseTimestamp,
+//                                                                        Byte[]?                     BinaryResponse,
+//                                                                        JArray?                     ErrorResponse,
+//                                                                        TimeSpan                    Runtime);
+
+//    public delegate Task WebSocketBinaryRequestJSONResponseLogHandler  (DateTime                    Timestamp,
+//                                                                        INetworkingNodeChannel      Server,
+//                                                                        IWebSocketConnection        Connection,
+//                                                                        NetworkingNode_Id           DestinationId,
+//                                                                        EventTracking_Id            EventTrackingId,
+//                                                                        DateTime                    RequestTimestamp,
+//                                                                        Byte[]                      BinaryRequest,
+//                                                                        DateTime                    ResponseTimestamp,
+//                                                                        JObject?                    JSONResponse,
+//                                                                        JArray?                     ErrorResponse,
+//                                                                        TimeSpan                    Runtime);
+
+//    public delegate Task WebSocketBinaryRequestBinaryResponseLogHandler(DateTime                    Timestamp,
+//                                                                        INetworkingNodeChannel      Server,
+//                                                                        IWebSocketConnection        Connection,
+//                                                                        NetworkingNode_Id           DestinationId,
+//                                                                        EventTracking_Id            EventTrackingId,
+//                                                                        DateTime                    RequestTimestamp,
+//                                                                        Byte[]                      BinaryRequest,
+//                                                                        DateTime                    ResponseTimestamp,
+//                                                                        Byte[]?                     BinaryResponse,
+//                                                                        JArray?                     ErrorResponse,
+//                                                                        TimeSpan                    Runtime);
 
 
 
 
 
 
-    //public delegate Task OnNewNetworkingNodeWSConnectionDelegate (DateTime                    Timestamp,
-    //                                                              INetworkingNodeChannel      NetworkingNode,
-    //                                                              IWebSocketConnection        NewWebSocketConnection,
-    //                                                              EventTracking_Id            EventTrackingId,
-    //                                                              CancellationToken           CancellationToken);
+
+
+//    //public delegate Task OnNewNetworkingNodeWSConnectionDelegate (DateTime                    Timestamp,
+//    //                                                              INetworkingNodeChannel      NetworkingNode,
+//    //                                                              IWebSocketConnection        NewWebSocketConnection,
+//    //                                                              EventTracking_Id            EventTrackingId,
+//    //                                                              CancellationToken           CancellationToken);
 
 
 
     public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
-                                                                  INetworkingNodeChannel      Server,
+                                                                  INetworkingNode             Server,
                                                                   IWebSocketConnection        Connection,
                                                                   NetworkingNode_Id           DestinationId,
                                                                   NetworkPath                 NetworkPath,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                   CancellationToken           CancellationToken);
 
     public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
-                                                                  INetworkingNodeChannel      Server,
+                                                                  INetworkingNode             Server,
                                                                   IWebSocketConnection        Connection,
                                                                   NetworkingNode_Id           DestinationId,
                                                                   NetworkPath                 NetworkPath,
@@ -147,21 +147,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                   JArray                      ResponseMessage,
                                                                   CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
-                                                                  INetworkingNodeChannel      Server,
-                                                                  IWebSocketConnection        Connection,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  String                      TextRequestMessage,
-                                                                  Byte[]                      BinaryRequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
-                                                                  String?                     TextResponseMessage,
-                                                                  CancellationToken           CancellationToken);
+//    public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
+//                                                                  INetworkingNodeChannel      Server,
+//                                                                  IWebSocketConnection        Connection,
+//                                                                  EventTracking_Id            EventTrackingId,
+//                                                                  DateTime                    RequestTimestamp,
+//                                                                  String                      TextRequestMessage,
+//                                                                  Byte[]                      BinaryRequestMessage,
+//                                                                  DateTime                    ResponseTimestamp,
+//                                                                  String?                     TextResponseMessage,
+//                                                                  CancellationToken           CancellationToken);
 
 
 
     public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
-                                                                  INetworkingNodeChannel      Server,
+                                                                  INetworkingNode             Server,
                                                                   IWebSocketConnection        Connection,
                                                                   NetworkingNode_Id           DestinationId,
                                                                   NetworkPath                 NetworkPath,
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                   CancellationToken           CancellationToken);
 
     public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
-                                                                  INetworkingNodeChannel      Server,
+                                                                  INetworkingNode             Server,
                                                                   IWebSocketConnection        Connection,
                                                                   NetworkingNode_Id           DestinationId,
                                                                   NetworkPath                 NetworkPath,
@@ -183,13 +183,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                   Byte[]?                     ResponseMessage,
                                                                   CancellationToken           CancellationToken);
 
-    //public delegate Task OnWebSocketBinaryErrorResponseDelegate  (DateTime                    Timestamp,
-    //                                                              INetworkingNodeChannel      Server,
-    //                                                              IWebSocketConnection        Connection,
-    //                                                              EventTracking_Id            EventTrackingId,
-    //                                                              DateTime                    RequestTimestamp,
-    //                                                              Byte[]                      RequestMessage,
-    //                                                              DateTime                    ResponseTimestamp,
-    //                                                              Byte[]?                     ResponseMessage);
+//    //public delegate Task OnWebSocketBinaryErrorResponseDelegate  (DateTime                    Timestamp,
+//    //                                                              INetworkingNodeChannel      Server,
+//    //                                                              IWebSocketConnection        Connection,
+//    //                                                              EventTracking_Id            EventTrackingId,
+//    //                                                              DateTime                    RequestTimestamp,
+//    //                                                              Byte[]                      RequestMessage,
+//    //                                                              DateTime                    ResponseTimestamp,
+//    //                                                              Byte[]?                     ResponseMessage);
 
 }

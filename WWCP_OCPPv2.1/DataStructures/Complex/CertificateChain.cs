@@ -18,7 +18,7 @@
 #region Usings
 
 using System.Collections;
-
+using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -266,6 +266,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public static CertificateChain From(params Org.BouncyCastle.X509.X509Certificate[] Certificates)
             => new(Certificates.Select(Certificate.From));
+
+
+
+        #region ToJSON()
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        public JArray ToJSON()
+
+            => Certificates.Any()
+                   ? new JArray(Certificates.Select(certificate => certificate.ToString()))
+                   : [];
+
+        #endregion
+
+
+        public CertificateChain Clone()
+
+            => new (Certificates.Select(certificate => certificate.Clone));
 
 
 

@@ -125,10 +125,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                            ]
                                                                   )
                                                               ],
-                                    MeterType:                "Virtual Energy Meter",
-                                    MeterSerialNumber:        "SN-EN0001",
-                                    MeterPublicKey:           "0xcafebabe",
-
+                                    UplinkEnergyMeter:        new EnergyMeter(
+                                                                  Id:             EnergyMeter_Id.Parse("SN-EN0001"),
+                                                                  Model:          "Virtual Energy Meter",
+                                                                  SerialNumber:   "SN-EN0001",
+                                                                  PublicKeys:     [ PublicKey.Parse("0xcafebabe") ]
+                                                              ),
                                     DisableSendHeartbeats:    true,
 
                                     //HTTPBasicAuth:            new Tuple<String, String>("OLI_001", "1234"),
@@ -258,10 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                            ]
                                                                   )
                                                               ],
-                                    MeterType:                "Virtual Energy Meter",
-                                    MeterSerialNumber:        "SN-EN0002",
-                                    MeterPublicKey:           "0xbabecafe",
-
+                                    UplinkEnergyMeter:        new EnergyMeter(
+                                                                  Id:             EnergyMeter_Id.Parse("SN-EN0001"),
+                                                                  Model:          "Virtual Energy Meter",
+                                                                  SerialNumber:   "SN-EN0001",
+                                                                  PublicKeys:     [ PublicKey.Parse("0xcafebabe") ]
+                                                              ),
                                     DisableSendHeartbeats:    true,
 
                                     DNSClient:                testCSMS01!.DNSClient
@@ -408,10 +412,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                            ]
                                                                   )
                                                               ],
-                                    MeterType:                "Virtual Energy Meter",
-                                    MeterSerialNumber:        "SN-EN0003",
-                                    MeterPublicKey:           "0xbacafebe",
-
+                                    UplinkEnergyMeter:        new EnergyMeter(
+                                                                  Id:             EnergyMeter_Id.Parse("SN-EN0001"),
+                                                                  Model:          "Virtual Energy Meter",
+                                                                  SerialNumber:   "SN-EN0001",
+                                                                  PublicKeys:     [ PublicKey.Parse("0xcafebabe") ]
+                                                              ),
                                     DisableSendHeartbeats:    true,
 
                                     DNSClient:                testCSMS01!.DNSClient

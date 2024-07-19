@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         SignaturePolicy?                     SignaturePolicy          { get; }
 
 
-        IEnumerable<INetworkingNodeChannel>  CSMSChannels             { get; }
+        //IEnumerable<INetworkingNodeChannel>  CSMSChannels             { get; }
 
 
     }

@@ -153,6 +153,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region (static) Parse       (Text)
+
+        /// <summary>
+        /// Parse the given text representation of a cryptographic public key.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        public static PublicKey Parse(String Text)
+
+            => new (Text);
+
+        #endregion
+
         #region (static) Parse       (JSON, CustomPublicKeyParser = null)
 
         /// <summary>

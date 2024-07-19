@@ -33,8 +33,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A wireless communication module.
     /// </summary>
-    public class Modem : ACustomData,
-                         IEquatable<Modem>
+    /// <param name="ICCID">An optional integrated circuit card identifier of the modem’s SIM card.</param>
+    /// <param name="IMSI">An optional IMSI of the modem’s SIM card.</param>
+    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+    public class Modem(String?      ICCID        = null,
+                       String?      IMSI         = null,
+                       CustomData?  CustomData   = null) : ACustomData(CustomData),
+                                                           IEquatable<Modem>
     {
 
         #region Properties
@@ -43,36 +48,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The ICCID of the modem’s SIM card. 20
         /// </summary>
         [Optional]
-        public String?  ICCID    { get; }
+        public String? ICCID { get; } = ICCID;
 
         /// <summary>
         /// The IMSI of the modem’s SIM card. 20
         /// </summary>
         [Optional]
-        public String?  IMSI     { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new wireless communication module.
-        /// </summary>
-        /// <param name="ICCID">An optional integrated circuit card identifier of the modem’s SIM card.</param>
-        /// <param name="IMSI">An optional IMSI of the modem’s SIM card.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public Modem(String?      ICCID        = null,
-                     String?      IMSI         = null,
-                     CustomData?  CustomData   = null)
-
-            : base(CustomData)
-
-        {
-
-            this.ICCID  = ICCID;
-            this.IMSI   = IMSI;
-
-        }
+        public String? IMSI { get; } = IMSI;
 
         #endregion
 

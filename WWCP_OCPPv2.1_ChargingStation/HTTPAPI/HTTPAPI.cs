@@ -18,6 +18,8 @@
 #region Usings
 
 using System.Reflection;
+using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -30,16 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// OCPP Charging Station HTTP API extensions.
-    /// </summary>
-    public static class HTTPAPIExtensions
-    {
-
-    }
-
-
-    /// <summary>
-    /// The OCPP Charging Station HTTP API.
+    /// The OCPP Networking Node HTTP API.
     /// </summary>
     public class HTTPAPI : AHTTPAPIExtension<HTTPExtAPI>,
                            IHTTPAPIExtension<HTTPExtAPI>
@@ -55,17 +48,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const    String                     DefaultHTTPServerName     = $"Open Charging Cloud OCPP {Version.String} Charging Station HTTP API";
+        public const    String                     DefaultHTTPServerName     = $"Open Charging Cloud OCPP {Version.String} Networking Node HTTP API";
 
         /// <summary>
         /// The default HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public const String                        DefaultHTTPRealm          = "Open Charging Cloud OCPP Charging Station HTTP API";
+        public const String                        DefaultHTTPRealm          = "Open Charging Cloud OCPP Networking Node HTTP API";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public const String                        HTTPRoot                  = "cloud.charging.open.protocols.OCPPv2_1.ChargingStation.HTTPAPI.HTTPRoot.";
+        public const String                        HTTPRoot                  = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.HTTPAPI.HTTPRoot.";
 
 
         //ToDo: http://www.iana.org/form/media-types
@@ -73,53 +66,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The HTTP content type for serving OCPP+ XML data.
         /// </summary>
-        public static readonly HTTPContentType     OCPPPlusJSONContentType     = new HTTPContentType("application", "vnd.OCPPPlus+json", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusJSONContentType   = new ("application", "vnd.OCPPPlus+json", "utf-8", null, null);
 
         /// <summary>
         /// The HTTP content type for serving OCPP+ HTML data.
         /// </summary>
-        public static readonly HTTPContentType     OCPPPlusHTMLContentType     = new HTTPContentType("application", "vnd.OCPPPlus+html", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusHTMLContentType   = new ("application", "vnd.OCPPPlus+html", "utf-8", null, null);
 
         /// <summary>
         /// The unique identification of the OCPP HTTP SSE event log.
         /// </summary>
-        public static readonly HTTPEventSource_Id  EventLogId                  = HTTPEventSource_Id.Parse("OCPPEvents");
+        public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
+
+
+        protected readonly  List<AChargingStation>                                     networkingNodes   = [];
 
         #endregion
 
         #region Properties
 
-        public TestChargingStation                        ChargingStation                { get; }
+        /// <summary>
+        /// An enumeration of registered networking nodes.
+        /// </summary>
+        public              IEnumerable<AChargingStation>                              ChargingStations
+            => networkingNodes;
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public String?                                    HTTPRealm           { get; }
+        public              String?                                                    HTTPRealm         { get; }
 
         /// <summary>
         /// An enumeration of logins for an optional HTTP Basic Authentication.
         /// </summary>
-        public IEnumerable<KeyValuePair<String, String>>  HTTPLogins          { get; }
+        public              IEnumerable<KeyValuePair<String, String>>                  HTTPLogins        { get; }
 
         /// <summary>
         /// Send debug information via HTTP Server Sent Events.
         /// </summary>
-        public HTTPEventSource<JObject>                   EventLog            { get; }
+        public              HTTPEventSource<JObject>                                   EventLog          { get; }
 
         #endregion
 
         #region Constructor(s)
 
+        #region HTTPAPI(...)
+
         /// <summary>
-        /// Attach the given HTTP API to the given HTTP API.
+        /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="NetworkingNode">An OCPP charging station management system.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(TestChargingStation                         ChargingStation,
-                       HTTPExtAPI                                  HTTPAPI,
+        public HTTPAPI(HTTPExtAPI                                  HTTPAPI,
                        String?                                     HTTPServerName   = null,
                        HTTPPath?                                   URLPathPrefix    = null,
                        HTTPPath?                                   BasePath         = null,
@@ -128,16 +129,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                        String?                                     HTMLTemplate     = null)
 
             : base(HTTPAPI,
-                   HTTPServerName ?? $"OCPP {Version.String} Charging Station Web API",
+                   HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
                    BasePath,
                    HTMLTemplate)
 
         {
 
-            this.ChargingStation     = ChargingStation;
             this.HTTPRealm           = HTTPRealm;
-            this.HTTPLogins          = HTTPLogins ?? Array.Empty<KeyValuePair<String, String>>();
+            this.HTTPLogins          = HTTPLogins ?? [];
 
             // Link HTTP events...
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var LogfilePrefix        = "HTTPSSEs" + Path.DirectorySeparatorChar;
 
-            this.EventLog            = this.HTTPBaseAPI.AddJSONEventSource(
+            this.EventLog            = HTTPBaseAPI.AddJSONEventSource(
                                            EventIdentification:      EventLogId,
                                            URLTemplate:              this.URLPathPrefix + "/events",
                                            MaxNumberOfCachedEvents:  10000,
@@ -155,9 +155,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            LogfilePrefix:            LogfilePrefix
                                        );
 
-            this.HTMLTemplate = HTMLTemplate ?? GetResourceString("template.html");
-
             RegisterURITemplates();
+
+        }
+
+        #endregion
+
+        #region HTTPAPI(CSMS, ...)
+
+        /// <summary>
+        /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
+        /// </summary>
+        /// <param name="ChargingStation">An OCPP charging station management system.</param>
+        /// <param name="HTTPAPI">A HTTP API.</param>
+        /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
+        /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
+        /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
+        public HTTPAPI(AChargingStation                            ChargingStation,
+                       HTTPExtAPI                                  HTTPAPI,
+                       String?                                     HTTPServerName   = null,
+                       HTTPPath?                                   URLPathPrefix    = null,
+                       HTTPPath?                                   BasePath         = null,
+                       String                                      HTTPRealm        = DefaultHTTPRealm,
+                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
+                       String?                                     HTMLTemplate     = null)
+
+            : this(HTTPAPI,
+                   HTTPServerName,
+                   URLPathPrefix,
+                   BasePath,
+                   HTTPRealm,
+                   HTTPLogins,
+                   HTMLTemplate)
+
+        {
 
             AttachChargingStation(ChargingStation);
 
@@ -165,753 +196,301 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #endregion
+
 
         #region AttachChargingStation(ChargingStation)
 
-        public void AttachChargingStation(TestChargingStation ChargingStation)
+        public void AttachChargingStation(AChargingStation ChargingStation)
         {
 
-            //csmss.Add(ChargingStation);
+            networkingNodes.Add(ChargingStation);
 
 
             // Wire HTTP Server Sent Events
 
+            #region Generic JSON Messages
 
-            #region HTTPSSEs: ChargePoint   -> ChargingStation
+            #region OnJSONMessageRequestReceived
 
-            #region OnBootNotificationRequest/-Response
+            //ChargingStation.OnJSONMessageRequestReceived += (timestamp,
+            //                                                webSocketServer,
+            //                                                webSocketConnection,
+            //                                                networkingNodeId,
+            //                                                networkPath,
+            //                                                eventTrackingId,
+            //                                                requestTimestamp,
+            //                                                requestMessage,
+            //                                                cancellationToken) =>
 
-            ChargingStation.OnBootNotificationRequest += (timestamp,
-                                                          sender,
-                                                        //  connection,
-                                                          request) =>
-
-                EventLog.SubmitEvent("OnBootNotificationRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",         timestamp.           ToIso8601()),
-                                               //     new JProperty("connection",        connection.             ToJSON()),
-                                                    new JProperty("request",           request.                ToJSON()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",   request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnBootNotificationResponse += (timestamp,
-                                                           sender,
-                                                       //    connection,
-                                                           request,
-                                                           response,
-                                                           runtime) =>
-
-                EventLog.SubmitEvent("OnBootNotificationResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",         timestamp.           ToIso8601()),
-                                                    new JProperty("eventTrackingId",   request.EventTrackingId.ToString()),
-                                          //          new JProperty("connection",        connection.             ToJSON()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",           request.                ToJSON()),
-                                                    new JProperty("response",          response.               ToJSON()),
-                                                    new JProperty("runtime",           runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONMessageRequestReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)
+            //                         ));
 
             #endregion
 
-            #region OnHeartbeatRequest/-Response
+            #region OnJSONMessageResponseSent
 
-            ChargingStation.OnHeartbeatRequest += (timestamp,
-                                                            sender,
-                                                            request) =>
+            //ChargingStation.OnJSONMessageResponseSent += (timestamp,
+            //                                             webSocketServer,
+            //                                             webSocketConnection,
+            //                                             networkingNodeId,
+            //                                             networkPath,
+            //                                             eventTrackingId,
+            //                                             requestTimestamp,
+            //                                             jsonRequestMessage,
+            //                                             binaryRequestMessage,
+            //                                             responseTimestamp,
+            //                                             responseMessage,
+            //                                             cancellationToken) =>
 
-                EventLog.SubmitEvent("OnHeartbeatRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONMessageResponseSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
 
-            ChargingStation.OnHeartbeatResponse += (timestamp,
-                                                             sender,
-                                                             request,
-                                                             response,
-                                                             runtime) =>
+            #endregion
 
-                EventLog.SubmitEvent("OnHeartbeatResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            #region OnJSONErrorResponseSent
+
+            //ChargingStation.OnJSONErrorResponseSent += (timestamp,
+            //                                           webSocketServer,
+            //                                           webSocketConnection,
+            //                                           eventTrackingId,
+            //                                           requestTimestamp,
+            //                                           jsonRequestMessage,
+            //                                           binaryRequestMessage,
+            //                                           responseTimestamp,
+            //                                           responseMessage,
+            //                                           cancellationToken) =>
+
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONErrorResponseSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
 
             #endregion
 
 
-            #region OnAuthorizeRequest/-Response
+            #region OnJSONMessageRequestSent
 
-            ChargingStation.OnAuthorizeRequest += (timestamp,
-                                                            sender,
-                                                            request) =>
+            //ChargingStation.OnJSONMessageRequestSent += (timestamp,
+            //                                            webSocketServer,
+            //                                            webSocketConnection,
+            //                                            networkingNodeId,
+            //                                            networkPath,
+            //                                            eventTrackingId,
+            //                                            requestTimestamp,
+            //                                            requestMessage,
+            //                                            cancellationToken) =>
 
-                EventLog.SubmitEvent("OnAuthorizeRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnAuthorizeResponse += (timestamp,
-                                                             sender,
-                                                             request,
-                                                             response,
-                                                             runtime) =>
-
-                EventLog.SubmitEvent("OnAuthorizeResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONMessageRequestSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)
+            //                         ));
 
             #endregion
 
-            #region OnStatusNotificationRequest/-Response
+            #region OnJSONMessageResponseReceived
 
-            ChargingStation.OnStatusNotificationRequest += (timestamp,
-                                                                     sender,
-                                                                     request) =>
+            //ChargingStation.OnJSONMessageResponseReceived += (timestamp,
+            //                                                 webSocketServer,
+            //                                                 webSocketConnection,
+            //                                                 networkingNodeId,
+            //                                                 networkPath,
+            //                                                 eventTrackingId,
+            //                                                 requestTimestamp,
+            //                                                 jsonRequestMessage,
+            //                                                 binaryRequestMessage,
+            //                                                 responseTimestamp,
+            //                                                 responseMessage,
+            //                                                 cancellationToken) =>
 
-                EventLog.SubmitEvent("OnStatusNotificationRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnStatusNotificationResponse += (timestamp,
-                                                                      sender,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
-
-                EventLog.SubmitEvent("OnStatusNotificationResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONMessageResponseReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
 
             #endregion
 
-            #region OnMeterValuesRequest/-Response
+            #region OnJSONErrorResponseReceived
 
-            ChargingStation.OnMeterValuesRequest += (timestamp,
-                                                              sender,
-                                                              request) =>
+            //ChargingStation.OnJSONErrorResponseReceived += (timestamp,
+            //                                               webSocketServer,
+            //                                               webSocketConnection,
+            //                                               eventTrackingId,
+            //                                               requestTimestamp,
+            //                                               jsonRequestMessage,
+            //                                               binaryRequestMessage,
+            //                                               responseTimestamp,
+            //                                               responseMessage,
+            //                                               cancellationToken) =>
 
-                EventLog.SubmitEvent("OnMeterValuesRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnMeterValuesResponse += (timestamp,
-                                                               sender,
-                                                               request,
-                                                               response,
-                                                               runtime) =>
-
-                EventLog.SubmitEvent("OnMeterValuesResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-
-            #region OnDataTransfer (RequestReceived/-OnDataTransferResponseSent)
-
-            ChargingStation.OnDataTransferRequestReceived += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request) =>
-
-                EventLog.SubmitEvent("OnDataTransferRequestReceived",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.             ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                  ToJSON()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.  ToString())
-                                                ));
-
-
-            ChargingStation.OnDataTransferResponseSent += (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
-
-                EventLog.SubmitEvent("OnDataTransferResponseSent",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.             ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.  ToString()),
-                                                    new JProperty("request",            request.                  ToJSON()),
-                                                    new JProperty("response",           response.                 ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnFirmwareStatusNotificationRequest/-Response
-
-            ChargingStation.OnFirmwareStatusNotificationRequest += (timestamp,
-                                                                             sender,
-                                                                             request) =>
-
-                EventLog.SubmitEvent("OnFirmwareStatusNotificationRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnFirmwareStatusNotificationResponse += (timestamp,
-                                                                              sender,
-                                                                              request,
-                                                                              response,
-                                                                              runtime) =>
-
-                EventLog.SubmitEvent("OnFirmwareStatusNotificationResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONErrorResponseReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
 
             #endregion
 
             #endregion
 
-            #region HTTP-SSEs: ChargingStation -> ChargePoint
+            #region Generic Binary Messages
 
-            #region OnResetRequest/-Response
+            #region OnBinaryMessageRequestReceived
 
-            ChargingStation.OnResetRequest += async (timestamp,
-                                                          sender,
-                                                          connection,
-                                                          request) =>
+            //ChargingStation.OnBinaryMessageRequestReceived += (timestamp,
+            //                                                  webSocketServer,
+            //                                                  webSocketConnection,
+            //                                                  networkingNodeId,
+            //                                                  networkPath,
+            //                                                  eventTrackingId,
+            //                                                  requestTimestamp,
+            //                                                  requestMessage,
+            //                                                  cancellationToken) =>
 
-                EventLog.SubmitEvent("OnResetRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnResetResponse += async (timestamp,
-                                                           sender,
-                                                           connection,
-                                                           request,
-                                                           response,
-                                                           runtime) =>
-
-                EventLog.SubmitEvent("OnResetResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnBinaryMessageRequestReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)  // BASE64 encoded string!
+            //                         ));
 
             #endregion
 
-            #region OnChangeAvailabilityRequest/-Response
+            #region OnBinaryMessageResponseSent
 
-            ChargingStation.OnChangeAvailabilityRequest += async (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request) =>
+            //ChargingStation.OnBinaryMessageResponseSent += (timestamp,
+            //                                               webSocketServer,
+            //                                               webSocketConnection,
+            //                                               networkingNodeId,
+            //                                               networkPath,
+            //                                               eventTrackingId,
+            //                                               requestTimestamp,
+            //                                               jsonRequestMessage,
+            //                                               binaryRequestMessage,
+            //                                               responseTimestamp,
+            //                                               responseMessage,
+            //                                               cancellationToken) =>
 
-                EventLog.SubmitEvent("OnChangeAvailabilityRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnChangeAvailabilityResponse += async (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
-
-                EventLog.SubmitEvent("OnChangeAvailabilityResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnBinaryMessageResponseSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            //                         ));
 
             #endregion
 
-            #region OnDataTransferRequest/-Response
+            #region OnBinaryErrorResponseSent
 
-            ChargingStation.OnDataTransferRequestSent += async (timestamp,
-                                                                     sender,
-                                                                     request) =>
+            //NetworkingNode.OnBinaryErrorResponseSent += (timestamp,
+            //                                                  webSocketServer,
+            //                                                  webSocketConnection,
+            //                                                  eventTrackingId,
+            //                                                  requestTimestamp,
+            //                                                  jsonRequestMessage,
+            //                                                  binaryRequestMessage,
+            //                                                  responseTimestamp,
+            //                                                  responseMessage) =>
 
-                EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferRequestSent),
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.             ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                  ToJSON()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.  ToString())
-                                                ));
-
-
-            ChargingStation.OnDataTransferResponseReceived += async (timestamp,
-                                                                          sender,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
-
-                EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferResponseReceived),
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.             ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.  ToString()),
-                                                    new JProperty("request",            request.                  ToJSON()),
-                                                    new JProperty("response",           response.                 ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnTriggerMessageRequest/-Response
-
-            ChargingStation.OnTriggerMessageRequest += async (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request) =>
-
-                EventLog.SubmitEvent("OnTriggerMessageRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnTriggerMessageResponse += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    response,
-                                                                    runtime) =>
-
-                EventLog.SubmitEvent("OnTriggerMessageResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnUpdateFirmwareRequest/-Response
-
-            ChargingStation.OnUpdateFirmwareRequest += async (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request) =>
-
-                EventLog.SubmitEvent("OnUpdateFirmwareRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnUpdateFirmwareResponse += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    response,
-                                                                    runtime) =>
-
-                EventLog.SubmitEvent("OnUpdateFirmwareResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            //                         ));
 
             #endregion
 
 
-            #region OnReserveNowRequest/-Response
+            #region OnBinaryMessageRequestSent
 
-            ChargingStation.OnReserveNowRequest += async (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request) =>
+            //ChargingStation.OnBinaryMessageRequestSent += (timestamp,
+            //                                                   webSocketServer,
+            //                                                   webSocketConnection,
+            //                                                   networkingNodeId,
+            //                                                   networkPath,
+            //                                                   eventTrackingId,
+            //                                                   requestTimestamp,
+            //                                                   requestMessage,
+            //                                                   cancellationToken) =>
 
-                EventLog.SubmitEvent("OnReserveNowRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnReserveNowResponse += async (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                response,
-                                                                runtime) =>
-
-                EventLog.SubmitEvent("OnReserveNowResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnBinaryMessageRequestSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)  // BASE64 encoded string!
+            //                         ));
 
             #endregion
 
-            #region OnCancelReservationRequest/-Response
+            #region OnBinaryMessageResponseReceived
 
-            ChargingStation.OnCancelReservationRequest += async (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request) =>
+            //ChargingStation.OnBinaryMessageResponseReceived += (timestamp,
+            //                                                        webSocketServer,
+            //                                                        webSocketConnection,
+            //                                                        networkingNodeId,
+            //                                                        networkPath,
+            //                                                        eventTrackingId,
+            //                                                        requestTimestamp,
+            //                                                        jsonRequestMessage,
+            //                                                        binaryRequestMessage,
+            //                                                        responseTimestamp,
+            //                                                        responseMessage,
+            //                                                        cancellationToken) =>
 
-                EventLog.SubmitEvent("OnCancelReservationRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnCancelReservationResponse += async (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                       response,
-                                                                       runtime) =>
-
-                EventLog.SubmitEvent("OnCancelReservationResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(ChargingStation.OnBinaryMessageResponseReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            //                         ));
 
             #endregion
 
-            #region OnSetChargingProfileRequest/-Response
+            #region OnBinaryErrorResponseReceived
 
-            ChargingStation.OnSetChargingProfileRequest += async (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request) =>
+            //NetworkingNode.OnBinaryErrorResponseReceived += (timestamp,
+            //                                                      webSocketServer,
+            //                                                      webSocketConnection,
+            //                                                      eventTrackingId,
+            //                                                      requestTimestamp,
+            //                                                      jsonRequestMessage,
+            //                                                      binaryRequestMessage,
+            //                                                      responseTimestamp,
+            //                                                      responseMessage) =>
 
-                EventLog.SubmitEvent("OnSetChargingProfileRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnSetChargingProfileResponse += async (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
-
-                EventLog.SubmitEvent("OnSetChargingProfileResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnClearChargingProfileRequest/-Response
-
-            ChargingStation.OnClearChargingProfileRequest += async (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request) =>
-
-                EventLog.SubmitEvent("OnClearChargingProfileRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnClearChargingProfileResponse += async (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
-
-                EventLog.SubmitEvent("OnClearChargingProfileResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnGetCompositeScheduleRequest/-Response
-
-            ChargingStation.OnGetCompositeScheduleRequest += async (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request) =>
-
-                EventLog.SubmitEvent("OnGetCompositeScheduleRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnGetCompositeScheduleResponse += async (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
-
-                EventLog.SubmitEvent("OnGetCompositeScheduleResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnUnlockConnectorRequest/-Response
-
-            ChargingStation.OnUnlockConnectorRequest += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request) =>
-
-                EventLog.SubmitEvent("OnUnlockConnectorRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnUnlockConnectorResponse += async (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     response,
-                                                                     runtime) =>
-
-                EventLog.SubmitEvent("OnUnlockConnectorResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-
-            #region OnGetLocalListVersionRequest/-Response
-
-            ChargingStation.OnGetLocalListVersionRequest += async (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request) =>
-
-                EventLog.SubmitEvent("OnGetLocalListVersionRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnGetLocalListVersionResponse += async (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
-
-                EventLog.SubmitEvent("OnGetLocalListVersionResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnSendLocalListRequest/-Response
-
-            ChargingStation.OnSendLocalListRequest += async (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request) =>
-
-                EventLog.SubmitEvent("OnSendLocalListRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnSendLocalListResponse += async (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
-
-                EventLog.SubmitEvent("OnSendLocalListResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnClearCacheRequest/-Response
-
-            ChargingStation.OnClearCacheRequest += async (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request) =>
-
-                EventLog.SubmitEvent("OnClearCacheRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            ChargingStation.OnClearCacheResponse += async (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                response,
-                                                                runtime) =>
-
-                EventLog.SubmitEvent("OnClearCacheResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
-                                                    new JProperty("networkingNodeId",   request.DestinationId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
-                                                    new JProperty("runtime",            runtime.TotalMilliseconds)
-                                                ));
+            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            //                         ));
 
             #endregion
 
             #endregion
+
+
+
+            // Firmware API download messages
+            // Logdata API upload messages
+            // Diagnostics API upload messages
+
 
         }
 
@@ -926,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         protected override Stream? GetResourceStream(String ResourceName)
 
-            => GetResourceStream(ResourceName,
-                                 new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceStream(ResourceName,
+                                 new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                 new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                 new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -937,10 +516,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
-            => GetResourceMemoryStream(ResourceName,
-                                       new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                       new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                       new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceMemoryStream(ResourceName,
+                                       new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                       new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -948,10 +527,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         protected override String GetResourceString(String ResourceName)
 
-            => GetResourceString(ResourceName,
-                                 new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceString(ResourceName,
+                                 new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                 new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                 new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -959,10 +538,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         protected override Byte[] GetResourceBytes(String ResourceName)
 
-            => GetResourceBytes(ResourceName,
-                                new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceBytes(ResourceName,
+                                new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -970,10 +549,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         protected override String MixWithHTMLTemplate(String ResourceName)
 
-            => MixWithHTMLTemplate(ResourceName,
-                                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                   new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.MixWithHTMLTemplate(ResourceName,
+                                   new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                   new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                   new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -982,11 +561,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         protected override String MixWithHTMLTemplate(String                ResourceName,
                                                       Func<String, String>  HTMLConverter)
 
-            => MixWithHTMLTemplate(ResourceName,
+            => base.MixWithHTMLTemplate(ResourceName,
                                    HTMLConverter,
-                                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                   new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+                                   new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                   new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                   new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -996,13 +575,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       String   ResourceName,
                                                       String?  Content   = null)
 
-            => MixWithHTMLTemplate(Template,
+            => base.MixWithHTMLTemplate(Template,
                                    ResourceName,
-                                   [
-                                       new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
-                                       new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                       new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly)
-                                   ],
+                                   new[] {
+                                       new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                       new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly)
+                                   },
                                    Content);
 
         #endregion

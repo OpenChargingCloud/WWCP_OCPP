@@ -84,10 +84,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnWebSocketJSONMessageResponseDelegate?  OnJSONMessageResponseSent;
 
-        /// <summary>
-        /// An event sent whenever the error response to a text message was sent.
-        /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?    OnJSONRequestErrorSent;
+        ///// <summary>
+        ///// An event sent whenever the error response to a text message was sent.
+        ///// </summary>
+        //public event OnWebSocketTextErrorResponseDelegate?    OnJSONRequestErrorSent;
 
 
         /// <summary>
@@ -100,10 +100,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnWebSocketJSONMessageResponseDelegate?  OnJSONMessageResponseReceived;
 
-        /// <summary>
-        /// An event sent whenever an error response to a text message request was received.
-        /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?    OnJSONRequestErrorReceived;
+        ///// <summary>
+        ///// An event sent whenever an error response to a text message request was received.
+        ///// </summary>
+        //public event OnWebSocketTextErrorResponseDelegate?    OnJSONRequestErrorReceived;
 
         #endregion
 

@@ -257,23 +257,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnJSONErrorResponseSent
 
-            Gateway.OnJSONErrorResponseSent += (timestamp,
-                                                webSocketServer,
-                                                webSocketConnection,
-                                                eventTrackingId,
-                                                requestTimestamp,
-                                                jsonRequestMessage,
-                                                binaryRequestMessage,
-                                                responseTimestamp,
-                                                responseMessage,
-                                                cancellationToken) =>
+            //Gateway.OnJSONErrorResponseSent += (timestamp,
+            //                                    webSocketServer,
+            //                                    webSocketConnection,
+            //                                    eventTrackingId,
+            //                                    requestTimestamp,
+            //                                    jsonRequestMessage,
+            //                                    binaryRequestMessage,
+            //                                    responseTimestamp,
+            //                                    responseMessage,
+            //                                    cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnJSONErrorResponseSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(Gateway.OnJSONErrorResponseSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
 
             #endregion
 
@@ -325,23 +325,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnJSONErrorResponseReceived
 
-            Gateway.OnJSONErrorResponseReceived += (timestamp,
-                                                    webSocketServer,
-                                                    webSocketConnection,
-                                                    eventTrackingId,
-                                                    requestTimestamp,
-                                                    jsonRequestMessage,
-                                                    binaryRequestMessage,
-                                                    responseTimestamp,
-                                                    responseMessage,
-                                                    cancellationToken) =>
+            //Gateway.OnJSONErrorResponseReceived += (timestamp,
+            //                                        webSocketServer,
+            //                                        webSocketConnection,
+            //                                        eventTrackingId,
+            //                                        requestTimestamp,
+            //                                        jsonRequestMessage,
+            //                                        binaryRequestMessage,
+            //                                        responseTimestamp,
+            //                                        responseMessage,
+            //                                        cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnJSONErrorResponseReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(Gateway.OnJSONErrorResponseReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
 
             #endregion
 

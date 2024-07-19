@@ -1,4 +1,4 @@
-///<reference path="../../../../../../libs/UsersAPI/UsersAPI/HTTPRoot/libs/date.format.ts" />
+///<reference path="../../../../../../../libs/UsersAPI/UsersAPI/HTTPRoot/libs/date.format.ts" />
 function StartEventsSSE() {
     //MenuHighlight('Events');
     const connectionColors = {};

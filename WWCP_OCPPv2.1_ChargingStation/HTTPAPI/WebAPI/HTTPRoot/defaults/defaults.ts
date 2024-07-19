@@ -1,2 +1,2 @@
 ﻿
-var HTTPCookieId:  string = "OCPPv2.1ChargingStationAPI";
+var HTTPCookieId: string = "OCPPv2.1NetworkingNodeAPI";

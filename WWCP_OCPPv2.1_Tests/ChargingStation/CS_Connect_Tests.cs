@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -178,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation1WebSocketJSONMessagesSent              = new ConcurrentList<LogJSONRequest>();
             chargingStation1WebSocketJSONMessageResponsesReceived  = new ConcurrentList<LogDataJSONResponse>();
 
-            chargingStation1 = new TestChargingStation(
+            chargingStation1  = new TestChargingStation(
                                     Id:                       NetworkingNode_Id.Parse("GD001"),
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
@@ -204,10 +205,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                            ]
                                                                   )
                                                               ],
-                                    MeterType:                "Virtual Energy Meter",
-                                    MeterSerialNumber:        "SN-EN0001",
-                                    MeterPublicKey:           "0xcafebabe",
-
+                                    UplinkEnergyMeter:        new EnergyMeter(
+                                                                  Id:             EnergyMeter_Id.Parse("SN-EN0001"),
+                                                                  Model:          "Virtual Energy Meter",
+                                                                  SerialNumber:   "SN-EN0001",
+                                                                  PublicKeys:     [ PublicKey.Parse("0xcafebabe") ]
+                                                              ),
                                     DisableSendHeartbeats:    true,
 
                                     //HTTPBasicAuth:            new Tuple<String, String>("OLI_001", "1234"),
