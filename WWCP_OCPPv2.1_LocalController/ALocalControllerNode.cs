@@ -185,31 +185,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         #region Properties
 
         /// <summary>
-        /// The networking node vendor identification.
+        /// The local controller vendor identification.
         /// </summary>
         [Mandatory]
         public String                      VendorName                 { get; }      = "";
 
         /// <summary>
-        ///  The networking node model identification.
+        ///  The local controller model identification.
         /// </summary>
         [Mandatory]
         public String                      Model                      { get; }      = "";
 
         /// <summary>
-        /// The optional serial number of the networking node.
+        /// The optional serial number of the local controller.
         /// </summary>
         [Optional]
         public String?                     SerialNumber               { get; }
 
         /// <summary>
-        /// The optional firmware version of the networking node.
+        /// The optional firmware version of the local controller.
         /// </summary>
         [Optional]
         public String?                     SoftwareVersion            { get; }
 
         /// <summary>
-        /// The modem of the networking node.
+        /// The modem of the local controller.
         /// </summary>
         [Optional]
         public Modem?                      Modem                      { get; }
@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
 
-                   DefaultRequestTimeout,
+                   DefaultRequestTimeout ?? TimeSpan.FromMinutes(1),
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,

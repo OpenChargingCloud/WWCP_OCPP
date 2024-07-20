@@ -197,25 +197,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Properties
 
         /// <summary>
-        /// The networking node vendor identification.
+        /// The Charging Station Management System vendor identification.
         /// </summary>
         [Mandatory]
         public String                      VendorName                 { get; }      = "";
 
         /// <summary>
-        ///  The networking node model identification.
+        ///  The Charging Station Management System model identification.
         /// </summary>
         [Mandatory]
         public String                      Model                      { get; }      = "";
 
         /// <summary>
-        /// The optional serial number of the networking node.
+        /// The optional serial number of the Charging Station Management System.
         /// </summary>
         [Optional]
         public String?                     SerialNumber               { get; }
 
         /// <summary>
-        /// The optional firmware version of the networking node.
+        /// The optional firmware version of the Charging Station Management System.
         /// </summary>
         [Optional]
         public String?                     SoftwareVersion            { get; }
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
 
-                   DefaultRequestTimeout,
+                   DefaultRequestTimeout ?? TimeSpan.FromMinutes(1),
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,

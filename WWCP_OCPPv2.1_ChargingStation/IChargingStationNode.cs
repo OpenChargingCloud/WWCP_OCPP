@@ -30,14 +30,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public interface IChargingStationNode : INetworkingNode
     {
 
-        TimeSpan           DefaultRequestTimeout    { get; }
+        String    VendorName               { get; }
+        String    Model                    { get; }
+        String?   FirmwareVersion          { get; }
+        String?   SerialNumber             { get; }
 
-        String             VendorName               { get; }
-        String             Model                    { get; }
-        String?            FirmwareVersion          { get; }
-        String?            SerialNumber             { get; }
-
-        Modem?             Modem                    { get; }
+        Modem?    Modem                    { get; }
 
 
     }

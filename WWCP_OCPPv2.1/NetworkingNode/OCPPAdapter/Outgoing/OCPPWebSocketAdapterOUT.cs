@@ -331,7 +331,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-
             return sendMessageResult;
 
         }
@@ -514,6 +513,94 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region SendBinaryRequestError   (BinaryRequestErrorMessage)
+
+        public async Task<SendMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        {
+
+            var sendMessageResult = SendMessageResult.TransmissionFailed;
+
+            #region Send OnBinaryRequestErrorMessageSent event
+
+            var logger = OnBinaryRequestErrorMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                       OfType<OnBinaryRequestErrorMessageSentDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        //Connection,
+                                                                                        BinaryRequestErrorMessage,
+                                                                                        sendMessageResult)).
+                                       ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              "NetworkingNode",
+                              nameof(OnBinaryRequestErrorMessageSent),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+            return sendMessageResult;
+
+        }
+
+        #endregion
+
+        #region SendBinaryResponseError  (BinaryResponseErrorMessage)
+
+        public async Task<SendMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
+        {
+
+            var sendMessageResult = SendMessageResult.TransmissionFailed;
+
+            #region Send OnBinaryResponseErrorMessageSent event
+
+            var logger = OnBinaryResponseErrorMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                       OfType<OnBinaryResponseErrorMessageSentDelegate>().
+                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        //Connection,
+                                                                                        BinaryResponseErrorMessage,
+                                                                                        sendMessageResult)).
+                                       ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              "NetworkingNode",
+                              nameof(OnBinaryResponseErrorMessageSent),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+            return sendMessageResult;
+
+        }
+
+        #endregion
+
         #region SendBinarySendMessage    (BinarySendMessage)
 
         /// <summary>
@@ -562,7 +649,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Request/response events...
 
-        #region NotifyJSONMessageResponseSent   (JSONResponseMessage,      SendMessageResult)
+        #region NotifyJSONMessageResponseSent   (JSONResponseMessage,        SendMessageResult)
 
         public async Task NotifyJSONMessageResponseSent(OCPP_JSONResponseMessage  JSONResponseMessage,
                                                         SendMessageResult         SendMessageResult)
@@ -595,7 +682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region NotifyJSONRequestErrorSent      (JSONRequestErrorMessage,  SendMessageResult)
+        #region NotifyJSONRequestErrorSent      (JSONRequestErrorMessage,    SendMessageResult)
 
         public async Task NotifyJSONRequestErrorSent(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
                                                      SendMessageResult             SendMessageResult)
@@ -628,7 +715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region NotifyJSONResponseErrorSent     (JSONResponseErrorMessage, SendMessageResult)
+        #region NotifyJSONResponseErrorSent     (JSONResponseErrorMessage,   SendMessageResult)
 
         public async Task NotifyJSONResponseErrorSent(OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,
                                                       SendMessageResult              SendMessageResult)
@@ -662,7 +749,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region NotifyBinaryMessageResponseSent (BinaryResponseMessage,    SendMessageResult)
+        #region NotifyBinaryMessageResponseSent (BinaryResponseMessage,      SendMessageResult)
 
 
         public async Task NotifyBinaryMessageResponseSent(OCPP_BinaryResponseMessage  BinaryResponseMessage,
@@ -696,6 +783,71 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region NotifyBinaryRequestErrorSent    (BinaryRequestErrorMessage,  SendMessageResult)
+
+        public async Task NotifyBinaryRequestErrorSent(OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,
+                                                       SendMessageResult               SendMessageResult)
+        {
+
+            var logger = OnBinaryRequestErrorMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                           OfType<OnBinaryRequestErrorMessageSentDelegate>().
+                                           Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                         Timestamp.Now,
+                                                                         this,
+                                                                         BinaryRequestErrorMessage,
+                                                                         SendMessageResult
+                                                                     )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBinaryRequestErrorMessageSent));
+                }
+            }
+
+        }
+
+        #endregion
+
+        #region NotifyBinaryResponseErrorSent   (BinaryResponseErrorMessage, SendMessageResult)
+
+        public async Task NotifyBinaryResponseErrorSent(OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
+                                                        SendMessageResult                SendMessageResult)
+        {
+
+            var logger = OnBinaryResponseErrorMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                           OfType<OnBinaryResponseErrorMessageSentDelegate>().
+                                           Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                         Timestamp.Now,
+                                                                         this,
+                                                                         BinaryResponseErrorMessage,
+                                                                         SendMessageResult
+                                                                     )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBinaryResponseErrorMessageSent));
+                }
+            }
+
+        }
+
+        #endregion
 
 
         #region HandleErrors(Module, Caller, ExceptionOccured)

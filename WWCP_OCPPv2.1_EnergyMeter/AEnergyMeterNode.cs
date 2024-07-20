@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
     /// An abstract energy meter node.
     /// </summary>
     public abstract class AEnergyMeterNode : ANetworkingNode,
-                                             GW.IEnergyMeterNode
+                                             EM.IEnergyMeterNode
     {
 
         #region Data
@@ -48,28 +48,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
         #region Properties
 
         /// <summary>
-        /// The networking node vendor identification.
+        /// The energy meter vendor identification.
         /// </summary>
         [Mandatory]
         public String                      VendorName                 { get; }      = "";
 
         /// <summary>
-        ///  The networking node model identification.
+        ///  The energy meter model identification.
         /// </summary>
         [Mandatory]
         public String                      Model                      { get; }      = "";
 
         /// <summary>
-        /// The optional serial number of the networking node.
+        /// The optional serial number of the energy meter.
         /// </summary>
         [Optional]
         public String?                     SerialNumber               { get; }
 
         /// <summary>
-        /// The optional firmware version of the networking node.
+        /// The optional firmware version of the energy meter.
         /// </summary>
         [Optional]
-        public String?                     SoftwareVersion            { get; }
+        public String?                     FirmwareVersion            { get; }
+
+        /// <summary>
+        /// The modem of the energy meter.
+        /// </summary>
+        [Optional]
+        public Modem?                      Modem                      { get; }
 
 
         /// <summary>
@@ -175,7 +181,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                 String             VendorName,
                                 String             Model,
                                 String?            SerialNumber                = null,
-                                String?            SoftwareVersion             = null,
+                                String?            FirmwareVersion             = null,
+                                Modem?             Modem                       = null,
                                 I18NString?        Description                 = null,
                                 CustomData?        CustomData                  = null,
 
@@ -200,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
 
-                   DefaultRequestTimeout,
+                   DefaultRequestTimeout ?? TimeSpan.FromMinutes(1),
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
@@ -218,7 +225,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
             this.VendorName               = VendorName;
             this.Model                    = Model;
             this.SerialNumber             = SerialNumber;
-            this.SoftwareVersion          = SoftwareVersion;
+            this.FirmwareVersion          = FirmwareVersion;
+            this.Modem                    = Modem;
 
             #region Setup generic HTTP API
 

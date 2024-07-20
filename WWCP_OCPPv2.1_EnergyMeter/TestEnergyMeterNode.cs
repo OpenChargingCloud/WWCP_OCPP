@@ -53,7 +53,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                    String             VendorName,
                                    String             Model,
                                    String?            SerialNumber                = null,
-                                   String?            SoftwareVersion             = null,
+                                   String?            FirmwareVersion             = null,
+                                   Modem?             Modem                       = null,
                                    I18NString?        Description                 = null,
                                    CustomData?        CustomData                  = null,
 
@@ -72,7 +73,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                    VendorName,
                    Model,
                    SerialNumber,
-                   SoftwareVersion,
+                   FirmwareVersion,
+                   Modem,
                    Description,
                    CustomData,
 

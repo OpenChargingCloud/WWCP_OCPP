@@ -46,8 +46,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        #region Common
-
         #region BinaryDataStreamsExtensions
 
         event OnDeleteFileRequestFilterDelegate?                            OnDeleteFileRequestFilter;
@@ -111,7 +109,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #endregion
 
         #region CS
 
@@ -509,19 +506,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         NetworkingNode_Id? GetForwardedNodeId(Request_Id RequestId);
 
 
-        Task ProcessJSONRequestMessage       (OCPP_JSONRequestMessage        JSONRequestMessage,        IWebSocketConnection WebSocketConnection);
-        Task ProcessJSONResponseMessage      (OCPP_JSONResponseMessage       JSONResponseMessage,       IWebSocketConnection WebSocketConnection);
-        Task ProcessJSONRequestErrorMessage  (OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage,   IWebSocketConnection WebSocketConnection);
-        Task ProcessJSONResponseErrorMessage (OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,  IWebSocketConnection WebSocketConnection);
-        Task ProcessJSONSendMessage          (OCPP_JSONSendMessage           JSONSendMessage,           IWebSocketConnection WebSocketConnection);
+        Task ProcessJSONRequestMessage         (OCPP_JSONRequestMessage          JSONRequestMessage,          IWebSocketConnection WebSocketConnection);
+        Task ProcessJSONResponseMessage        (OCPP_JSONResponseMessage         JSONResponseMessage,         IWebSocketConnection WebSocketConnection);
+        Task ProcessJSONRequestErrorMessage    (OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage,     IWebSocketConnection WebSocketConnection);
+        Task ProcessJSONResponseErrorMessage   (OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage,    IWebSocketConnection WebSocketConnection);
+        Task ProcessJSONSendMessage            (OCPP_JSONSendMessage             JSONSendMessage,             IWebSocketConnection WebSocketConnection);
 
 
-        Task ProcessBinaryRequestMessage     (OCPP_BinaryRequestMessage      BinaryRequestMessage,      IWebSocketConnection WebSocketConnection);
-        Task ProcessBinaryResponseMessage    (OCPP_BinaryResponseMessage     BinaryResponseMessage,     IWebSocketConnection WebSocketConnection);
-        Task ProcessBinarySendMessage        (OCPP_BinarySendMessage         BinarySendMessage,         IWebSocketConnection WebSocketConnection);
+        Task ProcessBinaryRequestMessage       (OCPP_BinaryRequestMessage        BinaryRequestMessage,        IWebSocketConnection WebSocketConnection);
+        Task ProcessBinaryResponseMessage      (OCPP_BinaryResponseMessage       BinaryResponseMessage,       IWebSocketConnection WebSocketConnection);
+        Task ProcessBinaryRequestErrorMessage  (OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage,   IWebSocketConnection WebSocketConnection);
+        Task ProcessBinaryResponseErrorMessage (OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,  IWebSocketConnection WebSocketConnection);
+        Task ProcessBinarySendMessage          (OCPP_BinarySendMessage           BinarySendMessage,           IWebSocketConnection WebSocketConnection);
 
-
-        #region Common
 
         #region BinaryDataStreamsExtensions
 
@@ -551,7 +548,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #endregion
 
         #region CS
 

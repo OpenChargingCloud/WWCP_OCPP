@@ -67,11 +67,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         #region Events
 
-        #region Common Connection Management
-
-        #endregion
-
-
         /// <summary>
         /// An event sent whenever a JSON message was sent.
         /// </summary>

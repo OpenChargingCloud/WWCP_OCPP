@@ -174,7 +174,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// An abstract charging station node.
     /// </summary>
-    public abstract class AChargingStationNode : ANetworkingNode
+    public abstract class AChargingStationNode : ANetworkingNode,
+                                                 IChargingStationNode
     {
 
         #region Data
@@ -197,31 +198,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Properties
 
         /// <summary>
-        /// The networking node vendor identification.
+        /// The charging station vendor identification.
         /// </summary>
         [Mandatory]
         public String                   VendorName                  { get; }      = "";
 
         /// <summary>
-        ///  The networking node model identification.
+        ///  The charging station model identification.
         /// </summary>
         [Mandatory]
         public String                   Model                       { get; }      = "";
 
         /// <summary>
-        /// The optional serial number of the networking node.
+        /// The optional serial number of the charging station.
         /// </summary>
         [Optional]
         public String?                  SerialNumber                { get; }
 
         /// <summary>
-        /// The optional firmware version of the networking node.
+        /// The optional firmware version of the charging station.
         /// </summary>
         [Optional]
         public String?                  FirmwareVersion             { get; }
 
         /// <summary>
-        /// The modem of the networking node.
+        /// The modem of the charging station.
         /// </summary>
         [Optional]
         public Modem?                   Modem                       { get; }
@@ -242,11 +243,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The time at the CSMS.
         /// </summary>
         public DateTime?                CSMSTime                    { get; private set; } = Timestamp.Now;
-
-        /// <summary>
-        /// The default request timeout for all requests.
-        /// </summary>
-        public TimeSpan                 DefaultRequestTimeout       { get; }
 
 
         /// <summary>
@@ -717,31 +713,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Id">The unique identification of this charging station.</param>
         public AChargingStationNode(NetworkingNode_Id                  Id,
-                                String                             VendorName,
-                                String                             Model,
-                                I18NString?                        Description                 = null,
-                                String?                            SerialNumber                = null,
-                                String?                            FirmwareVersion             = null,
-                                Modem?                             Modem                       = null,
+                                    String                             VendorName,
+                                    String                             Model,
+                                    I18NString?                        Description                 = null,
+                                    String?                            SerialNumber                = null,
+                                    String?                            FirmwareVersion             = null,
+                                    Modem?                             Modem                       = null,
 
-                                IEnumerable<ChargingStationEVSE>?  EVSEs                       = null,
-                                IEnergyMeter?                      UplinkEnergyMeter           = null,
+                                    IEnumerable<ChargingStationEVSE>?  EVSEs                       = null,
+                                    IEnergyMeter?                      UplinkEnergyMeter           = null,
 
-                                CustomData?                        CustomData                  = null,
+                                    CustomData?                        CustomData                  = null,
 
-                                SignaturePolicy?                   SignaturePolicy             = null,
-                                SignaturePolicy?                   ForwardingSignaturePolicy   = null,
+                                    SignaturePolicy?                   SignaturePolicy             = null,
+                                    SignaturePolicy?                   ForwardingSignaturePolicy   = null,
 
-                                Boolean                            DisableSendHeartbeats       = false,
-                                TimeSpan?                          SendHeartbeatsEvery         = null,
-                                TimeSpan?                          DefaultRequestTimeout       = null,
+                                    Boolean                            DisableSendHeartbeats       = false,
+                                    TimeSpan?                          SendHeartbeatsEvery         = null,
+                                    TimeSpan?                          DefaultRequestTimeout       = null,
 
-                                IPPort?                            HTTPUploadPort              = null,
-                                IPPort?                            HTTPDownloadPort            = null,
+                                    IPPort?                            HTTPUploadPort              = null,
+                                    IPPort?                            HTTPDownloadPort            = null,
 
-                                Boolean                            DisableMaintenanceTasks     = false,
-                                TimeSpan?                          MaintenanceEvery            = null,
-                                DNSClient?                         DNSClient                   = null)
+                                    Boolean                            DisableMaintenanceTasks     = false,
+                                    TimeSpan?                          MaintenanceEvery            = null,
+                                    DNSClient?                         DNSClient                   = null)
 
             : base(Id,
                    Description,
@@ -753,7 +749,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
 
-                   DefaultRequestTimeout,
+                   DefaultRequestTimeout ?? TimeSpan.FromMinutes(1),
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
@@ -777,8 +773,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.evses                  = EVSEs?.ToDictionary(evse => evse.Id) ?? [];
 
             this.UplinkEnergyMeter      = UplinkEnergyMeter;
-
-            this.DefaultRequestTimeout  = DefaultRequestTimeout ?? TimeSpan.FromMinutes(1);
 
             this.DisableSendHeartbeats  = DisableSendHeartbeats;
             this.SendHeartbeatsEvery    = SendHeartbeatsEvery   ?? DefaultSendHeartbeatsEvery;

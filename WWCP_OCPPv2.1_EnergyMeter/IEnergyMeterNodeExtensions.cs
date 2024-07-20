@@ -17,13 +17,16 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.GW
+namespace cloud.charging.open.protocols.OCPPv2_1.EM
 {
 
     /// <summary>
@@ -31,6 +34,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1.GW
     /// </summary>
     public static class IEnergyMeterNodeExtensions
     {
+
+        #region SendBootNotification                  (BootReason, ...)
+
+        /// <summary>
+        /// Send a boot notification.
+        /// </summary>
+        /// <param name="BootReason">The the reason for sending this boot notification to the CSMS.</param>
+        /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CSMS.BootNotificationResponse>
+
+            SendBootNotification(this IEnergyMeterNode    EnergyMeter,
+
+                                 BootReason               BootReason,
+
+                                 CustomData?              CustomData          = null,
+
+                                 NetworkingNode_Id?       DestinationId       = null,
+
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<Signature>?  Signatures          = null,
+
+                                 Request_Id?              RequestId           = null,
+                                 DateTime?                RequestTimestamp    = null,
+                                 TimeSpan?                RequestTimeout      = null,
+                                 EventTracking_Id?        EventTrackingId     = null,
+                                 CancellationToken        CancellationToken   = default)
+
+
+                => EnergyMeter.OCPP.OUT.BootNotification(
+                       new BootNotificationRequest(
+
+                           DestinationId ?? NetworkingNode_Id.CSMS,
+
+                           new ChargingStation(
+                               EnergyMeter.Model,
+                               EnergyMeter.VendorName,
+                               EnergyMeter.SerialNumber,
+                               EnergyMeter.FirmwareVersion,
+                               EnergyMeter.Modem,
+                               EnergyMeter.CustomData
+                           ),
+                           BootReason,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? EnergyMeter.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
+                           CancellationToken
+
+                       )
+                   );
+
+        #endregion
+
+        #region TransferData                          (VendorId, MessageId = null, Data = null, ...)
+
+        /// <summary>
+        /// Send the given vendor-specific data to the CSMS.
+        /// </summary>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">An optional message identification.</param>
+        /// <param name="Data">A vendor-specific JSON token.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<DataTransferResponse>
+
+            TransferData(this IEnergyMeterNode    EnergyMeter,
+
+                         Vendor_Id                VendorId,
+                         Message_Id?              MessageId           = null,
+                         JToken?                  Data                = null,
+                         CustomData?              CustomData          = null,
+
+                         IEnumerable<KeyPair>?    SignKeys            = null,
+                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         IEnumerable<Signature>?  Signatures          = null,
+
+                         Request_Id?              RequestId           = null,
+                         DateTime?                RequestTimestamp    = null,
+                         TimeSpan?                RequestTimeout      = null,
+                         EventTracking_Id?        EventTrackingId     = null,
+                         CancellationToken        CancellationToken   = default)
+
+
+                => EnergyMeter.OCPP.OUT.DataTransfer(
+                       new DataTransferRequest(
+
+                           NetworkingNode_Id.CSMS,
+
+                           VendorId,
+                           MessageId,
+                           Data,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? EnergyMeter.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
+                           CancellationToken
+
+                       )
+                   );
+
+        #endregion
+
+
+
+
 
         // E2E Security Extensions
 

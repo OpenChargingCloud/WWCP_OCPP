@@ -24,7 +24,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public interface INetworkingNodeOutgoingMessages
     {
 
-        #region DataTransfer (Request)
+        #region DataTransfer                (Request)
 
         /// <summary>
         /// Send the given vendor-specific data.
