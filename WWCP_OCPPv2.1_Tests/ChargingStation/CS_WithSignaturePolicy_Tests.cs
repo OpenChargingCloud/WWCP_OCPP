@@ -102,23 +102,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var now1                           = Timestamp.Now;
                 var keyPair                        = KeyPair.GenerateKeys()!;
-                chargingStation1.SignaturePolicy.AddSigningRule     (BootNotificationRequest. DefaultJSONLDContext,
-                                                                     KeyPair:                 keyPair,
-                                                                     UserIdGenerator:         (signableMessage) => "cs001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station test!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1);
-                chargingStation1.SignaturePolicy.AddVerificationRule(BootNotificationResponse.DefaultJSONLDContext,
-                                                                     VerificationRuleActions.VerifyAll);
+                chargingStation1.OCPP.SignaturePolicy.AddSigningRule     (BootNotificationRequest. DefaultJSONLDContext,
+                                                                          KeyPair:                 keyPair,
+                                                                          UserIdGenerator:         (signableMessage) => "cs001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station test!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1);
+                chargingStation1.OCPP.SignaturePolicy.AddVerificationRule(BootNotificationResponse.DefaultJSONLDContext,
+                                                                          VerificationRuleActions.VerifyAll);
 
                 var now2                           = Timestamp.Now;
                 var keyPair2                       = KeyPair.GenerateKeys()!;
-                testCSMS01.SignaturePolicy.      AddVerificationRule(BootNotificationRequest. DefaultJSONLDContext,
-                                                                     VerificationRuleActions.VerifyAll);
-                testCSMS01.SignaturePolicy.      AddSigningRule     (BootNotificationResponse.DefaultJSONLDContext,
-                                                                     keyPair2,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2);
+                testCSMS01.OCPP.SignaturePolicy.      AddVerificationRule(BootNotificationRequest. DefaultJSONLDContext,
+                                                                          VerificationRuleActions.VerifyAll);
+                testCSMS01.OCPP.SignaturePolicy.      AddSigningRule     (BootNotificationResponse.DefaultJSONLDContext,
+                                                                          keyPair2,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2);
 
 
                 var reason                         = BootReason.PowerUp;

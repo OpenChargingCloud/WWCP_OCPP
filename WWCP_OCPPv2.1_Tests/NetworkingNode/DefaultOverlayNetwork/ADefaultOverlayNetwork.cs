@@ -137,14 +137,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             csmsKeyPair = KeyPair.GenerateKeys()!;
 
-            CSMS.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
-                                                     VerificationRuleActions. VerifyAll);
+            CSMS.OCPP.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
+                                                          VerificationRuleActions. VerifyAll);
 
-            CSMS.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
-                                                     KeyPair:                 csmsKeyPair!,
-                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS test!"),
-                                                     TimestampGenerator:      (signableMessage) => Timestamp.Now);
+            CSMS.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
+                                                          KeyPair:                 csmsKeyPair!,
+                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS test!"),
+                                                          TimestampGenerator:      (signableMessage) => Timestamp.Now);
 
             #endregion
 
@@ -330,14 +330,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             chargingStationKeyPair = KeyPair.GenerateKeys()!;
 
-            chargingStation.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
-                                                                KeyPair:                 localControllerKeyPair!,
-                                                                UserIdGenerator:         (signableMessage) => "cs001",
-                                                                DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a networking node test!"),
-                                                                TimestampGenerator:      (signableMessage) => Timestamp.Now);
+            chargingStation.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
+                                                                     KeyPair:                 localControllerKeyPair!,
+                                                                     UserIdGenerator:         (signableMessage) => "cs001",
+                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a networking node test!"),
+                                                                     TimestampGenerator:      (signableMessage) => Timestamp.Now);
 
-            chargingStation.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
-                                                                VerificationRuleActions. VerifyAll);
+            chargingStation.OCPP.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
+                                                                     VerificationRuleActions. VerifyAll);
 
             #endregion
 

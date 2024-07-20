@@ -330,14 +330,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             chargingStationKeyPair = KeyPair.GenerateKeys()!;
 
-            chargingStation.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
-                                                                KeyPair:                 localControllerKeyPair!,
-                                                                UserIdGenerator:         (signableMessage) => "cs001",
-                                                                DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a networking node test!"),
-                                                                TimestampGenerator:      (signableMessage) => Timestamp.Now);
+            chargingStation.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
+                                                                     KeyPair:                 localControllerKeyPair!,
+                                                                     UserIdGenerator:         (signableMessage) => "cs001",
+                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a networking node test!"),
+                                                                     TimestampGenerator:      (signableMessage) => Timestamp.Now);
 
-            chargingStation.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
-                                                                VerificationRuleActions. VerifyAll);
+            chargingStation.OCPP.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
+                                                                     VerificationRuleActions. VerifyAll);
 
             #endregion
 

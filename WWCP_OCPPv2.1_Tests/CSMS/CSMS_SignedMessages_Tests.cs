@@ -67,8 +67,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.SignaturePolicy.AddVerificationRule(ResetRequest.DefaultJSONLDContext,
-                                                                     VerificationRuleActions.VerifyAll);
+                chargingStation1.OCPP.SignaturePolicy.AddVerificationRule(ResetRequest.DefaultJSONLDContext,
+                                                                          VerificationRuleActions.VerifyAll);
 
 
                 var keyPair    = KeyPair.GenerateKeys()!;
@@ -91,16 +91,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 ClassicAssert.AreEqual(ResultCode.OK,                response.Result.ResultCode);
                 ClassicAssert.AreEqual(ResetStatus.Accepted,          response.Status);
 
-                ClassicAssert.IsTrue  (testCSMS01.SignaturePolicy.VerifyResponseMessage(
-                                    response,
-                                    response.ToJSON(
-                                        testCSMS01.OCPP.CustomResetResponseSerializer,
-                                        testCSMS01.OCPP.CustomStatusInfoSerializer,
-                                        testCSMS01.OCPP.CustomSignatureSerializer,
-                                        testCSMS01.OCPP.CustomCustomDataSerializer
-                                    ),
-                                    out var errorResponse
-                                ));
+                ClassicAssert.IsTrue  (testCSMS01.OCPP.SignaturePolicy.VerifyResponseMessage(
+                                           response,
+                                           response.ToJSON(
+                                               testCSMS01.OCPP.CustomResetResponseSerializer,
+                                               testCSMS01.OCPP.CustomStatusInfoSerializer,
+                                               testCSMS01.OCPP.CustomSignatureSerializer,
+                                               testCSMS01.OCPP.CustomCustomDataSerializer
+                                           ),
+                                           out var errorResponse
+                                       ));
 
 
                 ClassicAssert.AreEqual(1,                                   resetRequests.Count);

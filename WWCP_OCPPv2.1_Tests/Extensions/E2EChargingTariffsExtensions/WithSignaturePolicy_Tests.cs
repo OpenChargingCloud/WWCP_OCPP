@@ -68,26 +68,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now1            = Timestamp.Now;
                 var requestKeyPair  = KeyPair.GenerateKeys()!;
-                testCSMS01.      SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest. DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1);
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest. DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1);
 
-                testCSMS01.      SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.DefaultJSONLDContext);
 
                 #endregion
 
                 #region Set the charging station signature policy
 
                 var now2            = Timestamp.Now;
-                chargingStation1.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest. DefaultJSONLDContext);
+                chargingStation1.OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest. DefaultJSONLDContext);
 
-                chargingStation1.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station test response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2);
+                chargingStation1.OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station test response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2);
 
                 #endregion
 
@@ -250,26 +250,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now1            = Timestamp.Now;
                 var requestKeyPair  = KeyPair.GenerateKeys()!;
-                testCSMS01.      SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest. DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1);
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest. DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1);
 
-                testCSMS01.      SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.DefaultJSONLDContext);
 
                 #endregion
 
                 #region Set the charging station signature policy
 
                 var now2            = Timestamp.Now;
-                chargingStation2.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest. DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest. DefaultJSONLDContext);
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station test response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2);
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station test response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2);
 
                 #endregion
 
@@ -349,27 +349,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now1             = timeReference;
                 var requestKeyPair   = KeyPair.GenerateKeys()!;
-                testCSMS01.      SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest.   DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS SetDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1);
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest.   DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS SetDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1);
 
-                testCSMS01.      SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest.   DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS GetDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(4));
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest.   DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS GetDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(4));
 
-                testCSMS01.      SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffRequest.DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS RemoveDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(8));
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffRequest.DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS RemoveDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(8));
 
-                testCSMS01.      SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.   DefaultJSONLDContext);
-                testCSMS01.      SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.   DefaultJSONLDContext);
-                testCSMS01.      SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffResponse.DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.   DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.   DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffResponse.DefaultJSONLDContext);
 
                 #endregion
 
@@ -377,27 +377,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now2             = now1 + TimeSpan.FromSeconds(2);
                 var responseKeyPair  = KeyPair.GenerateKeys()!;
-                chargingStation1.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest.    DefaultJSONLDContext);
-                chargingStation1.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest.    DefaultJSONLDContext);
-                chargingStation1.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffRequest. DefaultJSONLDContext);
+                chargingStation1.OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest.    DefaultJSONLDContext);
+                chargingStation1.OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest.    DefaultJSONLDContext);
+                chargingStation1.OCPP.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffRequest. DefaultJSONLDContext);
 
-                chargingStation1.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.   DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station SetDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2);
+                chargingStation1.OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.   DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station SetDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2);
 
-                chargingStation1.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.   DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station GetDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(4));
+                chargingStation1.OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.   DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station GetDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(4));
 
-                chargingStation1.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffResponse.DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station RemoveDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(8));
+                chargingStation1.OCPP.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffResponse.DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station RemoveDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(8));
 
                 #endregion
 
@@ -681,27 +681,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now1             = timeReference;
                 var requestKeyPair   = KeyPair.GenerateKeys()!;
-                testCSMS01.      SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest.   DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS SetDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1);
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest.   DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS SetDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1);
 
-                testCSMS01.      SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest.   DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS GetDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(4));
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest.   DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS GetDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(4));
 
-                testCSMS01.      SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffRequest.DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS RemoveDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(8));
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffRequest.DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS RemoveDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(8));
 
-                testCSMS01.      SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.   DefaultJSONLDContext);
-                testCSMS01.      SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.   DefaultJSONLDContext);
-                testCSMS01.      SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffResponse.DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.   DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.   DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffResponse.DefaultJSONLDContext);
 
                 #endregion
 
@@ -709,27 +709,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now2             = now1 + TimeSpan.FromSeconds(2);
                 var responseKeyPair  = KeyPair.GenerateKeys()!;
-                chargingStation2.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest.    DefaultJSONLDContext);
-                chargingStation2.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest.    DefaultJSONLDContext);
-                chargingStation2.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffRequest. DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest.    DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest.    DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffRequest. DefaultJSONLDContext);
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.   DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs002",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station SetDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2);
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.   DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs002",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station SetDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2);
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.   DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs002",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station GetDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(4));
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.   DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs002",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station GetDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(4));
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffResponse.DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs002",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station RemoveDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(8));
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffResponse.DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs002",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station RemoveDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(8));
 
                 #endregion
 
@@ -1013,27 +1013,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now1             = timeReference;
                 var requestKeyPair   = KeyPair.GenerateKeys()!;
-                testCSMS01.      SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest.   DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS SetDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1);
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest.   DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS SetDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1);
 
-                testCSMS01.      SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest.   DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS GetDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(4));
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest.   DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS GetDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(4));
 
-                testCSMS01.      SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffRequest.DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS RemoveDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(8));
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffRequest.DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS RemoveDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(8));
 
-                testCSMS01.      SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.   DefaultJSONLDContext);
-                testCSMS01.      SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.   DefaultJSONLDContext);
-                testCSMS01.      SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffResponse.DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.   DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.   DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffResponse.DefaultJSONLDContext);
 
                 #endregion
 
@@ -1041,27 +1041,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now2             = now1 + TimeSpan.FromSeconds(2);
                 var responseKeyPair  = KeyPair.GenerateKeys()!;
-                chargingStation2.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest.    DefaultJSONLDContext);
-                chargingStation2.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest.    DefaultJSONLDContext);
-                chargingStation2.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffRequest. DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest.    DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest.    DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffRequest. DefaultJSONLDContext);
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.   DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs002",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station SetDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2);
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.   DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs002",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station SetDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2);
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.   DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs002",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station GetDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(4));
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.   DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs002",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station GetDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(4));
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffResponse.DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs002",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station RemoveDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(8));
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffResponse.DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs002",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station RemoveDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(8));
 
                 #endregion
 
@@ -1348,27 +1348,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now1             = timeReference;
                 var requestKeyPair   = KeyPair.GenerateKeys()!;
-                testCSMS01.      SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest.   DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS SetDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1);
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest.   DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS SetDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1);
 
-                testCSMS01.      SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest.   DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS GetDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(4));
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffRequest.   DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS GetDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(4));
 
-                testCSMS01.      SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffRequest.DefaultJSONLDContext,
-                                                                     requestKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "csms001",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS RemoveDefaultChargingTariff request!"),
-                                                                     TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(8));
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffRequest.DefaultJSONLDContext,
+                                                                          requestKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "csms001",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS RemoveDefaultChargingTariff request!"),
+                                                                          TimestampGenerator:      (signableMessage) => now1 + TimeSpan.FromSeconds(8));
 
-                testCSMS01.      SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.   DefaultJSONLDContext);
-                testCSMS01.      SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.   DefaultJSONLDContext);
-                testCSMS01.      SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffResponse.DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.   DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffResponse.   DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffResponse.DefaultJSONLDContext);
 
                 #endregion
 
@@ -1376,27 +1376,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var now2             = now1 + TimeSpan.FromSeconds(2);
                 var responseKeyPair  = KeyPair.GenerateKeys()!;
-                chargingStation2.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest.    DefaultJSONLDContext);
-                chargingStation2.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest.    DefaultJSONLDContext);
-                chargingStation2.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffRequest. DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest.    DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(GetDefaultChargingTariffRequest.    DefaultJSONLDContext);
+                chargingStation2.OCPP.SignaturePolicy.AddVerificationRule(RemoveDefaultChargingTariffRequest. DefaultJSONLDContext);
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.   DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs002",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station SetDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2);
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.   DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs002",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station SetDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2);
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.   DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs002",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station GetDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(4));
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (GetDefaultChargingTariffResponse.   DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs002",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station GetDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(4));
 
-                chargingStation2.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffResponse.DefaultJSONLDContext,
-                                                                     responseKeyPair!,
-                                                                     UserIdGenerator:         (signableMessage) => "cs002",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station RemoveDefaultChargingTariff response!"),
-                                                                     TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(8));
+                chargingStation2.OCPP.SignaturePolicy.AddSigningRule     (RemoveDefaultChargingTariffResponse.DefaultJSONLDContext,
+                                                                          responseKeyPair!,
+                                                                          UserIdGenerator:         (signableMessage) => "cs002",
+                                                                          DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station RemoveDefaultChargingTariff response!"),
+                                                                          TimestampGenerator:      (signableMessage) => now2 + TimeSpan.FromSeconds(8));
 
                 #endregion
 

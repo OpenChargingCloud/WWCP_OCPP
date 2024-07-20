@@ -150,13 +150,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.SignaturePolicy.AddVerificationRule(ResetRequest.DefaultJSONLDContext,
-                                                                     VerificationRuleActions.VerifyAll);
+                chargingStation1.OCPP.SignaturePolicy.AddVerificationRule(ResetRequest.DefaultJSONLDContext,
+                                                                          VerificationRuleActions.VerifyAll);
 
 
                 var requestKeyPair  = KeyPair.GenerateKeys()!;
-                testCSMS01.SignaturePolicy.AddSigningRule     (ResetRequest. DefaultJSONLDContext, requestKeyPair!);
-                testCSMS01.SignaturePolicy.AddVerificationRule(ResetResponse.DefaultJSONLDContext);
+                testCSMS01.OCPP.SignaturePolicy.AddSigningRule     (ResetRequest. DefaultJSONLDContext, requestKeyPair!);
+                testCSMS01.OCPP.SignaturePolicy.AddVerificationRule(ResetResponse.DefaultJSONLDContext);
 
 
                 var resetType       = ResetType.Immediate;

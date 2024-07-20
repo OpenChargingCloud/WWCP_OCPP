@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         IOCPPAdapter               OCPP                     { get; }
 
-        NetworkingNode_Id          Id                       { get; }
+        new NetworkingNode_Id      Id                       { get; }
 
         /// <summary>
         /// An optional multi-language networking node description.
@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         Request_Id                 NextRequestId            { get; }
 
-        SignaturePolicy?           SignaturePolicy          { get; }
+        //SignaturePolicy?           SignaturePolicy          { get; }
 
 
         Byte[]  GetEncryptionKey     (NetworkingNode_Id DestinationId, UInt16? KeyId = null);
