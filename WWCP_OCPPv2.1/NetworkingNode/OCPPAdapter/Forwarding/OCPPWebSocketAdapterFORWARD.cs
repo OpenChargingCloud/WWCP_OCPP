@@ -537,7 +537,158 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinaryRequestMessage.DestinationId))
                 return;
 
-            await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage);
+
+            #region Try to call the matching 'incoming message processor'...
+
+            if (forwardingMessageProcessorsLookup.TryGetValue(BinaryRequestMessage.Action, out var methodInfo) &&
+                methodInfo is not null)
+            {
+
+                //ToDo: Maybe this could be done via code generation!
+                var result = methodInfo.Invoke(
+                                 this,
+                                 [
+                                     BinaryRequestMessage,
+                                     WebSocketConnection,
+                                     BinaryRequestMessage.CancellationToken
+                                 ]
+                             );
+
+                if (result is Task<ForwardingDecision> forwardingProcessor)
+                {
+
+                    var forwardingDecision = await forwardingProcessor;
+
+                    #region FORWARD
+
+                    if (forwardingDecision.Result == ForwardingResults.FORWARD)
+                    {
+
+                        var newBinaryRequestMessage = BinaryRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
+
+                        expectedResponses.TryAdd(
+                            newBinaryRequestMessage.RequestId,
+                            new ResponseInfo(
+                                newBinaryRequestMessage.RequestId,
+                                forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                                newBinaryRequestMessage.NetworkPath.Source,
+                                newBinaryRequestMessage.RequestTimeout
+                            )
+                        );
+
+                        await parentNetworkingNode.OCPP.OUT.SendBinaryRequest(newBinaryRequestMessage);
+
+                    }
+
+                    #endregion
+
+                    #region REPLACE
+
+                    if (forwardingDecision.Result == ForwardingResults.REPLACE)
+                    {
+
+                        var newBinaryRequestMessage = forwardingDecision.NewJSONRequest is null
+                                                        ? BinaryRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id)
+                                                        : new OCPP_BinaryRequestMessage(
+                                                              BinaryRequestMessage.RequestTimestamp,
+                                                              BinaryRequestMessage.EventTrackingId,
+                                                              BinaryRequestMessage.NetworkingMode,
+                                                              forwardingDecision.NewDestinationId ?? BinaryRequestMessage.DestinationId,
+                                                              BinaryRequestMessage.NetworkPath.Append(parentNetworkingNode.Id),
+                                                              BinaryRequestMessage.RequestId,
+                                                              forwardingDecision.NewAction        ?? BinaryRequestMessage.Action,
+                                                              forwardingDecision.NewBinaryRequest, // <-- !!!
+                                                              BinaryRequestMessage.RequestTimeout,
+                                                              BinaryRequestMessage.ErrorMessage,
+                                                              BinaryRequestMessage.CancellationToken
+                                                          );
+
+                        expectedResponses.TryAdd(
+                            newBinaryRequestMessage.RequestId,
+                            new ResponseInfo(
+                                newBinaryRequestMessage.RequestId,
+                                forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                                newBinaryRequestMessage.NetworkPath.Source,
+                                newBinaryRequestMessage.RequestTimeout
+                            )
+                        );
+
+                        await parentNetworkingNode.OCPP.OUT.SendBinaryRequest(newBinaryRequestMessage);
+
+                    }
+
+                    #endregion
+
+                    #region REJECT
+
+                    else if (forwardingDecision.Result == ForwardingResults.REJECT &&
+                             forwardingDecision.JSONRejectResponse is not null)
+                    {
+
+                        await parentNetworkingNode.OCPP.SendJSONRequestError(
+                                  new OCPP_JSONRequestErrorMessage(
+                                      Timestamp.Now,
+                                      BinaryRequestMessage.EventTrackingId,
+                                      NetworkingMode.Unknown,
+                                      BinaryRequestMessage.NetworkPath.Source,
+                                      NetworkPath.From(parentNetworkingNode.Id),
+                                      BinaryRequestMessage.RequestId,
+                                      ResultCode.Filtered,
+                                      forwardingDecision.RejectMessage,
+                                      forwardingDecision.RejectDetails,
+                                      BinaryRequestMessage.CancellationToken
+                                  )
+                              );
+
+                    }
+
+                    #endregion
+
+                    #region DROP
+
+                    else
+                    {
+                        // Just ignore the request!
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    DebugX.Log($"Received undefined '{BinaryRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+
+            }
+
+            #endregion
+
+            #region ...or error!
+
+            else
+            {
+
+                DebugX.Log($"Received unknown '{BinaryRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+
+                //OCPPErrorResponse = new OCPP_JSONErrorMessage(
+                //                        Timestamp.Now,
+                //                        EventTracking_Id.New,
+                //                        NetworkingMode.Unknown,
+                //                        NetworkingNode_Id.Zero,
+                //                        NetworkPath.Empty,
+                //                        jsonRequest.RequestId,
+                //                        ResultCode.ProtocolError,
+                //                        $"The OCPP message '{jsonRequest.Action}' is unkown!",
+                //                        new JObject(
+                //                            new JProperty("request", JSONMessage)
+                //                        )
+                //                    );
+
+            }
+
+            #endregion
+
+
+   //         await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage);
 
         }
 
