@@ -44,9 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
 
         #region Data
 
-        protected TestLocalController?          localController1;
-        protected TestLocalController?          localController2;
-        protected TestLocalController?          localController3;
+        protected TestLocalControllerNode?          localController1;
+        protected TestLocalControllerNode?          localController2;
+        protected TestLocalControllerNode?          localController3;
 
         protected OCPPWebSocketServer?          lcOCPPWebSocketServer01;
         protected OCPPWebSocketServer?          lcOCPPWebSocketServer02;
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
 
                 var networkingNode1Id = NetworkingNode_Id.Parse("GD-NN001");
 
-                localController1 = new TestLocalController(
+                localController1 = new TestLocalControllerNode(
                                       Id:                       networkingNode1Id,
                                       VendorName:               "GraphDefined OEM #1",
                                       Model:                    "VCP.1",

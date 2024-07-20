@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<ACSMS>                                      networkingNodes   = [];
+        protected readonly  List<ACSMSNode>                                      networkingNodes   = [];
 
         protected readonly  ConcurrentDictionary<ChargingStation_Id, ChargingStation>  chargingStations  = [];
 
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An enumeration of registered networking nodes.
         /// </summary>
-        public              IEnumerable<ACSMS>                               NetworkingNodes
+        public              IEnumerable<ACSMSNode>                               NetworkingNodes
             => networkingNodes;
 
         /// <summary>
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(ACSMS                             NetworkingNode,
+        public HTTPAPI(ACSMSNode                             NetworkingNode,
                        HTTPExtAPI                                  HTTPAPI,
                        String?                                     HTTPServerName   = null,
                        HTTPPath?                                   URLPathPrefix    = null,
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region AttachCSMS(NetworkingNode)
 
-        public void AttachCSMS(ACSMS NetworkingNode)
+        public void AttachCSMS(ACSMSNode NetworkingNode)
         {
 
             networkingNodes.Add(NetworkingNode);

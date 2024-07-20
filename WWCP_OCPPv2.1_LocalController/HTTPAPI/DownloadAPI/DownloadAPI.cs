@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS
         /// <summary>
         /// The parent networking node.
         /// </summary>
-        public ALocalController                            NetworkingNode    { get; }
+        public ALocalControllerNode                            NetworkingNode    { get; }
 
         /// <summary>
         /// The optional location of the served files within the file system.
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS
         /// 
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public DownloadAPI(ALocalController                             NetworkingNode,
+        public DownloadAPI(ALocalControllerNode                             NetworkingNode,
                            HTTPServer                                  HTTPServer,
 
                            HTTPPath?                                   BasePath        = null,

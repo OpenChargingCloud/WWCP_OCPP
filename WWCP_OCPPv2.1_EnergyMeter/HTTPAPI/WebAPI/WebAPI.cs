@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
+namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 {
 
     /// <summary>
@@ -55,12 +55,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const    String    DefaultHTTPServerName  = $"Open Charging Cloud OCPP {Version.String} Gateway WebAPI";
+        public new const    String    DefaultHTTPServerName  = $"Open Charging Cloud OCPP {Version.String} EnergyMeter WebAPI";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public new const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.Gateway.WebAPI.HTTPRoot.";
+        public new const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.EnergyMeter.WebAPI.HTTPRoot.";
 
         #endregion
 
@@ -72,14 +72,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         #region Constructor(s)
 
         /// <summary>
-        /// Attach the given gateway WebAPI to the given HTTP API.
+        /// Attach the given energy meter WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="Gateway">A gateway.</param>
+        /// <param name="EnergyMeter">A energy meter.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public WebAPI(AGatewayNode                                    Gateway,
+        public WebAPI(AEnergyMeterNode                                    EnergyMeter,
                       HTTPExtAPI                                  HTTPAPI,
                       String?                                     HTTPServerName   = null,
                       HTTPPath?                                   URLPathPrefix    = null,
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
                       String?                                     HTMLTemplate     = null)
 
-            : base(Gateway,
+            : base(EnergyMeter,
                    HTTPAPI,
                    HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,

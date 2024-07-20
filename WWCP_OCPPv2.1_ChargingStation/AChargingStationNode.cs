@@ -176,9 +176,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// An abstract charging station.
+    /// An abstract charging station node.
     /// </summary>
-    public abstract class AChargingStation : ANetworkingNode
+    public abstract class AChargingStationNode : ANetworkingNode
     {
 
         #region Data
@@ -775,7 +775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Create a new charging station for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this charging station.</param>
-        public AChargingStation(NetworkingNode_Id                  Id,
+        public AChargingStationNode(NetworkingNode_Id                  Id,
                                 String                             VendorName,
                                 String                             Model,
                                 I18NString?                        Description                 = null,
@@ -1015,7 +1015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestChargingStation),
+                                  nameof(TestChargingStationNode),
                                   nameof(OnServerStarted),
                                   e
                               );
@@ -1055,7 +1055,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestChargingStation),
+                                  nameof(TestChargingStationNode),
                                   nameof(OnNewTCPConnection),
                                   e
                               );
@@ -1109,7 +1109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(AChargingStation),
+                                  nameof(AChargingStationNode),
                                   nameof(OnNewWebSocketConnection),
                                   e
                               );
@@ -1157,7 +1157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(AChargingStation),
+                                  nameof(AChargingStationNode),
                                   nameof(OnCloseMessageReceived),
                                   e
                               );
@@ -1201,7 +1201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(AChargingStation),
+                                  nameof(AChargingStationNode),
                                   nameof(OnTCPConnectionClosed),
                                   e
                               );
@@ -1241,7 +1241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestChargingStation),
+                                  nameof(TestChargingStationNode),
                                   nameof(OnServerStopped),
                                   e
                               );
@@ -1259,8 +1259,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         }
 
         #endregion
-
-
 
 
         #region AttachWebAPI(...)

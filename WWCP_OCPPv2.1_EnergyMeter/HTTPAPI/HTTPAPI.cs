@@ -28,11 +28,11 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
+namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 {
 
     /// <summary>
-    /// The Gateway HTTP API.
+    /// The Energy Meter HTTP API.
     /// </summary>
     public class HTTPAPI : AHTTPAPIExtension<HTTPExtAPI>,
                            IHTTPAPIExtension<HTTPExtAPI>
@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const    String                     DefaultHTTPServerName     = $"Open Charging Cloud OCPP {Version.String} Gateway HTTP API";
+        public const    String                     DefaultHTTPServerName     = $"Open Charging Cloud OCPP {Version.String} EnergyMeter HTTP API";
 
         /// <summary>
         /// The default HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public const String                        DefaultHTTPRealm          = "Open Charging Cloud OCPP Gateway HTTP API";
+        public const String                        DefaultHTTPRealm          = "Open Charging Cloud OCPP EnergyMeter HTTP API";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<AGatewayNode>                                             gateways   = [];
+        protected readonly  List<AEnergyMeterNode> energyMeters   = [];
 
         #endregion
 
@@ -88,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         /// <summary>
         /// An enumeration of registered networking nodes.
         /// </summary>
-        public IEnumerable<AGatewayNode>                      Gateways
-            => gateways;
+        public IEnumerable<AEnergyMeterNode>              EnergyMeters
+            => energyMeters;
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         #region HTTPAPI(...)
 
         /// <summary>
-        /// Attach the given gateway WebAPI to the given HTTP API.
+        /// Attach the given energy meter WebAPI to the given HTTP API.
         /// </summary>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
@@ -163,14 +163,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         #region HTTPAPI(CSMS, ...)
 
         /// <summary>
-        /// Attach the given gateway WebAPI to the given HTTP API.
+        /// Attach the given energy meter WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="Gateway">A gateway.</param>
+        /// <param name="EnergyMeter">A energy meter.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(AGatewayNode                                    Gateway,
+        public HTTPAPI(AEnergyMeterNode                                    EnergyMeter,
                        HTTPExtAPI                                  HTTPAPI,
                        String?                                     HTTPServerName   = null,
                        HTTPPath?                                   URLPathPrefix    = null,
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
         {
 
-            AttachGateway(Gateway);
+            AttachEnergyMeter(EnergyMeter);
 
         }
 
@@ -198,12 +198,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         #endregion
 
 
-        #region AttachGateway(Gateway)
+        #region AttachEnergyMeter(EnergyMeter)
 
-        public void AttachGateway(AGatewayNode Gateway)
+        public void AttachEnergyMeter(AEnergyMeterNode EnergyMeter)
         {
 
-            gateways.Add(Gateway);
+            energyMeters.Add(EnergyMeter);
 
 
             // Wire HTTP Server Sent Events
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnJSONMessageRequestReceived
 
-            Gateway.OnJSONMessageRequestReceived += (timestamp,
+            EnergyMeter.OnJSONMessageRequestReceived += (timestamp,
                                                      webSocketServer,
                                                      webSocketConnection,
                                                      networkingNodeId,
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                      requestMessage,
                                                      cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnJSONMessageRequestReceived),
+                EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnJSONMessageResponseSent
 
-            Gateway.OnJSONMessageResponseSent += (timestamp,
+            EnergyMeter.OnJSONMessageResponseSent += (timestamp,
                                                   webSocketServer,
                                                   webSocketConnection,
                                                   networkingNodeId,
@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                   responseMessage,
                                                   cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnJSONMessageResponseSent),
+                EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnJSONErrorResponseSent
 
-            //Gateway.OnJSONErrorResponseSent += (timestamp,
+            //EnergyMeter.OnJSONErrorResponseSent += (timestamp,
             //                                    webSocketServer,
             //                                    webSocketConnection,
             //                                    eventTrackingId,
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
             //                                    responseMessage,
             //                                    cancellationToken) =>
 
-            //    EventLog.SubmitEvent(nameof(Gateway.OnJSONErrorResponseSent),
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONErrorResponseSent),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnJSONMessageRequestSent
 
-            Gateway.OnJSONMessageRequestSent += (timestamp,
+            EnergyMeter.OnJSONMessageRequestSent += (timestamp,
                                                  webSocketServer,
                                                  webSocketConnection,
                                                  networkingNodeId,
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                  requestMessage,
                                                  cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnJSONMessageRequestSent),
+                EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnJSONMessageResponseReceived
 
-            Gateway.OnJSONMessageResponseReceived += (timestamp,
+            EnergyMeter.OnJSONMessageResponseReceived += (timestamp,
                                                       webSocketServer,
                                                       webSocketConnection,
                                                       networkingNodeId,
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                       responseMessage,
                                                       cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnJSONMessageResponseReceived),
+                EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnJSONErrorResponseReceived
 
-            //Gateway.OnJSONErrorResponseReceived += (timestamp,
+            //EnergyMeter.OnJSONErrorResponseReceived += (timestamp,
             //                                        webSocketServer,
             //                                        webSocketConnection,
             //                                        eventTrackingId,
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
             //                                        responseMessage,
             //                                        cancellationToken) =>
 
-            //    EventLog.SubmitEvent(nameof(Gateway.OnJSONErrorResponseReceived),
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONErrorResponseReceived),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnBinaryMessageRequestReceived
 
-            Gateway.OnBinaryMessageRequestReceived += (timestamp,
+            EnergyMeter.OnBinaryMessageRequestReceived += (timestamp,
                                                        webSocketServer,
                                                        webSocketConnection,
                                                        networkingNodeId,
@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                        requestMessage,
                                                        cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnBinaryMessageRequestReceived),
+                EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnBinaryMessageResponseSent
 
-            Gateway.OnBinaryMessageResponseSent += (timestamp,
+            EnergyMeter.OnBinaryMessageResponseSent += (timestamp,
                                                     webSocketServer,
                                                     webSocketConnection,
                                                     networkingNodeId,
@@ -385,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                     responseMessage,
                                                     cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnBinaryMessageResponseSent),
+                EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -418,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnBinaryMessageRequestSent
 
-            Gateway.OnBinaryMessageRequestSent += (timestamp,
+            EnergyMeter.OnBinaryMessageRequestSent += (timestamp,
                                                    webSocketServer,
                                                    webSocketConnection,
                                                    networkingNodeId,
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                    requestMessage,
                                                    cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnBinaryMessageRequestSent),
+                EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnBinaryMessageResponseReceived
 
-            Gateway.OnBinaryMessageResponseReceived += (timestamp,
+            EnergyMeter.OnBinaryMessageResponseReceived += (timestamp,
                                                         webSocketServer,
                                                         webSocketConnection,
                                                         networkingNodeId,
@@ -452,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                         responseMessage,
                                                         cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(Gateway.OnBinaryMessageResponseReceived),
+                EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),

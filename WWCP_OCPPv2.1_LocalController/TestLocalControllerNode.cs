@@ -22,20 +22,23 @@ using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
+using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
+namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 {
 
     /// <summary>
-    /// A gateway for testing.
+    /// A local controller node for testing.
     /// </summary>
-    public partial class TestGateway : AGateway
+    public partial class TestLocalControllerNode : ALocalControllerNode,
+                                                   ILocalControllerNode
     {
 
         #region Properties
@@ -46,33 +49,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new gateway for testing.
+        /// Create a new local controller for testing.
         /// </summary>
-        /// <param name="Id">The unique identification of this gateway.</param>
-        public TestGateway(NetworkingNode_Id  Id,
-                           String             VendorName,
-                           String             Model,
-                           String?            SerialNumber                = null,
-                           String?            SoftwareVersion             = null,
-                           I18NString?        Description                 = null,
-                           CustomData?        CustomData                  = null,
+        /// <param name="Id">The unique identification of this local controller.</param>
+        public TestLocalControllerNode(NetworkingNode_Id  Id,
+                                       String             VendorName,
+                                       String             Model,
+                                       String?            SerialNumber                = null,
+                                       String?            SoftwareVersion             = null,
+                                       Modem?             Modem                       = null,
+                                       I18NString?        Description                 = null,
+                                       CustomData?        CustomData                  = null,
 
-                           SignaturePolicy?   SignaturePolicy             = null,
-                           SignaturePolicy?   ForwardingSignaturePolicy   = null,
+                                       SignaturePolicy?   SignaturePolicy             = null,
+                                       SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
-                           Boolean            DisableSendHeartbeats       = false,
-                           TimeSpan?          SendHeartbeatsEvery         = null,
-                           TimeSpan?          DefaultRequestTimeout       = null,
+                                       IPPort?            HTTPUploadPort              = null,
+                                       IPPort?            HTTPDownloadPort            = null,
 
-                           Boolean            DisableMaintenanceTasks     = false,
-                           TimeSpan?          MaintenanceEvery            = null,
-                           DNSClient?         DNSClient                   = null)
+                                       Boolean            DisableSendHeartbeats       = false,
+                                       TimeSpan?          SendHeartbeatsEvery         = null,
+                                       TimeSpan?          DefaultRequestTimeout       = null,
+
+                                       Boolean            DisableMaintenanceTasks     = false,
+                                       TimeSpan?          MaintenanceEvery            = null,
+                                       DNSClient?         DNSClient                   = null)
 
             : base(Id,
                    VendorName,
                    Model,
                    SerialNumber,
                    SoftwareVersion,
+                   Modem,
                    Description,
                    CustomData,
 
@@ -82,6 +90,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
                    DefaultRequestTimeout,
+
+                   HTTPUploadPort,
+                   HTTPDownloadPort,
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
@@ -495,7 +506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
                 CS.ResetResponse? response = null;
 
-                DebugX.Log($"Gateway '{Id}': Incoming '{request.ResetType}' reset request!");
+                DebugX.Log($"Local Controller '{Id}': Incoming '{request.ResetType}' reset request!");
 
                 // ResetType
 
@@ -519,9 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                             cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(
-                        request
-                    )
+                    ForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(request)
                 );
 
             #endregion

@@ -180,9 +180,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
     /// <summary>
-    /// An abstract Charging Station Management System
+    /// An abstract Charging Station Management System node.
     /// </summary>
-    public abstract class ACSMS : ANetworkingNode
+    public abstract class ACSMSNode : ANetworkingNode
     {
 
         #region Data
@@ -464,32 +464,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Id">The unique identification of this Charging Station Management System (CSMS).</param>
         /// <param name="Description">An optional multi-language description of the Charging Station Management System (CSMS).</param>
-        public ACSMS(NetworkingNode_Id         Id,
-                     String                    VendorName,
-                     String                    Model,
-                     String?                   SerialNumber                = null,
-                     String?                   SoftwareVersion             = null,
-                     I18NString?               Description                 = null,
-                     CustomData?               CustomData                  = null,
+        public ACSMSNode(NetworkingNode_Id         Id,
+                         String                    VendorName,
+                         String                    Model,
+                         String?                   SerialNumber                = null,
+                         String?                   SoftwareVersion             = null,
+                         I18NString?               Description                 = null,
+                         CustomData?               CustomData                  = null,
 
-                     AsymmetricCipherKeyPair?  ClientCAKeyPair             = null,
-                     BCx509.X509Certificate?   ClientCACertificate         = null,
+                         AsymmetricCipherKeyPair?  ClientCAKeyPair             = null,
+                         BCx509.X509Certificate?   ClientCACertificate         = null,
 
-                     SignaturePolicy?          SignaturePolicy             = null,
-                     SignaturePolicy?          ForwardingSignaturePolicy   = null,
+                         SignaturePolicy?          SignaturePolicy             = null,
+                         SignaturePolicy?          ForwardingSignaturePolicy   = null,
 
-                     IPPort?                   HTTPUploadPort              = null,
-                     IPPort?                   HTTPDownloadPort            = null,
+                         IPPort?                   HTTPUploadPort              = null,
+                         IPPort?                   HTTPDownloadPort            = null,
 
-                     TimeSpan?                 DefaultRequestTimeout       = null,
+                         TimeSpan?                 DefaultRequestTimeout       = null,
 
-                     Boolean                   DisableSendHeartbeats       = false,
-                     TimeSpan?                 SendHeartbeatsEvery         = null,
+                         Boolean                   DisableSendHeartbeats       = false,
+                         TimeSpan?                 SendHeartbeatsEvery         = null,
 
-                     Boolean                   DisableMaintenanceTasks     = false,
-                     TimeSpan?                 MaintenanceEvery            = null,
+                         Boolean                   DisableMaintenanceTasks     = false,
+                         TimeSpan?                 MaintenanceEvery            = null,
 
-                     DNSClient?                DNSClient                   = null)
+                         DNSClient?                DNSClient                   = null)
 
             : base(Id,
                    Description,
@@ -651,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS),
+                                  nameof(TestCSMSNode),
                                   nameof(OnServerStarted),
                                   e
                               );
@@ -691,7 +691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS),
+                                  nameof(TestCSMSNode),
                                   nameof(OnNewTCPConnection),
                                   e
                               );
@@ -745,7 +745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS),
+                                  nameof(TestCSMSNode),
                                   nameof(OnNewWebSocketConnection),
                                   e
                               );
@@ -793,7 +793,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS),
+                                  nameof(TestCSMSNode),
                                   nameof(OnCloseMessageReceived),
                                   e
                               );
@@ -837,7 +837,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS),
+                                  nameof(TestCSMSNode),
                                   nameof(OnTCPConnectionClosed),
                                   e
                               );
@@ -877,7 +877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestCSMS),
+                                  nameof(TestCSMSNode),
                                   nameof(OnServerStopped),
                                   e
                               );

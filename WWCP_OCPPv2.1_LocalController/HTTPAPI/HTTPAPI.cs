@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<ALocalController>                                      localControllers   = [];
+        protected readonly  List<ALocalControllerNode>                                      localControllers   = [];
 
         protected readonly  ConcurrentDictionary<ChargingStation_Id, ChargingStation>  chargingStations  = [];
 
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         /// <summary>
         /// An enumeration of registered networking nodes.
         /// </summary>
-        public              IEnumerable<ALocalController>                               NetworkingNodes
+        public              IEnumerable<ALocalControllerNode>                               NetworkingNodes
             => localControllers;
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(ALocalController                            LocalController,
+        public HTTPAPI(ALocalControllerNode                            LocalController,
                        HTTPExtAPI                                  HTTPAPI,
                        String?                                     HTTPServerName   = null,
                        HTTPPath?                                   URLPathPrefix    = null,
@@ -343,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #region AttachLocalController(LocalController)
 
-        public void AttachLocalController(ALocalController LocalController)
+        public void AttachLocalController(ALocalControllerNode LocalController)
         {
 
             localControllers.Add(LocalController);

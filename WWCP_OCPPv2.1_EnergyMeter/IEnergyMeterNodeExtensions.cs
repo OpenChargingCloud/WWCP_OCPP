@@ -27,9 +27,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.GW
 {
 
     /// <summary>
-    /// Extension methods for all gateways.
+    /// Extension methods for all energy meter nodes.
     /// </summary>
-    public static class IGatewayExtensions
+    public static class IEnergyMeterNodeExtensions
     {
 
         // E2E Security Extensions
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.GW
 
         // Overlay Networking Extensions
 
-        #region NotifyNetworkTopology                 (Gateway, ...)
+        #region NotifyNetworkTopology                 (EnergyMeter, ...)
 
         /// <summary>
         /// Transfer the given binary data to the CSMS.
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.GW
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<NotifyNetworkTopologyResponse>
 
-            NotifyNetworkTopology(this IGateway                 Gateway,
+            NotifyNetworkTopology(this IEnergyMeterNode                 EnergyMeter,
 
                                   NetworkTopologyInformation    NetworkTopologyInformation,
 
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.GW
                                   CancellationToken             CancellationToken   = default)
 
 
-                => Gateway.OCPP.OUT.NotifyNetworkTopology(
+                => EnergyMeter.OCPP.OUT.NotifyNetworkTopology(
                        new NotifyNetworkTopologyRequest(
 
                            DestinationId ?? NetworkingNode_Id.CSMS,
@@ -89,11 +89,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.GW
 
                            CustomData,
 
-                           RequestId        ?? Gateway.OCPP.NextRequestId,
+                           RequestId        ?? EnergyMeter.OCPP.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? Gateway.OCPP.DefaultRequestTimeout,
+                           RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath      ?? NetworkPath.From(Gateway.Id),
+                           NetworkPath      ?? NetworkPath.From(EnergyMeter.Id),
                            CancellationToken
 
                        )

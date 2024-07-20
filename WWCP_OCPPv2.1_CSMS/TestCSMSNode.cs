@@ -47,8 +47,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// A Charging Station Management System for testing
     /// </summary>
-    public partial class TestCSMS : ACSMS,
-                                    ICSMS
+    public partial class TestCSMSNode : ACSMSNode,
+                                        ICSMSNode
     {
 
         #region Constructor(s)
@@ -57,32 +57,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new charging station management system for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this charging station management system.</param>
-        public TestCSMS(NetworkingNode_Id         Id,
-                        String                    VendorName,
-                        String                    Model,
-                        String?                   SerialNumber                = null,
-                        String?                   SoftwareVersion             = null,
-                        I18NString?               Description                 = null,
-                        CustomData?               CustomData                  = null,
+        public TestCSMSNode(NetworkingNode_Id         Id,
+                            String                    VendorName,
+                            String                    Model,
+                            String?                   SerialNumber                = null,
+                            String?                   SoftwareVersion             = null,
+                            I18NString?               Description                 = null,
+                            CustomData?               CustomData                  = null,
 
-                        AsymmetricCipherKeyPair?  ClientCAKeyPair             = null,
-                        BCx509.X509Certificate?   ClientCACertificate         = null,
+                            AsymmetricCipherKeyPair?  ClientCAKeyPair             = null,
+                            BCx509.X509Certificate?   ClientCACertificate         = null,
 
-                        SignaturePolicy?          SignaturePolicy             = null,
-                        SignaturePolicy?          ForwardingSignaturePolicy   = null,
+                            SignaturePolicy?          SignaturePolicy             = null,
+                            SignaturePolicy?          ForwardingSignaturePolicy   = null,
 
-                        IPPort?                   HTTPUploadPort              = null,
-                        IPPort?                   HTTPDownloadPort            = null,
+                            IPPort?                   HTTPUploadPort              = null,
+                            IPPort?                   HTTPDownloadPort            = null,
 
-                        TimeSpan?                 DefaultRequestTimeout       = null,
+                            TimeSpan?                 DefaultRequestTimeout       = null,
 
-                        Boolean                   DisableSendHeartbeats       = false,
-                        TimeSpan?                 SendHeartbeatsEvery         = null,
+                            Boolean                   DisableSendHeartbeats       = false,
+                            TimeSpan?                 SendHeartbeatsEvery         = null,
 
-                        Boolean                   DisableMaintenanceTasks     = false,
-                        TimeSpan?                 MaintenanceEvery            = null,
+                            Boolean                   DisableMaintenanceTasks     = false,
+                            TimeSpan?                 MaintenanceEvery            = null,
 
-                        DNSClient?                DNSClient                   = null)
+                            DNSClient?                DNSClient                   = null)
 
             : base(Id,
                    VendorName,

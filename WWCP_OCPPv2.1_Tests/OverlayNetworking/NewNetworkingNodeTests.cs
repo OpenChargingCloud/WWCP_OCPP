@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
         public async Task TestAAA()
         {
 
-            var tn01      = new TestLocalController(
+            var tn01      = new TestLocalControllerNode(
                                 NetworkingNode_Id.Parse("NN01"),
                                 "GraphDefined GmbH",
                                 "NN-0001"
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
 
 
 
-            var testCSMS01               = new TestCSMS(
+            var testCSMS01               = new TestCSMSNode(
                                                Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
                                                VendorName:              "GraphDefined",
                                                Model:                   "OCPPTest01",
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
 
 
 
-            var chargingStation1 = new TestChargingStation(
+            var chargingStation1 = new TestChargingStationNode(
                                        Id:                       NetworkingNode_Id.Parse("cs01"),
                                        VendorName:               "GraphDefined OEM #1",
                                        Model:                    "VCP.1",
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
                                                                                               ]
                                                                      )
                                                                  ],
-                                       UplinkEnergyMeter:        new EnergyMeter(
+                                       UplinkEnergyMeter:        new Energy_Meter(
                                                                      Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                      Model:          "Virtual Energy Meter",
                                                                      SerialNumber:   "SN-EN0001",

@@ -42,9 +42,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #region Data
 
-        protected TestCSMS?                    testCSMS01;
-        protected TestCSMS?                    testCSMS02;
-        protected TestCSMS?                    testCSMS03;
+        protected TestCSMSNode?                    testCSMS01;
+        protected TestCSMSNode?                    testCSMS02;
+        protected TestCSMSNode?                    testCSMS03;
 
         protected OCPPWebSocketServer?          testBackendWebSockets01;
         protected OCPPWebSocketServer?          testBackendWebSockets02;
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             Timestamp.Reset();
 
-            testCSMS01      = new TestCSMS(
+            testCSMS01      = new TestCSMSNode(
                                   Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
                                   VendorName:              "GraphDefined",
                                   Model:                   "OCPPTest",

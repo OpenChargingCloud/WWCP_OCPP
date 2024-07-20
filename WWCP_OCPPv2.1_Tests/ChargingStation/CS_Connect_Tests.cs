@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #region Data
 
-        protected TestCSMS?                               testCSMS01;
+        protected TestCSMSNode?                               testCSMS01;
         protected OCPPWebSocketServer?                    testWebSocketServer01;
 
         protected ConcurrentList<LogJSONRequest>?         csmsWebSocketTextMessagesReceived;
@@ -56,9 +56,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         protected ConcurrentList<LogDataJSONResponse>?    csmsWebSocketTextMessageResponsesReceived;
 
 
-        protected TestChargingStation?                    chargingStation1;
-        protected TestChargingStation?                    chargingStation2;
-        protected TestChargingStation?                    chargingStation3;
+        protected TestChargingStationNode?                    chargingStation1;
+        protected TestChargingStationNode?                    chargingStation2;
+        protected TestChargingStationNode?                    chargingStation3;
 
         protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesReceived;
         protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketJSONMessagesReceived;
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             Timestamp.Reset();
 
-            testCSMS01      = new TestCSMS(
+            testCSMS01      = new TestCSMSNode(
                                   Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
                                   VendorName:              "GraphDefined",
                                   Model:                   "OCPP-CSMS-Test-Server",
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation1WebSocketJSONMessagesSent              = new ConcurrentList<LogJSONRequest>();
             chargingStation1WebSocketJSONMessageResponsesReceived  = new ConcurrentList<LogDataJSONResponse>();
 
-            chargingStation1  = new TestChargingStation(
+            chargingStation1  = new TestChargingStationNode(
                                     Id:                       NetworkingNode_Id.Parse("GD001"),
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                            ]
                                                                   )
                                                               ],
-                                    UplinkEnergyMeter:        new EnergyMeter(
+                                    UplinkEnergyMeter:        new Energy_Meter(
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",
                                                                   SerialNumber:   "SN-EN0001",

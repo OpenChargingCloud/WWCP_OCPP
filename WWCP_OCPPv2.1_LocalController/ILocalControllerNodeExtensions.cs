@@ -17,8 +17,6 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
@@ -34,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
     /// <summary>
     /// Extension methods for all local controllers.
     /// </summary>
-    public static class ILocalControllerExtensions
+    public static class ILocalControllerNodeExtensions
     {
 
         #region as Charging Station
@@ -55,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.BootNotificationResponse>
 
-            SendBootNotification(this ILocalController         LocalController,
+            SendBootNotification(this ILocalControllerNode         LocalController,
 
                                  BootReason                    BootReason,
 
@@ -124,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(this ILocalController         LocalController,
+            SendFirmwareStatusNotification(this ILocalControllerNode         LocalController,
 
                                            FirmwareStatus                Status,
                                            Int64?                        UpdateFirmwareRequestId   = null,
@@ -188,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.PublishFirmwareStatusNotificationResponse>
 
-            SendPublishFirmwareStatusNotification(this ILocalController         LocalController,
+            SendPublishFirmwareStatusNotification(this ILocalControllerNode         LocalController,
 
                                                   PublishFirmwareStatus         Status,
                                                   Int32?                        PublishFirmwareStatusNotificationRequestId,
@@ -251,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.HeartbeatResponse>
 
-            SendHeartbeat(this ILocalController         LocalController,
+            SendHeartbeat(this ILocalControllerNode         LocalController,
 
                           CustomData?                   CustomData          = null,
 
@@ -310,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyEventResponse>
 
-            NotifyEvent(this ILocalController         LocalController,
+            NotifyEvent(this ILocalControllerNode         LocalController,
 
                         DateTime                      GeneratedAt,
                         UInt32                        SequenceNumber,
@@ -378,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(this ILocalController         LocalController,
+            SendSecurityEventNotification(this ILocalControllerNode         LocalController,
 
                                           SecurityEventType             Type,
                                           DateTime                      Timestamp,
@@ -446,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyReportResponse>
 
-            NotifyReport(this ILocalController         LocalController,
+            NotifyReport(this ILocalControllerNode         LocalController,
 
                          Int32                         NotifyReportRequestId,
                          UInt32                        SequenceNumber,
@@ -518,7 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyMonitoringReportResponse>
 
-            NotifyMonitoringReport(this ILocalController         LocalController,
+            NotifyMonitoringReport(this ILocalControllerNode         LocalController,
 
                                    Int32                         NotifyMonitoringReportRequestId,
                                    UInt32                        SequenceNumber,
@@ -587,7 +585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.LogStatusNotificationResponse>
 
-            SendLogStatusNotification(this ILocalController         LocalController,
+            SendLogStatusNotification(this ILocalControllerNode         LocalController,
 
                                       UploadLogStatus               Status,
                                       Int32?                        LogRequestId        = null,
@@ -652,7 +650,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.SignCertificateResponse>
 
-            SendCertificateSigningRequest(this ILocalController         LocalController,
+            SendCertificateSigningRequest(this ILocalControllerNode         LocalController,
 
                                           String                        CSR,
                                           Int32                         SignCertificateRequestId,
@@ -720,7 +718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.Get15118EVCertificateResponse>
 
-            Get15118EVCertificate(this ILocalController         LocalController,
+            Get15118EVCertificate(this ILocalControllerNode         LocalController,
 
                                   ISO15118SchemaVersion         ISO15118SchemaVersion,
                                   CertificateAction             CertificateAction,
@@ -788,7 +786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.GetCertificateStatusResponse>
 
-            GetCertificateStatus(this ILocalController         LocalController,
+            GetCertificateStatus(this ILocalControllerNode         LocalController,
 
                                  OCSPRequestData               OCSPRequestData,
 
@@ -850,7 +848,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.GetCRLResponse>
 
-            GetCRLRequest(this ILocalController         LocalController,
+            GetCRLRequest(this ILocalControllerNode         LocalController,
 
                           UInt32                        GetCRLRequestId,
                           CertificateHashData           CertificateHashData,
@@ -914,7 +912,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.ReservationStatusUpdateResponse>
 
-            SendReservationStatusUpdate(this ILocalController         LocalController,
+            SendReservationStatusUpdate(this ILocalControllerNode         LocalController,
 
                                         Reservation_Id                ReservationId,
                                         ReservationUpdateStatus       ReservationUpdateStatus,
@@ -978,7 +976,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.AuthorizeResponse>
 
-            Authorize(this ILocalController          LocalController,
+            Authorize(this ILocalControllerNode          LocalController,
 
                       IdToken                        IdToken,
                       Certificate?                   Certificate                   = null,
@@ -1045,7 +1043,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyEVChargingNeedsResponse>
 
-            NotifyEVChargingNeeds(this ILocalController         LocalController,
+            NotifyEVChargingNeeds(this ILocalControllerNode         LocalController,
 
                                   EVSE_Id                       EVSEId,
                                   ChargingNeeds                 ChargingNeeds,
@@ -1124,7 +1122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.TransactionEventResponse>
 
-            SendTransactionEvent(this ILocalController         LocalController,
+            SendTransactionEvent(this ILocalControllerNode         LocalController,
 
                                  TransactionEvents             EventType,
                                  DateTime                      Timestamp,
@@ -1213,7 +1211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.StatusNotificationResponse>
 
-            SendStatusNotification(this ILocalController         LocalController,
+            SendStatusNotification(this ILocalControllerNode         LocalController,
 
                                    EVSE_Id                       EVSEId,
                                    Connector_Id                  ConnectorId,
@@ -1280,7 +1278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.MeterValuesResponse>
 
-            SendMeterValues(this ILocalController         LocalController,
+            SendMeterValues(this ILocalControllerNode         LocalController,
 
                             EVSE_Id                       EVSEId, // 0 => main power meter; 1 => first EVSE
                             IEnumerable<MeterValue>       MeterValues,
@@ -1344,7 +1342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyChargingLimitResponse>
 
-            NotifyChargingLimit(this ILocalController          LocalController,
+            NotifyChargingLimit(this ILocalControllerNode          LocalController,
 
                                 ChargingLimit                  ChargingLimit,
                                 IEnumerable<ChargingSchedule>  ChargingSchedules,
@@ -1409,7 +1407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.ClearedChargingLimitResponse>
 
-            SendClearedChargingLimit(this ILocalController         LocalController,
+            SendClearedChargingLimit(this ILocalControllerNode         LocalController,
 
                                      ChargingLimitSource           ChargingLimitSource,
                                      EVSE_Id?                      EVSEId,
@@ -1475,7 +1473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.ReportChargingProfilesResponse>
 
-            ReportChargingProfiles(this ILocalController         LocalController,
+            ReportChargingProfiles(this ILocalControllerNode         LocalController,
 
                                    Int32                         ReportChargingProfilesRequestId,
                                    ChargingLimitSource           ChargingLimitSource,
@@ -1547,7 +1545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyEVChargingScheduleResponse>
 
-            NotifyEVChargingSchedule(this ILocalController         LocalController,
+            NotifyEVChargingSchedule(this ILocalControllerNode         LocalController,
 
                                      DateTime                      TimeBase,
                                      EVSE_Id                       EVSEId,
@@ -1616,7 +1614,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyPriorityChargingResponse>
 
-            NotifyPriorityCharging(this ILocalController         LocalController,
+            NotifyPriorityCharging(this ILocalControllerNode         LocalController,
 
                                    Transaction_Id                TransactionId,
                                    Boolean                       Activated,
@@ -1678,7 +1676,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.PullDynamicScheduleUpdateResponse>
 
-            PullDynamicScheduleUpdate(this ILocalController         LocalController,
+            PullDynamicScheduleUpdate(this ILocalControllerNode         LocalController,
 
                                       ChargingProfile_Id            ChargingProfileId,
 
@@ -1741,7 +1739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyDisplayMessagesResponse>
 
-            NotifyDisplayMessages(this ILocalController         LocalController,
+            NotifyDisplayMessages(this ILocalControllerNode         LocalController,
 
                                   Int32                         NotifyDisplayMessagesRequestId,
                                   IEnumerable<MessageInfo>      MessageInfos,
@@ -1809,7 +1807,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyCustomerInformationResponse>
 
-            NotifyCustomerInformation(this ILocalController         LocalController,
+            NotifyCustomerInformation(this ILocalControllerNode         LocalController,
 
                                       Int64                         NotifyCustomerInformationRequestId,
                                       String                        Data,
@@ -1885,7 +1883,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ResetResponse>
 
-            Reset(this ILocalController         LocalController,
+            Reset(this ILocalControllerNode         LocalController,
                   NetworkingNode_Id             DestinationId,
                   ResetType                     ResetType,
                   EVSE_Id?                      EVSEId              = null,
@@ -1951,7 +1949,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UpdateFirmwareResponse>
 
-            UpdateFirmware(this ILocalController         LocalController,
+            UpdateFirmware(this ILocalControllerNode         LocalController,
                            NetworkingNode_Id             DestinationId,
                            Firmware                      Firmware,
                            Int32                         UpdateFirmwareRequestId,
@@ -2020,7 +2018,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.PublishFirmwareResponse>
 
-            PublishFirmware(this ILocalController         LocalController,
+            PublishFirmware(this ILocalControllerNode         LocalController,
                             NetworkingNode_Id             DestinationId,
                             Int32                         PublishFirmwareRequestId,
                             URL                           DownloadLocation,
@@ -2087,7 +2085,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UnpublishFirmwareResponse>
 
-            UnpublishFirmware(this ILocalController         LocalController,
+            UnpublishFirmware(this ILocalControllerNode         LocalController,
                               NetworkingNode_Id             DestinationId,
                               String                        MD5Checksum,
 
@@ -2147,7 +2145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetBaseReportResponse>
 
-            GetBaseReport(this ILocalController         LocalController,
+            GetBaseReport(this ILocalControllerNode         LocalController,
                           NetworkingNode_Id             DestinationId,
                           Int64                         GetBaseReportRequestId,
                           ReportBase                    ReportBase,
@@ -2210,7 +2208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetReportResponse>
 
-            GetReport(this ILocalController           LocalController,
+            GetReport(this ILocalControllerNode           LocalController,
                       NetworkingNode_Id               DestinationId,
                       Int32                           GetReportRequestId,
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
@@ -2277,7 +2275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetLogResponse>
 
-            GetLog(this ILocalController         LocalController,
+            GetLog(this ILocalControllerNode         LocalController,
                    NetworkingNode_Id             DestinationId,
                    LogType                       LogType,
                    Int32                         LogRequestId,
@@ -2346,7 +2344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetVariablesResponse>
 
-            SetVariables(this ILocalController         LocalController,
+            SetVariables(this ILocalControllerNode         LocalController,
                          NetworkingNode_Id             DestinationId,
                          IEnumerable<SetVariableData>  VariableData,
                          DataConsistencyModel?         DataConsistencyModel   = null,
@@ -2407,7 +2405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetVariablesResponse>
 
-            GetVariables(this ILocalController         LocalController,
+            GetVariables(this ILocalControllerNode         LocalController,
                          NetworkingNode_Id             DestinationId,
                          IEnumerable<GetVariableData>  VariableData,
 
@@ -2466,7 +2464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetMonitoringBaseResponse>
 
-            SetMonitoringBase(this ILocalController         LocalController,
+            SetMonitoringBase(this ILocalControllerNode         LocalController,
                               NetworkingNode_Id             DestinationId,
                               MonitoringBase                MonitoringBase,
 
@@ -2527,7 +2525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetMonitoringReportResponse>
 
-            GetMonitoringReport(this ILocalController             LocalController,
+            GetMonitoringReport(this ILocalControllerNode             LocalController,
                                 NetworkingNode_Id                 DestinationId,
                                 Int32                             GetMonitoringReportRequestId,
                                 IEnumerable<MonitoringCriterion>  MonitoringCriteria,
@@ -2590,7 +2588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetMonitoringLevelResponse>
 
-            SetMonitoringLevel(this ILocalController         LocalController,
+            SetMonitoringLevel(this ILocalControllerNode         LocalController,
                                NetworkingNode_Id             DestinationId,
                                Severities                    Severity,
 
@@ -2649,7 +2647,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetVariableMonitoringResponse>
 
-            SetVariableMonitoring(this ILocalController           LocalController,
+            SetVariableMonitoring(this ILocalControllerNode           LocalController,
                                   NetworkingNode_Id               DestinationId,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
@@ -2708,7 +2706,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearVariableMonitoringResponse>
 
-            ClearVariableMonitoring(this ILocalController               LocalController,
+            ClearVariableMonitoring(this ILocalControllerNode               LocalController,
                                     NetworkingNode_Id                   DestinationId,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
@@ -2768,7 +2766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetNetworkProfileResponse>
 
-            SetNetworkProfile(this ILocalController         LocalController,
+            SetNetworkProfile(this ILocalControllerNode         LocalController,
                               NetworkingNode_Id             DestinationId,
                               Int32                         ConfigurationSlot,
                               NetworkConnectionProfile      NetworkConnectionProfile,
@@ -2831,7 +2829,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ChangeAvailabilityResponse>
 
-            ChangeAvailability(this ILocalController         LocalController,
+            ChangeAvailability(this ILocalControllerNode         LocalController,
                                NetworkingNode_Id             DestinationId,
                                OperationalStatus             OperationalStatus,
 
@@ -2895,7 +2893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.TriggerMessageResponse>
 
-            TriggerMessage(this ILocalController         LocalController,
+            TriggerMessage(this ILocalControllerNode         LocalController,
                            NetworkingNode_Id             DestinationId,
                            MessageTrigger                RequestedMessage,
                            EVSE?                         EVSE                = null,
@@ -2959,7 +2957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CertificateSignedResponse>
 
-            SendSignedCertificate(this ILocalController         LocalController,
+            SendSignedCertificate(this ILocalControllerNode         LocalController,
                                   NetworkingNode_Id             DestinationId,
                                   CertificateChain              CertificateChain,
                                   CertificateSigningUse?        CertificateType     = null,
@@ -3021,7 +3019,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.InstallCertificateResponse>
 
-            InstallCertificate(this ILocalController         LocalController,
+            InstallCertificate(this ILocalControllerNode         LocalController,
                                NetworkingNode_Id             DestinationId,
                                InstallCertificateUse         CertificateType,
                                Certificate                   Certificate,
@@ -3082,7 +3080,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetInstalledCertificateIdsResponse>
 
-            GetInstalledCertificateIds(this ILocalController              LocalController,
+            GetInstalledCertificateIds(this ILocalControllerNode              LocalController,
                                        NetworkingNode_Id                  DestinationId,
                                        IEnumerable<GetCertificateIdUse>?  CertificateTypes    = null,
 
@@ -3141,7 +3139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.DeleteCertificateResponse>
 
-            DeleteCertificate(this ILocalController         LocalController,
+            DeleteCertificate(this ILocalControllerNode         LocalController,
                               NetworkingNode_Id             DestinationId,
                               CertificateHashData           CertificateHashData,
 
@@ -3202,7 +3200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.NotifyCRLResponse>
 
-            NotifyCRLAvailability(this ILocalController         LocalController,
+            NotifyCRLAvailability(this ILocalControllerNode         LocalController,
                                   NetworkingNode_Id             DestinationId,
                                   Int32                         NotifyCRLRequestId,
                                   NotifyCRLStatus               Availability,
@@ -3265,7 +3263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetLocalListVersionResponse>
 
-            GetLocalListVersion(this ILocalController         LocalController,
+            GetLocalListVersion(this ILocalControllerNode         LocalController,
                                 NetworkingNode_Id             DestinationId,
 
                                 CustomData?                   CustomData          = null,
@@ -3324,7 +3322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SendLocalListResponse>
 
-            SendLocalList(this ILocalController            LocalController,
+            SendLocalList(this ILocalControllerNode            LocalController,
                           NetworkingNode_Id                DestinationId,
                           UInt64                           ListVersion,
                           UpdateTypes                      UpdateType,
@@ -3386,7 +3384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearCacheResponse>
 
-            ClearCache(this ILocalController         LocalController,
+            ClearCache(this ILocalControllerNode         LocalController,
                        NetworkingNode_Id             DestinationId,
 
                        CustomData?                   CustomData          = null,
@@ -3449,7 +3447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ReserveNowResponse>
 
-            ReserveNow(this ILocalController         LocalController,
+            ReserveNow(this ILocalControllerNode         LocalController,
                        NetworkingNode_Id             DestinationId,
                        Reservation_Id                ReservationId,
                        DateTime                      ExpiryDate,
@@ -3518,7 +3516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CancelReservationResponse>
 
-            CancelReservation(this ILocalController         LocalController,
+            CancelReservation(this ILocalControllerNode         LocalController,
                               NetworkingNode_Id             DestinationId,
                               Reservation_Id                ReservationId,
 
@@ -3582,7 +3580,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.RequestStartTransactionResponse>
 
-            StartCharging(this ILocalController         LocalController,
+            StartCharging(this ILocalControllerNode         LocalController,
                           NetworkingNode_Id             DestinationId,
                           RemoteStart_Id                RequestStartTransactionRequestId,
                           IdToken                       IdToken,
@@ -3651,7 +3649,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.RequestStopTransactionResponse>
 
-            StopCharging(this ILocalController         LocalController,
+            StopCharging(this ILocalControllerNode         LocalController,
                          NetworkingNode_Id             DestinationId,
                          Transaction_Id                TransactionId,
 
@@ -3710,7 +3708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetTransactionStatusResponse>
 
-            GetTransactionStatus(this ILocalController         LocalController,
+            GetTransactionStatus(this ILocalControllerNode         LocalController,
                                  NetworkingNode_Id             DestinationId,
                                  Transaction_Id?               TransactionId       = null,
 
@@ -3770,7 +3768,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetChargingProfileResponse>
 
-            SetChargingProfile(this ILocalController         LocalController,
+            SetChargingProfile(this ILocalControllerNode         LocalController,
                                NetworkingNode_Id             DestinationId,
                                EVSE_Id                       EVSEId,
                                ChargingProfile               ChargingProfile,
@@ -3832,7 +3830,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetChargingProfilesResponse>
 
-            GetChargingProfiles(this ILocalController         LocalController,
+            GetChargingProfiles(this ILocalControllerNode         LocalController,
                                 NetworkingNode_Id             DestinationId,
                                 Int64                         GetChargingProfilesRequestId,
                                 ChargingProfileCriterion      ChargingProfile,
@@ -3896,7 +3894,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearChargingProfileResponse>
 
-            ClearChargingProfile(this ILocalController         LocalController,
+            ClearChargingProfile(this ILocalControllerNode         LocalController,
                                  NetworkingNode_Id             DestinationId,
                                  ChargingProfile_Id?           ChargingProfileId         = null,
                                  ClearChargingProfile?         ChargingProfileCriteria   = null,
@@ -3959,7 +3957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetCompositeScheduleResponse>
 
-            GetCompositeSchedule(this ILocalController         LocalController,
+            GetCompositeSchedule(this ILocalControllerNode         LocalController,
                                  NetworkingNode_Id             DestinationId,
                                  TimeSpan                      Duration,
                                  EVSE_Id                       EVSEId,
@@ -4038,7 +4036,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UpdateDynamicScheduleResponse>
 
-            UpdateDynamicSchedule(this ILocalController         LocalController,
+            UpdateDynamicSchedule(this ILocalControllerNode         LocalController,
                                   NetworkingNode_Id             DestinationId,
                                   ChargingProfile_Id            ChargingProfileId,
 
@@ -4131,7 +4129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.NotifyAllowedEnergyTransferResponse>
 
-            NotifyAllowedEnergyTransfer(this ILocalController            LocalController,
+            NotifyAllowedEnergyTransfer(this ILocalControllerNode            LocalController,
                                         NetworkingNode_Id                DestinationId,
                                         IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
@@ -4191,7 +4189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UsePriorityChargingResponse>
 
-            UsePriorityCharging(this ILocalController         LocalController,
+            UsePriorityCharging(this ILocalControllerNode         LocalController,
                                 NetworkingNode_Id             DestinationId,
                                 Transaction_Id                TransactionId,
                                 Boolean                       Activate,
@@ -4252,7 +4250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UnlockConnectorResponse>
 
-            UnlockConnector(this ILocalController         LocalController,
+            UnlockConnector(this ILocalControllerNode         LocalController,
                             NetworkingNode_Id             DestinationId,
                             EVSE_Id                       EVSEId,
                             Connector_Id                  ConnectorId,
@@ -4317,7 +4315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.AFRRSignalResponse>
 
-            SendAFRRSignal(this ILocalController         LocalController,
+            SendAFRRSignal(this ILocalControllerNode         LocalController,
                            NetworkingNode_Id             DestinationId,
                            DateTime                      ActivationTimestamp,
                            AFRR_Signal                   Signal,
@@ -4378,7 +4376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetDisplayMessageResponse>
 
-            SetDisplayMessage(this ILocalController         LocalController,
+            SetDisplayMessage(this ILocalControllerNode         LocalController,
                               NetworkingNode_Id             DestinationId,
                               MessageInfo                   Message,
 
@@ -4439,7 +4437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetDisplayMessagesResponse>
 
-            GetDisplayMessages(this ILocalController            LocalController,
+            GetDisplayMessages(this ILocalControllerNode            LocalController,
                                NetworkingNode_Id                DestinationId,
                                Int32                            GetDisplayMessagesRequestId,
                                IEnumerable<DisplayMessage_Id>?  Ids                 = null,
@@ -4503,7 +4501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearDisplayMessageResponse>
 
-            ClearDisplayMessage(this ILocalController         LocalController,
+            ClearDisplayMessage(this ILocalControllerNode         LocalController,
                                 NetworkingNode_Id             DestinationId,
                                 DisplayMessage_Id             DisplayMessageId,
 
@@ -4562,7 +4560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CostUpdatedResponse>
 
-            SendCostUpdated(this ILocalController         LocalController,
+            SendCostUpdated(this ILocalControllerNode         LocalController,
                             NetworkingNode_Id             DestinationId,
                             Decimal                       TotalCost,
                             Transaction_Id                TransactionId,
@@ -4627,7 +4625,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CustomerInformationResponse>
 
-            RequestCustomerInformation(this ILocalController         LocalController,
+            RequestCustomerInformation(this ILocalControllerNode         LocalController,
                                        NetworkingNode_Id             DestinationId,
                                        Int64                         CustomerInformationRequestId,
                                        Boolean                       Report,
@@ -4703,7 +4701,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetDefaultChargingTariffResponse>
 
-            SetDefaultChargingTariff(this ILocalController         LocalController,
+            SetDefaultChargingTariff(this ILocalControllerNode         LocalController,
                                      NetworkingNode_Id             DestinationId,
                                      ChargingTariff                ChargingTariff,
                                      IEnumerable<EVSE_Id>?         EVSEIds             = null,
@@ -4763,7 +4761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetDefaultChargingTariffResponse>
 
-            GetDefaultChargingTariff(this ILocalController         LocalController,
+            GetDefaultChargingTariff(this ILocalControllerNode         LocalController,
                                      NetworkingNode_Id             DestinationId,
                                      IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
@@ -4823,7 +4821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.RemoveDefaultChargingTariffResponse>
 
-            RemoveDefaultChargingTariff(this ILocalController         LocalController,
+            RemoveDefaultChargingTariff(this ILocalControllerNode         LocalController,
                                         NetworkingNode_Id             DestinationId,
                                         ChargingTariff_Id?            ChargingTariffId    = null,
                                         IEnumerable<EVSE_Id>?         EVSEIds             = null,

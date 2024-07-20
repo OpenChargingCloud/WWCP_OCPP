@@ -25,9 +25,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.GW
 {
 
     /// <summary>
-    /// The common interface of all gateways.
+    /// The common interface of all gateways nodes.
     /// </summary>
-    public interface IGateway : INetworkingNode
+    public interface IGatewayNode : INetworkingNode
     {
 
         String   VendorName         { get; }
@@ -36,6 +36,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.GW
         String?  SerialNumber       { get; }
 
     }
-
 
 }

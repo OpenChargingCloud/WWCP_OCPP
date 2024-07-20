@@ -17,17 +17,12 @@
 
 #region Usings
 
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
-using org.GraphDefined.Vanaheimr.Hermod.Logging;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -176,10 +171,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
     /// <summary>
-    /// An abstract networking node.
+    /// An abstract local controller node.
     /// </summary>
-    public abstract class ALocalController : ANetworkingNode,
-                                             LC.ILocalController
+    public abstract class ALocalControllerNode : ANetworkingNode,
+                                                 LC.ILocalControllerNode
     {
 
         #region Data
@@ -453,31 +448,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new networking node for testing.
+        /// Create a new local controller node for testing.
         /// </summary>
-        /// <param name="Id">The unique identification of this networking node.</param>
-        public ALocalController(NetworkingNode_Id  Id,
-                                String             VendorName,
-                                String             Model,
-                                String?            SerialNumber                = null,
-                                String?            SoftwareVersion             = null,
-                                Modem?             Modem                       = null,
-                                I18NString?        Description                 = null,
-                                CustomData?        CustomData                  = null,
+        /// <param name="Id">The unique identification of this local controller node.</param>
+        public ALocalControllerNode(NetworkingNode_Id  Id,
+                                    String             VendorName,
+                                    String             Model,
+                                    String?            SerialNumber                = null,
+                                    String?            SoftwareVersion             = null,
+                                    Modem?             Modem                       = null,
+                                    I18NString?        Description                 = null,
+                                    CustomData?        CustomData                  = null,
 
-                                SignaturePolicy?   SignaturePolicy             = null,
-                                SignaturePolicy?   ForwardingSignaturePolicy   = null,
+                                    SignaturePolicy?   SignaturePolicy             = null,
+                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
-                                Boolean            DisableSendHeartbeats       = false,
-                                TimeSpan?          SendHeartbeatsEvery         = null,
-                                TimeSpan?          DefaultRequestTimeout       = null,
+                                    Boolean            DisableSendHeartbeats       = false,
+                                    TimeSpan?          SendHeartbeatsEvery         = null,
+                                    TimeSpan?          DefaultRequestTimeout       = null,
 
-                                IPPort?            HTTPUploadPort              = null,
-                                IPPort?            HTTPDownloadPort            = null,
+                                    IPPort?            HTTPUploadPort              = null,
+                                    IPPort?            HTTPDownloadPort            = null,
 
-                                Boolean            DisableMaintenanceTasks     = false,
-                                TimeSpan?          MaintenanceEvery            = null,
-                                DNSClient?         DNSClient                   = null)
+                                    Boolean            DisableMaintenanceTasks     = false,
+                                    TimeSpan?          MaintenanceEvery            = null,
+                                    DNSClient?         DNSClient                   = null)
 
             : base(Id,
                    Description,
@@ -634,7 +629,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestLocalController),
+                                  nameof(TestLocalControllerNode),
                                   nameof(OnServerStarted),
                                   e
                               );
@@ -674,7 +669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestLocalController),
+                                  nameof(TestLocalControllerNode),
                                   nameof(OnNewTCPConnection),
                                   e
                               );
@@ -728,7 +723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestLocalController),
+                                  nameof(TestLocalControllerNode),
                                   nameof(OnNewWebSocketConnection),
                                   e
                               );
@@ -776,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestLocalController),
+                                  nameof(TestLocalControllerNode),
                                   nameof(OnCloseMessageReceived),
                                   e
                               );
@@ -820,7 +815,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestLocalController),
+                                  nameof(TestLocalControllerNode),
                                   nameof(OnTCPConnectionClosed),
                                   e
                               );
@@ -860,7 +855,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(TestLocalController),
+                                  nameof(TestLocalControllerNode),
                                   nameof(OnServerStopped),
                                   e
                               );

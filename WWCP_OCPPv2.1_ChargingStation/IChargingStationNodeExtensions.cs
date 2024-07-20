@@ -30,9 +30,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// Extension methods for all charging stations
+    /// Extension methods for all charging stations nodes.
     /// </summary>
-    public static class IChargingStationExtensions
+    public static class IChargingStationNodeExtensions
     {
 
         #region SendBootNotification                  (BootReason, ...)
@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.BootNotificationResponse>
 
-            SendBootNotification(this IChargingStation    ChargingStation,
+            SendBootNotification(this IChargingStationNode    ChargingStation,
 
                                  BootReason               BootReason,
 
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(this IChargingStation    ChargingStation,
+            SendFirmwareStatusNotification(this IChargingStationNode    ChargingStation,
 
                                            FirmwareStatus           Status,
                                            Int64?                   UpdateFirmwareRequestId   = null,
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.PublishFirmwareStatusNotificationResponse>
 
-            SendPublishFirmwareStatusNotification(this IChargingStation    ChargingStation,
+            SendPublishFirmwareStatusNotification(this IChargingStationNode    ChargingStation,
 
                                                   PublishFirmwareStatus    Status,
                                                   Int32?                   PublishFirmwareStatusNotificationRequestId,
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.HeartbeatResponse>
 
-            SendHeartbeat(this IChargingStation    ChargingStation,
+            SendHeartbeat(this IChargingStationNode    ChargingStation,
 
                           CustomData?              CustomData          = null,
 
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyEventResponse>
 
-            NotifyEvent(this IChargingStation    ChargingStation,
+            NotifyEvent(this IChargingStationNode    ChargingStation,
 
                         DateTime                 GeneratedAt,
                         UInt32                   SequenceNumber,
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(this IChargingStation    ChargingStation,
+            SendSecurityEventNotification(this IChargingStationNode    ChargingStation,
 
                                           SecurityEventType        Type,
                                           DateTime                 Timestamp,
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyReportResponse>
 
-            NotifyReport(this IChargingStation    ChargingStation,
+            NotifyReport(this IChargingStationNode    ChargingStation,
 
                          Int32                    NotifyReportRequestId,
                          UInt32                   SequenceNumber,
@@ -507,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyMonitoringReportResponse>
 
-            NotifyMonitoringReport(this IChargingStation        ChargingStation,
+            NotifyMonitoringReport(this IChargingStationNode        ChargingStation,
 
                                    Int32                        NotifyMonitoringReportRequestId,
                                    UInt32                       SequenceNumber,
@@ -575,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.LogStatusNotificationResponse>
 
-            SendLogStatusNotification(this IChargingStation    ChargingStation,
+            SendLogStatusNotification(this IChargingStationNode    ChargingStation,
 
                                       UploadLogStatus          Status,
                                       Int32?                   LogRequestId        = null,
@@ -638,7 +638,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<DataTransferResponse>
 
-            TransferData(this IChargingStation    ChargingStation,
+            TransferData(this IChargingStationNode    ChargingStation,
 
                          Vendor_Id                VendorId,
                          Message_Id?              MessageId           = null,
@@ -701,7 +701,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.SignCertificateResponse>
 
-            SendCertificateSigningRequest(this IChargingStation    ChargingStation,
+            SendCertificateSigningRequest(this IChargingStationNode    ChargingStation,
 
                                           String                   CSR,
                                           Int32                    SignCertificateRequestId,
@@ -768,7 +768,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.Get15118EVCertificateResponse>
 
-            Get15118EVCertificate(this IChargingStation    ChargingStation,
+            Get15118EVCertificate(this IChargingStationNode    ChargingStation,
 
                                   ISO15118SchemaVersion    ISO15118SchemaVersion,
                                   CertificateAction        CertificateAction,
@@ -835,7 +835,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.GetCertificateStatusResponse>
 
-            GetCertificateStatus(this IChargingStation    ChargingStation,
+            GetCertificateStatus(this IChargingStationNode    ChargingStation,
 
                                  OCSPRequestData          OCSPRequestData,
 
@@ -896,7 +896,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.GetCRLResponse>
 
-            GetCRLRequest(this IChargingStation    ChargingStation,
+            GetCRLRequest(this IChargingStationNode    ChargingStation,
 
                           UInt32                   GetCRLRequestId,
                           CertificateHashData      CertificateHashData,
@@ -959,7 +959,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.ReservationStatusUpdateResponse>
 
-            SendReservationStatusUpdate(this IChargingStation    ChargingStation,
+            SendReservationStatusUpdate(this IChargingStationNode    ChargingStation,
 
                                         Reservation_Id           ReservationId,
                                         ReservationUpdateStatus  ReservationUpdateStatus,
@@ -1022,7 +1022,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.AuthorizeResponse>
 
-            Authorize(this IChargingStation          ChargingStation,
+            Authorize(this IChargingStationNode          ChargingStation,
 
                       IdToken                        IdToken,
                       Certificate?                   Certificate                   = null,
@@ -1088,7 +1088,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyEVChargingNeedsResponse>
 
-            NotifyEVChargingNeeds(this IChargingStation    ChargingStation,
+            NotifyEVChargingNeeds(this IChargingStationNode    ChargingStation,
 
                                   EVSE_Id                  EVSEId,
                                   ChargingNeeds            ChargingNeeds,
@@ -1166,7 +1166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.TransactionEventResponse>
 
-            SendTransactionEvent(this IChargingStation     ChargingStation,
+            SendTransactionEvent(this IChargingStationNode     ChargingStation,
 
                                  TransactionEvents         EventType,
                                  DateTime                  Timestamp,
@@ -1254,7 +1254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.StatusNotificationResponse>
 
-            SendStatusNotification(this IChargingStation    ChargingStation,
+            SendStatusNotification(this IChargingStationNode    ChargingStation,
 
                                    EVSE_Id                  EVSEId,
                                    Connector_Id             ConnectorId,
@@ -1320,7 +1320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.MeterValuesResponse>
 
-            SendMeterValues(this IChargingStation    ChargingStation,
+            SendMeterValues(this IChargingStationNode    ChargingStation,
 
                             EVSE_Id                  EVSEId, // 0 => main power meter; 1 => first EVSE
                             IEnumerable<MeterValue>  MeterValues,
@@ -1383,7 +1383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyChargingLimitResponse>
 
-            NotifyChargingLimit(this IChargingStation          ChargingStation,
+            NotifyChargingLimit(this IChargingStationNode          ChargingStation,
 
                                 ChargingLimit                  ChargingLimit,
                                 IEnumerable<ChargingSchedule>  ChargingSchedules,
@@ -1447,7 +1447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.ClearedChargingLimitResponse>
 
-            SendClearedChargingLimit(this IChargingStation    ChargingStation,
+            SendClearedChargingLimit(this IChargingStationNode    ChargingStation,
 
                                      ChargingLimitSource      ChargingLimitSource,
                                      EVSE_Id?                 EVSEId,
@@ -1512,7 +1512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.ReportChargingProfilesResponse>
 
-            ReportChargingProfiles(this IChargingStation         ChargingStation,
+            ReportChargingProfiles(this IChargingStationNode         ChargingStation,
 
                                    Int32                         ReportChargingProfilesRequestId,
                                    ChargingLimitSource           ChargingLimitSource,
@@ -1583,7 +1583,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyEVChargingScheduleResponse>
 
-            NotifyEVChargingSchedule(this IChargingStation    ChargingStation,
+            NotifyEVChargingSchedule(this IChargingStationNode    ChargingStation,
 
                                      DateTime                 TimeBase,
                                      EVSE_Id                  EVSEId,
@@ -1651,7 +1651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyPriorityChargingResponse>
 
-            NotifyPriorityCharging(this IChargingStation    ChargingStation,
+            NotifyPriorityCharging(this IChargingStationNode    ChargingStation,
 
                                    Transaction_Id           TransactionId,
                                    Boolean                  Activated,
@@ -1722,7 +1722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifySettlementResponse>
 
-            NotifySettlement(this IChargingStation    ChargingStation,
+            NotifySettlement(this IChargingStationNode    ChargingStation,
 
                              PaymentReference         PaymentReference,
                              PaymentStatus            PaymentStatus,
@@ -1800,7 +1800,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.PullDynamicScheduleUpdateResponse>
 
-            PullDynamicScheduleUpdate(this IChargingStation    ChargingStation,
+            PullDynamicScheduleUpdate(this IChargingStationNode    ChargingStation,
 
                                       ChargingProfile_Id       ChargingProfileId,
 
@@ -1862,7 +1862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyDisplayMessagesResponse>
 
-            NotifyDisplayMessages(this IChargingStation     ChargingStation,
+            NotifyDisplayMessages(this IChargingStationNode     ChargingStation,
 
                                   Int32                     NotifyDisplayMessagesRequestId,
                                   IEnumerable<MessageInfo>  MessageInfos,
@@ -1929,7 +1929,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CSMS.NotifyCustomerInformationResponse>
 
-            NotifyCustomerInformation(this IChargingStation    ChargingStation,
+            NotifyCustomerInformation(this IChargingStationNode    ChargingStation,
 
                                       Int64                    NotifyCustomerInformationRequestId,
                                       String                   Data,
@@ -2002,7 +2002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<BinaryDataTransferResponse>
 
-            TransferBinaryData(this IChargingStation    ChargingStation,
+            TransferBinaryData(this IChargingStationNode    ChargingStation,
 
                                Vendor_Id                VendorId,
                                Message_Id?              MessageId           = null,

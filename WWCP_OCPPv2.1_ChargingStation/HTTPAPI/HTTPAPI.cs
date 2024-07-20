@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<AChargingStation>                                     networkingNodes   = [];
+        protected readonly  List<AChargingStationNode>                                     networkingNodes   = [];
 
         #endregion
 
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An enumeration of registered networking nodes.
         /// </summary>
-        public              IEnumerable<AChargingStation>                              ChargingStations
+        public              IEnumerable<AChargingStationNode>                              ChargingStations
             => networkingNodes;
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(AChargingStation                            ChargingStation,
+        public HTTPAPI(AChargingStationNode                            ChargingStation,
                        HTTPExtAPI                                  HTTPAPI,
                        String?                                     HTTPServerName   = null,
                        HTTPPath?                                   URLPathPrefix    = null,
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region AttachChargingStation(ChargingStation)
 
-        public void AttachChargingStation(AChargingStation ChargingStation)
+        public void AttachChargingStation(AChargingStationNode ChargingStation)
         {
 
             networkingNodes.Add(ChargingStation);

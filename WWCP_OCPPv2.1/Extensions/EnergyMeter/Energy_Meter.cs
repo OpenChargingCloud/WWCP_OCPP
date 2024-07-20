@@ -37,8 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// An energy meter.
     /// </summary>
-    public class EnergyMeter : IEquatable<EnergyMeter>,
-                               IComparable<EnergyMeter>,
+    public class Energy_Meter : IEquatable<Energy_Meter>,
+                               IComparable<Energy_Meter>,
                                IEnergyMeter
     {
 
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TransparencySoftwares">An enumeration of transparency softwares and their legal status, which can be used to validate the charging session data.</param>
         /// 
         /// <param name="LastChange">The timestamp when this energy meter was last updated (or created).</param>
-        public EnergyMeter(EnergyMeter_Id                             Id,
+        public Energy_Meter(EnergyMeter_Id                             Id,
                            I18NString?                                Name                         = null,
                            I18NString?                                Description                  = null,
 
@@ -213,8 +213,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="CustomEnergyMeterParser">An optional delegate to parse custom energy meter JSON objects.</param>
-        public static EnergyMeter Parse(JObject                                    JSON,
-                                        CustomJObjectParserDelegate<EnergyMeter>?  CustomEnergyMeterParser   = null)
+        public static Energy_Meter Parse(JObject                                    JSON,
+                                        CustomJObjectParserDelegate<Energy_Meter>?  CustomEnergyMeterParser   = null)
         {
 
             if (TryParse(JSON,
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EnergyMeter">The parsed energy meter.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                JSON,
-                                       [NotNullWhen(true)]  out EnergyMeter?  EnergyMeter,
+                                       [NotNullWhen(true)]  out Energy_Meter?  EnergyMeter,
                                        [NotNullWhen(false)] out String?       ErrorResponse)
 
             => TryParse(JSON,
@@ -260,9 +260,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomEnergyMeterParser">An optional delegate to parse custom energy meter JSON objects.</param>
         public static Boolean TryParse(JObject                                    JSON,
-                                       [NotNullWhen(true)]  out EnergyMeter?      EnergyMeter,
+                                       [NotNullWhen(true)]  out Energy_Meter?      EnergyMeter,
                                        [NotNullWhen(false)] out String?           ErrorResponse,
-                                       CustomJObjectParserDelegate<EnergyMeter>?  CustomEnergyMeterParser   = null)
+                                       CustomJObjectParserDelegate<Energy_Meter>?  CustomEnergyMeterParser   = null)
         {
 
             try
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                EnergyMeter = new EnergyMeter(
+                EnergyMeter = new Energy_Meter(
 
                                   Id,
 
@@ -554,7 +554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this object.
         /// </summary>
-        public EnergyMeter Clone()
+        public Energy_Meter Clone()
 
             => new (
 
@@ -583,11 +583,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new energy meter having the given energy meter identification.
         /// </summary>
-        public static EnergyMeter? FromMeterId(String EnergyMeterId)
+        public static Energy_Meter? FromMeterId(String EnergyMeterId)
         {
 
             if (EnergyMeter_Id.TryParse(EnergyMeterId, out var energyMeterId))
-                return new EnergyMeter(energyMeterId);
+                return new Energy_Meter(energyMeterId);
 
             return null;
 
@@ -606,8 +606,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EnergyMeter1">An energy meter.</param>
         /// <param name="EnergyMeter2">Another energy meter.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (EnergyMeter? EnergyMeter1,
-                                           EnergyMeter? EnergyMeter2)
+        public static Boolean operator == (Energy_Meter? EnergyMeter1,
+                                           Energy_Meter? EnergyMeter2)
         {
 
             if (Object.ReferenceEquals(EnergyMeter1, EnergyMeter2))
@@ -630,8 +630,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EnergyMeter1">An energy meter.</param>
         /// <param name="EnergyMeter2">Another energy meter.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (EnergyMeter? EnergyMeter1,
-                                           EnergyMeter? EnergyMeter2)
+        public static Boolean operator != (Energy_Meter? EnergyMeter1,
+                                           Energy_Meter? EnergyMeter2)
 
             => !(EnergyMeter1 == EnergyMeter2);
 
@@ -645,8 +645,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EnergyMeter1">An energy meter.</param>
         /// <param name="EnergyMeter2">Another energy meter.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator < (EnergyMeter? EnergyMeter1,
-                                          EnergyMeter? EnergyMeter2)
+        public static Boolean operator < (Energy_Meter? EnergyMeter1,
+                                          Energy_Meter? EnergyMeter2)
 
             => EnergyMeter1 is null
                    ? throw new ArgumentNullException(nameof(EnergyMeter1), "The given energy meter must not be null!")
@@ -662,8 +662,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EnergyMeter1">An energy meter.</param>
         /// <param name="EnergyMeter2">Another energy meter.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator <= (EnergyMeter? EnergyMeter1,
-                                           EnergyMeter? EnergyMeter2)
+        public static Boolean operator <= (Energy_Meter? EnergyMeter1,
+                                           Energy_Meter? EnergyMeter2)
 
             => !(EnergyMeter1 > EnergyMeter2);
 
@@ -677,8 +677,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EnergyMeter1">An energy meter.</param>
         /// <param name="EnergyMeter2">Another energy meter.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator > (EnergyMeter? EnergyMeter1,
-                                          EnergyMeter? EnergyMeter2)
+        public static Boolean operator > (Energy_Meter? EnergyMeter1,
+                                          Energy_Meter? EnergyMeter2)
 
             => EnergyMeter1 is null
                    ? throw new ArgumentNullException(nameof(EnergyMeter1), "The given energy meter must not be null!")
@@ -694,8 +694,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EnergyMeter1">An energy meter.</param>
         /// <param name="EnergyMeter2">Another energy meter.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator >= (EnergyMeter? EnergyMeter1,
-                                           EnergyMeter? EnergyMeter2)
+        public static Boolean operator >= (Energy_Meter? EnergyMeter1,
+                                           Energy_Meter? EnergyMeter2)
 
             => !(EnergyMeter1 < EnergyMeter2);
 
@@ -713,7 +713,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">An energy meter to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is EnergyMeter energyMeter
+            => Object is Energy_Meter energyMeter
                    ? CompareTo(energyMeter)
                    : throw new ArgumentException("The given object is not an energy meter!",
                                                  nameof(Object));
@@ -726,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EnergyMeter">A smart energy meter to compare with.</param>
-        public Int32 CompareTo(EnergyMeter? EnergyMeter)
+        public Int32 CompareTo(Energy_Meter? EnergyMeter)
 
             => CompareTo(EnergyMeter as IEnergyMeter);
 
@@ -804,7 +804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">An energy meter to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is EnergyMeter energyMeter &&
+            => Object is Energy_Meter energyMeter &&
                    Equals(energyMeter);
 
         #endregion
@@ -815,7 +815,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two energy meters for equality.
         /// </summary>
         /// <param name="EnergyMeter">An energy meter to compare with.</param>
-        public Boolean Equals(EnergyMeter? EnergyMeter)
+        public Boolean Equals(Energy_Meter? EnergyMeter)
 
             => Equals(EnergyMeter as IEnergyMeter);
 

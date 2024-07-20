@@ -37,10 +37,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A networking node for testing.
+    /// A charging station node for testing.
     /// </summary>
-    public partial class TestChargingStation : AChargingStation,
-                                               IChargingStation
+    public partial class TestChargingStationNode : AChargingStationNode,
+                                                   IChargingStationNode
     {
 
         private readonly ConcurrentDictionary<DisplayMessage_Id,     MessageInfo>     displayMessages   = new ();
@@ -56,35 +56,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Create a new networking node for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this networking node.</param>
-        public TestChargingStation(NetworkingNode_Id                  Id,
-                                   String                             VendorName,
-                                   String                             Model,
-                                   I18NString?                        Description                 = null,
-                                   String?                            SerialNumber                = null,
-                                   String?                            FirmwareVersion             = null,
-                                   Modem?                             Modem                       = null,
+        public TestChargingStationNode(NetworkingNode_Id                  Id,
+                                       String                             VendorName,
+                                       String                             Model,
+                                       I18NString?                        Description                 = null,
+                                       String?                            SerialNumber                = null,
+                                       String?                            FirmwareVersion             = null,
+                                       Modem?                             Modem                       = null,
 
-                                   IEnumerable<ChargingStationEVSE>?  EVSEs                       = null,
-                                   IEnergyMeter?                      UplinkEnergyMeter           = null,
+                                       IEnumerable<ChargingStationEVSE>?  EVSEs                       = null,
+                                       IEnergyMeter?                      UplinkEnergyMeter           = null,
 
-                                   CustomData?                        CustomData                  = null,
+                                       CustomData?                        CustomData                  = null,
 
-                                   Boolean                            DisableSendHeartbeats       = false,
-                                   TimeSpan?                          SendHeartbeatsEvery         = null,
-                                   TimeSpan?                          DefaultRequestTimeout       = null,
+                                       Boolean                            DisableSendHeartbeats       = false,
+                                       TimeSpan?                          SendHeartbeatsEvery         = null,
+                                       TimeSpan?                          DefaultRequestTimeout       = null,
 
-                                   IPPort?                            HTTPUploadPort              = null,
-                                   IPPort?                            HTTPDownloadPort            = null,
+                                       IPPort?                            HTTPUploadPort              = null,
+                                       IPPort?                            HTTPDownloadPort            = null,
 
-                                   SignaturePolicy?                   SignaturePolicy             = null,
-                                   SignaturePolicy?                   ForwardingSignaturePolicy   = null,
+                                       SignaturePolicy?                   SignaturePolicy             = null,
+                                       SignaturePolicy?                   ForwardingSignaturePolicy   = null,
 
-                                   Boolean                            DisableMaintenanceTasks     = false,
-                                   TimeSpan?                          MaintenanceEvery            = null,
+                                       Boolean                            DisableMaintenanceTasks     = false,
+                                       TimeSpan?                          MaintenanceEvery            = null,
 
-                                   IHTTPAuthentication?               HTTPAuthentication          = null,
+                                       IHTTPAuthentication?               HTTPAuthentication          = null,
 
-                                   DNSClient?                         DNSClient                   = null)
+                                       DNSClient?                         DNSClient                   = null)
 
             : base(Id,
                    VendorName,
@@ -543,21 +543,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             //    );
 
             #endregion
-
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

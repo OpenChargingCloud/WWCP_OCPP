@@ -22,23 +22,20 @@ using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
-using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
+namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 {
 
     /// <summary>
-    /// A local controller for testing.
+    /// An energy meter node for testing.
     /// </summary>
-    public partial class TestLocalController : ALocalController,
-                                               ILocalController
+    public partial class TestEnergyMeterNode : AEnergyMeterNode
     {
 
         #region Properties
@@ -49,23 +46,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new local controller for testing.
+        /// Create a new energy meter node for testing.
         /// </summary>
-        /// <param name="Id">The unique identification of this local controller.</param>
-        public TestLocalController(NetworkingNode_Id  Id,
+        /// <param name="Id">The unique identification of this energy meter node.</param>
+        public TestEnergyMeterNode(NetworkingNode_Id  Id,
                                    String             VendorName,
                                    String             Model,
                                    String?            SerialNumber                = null,
                                    String?            SoftwareVersion             = null,
-                                   Modem?             Modem                       = null,
                                    I18NString?        Description                 = null,
                                    CustomData?        CustomData                  = null,
 
                                    SignaturePolicy?   SignaturePolicy             = null,
                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
-
-                                   IPPort?            HTTPUploadPort              = null,
-                                   IPPort?            HTTPDownloadPort            = null,
 
                                    Boolean            DisableSendHeartbeats       = false,
                                    TimeSpan?          SendHeartbeatsEvery         = null,
@@ -80,7 +73,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                    Model,
                    SerialNumber,
                    SoftwareVersion,
-                   Modem,
                    Description,
                    CustomData,
 
@@ -90,9 +82,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
                    DefaultRequestTimeout,
-
-                   HTTPUploadPort,
-                   HTTPDownloadPort,
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
@@ -506,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
                 CS.ResetResponse? response = null;
 
-                DebugX.Log($"Local Controller '{Id}': Incoming '{request.ResetType}' reset request!");
+                DebugX.Log($"EnergyMeter '{Id}': Incoming '{request.ResetType}' reset request!");
 
                 // ResetType
 
@@ -530,7 +519,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                             cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(request)
+                    ForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(
+                        request
+                    )
                 );
 
             #endregion
@@ -581,7 +572,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         }
 
         #endregion
-
 
 
     }

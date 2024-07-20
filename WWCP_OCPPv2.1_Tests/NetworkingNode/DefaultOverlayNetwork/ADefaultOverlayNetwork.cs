@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
         #region Data
 
-        protected TestCSMS?                    CSMS;
+        protected TestCSMSNode?                    CSMS;
 
         protected OCPPWebSocketServer?          csmsWSServer;
 
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
         // -------------------------------------------------------------------------------------------------------
 
-        protected TestLocalController?          localController;
+        protected TestLocalControllerNode?          localController;
 
         protected OCPPWebSocketServer?          lcOCPPWebSocketServer;
 
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
         // -------------------------------------------------------------------------------------------------------
 
-        protected TestChargingStation?          chargingStation;
+        protected TestChargingStationNode?          chargingStation;
 
         protected List<LogJSONRequest>          chargingStation1WebSocketJSONMessagesReceived             = [];
         protected List<LogDataJSONResponse>     chargingStation1WebSocketJSONMessageResponsesSent         = [];
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             #region Create the CSMS
 
-            CSMS = new TestCSMS(
+            CSMS = new TestCSMSNode(
                        Id:                      NetworkingNode_Id.Parse("csms01"),
                        VendorName:              "GraphDefined",
                        Model:                   "OCPPTest",
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             #region Create the Networking Node
 
-            localController = new TestLocalController(
+            localController = new TestLocalControllerNode(
                                   Id:                      NetworkingNode_Id.Parse("nn01"),
                                   VendorName:              "GraphDefined OEM #1",
                                   Model:                   "VCP.1",
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             #region Create the Charging Station
 
-            chargingStation = new TestChargingStation(
+            chargingStation = new TestChargingStationNode(
                                    Id:                      NetworkingNode_Id.Parse("GD-CP001"),
                                    VendorName:              "GraphDefined OEM #1",
                                    Model:                   "VCP.1",
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                                                                                          ]
                                                                 )
                                                             ],
-                                    UplinkEnergyMeter:      new EnergyMeter(
+                                    UplinkEnergyMeter:      new Energy_Meter(
                                                                 Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                 Model:          "Virtual Energy Meter",
                                                                 SerialNumber:   "SN-EN0001",

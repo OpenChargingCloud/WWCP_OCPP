@@ -42,9 +42,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #region Data
 
-        protected TestChargingStation?          chargingStation1;
-        protected TestChargingStation?          chargingStation2;
-        protected TestChargingStation?          chargingStation3;
+        protected TestChargingStationNode?          chargingStation1;
+        protected TestChargingStationNode?          chargingStation2;
+        protected TestChargingStationNode?          chargingStation3;
 
 
         protected List<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesReceived;
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             var chargingStation1Id = NetworkingNode_Id.Parse("GD-CP001");
 
-            chargingStation1 = new TestChargingStation(
+            chargingStation1 = new TestChargingStationNode(
                                     Id:                       chargingStation1Id,
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                            ]
                                                                   )
                                                               ],
-                                    UplinkEnergyMeter:        new EnergyMeter(
+                                    UplinkEnergyMeter:        new Energy_Meter(
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",
                                                                   SerialNumber:   "SN-EN0001",
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             var chargingStation2Id = NetworkingNode_Id.Parse("GD-CP002");
 
-            chargingStation2  = new TestChargingStation(
+            chargingStation2  = new TestChargingStationNode(
                                     Id:                       chargingStation2Id,
                                     VendorName:               "GraphDefined OEM #2",
                                     Model:                    "VCP.2",
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                            ]
                                                                   )
                                                               ],
-                                    UplinkEnergyMeter:        new EnergyMeter(
+                                    UplinkEnergyMeter:        new Energy_Meter(
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",
                                                                   SerialNumber:   "SN-EN0001",
@@ -347,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             var chargingStation3Id = NetworkingNode_Id.Parse("GD-CP003");
 
-            chargingStation3 = new TestChargingStation(
+            chargingStation3 = new TestChargingStationNode(
                                     Id:                       chargingStation3Id,
                                     VendorName:               "GraphDefined OEM #3",
                                     Model:                    "VCP.3",
@@ -412,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                            ]
                                                                   )
                                                               ],
-                                    UplinkEnergyMeter:        new EnergyMeter(
+                                    UplinkEnergyMeter:        new Energy_Meter(
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",
                                                                   SerialNumber:   "SN-EN0001",
