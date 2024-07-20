@@ -28,10 +28,11 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #region Data
 
-        protected TestCSMSNode?                               testCSMS01;
+        protected TestCSMSNode?                           testCSMS01;
         protected OCPPWebSocketServer?                    testWebSocketServer01;
 
         protected ConcurrentList<LogJSONRequest>?         csmsWebSocketTextMessagesReceived;
@@ -56,9 +57,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         protected ConcurrentList<LogDataJSONResponse>?    csmsWebSocketTextMessageResponsesReceived;
 
 
-        protected TestChargingStationNode?                    chargingStation1;
-        protected TestChargingStationNode?                    chargingStation2;
-        protected TestChargingStationNode?                    chargingStation3;
+        protected TestChargingStationNode?                chargingStation1;
+        protected TestChargingStationNode?                chargingStation2;
+        protected TestChargingStationNode?                chargingStation3;
 
         protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesReceived;
         protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketJSONMessagesReceived;
@@ -155,20 +156,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 return Task.CompletedTask;
             };
 
-            testWebSocketServer01.OnJSONMessageResponseSent     += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
-                csmsWebSocketTextMessageResponsesSent.    TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
-                return Task.CompletedTask;
-            };
+            //testWebSocketServer01.OnJSONMessageResponseSent     += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
+            //    csmsWebSocketTextMessageResponsesSent.    TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
+            //    return Task.CompletedTask;
+            //};
 
             testWebSocketServer01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
                 csmsWebSocketTextMessagesSent.            TryAdd(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
 
-            testWebSocketServer01.OnJSONMessageResponseReceived += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
-                csmsWebSocketTextMessageResponsesReceived.TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
-                return Task.CompletedTask;
-            };
+            //testWebSocketServer01.OnJSONMessageResponseReceived += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
+            //    csmsWebSocketTextMessageResponsesReceived.TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
+            //    return Task.CompletedTask;
+            //};
 
 
 

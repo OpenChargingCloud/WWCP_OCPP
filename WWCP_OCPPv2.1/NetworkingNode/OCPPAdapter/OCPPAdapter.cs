@@ -954,7 +954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return SendRequestState.FromJSONRequest(
 
                        RequestTimestamp:         JSONRequestMessage.RequestTimestamp,
-                       DestinationId:        JSONRequestMessage.DestinationId,
+                       DestinationId:            JSONRequestMessage.DestinationId,
                        Timeout:                  JSONRequestMessage.RequestTimeout,
                        JSONRequest:              JSONRequestMessage,
                        SendMessageResult:        sendMessageResult,
@@ -1243,6 +1243,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region SendBinaryRequestError   (BinaryRequestErrorMessage)
+
+        public async Task<SendMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        {
+
+            if (LookupNetworkingNode(BinaryRequestErrorMessage.DestinationId, out var reachability) &&
+                reachability is not null)
+            {
+
+                if (reachability.OCPPWebSocketClient is not null)
+                    return await reachability.OCPPWebSocketClient.SendBinaryRequestError(BinaryRequestErrorMessage);
+
+                if (reachability.OCPPWebSocketServer is not null)
+                    return await reachability.OCPPWebSocketServer.SendBinaryRequestError(BinaryRequestErrorMessage);
+
+            }
+
+            return SendMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
+        #region SendBinaryResponseError  (BinaryResponseErrorMessage)
+
+        public async Task<SendMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
+        {
+
+            if (LookupNetworkingNode(BinaryResponseErrorMessage.DestinationId, out var reachability) &&
+                reachability is not null)
+            {
+
+                if (reachability.OCPPWebSocketClient is not null)
+                    return await reachability.OCPPWebSocketClient.SendBinaryResponseError(BinaryResponseErrorMessage);
+
+                if (reachability.OCPPWebSocketServer is not null)
+                    return await reachability.OCPPWebSocketServer.SendBinaryResponseError(BinaryResponseErrorMessage);
+
+            }
+
+            return SendMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
         #region SendBinarySendMessage    (BinarySendMessage)
 
         public async Task<SendMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
@@ -1272,7 +1318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        #region ReceiveJSONResponse      (JSONResponseMessage)
+        #region ReceiveJSONResponse        (JSONResponseMessage)
 
         public Boolean ReceiveJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
@@ -1295,30 +1341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ReceiveBinaryResponse    (BinaryResponseMessage)
-
-        public Boolean ReceiveBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
-        {
-
-            if (requests.TryGetValue(BinaryResponseMessage.RequestId, out var sendRequestState) &&
-                sendRequestState is not null)
-            {
-
-                sendRequestState.ResponseTimestamp  = Timestamp.Now;
-                sendRequestState.BinaryResponse     = BinaryResponseMessage;
-
-                return true;
-
-            }
-
-            DebugX.Log($"Received an unknown OCPP response with identificaiton '{BinaryResponseMessage.RequestId}' within {Id}:{Environment.NewLine}'{BinaryResponseMessage.Payload.ToBase64()}'!");
-            return false;
-
-        }
-
-        #endregion
-
-        #region ReceiveJSONRequestError  (JSONRequestErrorMessage)
+        #region ReceiveJSONRequestError    (JSONRequestErrorMessage)
 
         public Boolean ReceiveJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
@@ -1341,7 +1364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ReceiveJSONResponseError (JSONResponseErrorMessage)
+        #region ReceiveJSONResponseError   (JSONResponseErrorMessage)
 
         public Boolean ReceiveJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
         {
@@ -1360,6 +1383,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             DebugX.Log($"Received an unknown OCPP JSON response error message with identificaiton '{JSONResponseErrorMessage.RequestId}' within {Id}:{Environment.NewLine}'{JSONResponseErrorMessage.ToJSON().ToString(Formatting.None)}'!");
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ReceiveBinaryResponse      (BinaryResponseMessage)
+
+        public Boolean ReceiveBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        {
+
+            if (requests.TryGetValue(BinaryResponseMessage.RequestId, out var sendRequestState) &&
+                sendRequestState is not null)
+            {
+
+                sendRequestState.ResponseTimestamp  = Timestamp.Now;
+                sendRequestState.BinaryResponse     = BinaryResponseMessage;
+
+                return true;
+
+            }
+
+            DebugX.Log($"Received an unknown OCPP response with identificaiton '{BinaryResponseMessage.RequestId}' within {Id}:{Environment.NewLine}'{BinaryResponseMessage.Payload.ToBase64()}'!");
+            return false;
+
+        }
+
+        #endregion
+
+        #region ReceiveBinaryRequestError  (BinaryRequestErrorMessage)
+
+        public Boolean ReceiveBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        {
+
+            if (requests.TryGetValue(BinaryRequestErrorMessage.RequestId, out var sendRequestState) &&
+                sendRequestState is not null)
+            {
+
+                sendRequestState.BinaryResponse             = null;
+                sendRequestState.BinaryRequestErrorMessage  = BinaryRequestErrorMessage;
+
+                return true;
+
+            }
+
+            DebugX.Log($"Received an unknown OCPP Binary request error message with identificaiton '{BinaryRequestErrorMessage.RequestId}' within {Id}:{Environment.NewLine}'{BinaryRequestErrorMessage.ToByteArray().ToBase64()}'!");
+            return false;
+
+        }
+
+        #endregion
+
+        #region ReceiveBinaryResponseError (BinaryResponseErrorMessage)
+
+        public Boolean ReceiveBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
+        {
+
+            if (requests.TryGetValue(BinaryResponseErrorMessage.RequestId, out var sendRequestState) &&
+                sendRequestState is not null)
+            {
+
+                sendRequestState.BinaryResponse              = null;
+                sendRequestState.BinaryResponseErrorMessage  = BinaryResponseErrorMessage;
+
+                //ToDo: This has to be forwarded actively, as it is not expected (async)!
+
+                return true;
+
+            }
+
+            DebugX.Log($"Received an unknown OCPP Binary response error message with identificaiton '{BinaryResponseErrorMessage.RequestId}' within {Id}:{Environment.NewLine}'{BinaryResponseErrorMessage.ToByteArray().ToBase64()}'!");
             return false;
 
         }

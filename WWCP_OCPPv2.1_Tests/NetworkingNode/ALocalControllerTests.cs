@@ -24,12 +24,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.tests.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.LocalController;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -44,9 +42,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
 
         #region Data
 
-        protected TestLocalControllerNode?          localController1;
-        protected TestLocalControllerNode?          localController2;
-        protected TestLocalControllerNode?          localController3;
+        protected TestLocalControllerNode?      localController1;
+        protected TestLocalControllerNode?      localController2;
+        protected TestLocalControllerNode?      localController3;
 
         protected OCPPWebSocketServer?          lcOCPPWebSocketServer01;
         protected OCPPWebSocketServer?          lcOCPPWebSocketServer02;

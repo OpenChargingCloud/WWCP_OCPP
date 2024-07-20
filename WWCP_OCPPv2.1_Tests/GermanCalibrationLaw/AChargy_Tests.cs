@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -42,9 +43,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
 
         #region Data
 
-        protected TestCSMSNode?                      testCSMS01;
-        protected TestCSMSNode?                      testCSMS02;
-        protected TestCSMSNode?                      testCSMS03;
+        protected TestCSMSNode?                   testCSMS01;
+        protected TestCSMSNode?                   testCSMS02;
+        protected TestCSMSNode?                   testCSMS03;
 
         protected OCPPWebSocketServer?            testBackendWebSockets01;
         protected OCPPWebSocketServer?            testBackendWebSockets02;
@@ -137,20 +138,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnJSONMessageResponseSent     += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
-                csms1WebSocketJSONMessageResponsesSent.    Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
-                return Task.CompletedTask;
-            };
+            //testBackendWebSockets01.OnJSONMessageResponseSent     += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
+            //    csms1WebSocketJSONMessageResponsesSent.    Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
+            //    return Task.CompletedTask;
+            //};
 
             testBackendWebSockets01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
                 csms1WebSocketJSONMessagesSent.            Add(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnJSONMessageResponseReceived += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
-                csms1WebSocketJSONMessageResponsesReceived.Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
-                return Task.CompletedTask;
-            };
+            //testBackendWebSockets01.OnJSONMessageResponseReceived += (timestamp, webSocketServer, webSocketConnection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage, cancellationToken) => {
+            //    csms1WebSocketJSONMessageResponsesReceived.Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
+            //    return Task.CompletedTask;
+            //};
 
         }
 

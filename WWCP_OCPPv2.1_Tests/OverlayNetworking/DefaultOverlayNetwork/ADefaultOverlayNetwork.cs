@@ -30,6 +30,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.LocalController;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
         #region Data
 
-        protected TestCSMSNode?                    CSMS;
+        protected TestCSMSNode?                 CSMS;
 
         protected OCPPWebSocketServer?          csmsWSServer;
 
@@ -63,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
         // -------------------------------------------------------------------------------------------------------
 
-        protected TestLocalControllerNode?          localController;
+        protected TestLocalControllerNode?      localController;
 
         protected OCPPWebSocketServer?          lcOCPPWebSocketServer;
 
@@ -81,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
         // -------------------------------------------------------------------------------------------------------
 
-        protected TestChargingStationNode?          chargingStation;
+        protected TestChargingStationNode?      chargingStation;
 
         protected List<LogJSONRequest>          chargingStation1WebSocketJSONMessagesReceived             = [];
         protected List<LogDataJSONResponse>     chargingStation1WebSocketJSONMessageResponsesSent         = [];

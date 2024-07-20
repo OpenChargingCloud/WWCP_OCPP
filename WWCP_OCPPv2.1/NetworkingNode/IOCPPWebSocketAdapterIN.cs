@@ -62,13 +62,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                        IOCPPWebSocketAdapterIN          Server,
                                                                        OCPP_BinaryResponseMessage       BinaryResponseMessage);
 
-    //public delegate Task OnBinaryRequestErrorMessageReceivedDelegate  (DateTime                         Timestamp,
-    //                                                                   IOCPPWebSocketAdapterIN          Server,
-    //                                                                   OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage);
+    public delegate Task OnBinaryRequestErrorMessageReceivedDelegate  (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage);
 
-    //public delegate Task OnBinaryResponseErrorMessageReceivedDelegate (DateTime                         Timestamp,
-    //                                                                   IOCPPWebSocketAdapterIN          Server,
-    //                                                                   OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
+    public delegate Task OnBinaryResponseErrorMessageReceivedDelegate (DateTime                         Timestamp,
+                                                                       IOCPPWebSocketAdapterIN          Server,
+                                                                       OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
 
     public delegate Task OnBinarySendMessageReceivedDelegate          (DateTime                         Timestamp,
                                                                        IOCPPWebSocketAdapterIN          Server,
@@ -104,6 +104,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
         #region Events
+
+        #region HTTP Web Socket connection management
+
+        ///// <summary>
+        ///// An event sent whenever the HTTP connection switched successfully to web socket.
+        ///// </summary>
+        //event OnNetworkingNodeNewWebSocketConnectionDelegate?    OnNetworkingNodeNewWebSocketConnection;
+
+        ///// <summary>
+        ///// An event sent whenever a web socket close frame was received.
+        ///// </summary>
+        //event OnNetworkingNodeCloseMessageReceivedDelegate?      OnNetworkingNodeCloseMessageReceived;
+
+        ///// <summary>
+        ///// An event sent whenever a TCP connection was closed.
+        ///// </summary>
+        //event OnNetworkingNodeTCPConnectionClosedDelegate?       OnNetworkingNodeTCPConnectionClosed;
+
+        #endregion
 
         #region JSON   messages received
 
@@ -160,26 +179,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event sent whenever a binary send message was received.
         /// </summary>
         event OnBinarySendMessageReceivedDelegate?            OnBinarySendMessageReceived;
-
-        #endregion
-
-
-        #region HTTP Web Socket connection management
-
-        ///// <summary>
-        ///// An event sent whenever the HTTP connection switched successfully to web socket.
-        ///// </summary>
-        //event OnNetworkingNodeNewWebSocketConnectionDelegate?    OnNetworkingNodeNewWebSocketConnection;
-
-        ///// <summary>
-        ///// An event sent whenever a web socket close frame was received.
-        ///// </summary>
-        //event OnNetworkingNodeCloseMessageReceivedDelegate?      OnNetworkingNodeCloseMessageReceived;
-
-        ///// <summary>
-        ///// An event sent whenever a TCP connection was closed.
-        ///// </summary>
-        //event OnNetworkingNodeTCPConnectionClosedDelegate?       OnNetworkingNodeTCPConnectionClosed;
 
         #endregion
 

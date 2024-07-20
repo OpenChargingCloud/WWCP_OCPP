@@ -64,15 +64,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                    OCPP_BinaryResponseMessage       BinaryResponseMessage,
                                                                    SendMessageResult                SendMessageResult);
 
-    //public delegate Task OnBinaryRequestErrorMessageSentDelegate  (DateTime                         Timestamp,
-    //                                                               IOCPPWebSocketAdapterOUT         Server,
-    //                                                               OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage,
-    //                                                               SendMessageResult                SendMessageResult);
+    public delegate Task OnBinaryRequestErrorMessageSentDelegate  (DateTime                         Timestamp,
+                                                                   IOCPPWebSocketAdapterOUT         Server,
+                                                                   OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage,
+                                                                   SendMessageResult                SendMessageResult);
 
-    //public delegate Task OnBinaryResponseErrorMessageSentDelegate (DateTime                         Timestamp,
-    //                                                               IOCPPWebSocketAdapterOUT         Server,
-    //                                                               OCPP_BinaryResponseErrorMessage  BinaryRequestErrorMessage,
-    //                                                               SendMessageResult                SendMessageResult);
+    public delegate Task OnBinaryResponseErrorMessageSentDelegate (DateTime                         Timestamp,
+                                                                   IOCPPWebSocketAdapterOUT         Server,
+                                                                   OCPP_BinaryResponseErrorMessage  BinaryRequestErrorMessage,
+                                                                   SendMessageResult                SendMessageResult);
 
     public delegate Task OnBinarySendMessageSentDelegate          (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
@@ -139,15 +139,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         event OnBinaryResponseMessageSentDelegate?         OnBinaryResponseMessageSent;
 
-        ///// <summary>
-        ///// An event sent whenever a binary request error was sent.
-        ///// </summary>
-        //event OnBinaryRequestErrorMessageSentDelegate?     OnBinaryRequestErrorMessageSent;
+        /// <summary>
+        /// An event sent whenever a binary request error was sent.
+        /// </summary>
+        event OnBinaryRequestErrorMessageSentDelegate?     OnBinaryRequestErrorMessageSent;
 
-        ///// <summary>
-        ///// An event sent whenever a binary response error was sent.
-        ///// </summary>
-        //event OnBinaryResponseErrorMessageSentDelegate?    OnBinaryResponseErrorMessageSent;
+        /// <summary>
+        /// An event sent whenever a binary response error was sent.
+        /// </summary>
+        event OnBinaryResponseErrorMessageSentDelegate?    OnBinaryResponseErrorMessageSent;
 
         /// <summary>
         /// An event sent whenever a binary request was sent.

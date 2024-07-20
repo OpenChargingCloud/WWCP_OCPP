@@ -39,26 +39,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <param name="BinaryRequest">The binary request message.</param>
     /// 
     /// <param name="ResponseTimestamp">The time stamp of the response.</param>
-    /// <param name="JSONResponse">The JSON response message.</param>
-    /// <param name="BinaryResponse">The binary response message.</param>
     /// 
+    /// <param name="JSONResponse">The JSON response message.</param>
     /// <param name="JSONRequestErrorMessage">An optional JSON request error message.</param>
     /// <param name="JSONResponseErrorMessage">An optional JSON response error message.</param>
-    public class SendRequestState(DateTime                        RequestTimestamp,
-                                  NetworkingNode_Id               DestinationId,
-                                  NetworkPath                     NetworkPath,
-                                  DateTime                        Timeout,
+    /// 
+    /// <param name="BinaryResponse">The binary response message.</param>
+    /// <param name="BinaryRequestErrorMessage">An optional binary request error message.</param>
+    /// <param name="BinaryResponseErrorMessage">An optional binary response error message.</param>
+    public class SendRequestState(DateTime                          RequestTimestamp,
+                                  NetworkingNode_Id                 DestinationId,
+                                  NetworkPath                       NetworkPath,
+                                  DateTime                          Timeout,
 
-                                  OCPP_JSONRequestMessage?        JSONRequest                = null,
-                                  OCPP_BinaryRequestMessage?      BinaryRequest              = null,
-                                  SendMessageResult?              SendMessageResult          = null,
+                                  OCPP_JSONRequestMessage?          JSONRequest                = null,
+                                  OCPP_BinaryRequestMessage?        BinaryRequest              = null,
+                                  SendMessageResult?                SendMessageResult          = null,
 
-                                  DateTime?                       ResponseTimestamp          = null,
-                                  OCPP_JSONResponseMessage?       JSONResponse               = null,
-                                  OCPP_BinaryResponseMessage?     BinaryResponse             = null,
+                                  DateTime?                         ResponseTimestamp          = null,
 
-                                  OCPP_JSONRequestErrorMessage?   JSONRequestErrorMessage    = null,
-                                  OCPP_JSONResponseErrorMessage?  JSONResponseErrorMessage   = null)
+                                  OCPP_JSONResponseMessage?         JSONResponse               = null,
+                                  OCPP_JSONRequestErrorMessage?     JSONRequestErrorMessage    = null,
+                                  OCPP_JSONResponseErrorMessage?    JSONResponseErrorMessage   = null,
+
+                                  OCPP_BinaryResponseMessage?       BinaryResponse               = null,
+                                  OCPP_BinaryRequestErrorMessage?   BinaryRequestErrorMessage    = null,
+                                  OCPP_BinaryResponseErrorMessage?  BinaryResponseErrorMessage   = null)
+
     {
 
         #region Properties
@@ -66,66 +73,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The time stamp of the request.
         /// </summary>
-        public DateTime                        RequestTimestamp            { get; }      = RequestTimestamp;
+        public DateTime                          RequestTimestamp              { get; }      = RequestTimestamp;
 
         /// <summary>
         /// The destination network node identification of the request
         /// and thus the expected source of the response.
         /// </summary>
-        public NetworkingNode_Id               DestinationId           { get; }      = DestinationId;
+        public NetworkingNode_Id                 DestinationId                 { get; }      = DestinationId;
 
         /// <summary>
         /// The network (source) path of the response.
         /// </summary>
-        public NetworkPath                     NetworkPath                 { get; set; } = NetworkPath;
+        public NetworkPath                       NetworkPath                   { get; set; } = NetworkPath;
 
         /// <summary>
         /// The timeout of the request.
         /// </summary>
-        public DateTime                        Timeout                     { get; }      = Timeout;
+        public DateTime                          Timeout                       { get; }      = Timeout;
 
 
         /// <summary>
         /// The JSON request message.
         /// </summary>
-        public OCPP_JSONRequestMessage?        JSONRequest                 { get; }      = JSONRequest;
+        public OCPP_JSONRequestMessage?          JSONRequest                   { get; }      = JSONRequest;
 
         /// <summary>
         /// The binary request message.
         /// </summary>
-        public OCPP_BinaryRequestMessage?      BinaryRequest               { get; }      = BinaryRequest;
+        public OCPP_BinaryRequestMessage?        BinaryRequest                 { get; }      = BinaryRequest;
 
         /// <summary>
         /// The (optional) SendMessage result.
         /// Will only be null while (still) waiting for a response!
         /// </summary>
-        public SendMessageResult?              SendMessageResult           { get; }      = SendMessageResult;
+        public SendMessageResult?                SendMessageResult             { get; }      = SendMessageResult;
 
 
         /// <summary>
         /// The time stamp of the response.
         /// </summary>
-        public DateTime?                       ResponseTimestamp           { get; set; } = ResponseTimestamp;
+        public DateTime?                         ResponseTimestamp             { get; set; } = ResponseTimestamp;
+
 
         /// <summary>
         /// The JSON response message.
         /// </summary>
-        public OCPP_JSONResponseMessage?       JSONResponse                { get; set; } = JSONResponse;
-
-        /// <summary>
-        /// The binary response message.
-        /// </summary>
-        public OCPP_BinaryResponseMessage?     BinaryResponse              { get; set; } = BinaryResponse;
+        public OCPP_JSONResponseMessage?         JSONResponse                  { get; set; } = JSONResponse;
 
         /// <summary>
         /// The optional JSON request error message.
         /// </summary>
-        public OCPP_JSONRequestErrorMessage?   JSONRequestErrorMessage     { get; set; } = JSONRequestErrorMessage;
+        public OCPP_JSONRequestErrorMessage?     JSONRequestErrorMessage       { get; set; } = JSONRequestErrorMessage;
 
         /// <summary>
         /// The optional JSON response error message.
         /// </summary>
-        public OCPP_JSONResponseErrorMessage?  JSONResponseErrorMessage    { get; set; } = JSONResponseErrorMessage;
+        public OCPP_JSONResponseErrorMessage?    JSONResponseErrorMessage      { get; set; } = JSONResponseErrorMessage;
+
+
+        /// <summary>
+        /// The binary response message.
+        /// </summary>
+        public OCPP_BinaryResponseMessage?       BinaryResponse                { get; set; } = BinaryResponse;
+
+        /// <summary>
+        /// The optional Binary request error message.
+        /// </summary>
+        public OCPP_BinaryRequestErrorMessage?   BinaryRequestErrorMessage     { get; set; } = BinaryRequestErrorMessage;
+
+        /// <summary>
+        /// The optional Binary response error message.
+        /// </summary>
+        public OCPP_BinaryResponseErrorMessage?  BinaryResponseErrorMessage    { get; set; } = BinaryResponseErrorMessage;
+
 
         /// <summary>
         /// No Errors.
@@ -189,10 +209,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                        SendMessageResult?             SendMessageResult         = null,
 
                                                        DateTime?                      ResponseTimestamp         = null,
-                                                       OCPP_JSONResponseMessage?      JSONResponse              = null,
-                                                       OCPP_BinaryResponseMessage?    BinaryResponse            = null,
 
-                                                       OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage   = null)
+                                                       OCPP_JSONResponseMessage?      JSONResponse              = null,
+                                                       OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage   = null,
+
+                                                       OCPP_BinaryResponseMessage?    BinaryResponse            = null)
 
             => new (RequestTimestamp,
                     DestinationId,
@@ -204,10 +225,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     SendMessageResult,
 
                     ResponseTimestamp,
-                    JSONResponse,
-                    BinaryResponse,
 
-                    JSONRequestErrorMessage);
+                    JSONResponse,
+                    JSONRequestErrorMessage,
+                    null,
+
+                    BinaryResponse);
 
         #endregion
 
@@ -221,10 +244,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                          SendMessageResult?             SendMessageResult         = null,
 
                                                          DateTime?                      ResponseTimestamp         = null,
-                                                         OCPP_JSONResponseMessage?      JSONResponse              = null,
-                                                         OCPP_BinaryResponseMessage?    BinaryResponse            = null,
 
-                                                         OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage   = null)
+                                                         OCPP_JSONResponseMessage?      JSONResponse              = null,
+                                                         OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage   = null,
+
+                                                         OCPP_BinaryResponseMessage?    BinaryResponse            = null)
 
             => new (RequestTimestamp,
                     DestinationId,
@@ -236,10 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     SendMessageResult,
 
                     ResponseTimestamp,
-                    JSONResponse,
-                    BinaryResponse,
 
-                    JSONRequestErrorMessage);
+                    JSONResponse,
+                    JSONRequestErrorMessage,
+                    null,
+
+                    BinaryResponse);
 
         #endregion
 

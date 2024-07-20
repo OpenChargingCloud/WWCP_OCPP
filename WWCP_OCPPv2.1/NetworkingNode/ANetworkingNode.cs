@@ -29,6 +29,8 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
@@ -39,26 +41,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        protected        readonly  HashSet<OCPPWebSocketServer>  ocppWebSocketServers            = [];
-        protected        readonly  List<OCPPWebSocketClient>     ocppWebSocketClients            = [];
+        protected        readonly  HashSet<OCPPWebSocketServer>                                ocppWebSocketServers         = [];
+        protected        readonly  List<OCPPWebSocketClient>                                   ocppWebSocketClients         = [];
 
-        protected static readonly  TimeSpan                    SemaphoreSlimTimeout        = TimeSpan.FromSeconds(5);
+        protected static readonly  TimeSpan                                                    SemaphoreSlimTimeout         = TimeSpan.FromSeconds(5);
 
-        private          readonly  HashSet<SignaturePolicy>                                                      signaturePolicies            = [];
+        private          readonly  HashSet<SignaturePolicy>                                    signaturePolicies            = [];
 
         //private                  readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   connectedNetworkingNodes     = [];
-        protected        readonly  ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                    reachableViaNetworkingHubs   = [];
+        protected        readonly  ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>  reachableViaNetworkingHubs   = [];
 
-        private                    Int64                                                                         internalRequestId            = 900000;
+        private                    Int64                                                       internalRequestId            = 900000;
 
-        private readonly           List<EnqueuedRequest>       EnqueuedRequests            = [];
+        private readonly           List<EnqueuedRequest>                                       EnqueuedRequests             = [];
 
         /// <summary>
         /// The default maintenance interval.
         /// </summary>
-        public  readonly           TimeSpan                    DefaultMaintenanceEvery     = TimeSpan.FromSeconds(1);
-        private static readonly    SemaphoreSlim               MaintenanceSemaphore        = new (1, 1);
-        private readonly           Timer                       MaintenanceTimer;
+        public  readonly           TimeSpan                                                    DefaultMaintenanceEvery      = TimeSpan.FromSeconds(1);
+        private static readonly    SemaphoreSlim                                               MaintenanceSemaphore         = new (1, 1);
+        private readonly           Timer                                                       MaintenanceTimer;
 
         #endregion
 
@@ -125,6 +127,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public IEnumerable<OCPPWebSocketServer> OCPPWebSocketServers
             => ocppWebSocketServers;
+
+        #endregion
+
+        #region Events
+
+        #region WebSocket Server
+
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server started.
+        /// </summary>
+        public event OnServerStartedDelegate?                 OnWebSocketServerStarted;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnValidateTCPConnectionDelegate?         OnValidateTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnNewTCPConnectionDelegate?              OnNewWebSocketTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a HTTP request was received.
+        /// </summary>
+        public event HTTPRequestLogDelegate?                  OnHTTPRequest;
+
+        /// <summary>
+        /// An event sent whenever the HTTP headers of a new web socket connection
+        /// need to be validated or filtered by an upper layer application logic.
+        /// </summary>
+        public event OnValidateWebSocketConnectionDelegate?   OnValidateWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+        public event OnNewWebSocketConnectionDelegate?        OnNewWebSocketServerConnection;
+
+        /// <summary>
+        /// An event sent whenever a reponse to a HTTP request was sent.
+        /// </summary>
+        public event HTTPResponseLogDelegate?                 OnHTTPResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        public event OnCloseMessageReceivedDelegate?          OnWebSocketServerCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        public event OnTCPConnectionClosedDelegate?           OnWebSocketServerTCPConnectionClosed;
+
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server stopped.
+        /// </summary>
+        public event OnServerStoppedDelegate?                 OnWebSocketServerStopped;
+
+        #endregion
 
         #endregion
 
@@ -300,6 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          I18NString?                                                     Description                  = null,
 
                                                          Boolean                                                         RequireAuthentication        = true,
+                                                         IEnumerable<String>?                                            SecWebSocketProtocols        = null,
                                                          Boolean                                                         DisableWebSocketPings        = false,
                                                          TimeSpan?                                                       WebSocketPingEvery           = null,
                                                          TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
@@ -331,6 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           Description,
 
                                           RequireAuthentication,
+                                          SecWebSocketProtocols,
                                           DisableWebSocketPings,
                                           WebSocketPingEvery,
                                           SlowNetworkSimulationDelay,
@@ -403,7 +466,291 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        protected abstract void WireWebSocketServer(OCPPWebSocketServer OCPPWebSocketServer);
+
+        #region (protected virtual) WireWebSocketServer(WebSocketServer)
+
+        protected virtual void WireWebSocketServer(OCPPWebSocketServer WebSocketServer)
+        {
+
+            ocppWebSocketServers.Add(WebSocketServer);
+
+
+            #region OnWebSocketServerStarted
+
+            WebSocketServer.OnServerStarted += async (timestamp,
+                                                      server,
+                                                      eventTrackingId,
+                                                      cancellationToken) => {
+
+                var onServerStarted = OnWebSocketServerStarted;
+                if (onServerStarted is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onServerStarted.GetInvocationList().
+                                               OfType <OnServerStartedDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              server,
+                                                                              eventTrackingId,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(ANetworkingNode),
+                                  nameof(OnWebSocketServerStarted),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnNewWebSocketTCPConnection
+
+            WebSocketServer.OnNewTCPConnection += async (timestamp,
+                                                         webSocketServer,
+                                                         newTCPConnection,
+                                                         eventTrackingId,
+                                                         cancellationToken) => {
+
+                var onNewTCPConnection = OnNewWebSocketTCPConnection;
+                if (onNewTCPConnection is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onNewTCPConnection.GetInvocationList().
+                                               OfType <OnNewTCPConnectionDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              webSocketServer,
+                                                                              newTCPConnection,
+                                                                              eventTrackingId,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(ANetworkingNode),
+                                  nameof(OnNewWebSocketTCPConnection),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            // Failed (Charging Station) Authentication
+
+            #region OnNewWebSocketServerConnection
+
+            WebSocketServer.OnNetworkingNodeNewWebSocketConnection += async (timestamp,
+                                                                             ocppWebSocketServer,
+                                                                             newConnection,
+                                                                             networkingNodeId,
+                                                                             eventTrackingId,
+                                                                             sharedSubprotocols,
+                                                                             cancellationToken) => {
+
+                // A new connection from the same networking node/charging station will replace the older one!
+                OCPP.AddStaticRouting(DestinationId:    networkingNodeId,
+                                      WebSocketServer:  ocppWebSocketServer,
+                                      Priority:         0,
+                                      Timestamp:        timestamp);
+
+                #region Send OnNewWebSocketServerConnection
+
+                var logger = OnNewWebSocketServerConnection;
+                if (logger is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(logger.GetInvocationList().
+                                               OfType <OnNetworkingNodeNewWebSocketConnectionDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              ocppWebSocketServer,
+                                                                              newConnection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              sharedSubprotocols,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(ANetworkingNode),
+                                  nameof(OnNewWebSocketServerConnection),
+                                  e
+                              );
+                    }
+                }
+
+                #endregion
+
+            };
+
+            #endregion
+
+            #region OnWebSocketServerCloseMessageReceived
+
+            WebSocketServer.OnNetworkingNodeCloseMessageReceived += async (timestamp,
+                                                                           server,
+                                                                           connection,
+                                                                           networkingNodeId,
+                                                                           eventTrackingId,
+                                                                           statusCode,
+                                                                           reason,
+                                                                           cancellationToken) => {
+
+                var logger = OnWebSocketServerCloseMessageReceived;
+                if (logger is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(logger.GetInvocationList().
+                                               OfType <OnNetworkingNodeCloseMessageReceivedDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              server,
+                                                                              connection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              statusCode,
+                                                                              reason,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(ANetworkingNode),
+                                  nameof(OnWebSocketServerCloseMessageReceived),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnWebSocketServerTCPConnectionClosed
+
+            WebSocketServer.OnNetworkingNodeTCPConnectionClosed += async (timestamp,
+                                                            server,
+                                                            connection,
+                                                            networkingNodeId,
+                                                            eventTrackingId,
+                                                            reason,
+                                                            cancellationToken) => {
+
+                var logger = OnWebSocketServerTCPConnectionClosed;
+                if (logger is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(logger.GetInvocationList().
+                                               OfType <OnNetworkingNodeTCPConnectionClosedDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              server,
+                                                                              connection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              reason,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(ANetworkingNode),
+                                  nameof(OnWebSocketServerTCPConnectionClosed),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnWebSocketServerStopped
+
+            WebSocketServer.OnServerStopped += async (timestamp,
+                                                      server,
+                                                      eventTrackingId,
+                                                      reason,
+                                                      cancellationToken) => {
+
+                var logger = OnWebSocketServerStopped;
+                if (logger is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(logger.GetInvocationList().
+                                                 OfType <OnServerStoppedDelegate>().
+                                                 Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                timestamp,
+                                                                                server,
+                                                                                eventTrackingId,
+                                                                                reason,
+                                                                                cancellationToken
+                                                                            )).
+                                                 ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(ANetworkingNode),
+                                  nameof(OnWebSocketServerStopped),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+
+
+
+
+
+
+            // (Generic) Error Handling
+
+
+        }
+
+        #endregion
 
 
         #region Shutdown(Message = null, Wait = true)

@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
 
-        #region ProcessJSONRequestMessage       (JSONRequestMessage,       WebSocketConnection)
+        #region ProcessJSONRequestMessage         (JSONRequestMessage,         WebSocketConnection)
 
         public async Task ProcessJSONRequestMessage(OCPP_JSONRequestMessage  JSONRequestMessage,
                                                     IWebSocketConnection     WebSocketConnection)
@@ -271,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessJSONResponseMessage      (JSONResponseMessage,      WebSocketConnection)
+        #region ProcessJSONResponseMessage        (JSONResponseMessage,        WebSocketConnection)
 
         public async Task ProcessJSONResponseMessage(OCPP_JSONResponseMessage  JSONResponseMessage,
                                                      IWebSocketConnection      WebSocketConnection)
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessJSONRequestErrorMessage  (JSONRequestErrorMessage,  WebSocketConnection)
+        #region ProcessJSONRequestErrorMessage    (JSONRequestErrorMessage,    WebSocketConnection)
 
         public async Task ProcessJSONRequestErrorMessage(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
                                                          IWebSocketConnection          WebSocketConnection)
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessJSONResponseErrorMessage (JSONResponseErrorMessage, WebSocketConnection)
+        #region ProcessJSONResponseErrorMessage   (JSONResponseErrorMessage,   WebSocketConnection)
 
         public async Task ProcessJSONResponseErrorMessage(OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,
                                                           IWebSocketConnection           WebSocketConnection)
@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessJSONSendMessage          (JSONSendMessage,          WebSocketConnection)
+        #region ProcessJSONSendMessage            (JSONSendMessage,            WebSocketConnection)
 
         public async Task ProcessJSONSendMessage(OCPP_JSONSendMessage  JSONSendMessage,
                                                  IWebSocketConnection  WebSocketConnection)
@@ -525,7 +525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ProcessBinaryRequestMessage     (BinaryRequestMessage,     WebSocketConnection)
+        #region ProcessBinaryRequestMessage       (BinaryRequestMessage,       WebSocketConnection)
 
         public async Task ProcessBinaryRequestMessage(OCPP_BinaryRequestMessage  BinaryRequestMessage,
                                                       IWebSocketConnection       WebSocketConnection)
@@ -543,7 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessBinaryResponseMessage    (BinaryResponseMessage,    WebSocketConnection)
+        #region ProcessBinaryResponseMessage      (BinaryResponseMessage,      WebSocketConnection)
 
         public async Task ProcessBinaryResponseMessage(OCPP_BinaryResponseMessage  BinaryResponseMessage,
                                                        IWebSocketConnection        WebSocketConnection)
@@ -577,7 +577,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessBinarySendMessage        (BinarySendMessage,        WebSocketConnection)
+        #region ProcessBinaryRequestErrorMessage  (BinaryRequestErrorMessage,  WebSocketConnection)
+
+        public async Task ProcessBinaryRequestErrorMessage(OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,
+                                                           IWebSocketConnection            WebSocketConnection)
+        {
+
+            if (expectedResponses.TryRemove(BinaryRequestErrorMessage.RequestId, out var responseInfo))
+            {
+
+                if (responseInfo.Timeout <= Timestamp.Now)
+                    //responseInfo.Context == BinaryResponseMessage.Context)
+                {
+
+                    await parentNetworkingNode.OCPP.SendBinaryRequestError(BinaryRequestErrorMessage);
+
+                }
+                else
+                    DebugX.Log($"Received an error message too late for request identification: {BinaryRequestErrorMessage.RequestId}!");
+
+            }
+            else
+                DebugX.Log($"Received an error message for an unknown request identification: {BinaryRequestErrorMessage.RequestId}!");
+
+        }
+
+        #endregion
+
+        #region ProcessBinaryResponseErrorMessage (BinaryResponseErrorMessage, WebSocketConnection)
+
+        public async Task ProcessBinaryResponseErrorMessage(OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
+                                                            IWebSocketConnection             WebSocketConnection)
+        {
+
+            if (expectedResponses.TryRemove(BinaryResponseErrorMessage.RequestId, out var responseInfo))
+            {
+
+                if (responseInfo.Timeout <= Timestamp.Now)
+                    //responseInfo.Context == BinaryResponseMessage.Context)
+                {
+
+                    await parentNetworkingNode.OCPP.SendBinaryResponseError(BinaryResponseErrorMessage);
+
+                }
+                else
+                    DebugX.Log($"Received an error message too late for request identification: {BinaryResponseErrorMessage.RequestId}!");
+
+            }
+            else
+                DebugX.Log($"Received an error message for an unknown request identification: {BinaryResponseErrorMessage.RequestId}!");
+
+        }
+
+        #endregion
+
+        #region ProcessBinarySendMessage          (BinarySendMessage,          WebSocketConnection)
 
         public async Task ProcessBinarySendMessage(OCPP_BinarySendMessage  BinarySendMessage,
                                                    IWebSocketConnection    WebSocketConnection)

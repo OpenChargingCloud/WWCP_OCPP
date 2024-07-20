@@ -81,15 +81,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnBinaryResponseMessageSentDelegate?       OnBinaryResponseMessageSent;
 
-        ///// <summary>
-        ///// An event sent whenever a JSON request error was sent.
-        ///// </summary>
-        //public event OnBinaryRequestErrorMessageSentDelegate?   OnBinaryRequestErrorMessageSent;
+        /// <summary>
+        /// An event sent whenever a JSON request error was sent.
+        /// </summary>
+        public event OnBinaryRequestErrorMessageSentDelegate?   OnBinaryRequestErrorMessageSent;
 
-        ///// <summary>
-        ///// An event sent whenever a JSON response error was sent.
-        ///// </summary>
-        //public event OnBinaryResponseErrorMessageSentDelegate?  OnBinaryResponseErrorMessageSent;
+        /// <summary>
+        /// An event sent whenever a JSON response error was sent.
+        /// </summary>
+        public event OnBinaryResponseErrorMessageSentDelegate?  OnBinaryResponseErrorMessageSent;
 
         /// <summary>
         /// An event sent whenever a binary send message was sent.

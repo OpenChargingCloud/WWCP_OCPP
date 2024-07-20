@@ -95,15 +95,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnBinaryResponseMessageReceivedDelegate?        OnBinaryResponseMessageReceived;
 
-        ///// <summary>
-        ///// An event sent whenever a binary request error was received.
-        ///// </summary>
-        //public event OnBinaryRequestErrorMessageReceivedDelegate?    OnBinaryRequestErrorMessageReceived;
+        /// <summary>
+        /// An event sent whenever a binary request error was received.
+        /// </summary>
+        public event OnBinaryRequestErrorMessageReceivedDelegate?    OnBinaryRequestErrorMessageReceived;
 
-        ///// <summary>
-        ///// An event sent whenever a binary response error was received.
-        ///// </summary>
-        //public event OnBinaryResponseErrorMessageReceivedDelegate?   OnBinaryResponseErrorMessageReceived;
+        /// <summary>
+        /// An event sent whenever a binary response error was received.
+        /// </summary>
+        public event OnBinaryResponseErrorMessageReceivedDelegate?   OnBinaryResponseErrorMessageReceived;
 
         /// <summary>
         /// An event sent whenever a binary send message was received.
@@ -694,7 +694,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        JSONMessage.ToString(),
                        Timestamp.Now,
                        String.Empty,
-                       EventTrackingId
+                       EventTrackingId,
+                       CancellationToken
                    );
 
         }
@@ -719,7 +720,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
 
-                if      (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError,  MessageTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && binaryRequest  is not null)
+                if      (OCPP_BinaryRequestMessage.      TryParse(BinaryMessage, out var binaryRequest,       out var requestParsingError,  MessageTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && binaryRequest  is not null)
                 {
 
                     #region Fix DestinationId and network path for standard networking connections
@@ -898,7 +899,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 }
 
-                else if (OCPP_BinaryResponseMessage.TryParse(BinaryMessage, out var binaryResponse, out var responseParsingError,                                    sourceNodeId)                    && binaryResponse is not null)
+                else if (OCPP_BinaryResponseMessage.     TryParse(BinaryMessage, out var binaryResponse,      out var responseParsingError,                                    sourceNodeId)                    && binaryResponse is not null)
                 {
 
                     #region OnBinaryMessageResponseReceived
@@ -933,6 +934,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 }
 
+                else if (OCPP_BinaryRequestErrorMessage. TryParse(BinaryMessage, out var binaryRequestError,                                                                   sourceNodeId))
+                {
+
+                    #region OnBinaryRequestErrorMessageReceived
+
+                    var logger = OnBinaryRequestErrorMessageReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType <OnBinaryRequestErrorMessageReceivedDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  this,
+                                                                                  binaryRequestError
+                                                                              )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBinaryRequestErrorMessageReceived));
+                        }
+                    }
+
+                    #endregion
+
+                    parentNetworkingNode.OCPP.ReceiveBinaryRequestError(binaryRequestError);
+
+                    // No response!
+
+                }
+
+                else if (OCPP_BinaryResponseErrorMessage.TryParse(BinaryMessage, out var binaryResponseError,                                                                  sourceNodeId))
+                {
+
+                    #region OnBinaryResponseErrorMessageReceived
+
+                    var logger = OnBinaryResponseErrorMessageReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType <OnBinaryResponseErrorMessageReceivedDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  this,
+                                                                                  binaryResponseError
+                                                                              )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBinaryResponseErrorMessageReceived));
+                        }
+                    }
+
+                    #endregion
+
+                    parentNetworkingNode.OCPP.ReceiveBinaryResponseError(binaryResponseError);
+
+                    // No response!
+
+                }
+
                 else if (requestParsingError  is not null)
                     DebugX.Log($"Failed to parse a binary request message within {nameof(OCPPWebSocketAdapterIN)}: '{requestParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
 
@@ -962,7 +1033,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        BinaryMessage,
                        Timestamp.Now,
                        [],
-                       EventTrackingId
+                       EventTrackingId,
+                       CancellationToken
                    );
 
         }

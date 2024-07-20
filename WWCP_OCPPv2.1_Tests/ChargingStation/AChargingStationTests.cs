@@ -42,9 +42,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #region Data
 
-        protected TestChargingStationNode?          chargingStation1;
-        protected TestChargingStationNode?          chargingStation2;
-        protected TestChargingStationNode?          chargingStation3;
+        protected TestChargingStationNode?      chargingStation1;
+        protected TestChargingStationNode?      chargingStation2;
+        protected TestChargingStationNode?      chargingStation3;
 
 
         protected List<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesReceived;

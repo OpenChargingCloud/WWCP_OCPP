@@ -30,13 +30,12 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
+namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
     /// <summary>
@@ -52,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public new const String  DefaultHTTPUserAgent   = $"GraphDefined OCPP {Version.String} NN WebSocket Client";
+        public new const String  DefaultHTTPUserAgent   = $"GraphDefined OCPP {Version.String} Web Socket Client";
 
         private    const String  LogfileName            = "NetworkingNodeWSClient.log";
 
@@ -72,75 +71,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Generic JSON Messages
 
         /// <summary>
-        /// An event sent whenever a text message request was received.
+        /// An event sent whenever a JSON message was sent.
         /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?   OnJSONMessageRequestReceived;
+        public event     OnWebSocketClientJSONMessageDelegate?     OnJSONMessageSent;
 
         /// <summary>
-        /// An event sent whenever the response to a text message was sent.
+        /// An event sent whenever a JSON message was received.
         /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?  OnJSONMessageResponseSent;
-
-        ///// <summary>
-        ///// An event sent whenever the error response to a text message was sent.
-        ///// </summary>
-        //public event OnWebSocketTextErrorResponseDelegate?    OnJSONRequestErrorSent;
+        public event     OnWebSocketClientJSONMessageDelegate?     OnJSONMessageReceived;
 
 
         /// <summary>
-        /// An event sent whenever a text message request was sent.
+        /// An event sent whenever a binary message was sent.
         /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?   OnJSONMessageRequestSent;
+        public new event OnWebSocketClientBinaryMessageDelegate?   OnBinaryMessageSent;
 
         /// <summary>
-        /// An event sent whenever the response to a text message request was received.
+        /// An event sent whenever a binary message was received.
         /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?  OnJSONMessageResponseReceived;
-
-        ///// <summary>
-        ///// An event sent whenever an error response to a text message request was received.
-        ///// </summary>
-        //public event OnWebSocketTextErrorResponseDelegate?    OnJSONRequestErrorReceived;
-
-        #endregion
-
-        #region Generic Binary Messages
-
-        /// <summary>
-        /// An event sent whenever a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?   OnBinaryMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?  OnBinaryMessageResponseSent;
-
-        /// <summary>
-        /// An event sent whenever the error response to a binary message was sent.
-        /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?   OnBinaryMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?  OnBinaryMessageResponseReceived;
-
-        /// <summary>
-        /// An event sent whenever the error response to a binary message request was sent.
-        /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
-
-        #endregion
+        public new event OnWebSocketClientBinaryMessageDelegate?   OnBinaryMessageReceived;
 
         #endregion
 
@@ -349,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region SendJSONRequest       (JSONRequestMessage)
+        #region SendJSONRequest         (JSONRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP request message.
@@ -424,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONResponse      (JSONResponseMessage)
+        #region SendJSONResponse        (JSONResponseMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP request message.
@@ -499,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONRequestError  (JSONRequestErrorMessage)
+        #region SendJSONRequestError    (JSONRequestErrorMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP request message.
@@ -574,7 +525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONResponseError (JSONResponseErrorMessage)
+        #region SendJSONResponseError   (JSONResponseErrorMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP response message.
@@ -649,7 +600,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONSendMessage   (JSONSendMessage)
+        #region SendJSONSendMessage     (JSONSendMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP send message.
@@ -725,7 +676,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region SendBinaryRequest     (BinaryRequestMessage)
+        #region SendBinaryRequest       (BinaryRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given binary OCPP request message.
@@ -800,7 +751,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendBinaryResponse    (BinaryResponseMessage)
+        #region SendBinaryResponse      (BinaryResponseMessage)
 
         /// <summary>
         /// Send (and forget) the given binary OCPP request message.
@@ -875,7 +826,157 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendBinarySendMessage (BinarySendMessage)
+        #region SendBinaryRequestError  (BinaryRequestErrorMessage)
+
+        /// <summary>
+        /// Send (and forget) the given binary OCPP request message.
+        /// </summary>
+        /// <param name="BinaryRequestErrorMessage">A binary OCPP request message.</param>
+        public async Task<SendMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        {
+
+            try
+            {
+
+                BinaryRequestErrorMessage.NetworkingMode = NetworkingMode;
+                //ErrorMessage.ErrorTimeout ??= ErrorMessage.ErrorTimestamp + (ErrorTimeout ?? DefaultErrorTimeout);
+
+                var ocppBinaryMessage = BinaryRequestErrorMessage.ToByteArray();
+
+                if (SendStatus.Success == await SendBinaryMessage(
+                                                    ocppBinaryMessage,
+                                                    BinaryRequestErrorMessage.EventTrackingId,
+                                                    BinaryRequestErrorMessage.CancellationToken
+                                                ))
+                {
+
+                    //requests.TryAdd(ErrorMessage.ErrorId,
+                    //                SendErrorState.FromBinaryError(
+                    //                    Timestamp.Now,
+                    //                    ErrorMessage.DestinationId,
+                    //                    ErrorMessage.ErrorTimeout ?? (ErrorMessage.ErrorTimestamp + (ErrorTimeout ?? DefaultErrorTimeout)),
+                    //                    ErrorMessage
+                    //                ));
+
+                    #region OnBinaryMessageErrorSent
+
+                    //var onBinaryMessageErrorSent = OnBinaryMessageErrorSent;
+                    //if (onBinaryMessageErrorSent is not null)
+                    //{
+                    //    try
+                    //    {
+
+                    //        await Task.WhenAll(onBinaryMessageErrorSent.GetInvocationList().
+                    //                               OfType<OnWebSocketTextMessageDelegate>().
+                    //                               Select(loggingDelegate => loggingDelegate.Invoke(
+                    //                                                              Timestamp.Now,
+                    //                                                              this,
+                    //                                                              webSocketConnection.Item1,
+                    //                                                              EventTrackingId,
+                    //                                                              ocppTextMessage,
+                    //                                                              CancellationToken
+                    //                                                          )).
+                    //                               ToArray());
+
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnBinaryMessageErrorSent));
+                    //    }
+                    //}
+
+                    #endregion
+
+                }
+
+                return SendMessageResult.Success;
+
+            }
+            catch (Exception)
+            {
+                return SendMessageResult.TransmissionFailed;
+            }
+
+        }
+
+        #endregion
+
+        #region SendBinaryResponseError (BinaryResponseErrorMessage)
+
+        /// <summary>
+        /// Send (and forget) the given binary OCPP response message.
+        /// </summary>
+        /// <param name="BinaryResponseErrorMessage">A binary OCPP response message.</param>
+        public async Task<SendMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
+        {
+
+            try
+            {
+
+                BinaryResponseErrorMessage.NetworkingMode = NetworkingMode;
+                //ErrorMessage.ErrorTimeout ??= ErrorMessage.ErrorTimestamp + (ErrorTimeout ?? DefaultErrorTimeout);
+
+                var ocppBinaryMessage = BinaryResponseErrorMessage.ToByteArray();
+
+                if (SendStatus.Success == await SendBinaryMessage(
+                                                    ocppBinaryMessage,
+                                                    BinaryResponseErrorMessage.EventTrackingId,
+                                                    BinaryResponseErrorMessage.CancellationToken
+                                                ))
+                {
+
+                    //requests.TryAdd(ErrorMessage.ErrorId,
+                    //                SendErrorState.FromBinaryError(
+                    //                    Timestamp.Now,
+                    //                    ErrorMessage.DestinationId,
+                    //                    ErrorMessage.ErrorTimeout ?? (ErrorMessage.ErrorTimestamp + (ErrorTimeout ?? DefaultErrorTimeout)),
+                    //                    ErrorMessage
+                    //                ));
+
+                    #region OnBinaryMessageErrorSent
+
+                    //var onBinaryMessageErrorSent = OnBinaryMessageErrorSent;
+                    //if (onBinaryMessageErrorSent is not null)
+                    //{
+                    //    try
+                    //    {
+
+                    //        await Task.WhenAll(onBinaryMessageErrorSent.GetInvocationList().
+                    //                               OfType<OnWebSocketTextMessageDelegate>().
+                    //                               Select(loggingDelegate => loggingDelegate.Invoke(
+                    //                                                              Timestamp.Now,
+                    //                                                              this,
+                    //                                                              webSocketConnection.Item1,
+                    //                                                              EventTrackingId,
+                    //                                                              ocppTextMessage,
+                    //                                                              CancellationToken
+                    //                                                          )).
+                    //                               ToArray());
+
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnBinaryMessageErrorSent));
+                    //    }
+                    //}
+
+                    #endregion
+
+                }
+
+                return SendMessageResult.Success;
+
+            }
+            catch (Exception)
+            {
+                return SendMessageResult.TransmissionFailed;
+            }
+
+        }
+
+        #endregion
+
+        #region SendBinarySendMessage   (BinarySendMessage)
 
         /// <summary>
         /// Send (and forget) the given binary OCPP send message.
