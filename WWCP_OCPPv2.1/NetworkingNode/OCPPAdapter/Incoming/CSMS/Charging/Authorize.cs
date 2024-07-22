@@ -97,11 +97,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         out errorResponse))
                     {
 
-                        response = new AuthorizeResponse(
-                                       Request:  request,
-                                       Result:   Result.SignatureError(
-                                                     $"Invalid signature(s): {errorResponse}"
-                                                 )
+                        response = AuthorizeResponse.SignatureError(
+                                       request,
+                                       errorResponse
                                    );
 
                     }

@@ -1059,7 +1059,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.OUT.OnMeterValuesRequestSent += (timestamp,
                                                                  sender,
                                                                  //connection,
-                                                                 request) =>
+                                                                 request,
+                                                                 sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnMeterValuesRequestSent),
                                      new JObject(

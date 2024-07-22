@@ -102,6 +102,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    SendRequestState.BinaryResponse?.         Payload
                );
 
+        public static Result FromErrorResponse(ResultCode  ResultCode,
+                                               String?     Description      = null,
+                                               JObject?    Details          = null,
+                                               JObject?    Response         = null,
+                                               Byte[]?     BinaryResponse   = null)
+
+            => new (
+                   ResultCode,
+                   Description,
+                   Details,
+                   Response,
+                   BinaryResponse
+               );
+
 
         #region Static Definitions
 

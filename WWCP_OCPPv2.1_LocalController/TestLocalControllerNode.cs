@@ -43,6 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #region Properties
 
+        public HashSet<NetworkingNode_Id>  AllowedChargingStations    { get; } = [];
 
         #endregion
 
@@ -585,31 +586,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                       cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.FORWARD(request)
+                    AllowedChargingStations.Contains(request.NetworkPath.Source)
+                        ? ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.FORWARD(request)
+                        : ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.REJECT (request, "Unauthorized!")
                 );
 
-                //Task.FromResult(
-                //    ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.REPLACE(
-                //        request,
-                //        new CS.AuthorizeRequest(
-                //            request.DestinationId,
-                //            request.ChargingStation,
-                //            request.Reason,
-                //            request.SignKeys,
-                //            request.SignInfos,
-                //            request.Signatures,
-                //            request.CustomData,
-                //            request.RequestId,
-                //            request.RequestTimestamp,
-                //            request.RequestTimeout,
-                //            request.EventTrackingId,
-                //            request.NetworkPath,
-                //            request.CancellationToken
-                //        ),
-                //        nameof(CS.AuthorizeRequest)[..^7],
-                //        NetworkingNode_Id.Parse("/dev/null")
-                //    )
-                //);
+            #endregion
+
+            #region OnMeterValues
+
+            OCPP.FORWARD.OnMeterValuesRequestFilter += (timestamp,
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<CS.MeterValuesRequest, MeterValuesResponse>.FORWARD(request)
+                );
 
             #endregion
 

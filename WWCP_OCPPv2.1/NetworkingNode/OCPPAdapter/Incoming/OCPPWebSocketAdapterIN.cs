@@ -322,18 +322,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             DebugX.Log($"Received unknown '{jsonRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterIN)}!");
 
                             JSONRequestErrorMessage = new OCPP_JSONRequestErrorMessage(
-                                                    Timestamp.Now,
-                                                    EventTracking_Id.New,
-                                                    NetworkingMode.Unknown,
-                                                    NetworkingNode_Id.Zero,
-                                                    NetworkPath.Empty,
-                                                    jsonRequestMessage.RequestId,
-                                                    ResultCode.ProtocolError,
-                                                    $"The OCPP message '{jsonRequestMessage.Action}' is unkown!",
-                                                    new JObject(
-                                                        new JProperty("request", JSONMessage)
-                                                    )
-                                                );
+                                                          Timestamp.Now,
+                                                          EventTracking_Id.New,
+                                                          NetworkingMode.Unknown,
+                                                          NetworkingNode_Id.Zero,
+                                                          NetworkPath.Empty,
+                                                          jsonRequestMessage.RequestId,
+                                                          ResultCode.ProtocolError,
+                                                          $"The OCPP message '{jsonRequestMessage.Action}' is unkown!",
+                                                          new JObject(
+                                                              new JProperty("request", JSONMessage)
+                                                          )
+                                                      );
 
                         }
 
@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 }
 
-                else if (OCPP_JSONRequestErrorMessage. TryParse(JSONMessage, out var jsonRequestErrorMessage,                                                                         sourceNodeId))
+                else if (OCPP_JSONRequestErrorMessage. TryParse(JSONMessage, out var jsonRequestErrorMessage,  out var requestErrorError,                                             sourceNodeId))
                 {
 
                     #region OnJSONRequestErrorMessageReceived

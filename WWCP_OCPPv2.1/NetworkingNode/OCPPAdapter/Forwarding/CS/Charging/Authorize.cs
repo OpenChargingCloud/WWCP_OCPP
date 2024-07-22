@@ -25,6 +25,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -187,27 +188,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
             {
 
-                var response = forwardingDecision?.RejectResponse ??
-                                   new AuthorizeResponse(
-                                       request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
-                                   );
+                var rejectResponse  = forwardingDecision?.RejectResponse ??
+                                          new AuthorizeResponse(
+                                              request,
+                                              Result.Filtered(ForwardingDecision.DefaultLogMessage),
+                                              AuthorizationStatus.Filtered
+                                          );
 
-                forwardingDecision = new ForwardingDecision<AuthorizeRequest, AuthorizeResponse>(
-                                         request,
-                                         ForwardingResults.REJECT,
-                                         response,
-                                         response.ToJSON(
-                                             parentNetworkingNode.OCPP.CustomAuthorizeResponseSerializer,
-                                             parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
-                                             parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-                                             parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-                                             parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-                                             parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
-                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                         )
-                                     );
+                forwardingDecision  = new ForwardingDecision<AuthorizeRequest, AuthorizeResponse>(
+                                          request,
+                                          ForwardingResults.REJECT,
+                                          rejectResponse,
+                                          rejectResponse.ToJSON(
+                                              parentNetworkingNode.OCPP.CustomAuthorizeResponseSerializer,
+                                              parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+                                              parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                                              parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+                                              parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                                              parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                          ),
+                                          forwardingDecision?.RejectMessage,
+                                          forwardingDecision?.RejectDetails,
+                                          forwardingDecision?.LogMessage
+                                      );
 
             }
 

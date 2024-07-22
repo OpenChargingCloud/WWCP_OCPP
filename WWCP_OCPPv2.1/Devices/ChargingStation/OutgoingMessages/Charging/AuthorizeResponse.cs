@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -163,15 +164,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public AuthorizeResponse(CS.AuthorizeRequest  Request,
-                                 Result               Result)
+        public AuthorizeResponse(CS.AuthorizeRequest      Request,
+                                 Result                   Result,
+                                 AuthorizationStatus      AuthorizationStatus,
+                                 DateTime?                ResponseTimestamp   = null,
+
+                                 NetworkingNode_Id?       DestinationId       = null,
+                                 NetworkPath?             NetworkPath         = null,
+
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<Signature>?  Signatures          = null,
+
+                                 CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
-            this.IdTokenInfo = new IdTokenInfo(AuthorizationStatus.Unknown);
+            this.IdTokenInfo = new IdTokenInfo(AuthorizationStatus);
 
         }
 
@@ -678,16 +700,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Static methods
 
-        ///// <summary>
-        ///// The authentication failed.
-        ///// </summary>
-        ///// <param name="Request">The authorize request leading to this response.</param>
-        //public static AuthorizeResponse Failed(CS.AuthorizeRequest Request)
+        /// <summary>
+        /// The Authorize failed because of a request error.
+        /// </summary>
+        /// <param name="Request">The Authorize request.</param>
+        public static AuthorizeResponse RequestError(CS.AuthorizeRequest      Request,
+                                                     EventTracking_Id         EventTrackingId,
+                                                     ResultCode               ErrorCode,
+                                                     String?                  ErrorDescription    = null,
+                                                     JObject?                 ErrorDetails        = null,
+                                                     DateTime?                ResponseTimestamp   = null,
 
-        //    => new (Request,
-        //            new IdTokenInfo(
-        //                AuthorizationStatus.Invalid
-        //            ));
+                                                     NetworkingNode_Id?       DestinationId       = null,
+                                                     NetworkPath?             NetworkPath         = null,
+
+                                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                                     CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   AuthorizationStatus.RequestError,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The Authorize failed.
+        /// </summary>
+        /// <param name="Request">The Authorize request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static AuthorizeResponse SignatureError(CS.AuthorizeRequest  Request,
+                                                       String               ErrorDescription)
+
+            => new (Request,
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ),
+                    AuthorizationStatus.SignatureError);
 
 
         /// <summary>
@@ -699,7 +767,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                String?              Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    Result.Server(Description),
+                    AuthorizationStatus.Error);
 
 
         /// <summary>
@@ -711,7 +780,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                          Exception            Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    Result.FromException(Exception),
+                    AuthorizationStatus.Error);
 
         #endregion
 

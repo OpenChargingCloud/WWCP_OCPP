@@ -397,6 +397,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (static) REJECT  (LogMessage = null, RequestContext = null)
+
+        /// <summary>
+        /// REJECT the request.
+        /// </summary>
+        /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
+        /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
+        /// <param name="LogMessage">An optional log message.</param>
+        /// <param name="RequestContext">The JSON-LD context of the request.</param>
+        public static ForwardingDecision<TRequest, TResponse> REJECT(TRequest        Request,
+                                                                     String?         RejectMessage    = null,
+                                                                     JObject?        RejectDetails    = null,
+                                                                     String?         LogMessage       = null,
+                                                                     JSONLDContext?  RequestContext   = null)
+
+            => new (
+                   Request,
+                   ForwardingResults.REJECT,
+                   null,
+                   null,
+                   null,
+                  // RequestContext,
+                   RejectMessage,
+                   RejectDetails,
+                   LogMessage
+               );
+
+        #endregion
+
         #region (static) REPLACE (Request, NewRequest, NewAction = null, NewDestinationId = null, LogMessage = null, RequestContext = null)
 
         /// <summary>

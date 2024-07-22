@@ -756,6 +756,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region NotifyJSONSendMessageSent       (JSONResponseErrorMessage,   SendMessageResult)
+
+        public async Task NotifyJSONSendMessageSent(OCPP_JSONSendMessage  JSONSendMessage,
+                                                    SendMessageResult     SendMessageResult)
+        {
+
+            var logger = OnJSONSendMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                           OfType<OnJSONSendMessageSentDelegate>().
+                                           Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                         Timestamp.Now,
+                                                                         this,
+                                                                         JSONSendMessage,
+                                                                         SendMessageResult
+                                                                     )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnJSONSendMessageSent));
+                }
+            }
+
+        }
+
+        #endregion
+
 
         #region NotifyBinaryMessageResponseSent (BinaryResponseMessage,      SendMessageResult)
 
@@ -850,6 +883,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBinaryResponseErrorMessageSent));
+                }
+            }
+
+        }
+
+        #endregion
+
+        #region NotifyBinarySendMessageSent     (BinaryResponseErrorMessage, SendMessageResult)
+
+        public async Task NotifyBinarySendMessageSent(OCPP_BinarySendMessage  BinarySendMessage,
+                                                      SendMessageResult       SendMessageResult)
+        {
+
+            var logger = OnBinarySendMessageSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                           OfType<OnBinarySendMessageSentDelegate>().
+                                           Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                         Timestamp.Now,
+                                                                         this,
+                                                                         BinarySendMessage,
+                                                                         SendMessageResult
+                                                                     )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBinarySendMessageSent));
                 }
             }
 

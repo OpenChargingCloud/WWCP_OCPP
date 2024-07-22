@@ -175,11 +175,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         Task NotifyJSONMessageResponseSent   (OCPP_JSONResponseMessage        JSONResponseMessage,        SendMessageResult SendMessageResult);
         Task NotifyJSONRequestErrorSent      (OCPP_JSONRequestErrorMessage    JSONRequestErrorMessage,    SendMessageResult SendMessageResult);
         Task NotifyJSONResponseErrorSent     (OCPP_JSONResponseErrorMessage   JSONResponseErrorMessage,   SendMessageResult SendMessageResult);
+        Task NotifyJSONSendMessageSent       (OCPP_JSONSendMessage            JSONSendMessage,            SendMessageResult SendMessageResult);
 
         Task NotifyBinaryMessageResponseSent (OCPP_BinaryResponseMessage      BinaryResponseMessage,      SendMessageResult SendMessageResult);
         Task NotifyBinaryRequestErrorSent    (OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,  SendMessageResult SendMessageResult);
         Task NotifyBinaryResponseErrorSent   (OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage, SendMessageResult SendMessageResult);
-
+        Task NotifyBinarySendMessageSent     (OCPP_BinarySendMessage          BinarySendMessage,          SendMessageResult SendMessageResult);
 
     }
 

@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationId    { get; }      = DestinationId;
+        public NetworkingNode_Id  DestinationId        { get; }      = DestinationId;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
@@ -456,103 +456,209 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
-        #region TryParse(JSONArray, out ErrorMessage, ImplicitSourceNodeId = null)
+        // Error Code                     Description
+        // ------------------------------------------------------------------------------------------------
+        // NotImplemented                 Requested Action is not known by receiver
+        // NotSupported                   Requested Action is recognized but not supported by the receiver
+        // InternalError                  An internal error occurred and the receiver was not able to process the requested Action successfully
+        // ProtocolError                  Payload for Action is incomplete
+        // SecurityError                  During the processing of Action a security issue occurred preventing receiver from completing the Action successfully
+        // FormationViolation             Payload for Action is syntactically incorrect or not conform the PDU structure for Action
+        // PropertyConstraintViolation    Payload is syntactically correct but at least one field contains an invalid value
+        // OccurenceConstraintViolation   Payload for Action is syntactically correct but at least one of the fields violates occurence constraints
+        // TypeConstraintViolation        Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
+        // GenericError                   Any other error not covered by the previous ones
+
+        #region TryParse(JSONArray, out ResponseErrorMessage, ImplicitSourceNodeId = null)
 
         /// <summary>
         /// Try to parse the given text representation of an error message.
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
-        /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
+        /// <param name="ResponseErrorMessage">The parsed OCPP RequestErrorMessage.</param>
         /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
-        public static Boolean TryParse(JArray                                          JSONArray,
-                                       [NotNullWhen(true)] out OCPP_JSONRequestErrorMessage?  ErrorMessage,
-                                       NetworkingNode_Id?                              ImplicitSourceNodeId   = null)
+        public static Boolean TryParse(JArray                                                  JSONArray,
+                                       [NotNullWhen(true)]  out OCPP_JSONRequestErrorMessage?  ResponseErrorMessage,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
+                                       NetworkingNode_Id?                                      ImplicitSourceNodeId   = null)
         {
 
-            ErrorMessage = null;
-
-            // [
-            //     4,                         // MessageType: CALLERROR
-            //    "19223201",                 // RequestId from request
-            //    "<errorCode>",
-            //    "<errorDescription>",
-            //    {
-            //        <errorDetails>
-            //    }
-            // ]
-
-            // Error Code                    Description
-            // -----------------------------------------------------------------------------------------------
-            // NotImplemented                Requested Action is not known by receiver
-            // NotSupported                  Requested Action is recognized but not supported by the receiver
-            // InternalError                 An internal error occurred and the receiver was not able to process the requested Action successfully
-            // ProtocolError                 Payload for Action is incomplete
-            // SecurityError                 During the processing of Action a security issue occurred preventing receiver from completing the Action successfully
-            // FormationViolation            Payload for Action is syntactically incorrect or not conform the PDU structure for Action
-            // PropertyConstraintViolation   Payload is syntactically correct but at least one field contains an invalid value
-            // OccurenceConstraintViolation  Payload for Action is syntactically correct but at least one of the fields violates occurence constraints
-            // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
-            // GenericError                  Any other error not covered by the previous ones
+            ResponseErrorMessage = null;
+            ErrorResponse         = null;
 
             try
             {
 
-                if (JSONArray.Count            != 5                   ||
-                    JSONArray[0].Type          != JTokenType.Integer  ||
-                    JSONArray[0].Value<Byte>() != 4                   ||
-                    JSONArray[1].Type          != JTokenType.String   ||
-                    JSONArray[2].Type          != JTokenType.String   ||
-                    JSONArray[3].Type          != JTokenType.String   ||
-                    JSONArray[4].Type          != JTokenType.Object)
+                #region OCPP standard mode
+
+                // [
+                //     4,                         // MessageType: CALLERROR
+                //    "19223201",                 // RequestId from request
+                //    "<errorCode>",
+                //    "<errorDescription>",
+                //    {
+                //        <errorDetails>
+                //    }
+                // ]
+
+                if (JSONArray.Count            == 5                   &&
+                    JSONArray[0].Type          == JTokenType.Integer  &&
+                    JSONArray[0].Value<Byte>() == 4                   &&
+                    JSONArray[1].Type          == JTokenType.String   &&
+                    JSONArray[2].Type          == JTokenType.String   &&
+                    JSONArray[3].Type          == JTokenType.String   &&
+                    JSONArray[4].Type          == JTokenType.Object)
                 {
-                    return false;
+
+                    var networkPath = NetworkPath.Empty;
+
+                    if (ImplicitSourceNodeId.HasValue &&
+                        ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
+                    {
+                        networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+                    }
+
+                    if (!Request_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var requestId))
+                    {
+                        ErrorResponse = $"Could not parse the given request identification: {JSONArray[1]}";
+                        return false;
+                    }
+
+                    if (!ResultCode.TryParse(JSONArray[2]?.Value<String>() ?? "", out var wsErrorCode))
+                    {
+                        ErrorResponse = $"Could not parse the given request error code: {JSONArray[2]}";
+                        return false;
+                    }
+
+                    var errorDescription = JSONArray[3]?.Value<String>();
+
+                    if (JSONArray[4] is not JObject errorDetails)
+                    {
+                        ErrorResponse = $"Could not parse the given request error details: {JSONArray[4]}";
+                        return false;
+                    }
+
+                    ResponseErrorMessage = new OCPP_JSONRequestErrorMessage(
+                                               Timestamp.Now,
+                                               EventTracking_Id.New,
+                                               NetworkingMode.Standard,
+                                               NetworkingNode_Id.Zero,
+                                               networkPath,
+                                               requestId,
+                                               wsErrorCode,
+                                               errorDescription,
+                                               errorDetails
+                                           );
+
+                    return true;
+
                 }
 
-                if (!Request_Id. TryParse(JSONArray[1]?.Value<String>() ?? "", out var requestId))
-                    return false;
+                #endregion
 
-                if (!ResultCode.TryParse(JSONArray[2]?.Value<String>() ?? "", out var wsErrorCode))
-                    return false;
+                #region OCPP Overlay Network mode
 
-                var description = JSONArray[3]?.Value<String>();
-                if (description is null)
-                    return false;
+                // [
+                //     4,                         // MessageType: CALLERROR
+                //    DestinationId,
+                //    [ NetworkPath ],
+                //    "19223201",                 // RequestId from request
+                //    "<errorCode>",
+                //    "<errorDescription>",
+                //    {
+                //        <errorDetails>
+                //    }
+                // ]
 
-                if (JSONArray[4] is not JObject details)
-                    return false;
+                if (JSONArray.Count            == 7                   &&
+                    JSONArray[0].Type          == JTokenType.Integer  &&
+                    JSONArray[0].Value<Byte>() == 4                   &&
+                    JSONArray[1].Type          == JTokenType.String   &&
+                    JSONArray[2].Type          == JTokenType.Array    &&
+                    JSONArray[3].Type          == JTokenType.String   &&
+                    JSONArray[4].Type          == JTokenType.String   &&
+                    JSONArray[5].Type          == JTokenType.String   &&
+                    JSONArray[6].Type          == JTokenType.Object)
+                {
 
-                ErrorMessage = new OCPP_JSONRequestErrorMessage(
-                                   Timestamp.Now,
-                                   EventTracking_Id.New,
-                                   NetworkingMode.Standard,
-                                   NetworkingNode_Id.Zero,
-                                   NetworkPath.Empty,
-                                   requestId,
-                                   wsErrorCode,
-                                   description,
-                                   details
-                               );
+                    if (!NetworkingNode_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var destinationId))
+                    {
+                        ErrorResponse = $"Could not parse the given destination networking (node) identification: {JSONArray[1]}";
+                        return false;
+                    }
 
-                return true;
+                    if (JSONArray[2] is not JArray networkPathJSONArray ||
+                        !NetworkPath.TryParse(networkPathJSONArray, out var networkPath, out _) || networkPath is null)
+                    {
+                        ErrorResponse = $"Could not parse the given network path: {JSONArray[2]}";
+                        return false;
+                    }
+
+                    if (ImplicitSourceNodeId.HasValue &&
+                        ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
+                    {
+
+                        //if (networkPath.Length > 0 &&
+                        //    networkPath.Last() != ImplicitSourceNodeId)
+                        //{
+                        //    networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+                        //}
+
+                        if (networkPath.Length == 0)
+                            networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+
+                    }
+
+                    if (!Request_Id.TryParse(JSONArray[3]?.Value<String>() ?? "", out var requestId))
+                    {
+                        ErrorResponse = $"Could not parse the given request identification: {JSONArray[3]}";
+                        return false;
+                    }
+
+                    if (!ResultCode.TryParse(JSONArray[4]?.Value<String>() ?? "", out var wsErrorCode))
+                    {
+                        ErrorResponse = $"Could not parse the given request error code: {JSONArray[4]}";
+                        return false;
+                    }
+
+                    var errorDescription = JSONArray[5]?.Value<String>();
+
+                    // We allow null or empty error descriptions!
+                    if (JSONArray[6] is not JObject errorDetails)
+                    {
+                        ErrorResponse = $"Could not parse the given request error details: {JSONArray[6]}";
+                        return false;
+                    }
+
+                    ResponseErrorMessage = new OCPP_JSONRequestErrorMessage(
+                                               Timestamp.Now,
+                                               EventTracking_Id.New,
+                                               NetworkingMode.OverlayNetwork,
+                                               destinationId,
+                                               networkPath,
+                                               requestId,
+                                               wsErrorCode,
+                                               errorDescription,
+                                               errorDetails.Count > 0
+                                                   ? errorDetails
+                                                   : null
+                                           );
+
+                    return true;
+
+                }
+
+                #endregion
 
             }
             catch (Exception e)
             {
-
-                ErrorMessage = new OCPP_JSONRequestErrorMessage(
-                                   Timestamp.Now,
-                                   EventTracking_Id.New,
-                                   NetworkingMode.Standard,
-                                   NetworkingNode_Id.Zero,
-                                   NetworkPath.Empty,
-                                   Request_Id.Zero,
-                                   ResultCode.InternalError,
-                                   e.Message
-                               );
-
+                ErrorResponse = $"Could not parse the given JSON response message: {e.Message}";
                 return false;
-
             }
+
+            ErrorResponse = $"Could not parse the given JSON response message: {JSONArray}";
+            return false;
 
         }
 
@@ -565,34 +671,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         public JArray ToJSON()
 
-            // [
-            //     4,            // MessageType: CALLERROR
-            //    "19223201",    // RequestId from request
-            //    "<errorCode>",
-            //    "<errorDescription>",
-            //    {
-            //        <errorDetails>
-            //    }
-            // ]
+            => NetworkingMode switch {
 
-            // Error Code                    Description
-            // -----------------------------------------------------------------------------------------------
-            // NotImplemented                Requested Action is not known by receiver
-            // NotSupported                  Requested Action is recognized but not supported by the receiver
-            // InternalError                 An internal error occurred and the receiver was not able to process the requested Action successfully
-            // ProtocolError                 Payload for Action is incomplete
-            // SecurityError                 During the processing of Action a security issue occurred preventing receiver from completing the Action successfully
-            // FormationViolation            Payload for Action is syntactically incorrect or not conform the PDU structure for Action
-            // PropertyConstraintViolation   Payload is syntactically correct but at least one field contains an invalid value
-            // OccurenceConstraintViolation  Payload for Action is syntactically correct but at least one of the fields violates occurence constraints
-            // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
-            // GenericError                  Any other error not covered by the previous ones
+                   #region OCPP Standard Mode
 
-            => new (4,
-                    RequestId.ToString(),
-                    ErrorCode.ToString(),
-                    ErrorDescription,
-                    ErrorDetails);
+                   // [
+                   //     4,            // MessageType: CALLERROR
+                   //    "19223201",    // RequestId from request
+                   //    "<errorCode>",
+                   //    "<errorDescription>",
+                   //    {
+                   //        <errorDetails>
+                   //    }
+                   // ]
+                   NetworkingMode.Unknown or
+                   NetworkingMode.Standard
+                       => new(4,
+                              RequestId.ToString(),
+                              ErrorCode.ToString(),
+                              ErrorDescription,
+                              ErrorDetails),
+
+                   #endregion
+
+                   #region OCPP Overlay Network Mode
+
+                   // [
+                   //     4,                    // MessageType: CALLRESULT
+                   //     "CS1",                // Destination Identification/Any-/Multicast
+                   //     [ "LC" ],             // Network Source Path
+                   //    "19223201",            // RequestId copied from request
+                   //    "<errorCode>",
+                   //    "<errorDescription>",
+                   //    {
+                   //        <errorDetails>
+                   //    }
+                   // ]
+
+                   _ => new (4,
+                             DestinationId.ToString(),
+                             NetworkPath.  ToJSON(),
+                             RequestId.    ToString(),
+                             ErrorCode.    ToString(),
+                             ErrorDescription,
+                             ErrorDetails)
+
+                   #endregion
+
+               };
 
         #endregion
 

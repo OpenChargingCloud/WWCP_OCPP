@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,23 +28,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A delegate called whenever a MeterValues request will be sent to the CSMS.
+    /// A delegate called whenever an MeterValues request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
+    /// <param name="Timestamp">The timestamp of the MeterValues request.</param>
+    /// <param name="Sender">The sender of the MeterValues request.</param>
+    /// <param name="Request">The MeterValues request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnMeterValuesRequestSentDelegate(DateTime             Timestamp,
                                                           IEventSender         Sender,
-                                                          MeterValuesRequest   Request);
+                                                          MeterValuesRequest   Request,
+                                                          SendMessageResult    SendMessageResult);
 
     /// <summary>
-    /// A delegate called whenever a response to a MeterValues request was received.
+    /// A delegate called whenever a response to an MeterValues request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
+    /// <param name="Timestamp">The timestamp of the MeterValues request.</param>
+    /// <param name="Sender">The sender of the MeterValues request.</param>
+    /// <param name="Request">The MeterValues request.</param>
+    /// <param name="Response">The MeterValues response.</param>
+    /// <param name="Runtime">The runtime of the MeterValues request.</param>
     public delegate Task OnMeterValuesResponseReceivedDelegate(DateTime              Timestamp,
                                                                IEventSender          Sender,
                                                                MeterValuesRequest    Request,

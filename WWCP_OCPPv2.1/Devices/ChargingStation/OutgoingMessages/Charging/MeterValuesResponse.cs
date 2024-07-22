@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -67,19 +67,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The meter values request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
+        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public MeterValuesResponse(CS.MeterValuesRequest         Request,
-                                   DateTime?                     ResponseTimestamp   = null,
+        public MeterValuesResponse(CS.MeterValuesRequest    Request,
+                                   DateTime?                ResponseTimestamp   = null,
 
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<Signature>?       Signatures          = null,
+                                   NetworkingNode_Id?       DestinationId       = null,
+                                   NetworkPath?             NetworkPath         = null,
 
-                                   CustomData?                   CustomData          = null)
+                                   IEnumerable<KeyPair>?    SignKeys            = null,
+                                   IEnumerable<SignInfo>?   SignInfos           = null,
+                                   IEnumerable<Signature>?  Signatures          = null,
+
+                                   CustomData?              CustomData          = null)
 
             : base(Request,
                    Result.OK(),
@@ -158,16 +164,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The meter values request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom meter values responses.</param>
         public static MeterValuesResponse Parse(CS.MeterValuesRequest                              Request,
                                                 JObject                                            JSON,
+                                                NetworkingNode_Id                                  DestinationId,
+                                                NetworkPath                                        NetworkPath,
+                                                DateTime?                                          ResponseTimestamp                 = null,
                                                 CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var meterValuesResponse,
                          out var errorResponse,
+                         ResponseTimestamp,
                          CustomMeterValuesResponseParser))
             {
                 return meterValuesResponse;
@@ -187,13 +202,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The meter values request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom meter values responses.</param>
         public static Boolean TryParse(CS.MeterValuesRequest                              Request,
                                        JObject                                            JSON,
+                                       NetworkingNode_Id                                  DestinationId,
+                                       NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out MeterValuesResponse?      MeterValuesResponse,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
+                                       DateTime?                                          ResponseTimestamp                 = null,
                                        CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
         {
 
@@ -234,12 +255,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 MeterValuesResponse = new MeterValuesResponse(
+
                                           Request,
-                                          null,
+                                          ResponseTimestamp,
+
+                                          DestinationId,
+                                          NetworkPath,
+
                                           null,
                                           null,
                                           Signatures,
+
                                           CustomData
+
                                       );
 
                 if (CustomMeterValuesResponseParser is not null)

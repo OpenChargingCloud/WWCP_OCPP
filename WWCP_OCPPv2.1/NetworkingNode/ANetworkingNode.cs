@@ -277,7 +277,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                String                                                          LoggingContext               = null, //CPClientLogger.DefaultContext,
                                                                LogfileCreatorDelegate?                                         LogfileCreator               = null,
                                                                HTTPClientLogger?                                               HTTPLogger                   = null,
-                                                               DNSClient?                                                      DNSClient                    = null)
+                                                               DNSClient?                                                      DNSClient                    = null,
+
+                                                               EventTracking_Id?                                               EventTrackingId              = null,
+                                                               CancellationToken                                               CancellationToken            = default)
         {
 
             var ocppWebSocketClient = new OCPPWebSocketClient(
@@ -322,7 +325,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ocppWebSocketClients.Add(ocppWebSocketClient);
 
-            var connectResponse = await ocppWebSocketClient.Connect();
+            var connectResponse = await ocppWebSocketClient.Connect(
+                                            EventTrackingId:      EventTrackingId ?? EventTracking_Id.New,
+                                            RequestTimeout:       RequestTimeout,
+                                            MaxNumberOfRetries:   MaxNumberOfRetries,
+                                            HTTPRequestBuilder:   (httpRequestBuilder) => {
+                                                                      if (NetworkingMode == NetworkingNode.NetworkingMode.OverlayNetwork)
+                                                                          httpRequestBuilder.SetHeaderField(OCPPAdapter.X_OCPP_NetworkingMode, NetworkingMode.ToString());
+                                                                  },
+                                            CancellationToken:    CancellationToken
+                                        );
+
             if (connectResponse.Item2.HTTPStatusCode == HTTPStatusCode.SwitchingProtocols &&
                 connectResponse.Item1 is not null)
             {

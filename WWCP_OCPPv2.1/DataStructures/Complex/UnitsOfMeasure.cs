@@ -21,8 +21,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -31,8 +29,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A unit of measure and a multiplier.
     /// </summary>
-    public class UnitsOfMeasure : ACustomData,
-                                  IEquatable<UnitsOfMeasure>
+    /// <param name="Unit">The unit of the measured value.</param>
+    /// <param name="Multiplier">Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.</param>
+    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+    public class UnitsOfMeasure(UnitOfMeasure  Unit,
+                                Int32?         Multiplier   = null,
+                                CustomData?    CustomData   = null) : ACustomData(CustomData),
+                                                                      IEquatable<UnitsOfMeasure>
     {
 
         #region Properties
@@ -41,36 +44,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unit of the measured value.
         /// </summary>
         [Mandatory]
-        public UnitOfMeasure  Unit          { get; }
+        public UnitOfMeasure Unit { get; } = Unit;
 
         /// <summary>
         /// Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.
         /// </summary>
         [Optional]
-        public Int32          Multiplier    { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new unit of measure and a multiplier.
-        /// </summary>
-        /// <param name="Unit">The unit of the measured value.</param>
-        /// <param name="Multiplier">Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UnitsOfMeasure(UnitOfMeasure  Unit,
-                              Int32?         Multiplier   = null,
-                              CustomData?    CustomData   = null)
-
-            : base(CustomData)
-
-        {
-
-            this.Unit        = Unit;
-            this.Multiplier  = Multiplier ?? 1;
-
-        }
+        public Int32 Multiplier { get; } = Multiplier ?? 1;
 
         #endregion
 

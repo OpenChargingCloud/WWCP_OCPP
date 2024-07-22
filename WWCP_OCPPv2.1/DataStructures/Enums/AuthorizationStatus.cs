@@ -180,7 +180,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         NoCredit,
         NotAllowedTypeEVSE,
         NotAtThisLocation,
-        NotAtThisTime
+        NotAtThisTime,
+
+        Filtered,
+        Error,
+        RequestError,
+        ParsingError,
+        SignatureError
 
     }
 

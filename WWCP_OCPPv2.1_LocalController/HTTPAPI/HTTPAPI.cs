@@ -1057,8 +1057,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnMeterValuesRequestSent += (timestamp,
                                                                  sender,
-                                                                 //connection,
-                                                                 request) =>
+                                                                 request,
+                                                                 sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnMeterValuesRequestSent),
                                      new JObject(

@@ -120,8 +120,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     if (!SecureDataTransferResponse.TryParse(Request,
                                                              sendRequestState.BinaryResponse.Payload,
-                                                             sendRequestState.DestinationId,
-                                                             sendRequestState.NetworkPath,
+                                                             sendRequestState.DestinationIdReceived,
+                                                             sendRequestState.NetworkPathReceived,
                                                              out response,
                                                              out var errorResponse,
                                                              sendRequestState.ResponseTimestamp,

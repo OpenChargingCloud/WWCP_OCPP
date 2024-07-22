@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A boot notification response.
+    /// A BootNotification response.
     /// </summary>
     public class BootNotificationResponse : AResponse<CS.BootNotificationRequest,
                                                       BootNotificationResponse>,
@@ -90,9 +90,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region BootNotificationResponse(Request, Status, CurrentTime, Interval, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new BootNotification response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The BootNotification request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="CurrentTime">The current time at the central system. Should be UTC!</param>
         /// <param name="Interval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
@@ -150,21 +150,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region BootNotificationResponse(Request, Result)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new BootNotification response.
         /// </summary>
-        /// <param name="Request">The authorize request.</param>
+        /// <param name="Request">The BootNotification request leading to this response.</param>
         /// <param name="Result">A result.</param>
         public BootNotificationResponse(CS.BootNotificationRequest  Request,
-                                        Result                      Result)
+                                        Result                      Result,
+                                        RegistrationStatus          Status              = RegistrationStatus.Rejected,
+                                        DateTime?                   ResponseTimestamp   = null,
+
+                                        NetworkingNode_Id?          DestinationId       = null,
+                                        NetworkPath?                NetworkPath         = null,
+
+                                        IEnumerable<KeyPair>?       SignKeys            = null,
+                                        IEnumerable<SignInfo>?      SignInfos           = null,
+                                        IEnumerable<Signature>?     Signatures          = null,
+
+                                        CustomData?                 CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
-            this.Status       = RegistrationStatus.Rejected;
-            this.CurrentTime  = Timestamp.Now;
-            this.Interval     = TimeSpan.Zero;
+            this.Status = Status;
 
         }
 
@@ -517,6 +536,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
         #region Static methods
+
+        /// <summary>
+        /// The BootNotification failed because of a request error.
+        /// </summary>
+        /// <param name="Request">The BootNotification request leading to this response.</param>
+        public static BootNotificationResponse RequestError(CS.BootNotificationRequest  Request,
+                                                            EventTracking_Id            EventTrackingId,
+                                                            ResultCode                  ErrorCode,
+                                                            String?                     ErrorDescription    = null,
+                                                            JObject?                    ErrorDetails        = null,
+                                                            DateTime?                   ResponseTimestamp   = null,
+
+                                                            NetworkingNode_Id?          DestinationId       = null,
+                                                            NetworkPath?                NetworkPath         = null,
+
+                                                            IEnumerable<KeyPair>?       SignKeys            = null,
+                                                            IEnumerable<SignInfo>?      SignInfos           = null,
+                                                            IEnumerable<Signature>?     Signatures          = null,
+
+                                                            CustomData?                 CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   RegistrationStatus.Rejected,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
 
         /// <summary>
         /// The BootNotification failed.

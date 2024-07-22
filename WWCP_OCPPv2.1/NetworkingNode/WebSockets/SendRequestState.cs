@@ -79,12 +79,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// The destination network node identification of the request
         /// and thus the expected source of the response.
         /// </summary>
-        public NetworkingNode_Id                 DestinationId                 { get; }      = DestinationId;
+        public NetworkingNode_Id                 DestinationIdSent             { get; }      = DestinationId;
 
         /// <summary>
         /// The network (source) path of the response.
         /// </summary>
-        public NetworkPath                       NetworkPath                   { get; set; } = NetworkPath;
+        public NetworkPath                       NetworkPathSent               { get; }      = NetworkPath;
 
         /// <summary>
         /// The timeout of the request.
@@ -113,6 +113,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// The time stamp of the response.
         /// </summary>
         public DateTime?                         ResponseTimestamp             { get; set; } = ResponseTimestamp;
+
+        /// <summary>
+        /// The destination network node identification of the request
+        /// and thus the expected source of the response.
+        /// </summary>
+        public NetworkingNode_Id                 DestinationIdReceived         { get; set; }
+
+        /// <summary>
+        /// The network (source) path of the response.
+        /// </summary>
+        public NetworkPath                       NetworkPathReceived           { get; set; }
 
 
         /// <summary>
@@ -180,6 +191,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             return false;
 
         }
+
+        public Boolean IsValidJSONRequestError(IRequest                                               Request,
+                                               [NotNullWhen(true)] out OCPP_JSONRequestErrorMessage?  JSONRequestError)
+        {
+
+            if (!NoErrors &&
+                JSONRequestErrorMessage            is not null &&
+                JSONRequestErrorMessage. RequestId == Request.RequestId)
+            {
+                JSONRequestError = JSONRequestErrorMessage;
+                return true;
+            }
+
+            JSONRequestError = null;
+            return false;
+
+        }
+
 
         public Boolean IsValidBinaryResponse(IRequest                         Request,
                                              [NotNullWhen(true)] out Byte[]?  BinaryMessage)
