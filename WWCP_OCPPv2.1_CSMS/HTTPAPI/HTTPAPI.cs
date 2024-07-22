@@ -924,7 +924,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
                                                                sender,
                                                                //connection,
-                                                               request) =>
+                                                               request,
+                                                               sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnAuthorizeRequestSent),
                                      new JObject(
@@ -2276,7 +2277,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
                                                                       sender,
                                                                       //connection,
-                                                                      request) =>
+                                                                      request,
+                                                                      sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBootNotificationRequestSent),
                                      new JObject(
@@ -5530,7 +5532,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.OUT.OnDataTransferRequestSent += (timestamp,
                                                                   sender,
                                                                   //connection,
-                                                                  request) =>
+                                                                  request,
+                                                                  sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDataTransferRequestSent),
                                      new JObject(
@@ -5597,7 +5600,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.OUT.OnBinaryDataTransferRequestSent += (timestamp,
                                                                         sender,
                                                                         //connection,
-                                                                        request) =>
+                                                                        request,
+                                                                        sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBinaryDataTransferRequestSent),
                                      new JObject(

@@ -19,35 +19,35 @@
 
 using org.GraphDefined.Vanaheimr.Hermod;
 
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A delegate called whenever a DataTransfer request will be sent to the CSMS.
+    /// A delegate called whenever a DataTransfer request was sent.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the DataTransfer request.</param>
     /// <param name="Sender">The sender of the DataTransfer request.</param>
-    /// <param name="Connection">The HTTP Web Socket server connection.</param>
     /// <param name="Request">The DataTransfer request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnDataTransferRequestSentDelegate(DateTime               Timestamp,
                                                            IEventSender           Sender,
-                                                           //IWebSocketConnection   Connection,
-                                                           DataTransferRequest    Request);
+                                                           DataTransferRequest    Request,
+                                                           SendMessageResult      SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a DataTransfer request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the DataTransfer request.</param>
     /// <param name="Sender">The sender of the DataTransfer request.</param>
-    /// <param name="Connection">The HTTP Web Socket server connection.</param>
     /// <param name="Request">The DataTransfer request.</param>
     /// <param name="Response">The DataTransfer response.</param>
     /// <param name="Runtime">The runtime of the DataTransfer request.</param>
     public delegate Task OnDataTransferResponseReceivedDelegate(DateTime                Timestamp,
                                                                 IEventSender            Sender,
-                                                                //IWebSocketConnection    Connection,
                                                                 DataTransferRequest     Request,
                                                                 DataTransferResponse    Response,
                                                                 TimeSpan                Runtime);

@@ -97,29 +97,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CurrentTime">The current time at the central system. Should be UTC!</param>
         /// <param name="Interval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
-        /// 
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// 
+        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public BootNotificationResponse(CS.BootNotificationRequest    Request,
-                                        RegistrationStatus            Status,
-                                        DateTime                      CurrentTime,
-                                        TimeSpan                      Interval,
-                                        StatusInfo?                   StatusInfo          = null,
-                                        DateTime?                     ResponseTimestamp   = null,
+        public BootNotificationResponse(CS.BootNotificationRequest  Request,
+                                        RegistrationStatus          Status,
+                                        DateTime                    CurrentTime,
+                                        TimeSpan                    Interval,
+                                        StatusInfo?                 StatusInfo          = null,
+                                        DateTime?                   ResponseTimestamp   = null,
 
-                                        NetworkingNode_Id?            DestinationId   = null,
-                                        NetworkPath?                  NetworkPath         = null,
+                                        NetworkingNode_Id?          DestinationId       = null,
+                                        NetworkPath?                NetworkPath         = null,
 
-                                        IEnumerable<KeyPair>?         SignKeys            = null,
-                                        IEnumerable<SignInfo>?        SignInfos           = null,
-                                        IEnumerable<Signature>?       Signatures          = null,
+                                        IEnumerable<KeyPair>?       SignKeys            = null,
+                                        IEnumerable<SignInfo>?      SignInfos           = null,
+                                        IEnumerable<Signature>?     Signatures          = null,
 
-                                        CustomData?                   CustomData          = null)
+                                        CustomData?                 CustomData          = null)
 
             : base(Request,
                    Result.OK(),
@@ -268,6 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
         /// <param name="CustomStatusInfoParser">An optional delegate to parse custom status info objects.</param>
         /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>

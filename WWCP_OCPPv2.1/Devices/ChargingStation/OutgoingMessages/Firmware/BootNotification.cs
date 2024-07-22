@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,14 +28,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A delegate called whenever a BootNotification request will be sent (to the CSMS).
+    /// A delegate called whenever a BootNotification request was sent.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The reserve now request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnBootNotificationRequestSentDelegate(DateTime                  Timestamp,
                                                                IEventSender              Sender,
-                                                               BootNotificationRequest   Request);
+                                                               BootNotificationRequest   Request,
+                                                               SendMessageResult         SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a BootNotification request was received.

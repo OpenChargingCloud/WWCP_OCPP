@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                 var nnDataTransferRequestsOUT       = new ConcurrentList<DataTransferRequest>();
                 var csIncomingDataTransferRequests  = new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.      OCPP.OUT.    OnDataTransferRequestSent     += (timestamp, sender, binaryDataTransferRequest) => {
+                testCSMS01.      OCPP.OUT.    OnDataTransferRequestSent     += (timestamp, sender, binaryDataTransferRequest, sendMessageResult) => {
                     csmsDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                 var nnBinaryDataTransferRequestsOUT       = new ConcurrentList<BinaryDataTransferRequest>();
                 var csIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                testCSMS01.      OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, binaryDataTransferRequest) => {
+                testCSMS01.      OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, binaryDataTransferRequest, sendMessageResult) => {
                     csmsBinaryDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };

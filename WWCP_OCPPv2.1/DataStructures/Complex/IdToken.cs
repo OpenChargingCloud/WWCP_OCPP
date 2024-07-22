@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -34,6 +35,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public class IdToken : ACustomData,
                            IEquatable<IdToken>
     {
+
+        #region
+
+        private const String rfidUIDPattern = @"^([A-Fa-f0-9]{4}|[A-Fa-f0-9]{7}|[A-Fa-f0-9]{10})$";
+
+        #endregion
 
         #region Properties
 
@@ -67,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="AdditionalInfos">Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public IdToken(String                        Value,
-                       IdTokenType                  Type,
+                       IdTokenType                   Type,
                        IEnumerable<AdditionalInfo>?  AdditionalInfos   = null,
                        CustomData?                   CustomData        = null)
 
@@ -77,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.Value            = Value.Trim();
             this.Type             = Type;
-            this.AdditionalInfos  = AdditionalInfos?.Distinct() ?? Array.Empty<AdditionalInfo>();
+            this.AdditionalInfos  = AdditionalInfos?.Distinct() ?? [];
 
         }
 
@@ -132,6 +139,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    RandomExtensions.RandomString(Length).ToUpper(),
                    IdTokenType.ISO14443
                );
+
+        #endregion
+
+        #region (static) TryParseRFID(UID)
+
+        /// <summary>
+        /// Create a new identification token based on the given RFID UID.
+        /// </summary>
+        /// <param name="UID">The RFID UID as hex values.</param>
+        public static IdToken? TryParseRFID(String UID)
+
+            => Regex.IsMatch(UID, rfidUIDPattern)
+                   ? new(
+                         UID.ToUpper(),
+                         IdTokenType.ISO14443
+                     )
+                   : null;
 
         #endregion
 

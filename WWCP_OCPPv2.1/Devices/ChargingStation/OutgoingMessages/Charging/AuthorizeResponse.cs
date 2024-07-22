@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -94,32 +94,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CertificateStatus">The optional certificate status information.</param>
         /// <param name="AllowedEnergyTransfer">Optional energy transfer modes accepted by the CSMS.</param>
         /// <param name="TransactionLimits">Optional maximum cost/energy/time limit allowed for this charging session.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// 
+        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public AuthorizeResponse(CS.AuthorizeRequest           Request,
-                                 IdTokenInfo                   IdTokenInfo,
-                                 AuthorizeCertificateStatus?   CertificateStatus       = null,
-                                 EnergyTransferMode?           AllowedEnergyTransfer   = null,
-                                 TransactionLimits?            TransactionLimits       = null,
+        public AuthorizeResponse(CS.AuthorizeRequest          Request,
+                                 IdTokenInfo                  IdTokenInfo,
+                                 AuthorizeCertificateStatus?  CertificateStatus       = null,
+                                 EnergyTransferMode?          AllowedEnergyTransfer   = null,
+                                 TransactionLimits?           TransactionLimits       = null,
+                                 DateTime?                    ResponseTimestamp       = null,
 
-                                 DateTime?                     ResponseTimestamp       = null,
+                                 NetworkingNode_Id?           DestinationId           = null,
+                                 NetworkPath?                 NetworkPath             = null,
 
-                                 IEnumerable<KeyPair>?         SignKeys                = null,
-                                 IEnumerable<SignInfo>?        SignInfos               = null,
-                                 IEnumerable<Signature>?       Signatures              = null,
+                                 IEnumerable<KeyPair>?        SignKeys                = null,
+                                 IEnumerable<SignInfo>?       SignInfos               = null,
+                                 IEnumerable<Signature>?      Signatures              = null,
 
-                                 CustomData?                   CustomData              = null)
+                                 CustomData?                  CustomData              = null)
 
             : base(Request,
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -421,17 +427,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
         public static AuthorizeResponse Parse(CS.AuthorizeRequest                              Request,
                                               JObject                                          JSON,
+                                              NetworkingNode_Id                                DestinationId,
+                                              NetworkPath                                      NetworkPath,
+                                              DateTime?                                        ResponseTimestamp               = null,
                                               CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var authorizeResponse,
                          out var errorResponse,
+                         ResponseTimestamp,
                          CustomAuthorizeResponseParser))
             {
                 return authorizeResponse;
@@ -451,13 +466,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
         public static Boolean TryParse(CS.AuthorizeRequest                              Request,
                                        JObject                                          JSON,
+                                       NetworkingNode_Id                                DestinationId,
+                                       NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out AuthorizeResponse?      AuthorizeResponse,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
+                                       DateTime?                                        ResponseTimestamp               = null,
                                        CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null)
         {
 
@@ -560,7 +581,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         CertificateStatus,
                                         AllowedEnergyTransfer,
                                         TransactionLimits,
-                                        null,
+                                        ResponseTimestamp,
+
+                                        DestinationId,
+                                        NetworkPath,
 
                                         null,
                                         null,
@@ -654,16 +678,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Static methods
 
+        ///// <summary>
+        ///// The authentication failed.
+        ///// </summary>
+        ///// <param name="Request">The authorize request leading to this response.</param>
+        //public static AuthorizeResponse Failed(CS.AuthorizeRequest Request)
+
+        //    => new (Request,
+        //            new IdTokenInfo(
+        //                AuthorizationStatus.Invalid
+        //            ));
+
+
         /// <summary>
-        /// The authentication failed.
+        /// The Authorize failed.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
-        public static AuthorizeResponse Failed(CS.AuthorizeRequest Request)
+        /// <param name="Request">The Authorize request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static AuthorizeResponse Failed(CS.AuthorizeRequest  Request,
+                                               String?              Description   = null)
 
             => new (Request,
-                    new IdTokenInfo(
-                        AuthorizationStatus.Invalid
-                    ));
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The Authorize failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The Authorize request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static AuthorizeResponse ExceptionOccured(CS.AuthorizeRequest  Request,
+                                                         Exception            Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 

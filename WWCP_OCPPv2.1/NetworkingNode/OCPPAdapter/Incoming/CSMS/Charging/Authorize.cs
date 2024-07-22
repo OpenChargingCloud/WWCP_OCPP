@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -32,92 +33,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
+    /// The OCPP HTTP Web Socket Adapter for incoming requests.
     /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<AuthorizeRequest>?       CustomAuthorizeRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<AuthorizeResponse>?  CustomAuthorizeResponseSerializer    { get; set; }
-
-        #endregion
-
         #region Events
 
         /// <summary>
-        /// An event sent whenever an Authorize WebSocket request was received.
+        /// An event sent whenever a Authorize request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?               OnAuthorizeWSRequest;
+        public event OnAuthorizeRequestReceivedDelegate?  OnAuthorizeRequestReceived;
 
         /// <summary>
-        /// An event sent whenever an Authorize request was received.
+        /// An event sent whenever a Authorize request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAuthorizeRequestReceivedDelegate?     OnAuthorizeRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever an Authorize request was received.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnAuthorizeDelegate?            OnAuthorize;
-
-        /// <summary>
-        /// An event sent whenever an Authorize response was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnAuthorizeResponseSentDelegate?    OnAuthorizeResponseSent;
-
-        /// <summary>
-        /// An event sent whenever an Authorize WebSocket response was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?   OnAuthorizeWSResponse;
+        public event OnAuthorizeDelegate?                 OnAuthorize;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_Authorize(DateTime                   RequestTimestamp,
+            Receive_Authorize(DateTime              RequestTimestamp,
                               IWebSocketConnection  WebSocketConnection,
-                              NetworkingNode_Id          DestinationId,
-                              NetworkPath                NetworkPath,
-                              EventTracking_Id           EventTrackingId,
-                              Request_Id                 RequestId,
-                              JObject                    JSONRequest,
-                              CancellationToken          CancellationToken)
+                              NetworkingNode_Id     DestinationId,
+                              NetworkPath           NetworkPath,
+                              EventTracking_Id      EventTrackingId,
+                              Request_Id            RequestId,
+                              JObject               JSONRequest,
+                              CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnAuthorizeWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnAuthorizeWSRequest?.Invoke(startTime,
-                                             parentNetworkingNode,
-                                             WebSocketConnection,
-                                             DestinationId,
-                                             NetworkPath,
-                                             EventTrackingId,
-                                             RequestTimestamp,
-                                             JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,7 +78,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               NetworkPath,
                                               out var request,
                                               out var errorResponse,
-                                              CustomAuthorizeRequestParser)) {
+                                              parentNetworkingNode.OCPP.CustomAuthorizeRequestParser)) {
+
+                    AuthorizeResponse? response = null;
+
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomAuthorizeRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                            parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomOCSPRequestDataSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
+                    {
+
+                        response = new AuthorizeResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature(s): {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                    #endregion
 
                     #region Send OnAuthorizeRequest event
 
@@ -136,67 +114,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnAuthorizeRequestReceived?.Invoke(Timestamp.Now,
-                                                   parentNetworkingNode,
-                                                   WebSocketConnection,
-                                                   request);
+                                                           parentNetworkingNode,
+                                                           WebSocketConnection,
+                                                           request);
 
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeRequestReceived));
+                        await HandleErrors(
+                                  nameof(OCPPWebSocketAdapterIN),
+                                  nameof(OnAuthorizeRequestReceived),
+                                  e
+                              );
                     }
 
                     #endregion
 
+
                     #region Call async subscribers
 
-                    AuthorizeResponse? response = null;
-
-                    var responseTasks = OnAuthorize?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                 parentNetworkingNode,
-                                                                                                                 WebSocketConnection,
-                                                                                                                 request,
-                                                                                                                 CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnAuthorize?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                         parentNetworkingNode,
+                                                                                                                         WebSocketConnection,
+                                                                                                                         request,
+                                                                                                                         CancellationToken)).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : AuthorizeResponse.Failed(request, $"Undefined {nameof(OnAuthorize)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = AuthorizeResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnAuthorize),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= AuthorizeResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnAuthorizeResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnAuthorizeResponseSent?.Invoke(Timestamp.Now,
-                                                    parentNetworkingNode,
-                                                    WebSocketConnection,
-                                                    request,
-                                                    response,
-                                                    response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomAuthorizeResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                            parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                            parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnAuthorizeResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnAuthorizeResponseSent(Timestamp.Now,
+                                                                                                                        parentNetworkingNode,
+                                                                                                                        WebSocketConnection,
+                                                                                                                        request,
+                                                                                                                        response,
+                                                                                                                        response.Runtime);
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomAuthorizeResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomAuthorizeResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomIdTokenSerializer,
                                            parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
@@ -204,78 +214,100 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_Authorize)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_Authorize)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_Authorize)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_Authorize)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnAuthorizeWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnAuthorizeWSResponse?.Invoke(endTime,
-                                              parentNetworkingNode,
-                                              WebSocketConnection,
-                                              DestinationId,
-                                              NetworkPath,
-                                              EventTrackingId,
-                                              RequestTimestamp,
-                                              JSONRequest,
-                                              OCPPResponse?.Payload,
-                                              OCPPErrorResponse?.ToJSON(),
-                                              endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
 
-
     }
 
+
+    /// <summary>
+    /// The OCPP HTTP Web Socket Adapter for outgoing requests.
+    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever an Authorize response was sent.
+        /// An event sent whenever a response to a Authorize was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAuthorizeResponseSentDelegate? OnAuthorizeResponseSent;
+        public event OnAuthorizeResponseSentDelegate?  OnAuthorizeResponseSent;
+
+        #endregion
+
+        #region Send OnAuthorizeResponse event
+
+        public async Task SendOnAuthorizeResponseSent(DateTime                  Timestamp,
+                                                             IEventSender              Sender,
+                                                             IWebSocketConnection      Connection,
+                                                             AuthorizeRequest   Request,
+                                                             AuthorizeResponse  Response,
+                                                             TimeSpan                  Runtime)
+        {
+
+            var logger = OnAuthorizeResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType <OnAuthorizeResponseSentDelegate>().
+                                              Select (filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                              Sender,
+                                                                                              Connection,
+                                                                                              Request,
+                                                                                              Response,
+                                                                                              Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnAuthorizeResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

@@ -80,14 +80,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<Tuple<OCPP_JSONResponseMessage?,
                                 OCPP_JSONRequestErrorMessage?>>
 
-            Receive_Heartbeat(DateTime                   RequestTimestamp,
+            Receive_Heartbeat(DateTime              RequestTimestamp,
                               IWebSocketConnection  WebSocketConnection,
-                              NetworkingNode_Id          DestinationId,
-                              NetworkPath                NetworkPath,
-                              EventTracking_Id           EventTrackingId,
-                              Request_Id                 RequestId,
-                              JObject                    JSONRequest,
-                              CancellationToken          CancellationToken)
+                              NetworkingNode_Id     DestinationId,
+                              NetworkPath           NetworkPath,
+                              EventTracking_Id      EventTrackingId,
+                              Request_Id            RequestId,
+                              JObject               JSONRequest,
+                              CancellationToken     CancellationToken)
 
         {
 
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a Heartbeat was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnHeartbeatResponseSentDelegate? OnHeartbeatResponseSent;
+        public event OnHeartbeatResponseSentDelegate? OnHeartbeatResponseSent;
 
     }
 

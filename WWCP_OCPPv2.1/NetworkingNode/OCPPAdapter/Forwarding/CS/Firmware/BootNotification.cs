@@ -257,9 +257,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                         await Task.WhenAll(sentLogging.GetInvocationList().
                                               OfType<OnBootNotificationRequestSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                             parentNetworkingNode,
-                                                                                             request)).
+                                              Select(filterDelegate => filterDelegate.Invoke(
+                                                                           Timestamp.Now,
+                                                                           parentNetworkingNode,
+                                                                           request,
+                                                                           SendMessageResult.Success
+                                                                       )).
                                               ToArray());
 
                     }

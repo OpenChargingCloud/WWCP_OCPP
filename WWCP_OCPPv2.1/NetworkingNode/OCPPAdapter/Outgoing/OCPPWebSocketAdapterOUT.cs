@@ -162,17 +162,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONRequestAndWait   (JSONRequestMessage)
+        #region SendJSONRequestAndWait   (JSONRequestMessage, SentAction = null)
 
         /// <summary>
         /// Send the given JSON request message and wait for the result/timeout.
         /// </summary>
         /// <param name="JSONRequestMessage">A JSON request message.</param>
-        public async Task<SendRequestState> SendJSONRequestAndWait(OCPP_JSONRequestMessage JSONRequestMessage)
+        /// <param name="SentAction">An action called after trying to send the request.</param>
+        public async Task<SendRequestState> SendJSONRequestAndWait(OCPP_JSONRequestMessage     JSONRequestMessage,
+                                                                   Action<SendMessageResult>?  SentAction   = null)
         {
 
             var sendRequestState = await parentNetworkingNode.OCPP.SendJSONRequestAndWait(JSONRequestMessage,
                                                                                           async sendMessageResult => {
+
+                SentAction?.Invoke(sendMessageResult);
 
                 var logger = OnJSONRequestMessageSent;
                 if (logger is not null)
@@ -426,17 +430,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendBinaryRequestAndWait (BinaryRequestMessage)
+        #region SendBinaryRequestAndWait (BinaryRequestMessage, SentAction = null)
 
         /// <summary>
         /// Send the given binary request message and wait for the result/timeout.
         /// </summary>
         /// <param name="BinaryRequestMessage">A binary request message.</param>
-        public async Task<SendRequestState> SendBinaryRequestAndWait(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        /// <param name="SentAction">An action called after trying to send the request.</param>
+        public async Task<SendRequestState> SendBinaryRequestAndWait(OCPP_BinaryRequestMessage   BinaryRequestMessage,
+                                                                     Action<SendMessageResult>?  SentAction   = null)
         {
 
             var sendRequestState = await parentNetworkingNode.OCPP.SendBinaryRequestAndWait(BinaryRequestMessage,
                                                                                             async sendMessageResult => {
+
+                SentAction?.Invoke(sendMessageResult);
 
                 var logger = OnBinaryRequestMessageSent;
                 if (logger is not null)

@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,23 +28,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A delegate called whenever an Authorize request will be sent to the CSMS.
+    /// A delegate called whenever an Authorize request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the authorize request.</param>
-    /// <param name="Sender">The sender of the authorize request.</param>
-    /// <param name="Request">The authorize request.</param>
+    /// <param name="Timestamp">The timestamp of the Authorize request.</param>
+    /// <param name="Sender">The sender of the Authorize request.</param>
+    /// <param name="Request">The Authorize request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnAuthorizeRequestSentDelegate(DateTime           Timestamp,
                                                         IEventSender       Sender,
-                                                        AuthorizeRequest   Request);
+                                                        AuthorizeRequest   Request,
+                                                        SendMessageResult  SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to an Authorize request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the authorize request.</param>
-    /// <param name="Sender">The sender of the authorize request.</param>
-    /// <param name="Request">The authorize request.</param>
-    /// <param name="Response">The authorize response.</param>
-    /// <param name="Runtime">The runtime of the authorize request.</param>
+    /// <param name="Timestamp">The timestamp of the Authorize request.</param>
+    /// <param name="Sender">The sender of the Authorize request.</param>
+    /// <param name="Request">The Authorize request.</param>
+    /// <param name="Response">The Authorize response.</param>
+    /// <param name="Runtime">The runtime of the Authorize request.</param>
     public delegate Task OnAuthorizeResponseReceivedDelegate(DateTime            Timestamp,
                                                              IEventSender        Sender,
                                                              AuthorizeRequest    Request,

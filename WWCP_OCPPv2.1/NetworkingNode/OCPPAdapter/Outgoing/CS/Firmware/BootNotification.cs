@@ -22,10 +22,9 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -56,33 +55,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<BootNotificationResponse> BootNotification(BootNotificationRequest Request)
         {
 
-            #region Send OnBootNotificationRequestSent event
-
-            var logger = OnBootNotificationRequestSent;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(logger.GetInvocationList().
-                                            OfType<OnBootNotificationRequestSentDelegate>().
-                                            Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                          Timestamp.Now,
-                                                                          parentNetworkingNode,
-                                                                          Request
-                                                                      )).
-                                            ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBootNotificationRequestSent));
-                }
-            }
-
-            #endregion
-
-
             BootNotificationResponse? response = null;
 
             try
@@ -109,6 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var sendRequestState = await SendJSONRequestAndWait(
+
                                                      OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
                                                          Request.ToJSON(
@@ -117,7 +90,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                          )
-                                                     )
+                                                     ),
+
+                                                     async sendMessageResult => {
+
+                                                         #region Send OnBootNotificationRequestSent event
+
+                                                         var logger = OnBootNotificationRequestSent;
+                                                         if (logger is not null)
+                                                         {
+                                                             try
+                                                             {
+
+                                                                 await Task.WhenAll(logger.GetInvocationList().
+                                                                                         OfType<OnBootNotificationRequestSentDelegate>().
+                                                                                         Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                                                       Timestamp.Now,
+                                                                                                                       parentNetworkingNode,
+                                                                                                                       Request,
+                                                                                                                       sendMessageResult
+                                                                                                                   )).
+                                                                                         ToArray());
+
+                                                             }
+                                                             catch (Exception e)
+                                                             {
+                                                                 DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBootNotificationRequestSent));
+                                                             }
+                                                         }
+
+                                                         #endregion
+
+                                                     }
+
                                                  );
 
                     if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))

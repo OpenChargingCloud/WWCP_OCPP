@@ -19,7 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Hermod;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,14 +27,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A delegate called whenever a BinaryDataTransfer request will be sent to a charging station.
+    /// A delegate called whenever a BinaryDataTransfer request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
+    /// <param name="Timestamp">The timestamp of the BinaryDataTransfer request.</param>
+    /// <param name="Sender">The sender of the BinaryDataTransfer request.</param>
+    /// <param name="Request">The BinaryDataTransfer request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnBinaryDataTransferRequestSentDelegate(DateTime                    Timestamp,
                                                                  IEventSender                Sender,
-                                                                 BinaryDataTransferRequest   Request);
+                                                                 BinaryDataTransferRequest   Request,
+                                                                 SendMessageResult           SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a BinaryDataTransfer request was received.

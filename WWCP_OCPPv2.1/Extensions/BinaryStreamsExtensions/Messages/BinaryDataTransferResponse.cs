@@ -92,6 +92,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Data">A vendor-specific JSON token.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
+        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
@@ -102,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           BinaryFormats?             Format                 = null,
                                           DateTime?                  ResponseTimestamp      = null,
 
-                                          NetworkingNode_Id?         DestinationId      = null,
+                                          NetworkingNode_Id?         DestinationId          = null,
                                           NetworkPath?               NetworkPath            = null,
 
                                           IEnumerable<KeyPair>?      SignKeys               = null,
@@ -168,16 +171,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomBinaryDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>
         public static BinaryDataTransferResponse Parse(BinaryDataTransferRequest                                Request,
                                                        Byte[]                                                   Binary,
-                                                       CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser  = null)
+                                                       NetworkingNode_Id                                        DestinationId,
+                                                       NetworkPath                                              NetworkPath,
+                                                       DateTime?                                                ResponseTimestamp                        = null,
+                                                       CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null)
         {
 
             if (TryParse(Request,
                          Binary,
+                         DestinationId,
+                         NetworkPath,
                          out var binaryDataTransferResponse,
                          out var errorResponse,
+                         ResponseTimestamp,
                          CustomBinaryDataTransferResponseParser))
             {
                 return binaryDataTransferResponse;
@@ -197,13 +209,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="BinaryDataTransferResponse">The parsed binary data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomBinaryDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>
         public static Boolean TryParse(BinaryDataTransferRequest                                Request,
                                        Byte[]                                                   Binary,
+                                       NetworkingNode_Id                                        DestinationId,
+                                       NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out BinaryDataTransferResponse?     BinaryDataTransferResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
+                                       DateTime?                                                ResponseTimestamp                        = null,
                                        CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null)
         {
 
@@ -246,6 +264,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              data,
                                                              format,
 
+                                                             ResponseTimestamp,
+
+                                                             DestinationId,
+                                                             NetworkPath,
+
                                                              null,
                                                              null,
                                                              null //Signatures
@@ -283,6 +306,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              additionalStatusInfo,
                                                              data,
                                                              format,
+                                                             ResponseTimestamp,
+
+                                                             DestinationId,
+                                                             NetworkPath,
 
                                                              null,
                                                              null,

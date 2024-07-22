@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesSent           = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var csBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
 
-                chargingStation.OCPP.OUT.OnBootNotificationRequestSent      += (timestamp, sender, bootNotificationRequest) => {
+                chargingStation.OCPP.OUT.OnBootNotificationRequestSent      += (timestamp, sender, bootNotificationRequest, sendMessageResult) => {
                     csBootNotificationRequestsSent.     TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesSent       = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var csDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
 
-                chargingStation.OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, dataTransferRequest) => {
+                chargingStation.OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, dataTransferRequest, sendMessageResult) => {
                     csDataTransferRequestsSent.     TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnBinaryResponseMessagesSent           = new ConcurrentList<OCPP_BinaryResponseMessage>();
                 var csBinaryDataTransferResponsesReceived  = new ConcurrentList<BinaryDataTransferResponse>();
 
-                chargingStation.OCPP.OUT.OnBinaryDataTransferRequestSent      += (timestamp, sender, bootNotificationRequest) => {
+                chargingStation.OCPP.OUT.OnBinaryDataTransferRequestSent      += (timestamp, sender, bootNotificationRequest, sendMessageResult) => {
                     csBinaryDataTransferRequestsSent.     TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };

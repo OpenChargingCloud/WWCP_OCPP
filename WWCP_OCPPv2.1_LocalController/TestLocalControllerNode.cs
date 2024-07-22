@@ -576,6 +576,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #endregion
 
+            #region OnAuthorize
+
+            OCPP.FORWARD.OnAuthorizeRequestFilter += (timestamp,
+                                                      sender,
+                                                      connection,
+                                                      request,
+                                                      cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.FORWARD(request)
+                );
+
+                //Task.FromResult(
+                //    ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.REPLACE(
+                //        request,
+                //        new CS.AuthorizeRequest(
+                //            request.DestinationId,
+                //            request.ChargingStation,
+                //            request.Reason,
+                //            request.SignKeys,
+                //            request.SignInfos,
+                //            request.Signatures,
+                //            request.CustomData,
+                //            request.RequestId,
+                //            request.RequestTimestamp,
+                //            request.RequestTimeout,
+                //            request.EventTrackingId,
+                //            request.NetworkPath,
+                //            request.CancellationToken
+                //        ),
+                //        nameof(CS.AuthorizeRequest)[..^7],
+                //        NetworkingNode_Id.Parse("/dev/null")
+                //    )
+                //);
+
+            #endregion
 
 
         }

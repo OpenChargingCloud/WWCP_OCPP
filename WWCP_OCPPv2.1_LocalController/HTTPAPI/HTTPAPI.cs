@@ -923,7 +923,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
                                                                sender,
                                                                //connection,
-                                                               request) =>
+                                                               request,
+                                                               sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnAuthorizeRequestSent),
                                      new JObject(
@@ -2275,7 +2276,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
                                                                       sender,
                                                                       //connection,
-                                                                      request) =>
+                                                                      request,
+                                                                      sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnBootNotificationRequestSent),
                                      new JObject(
@@ -5527,9 +5529,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnDataTransferRequestSent += (timestamp,
-                                                                  sender,
-                                                                  //connection,
-                                                                  request) =>
+                                                                   sender,
+                                                                   //connection,
+                                                                   request,
+                                                                   sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnDataTransferRequestSent),
                                      new JObject(
@@ -5594,9 +5597,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnBinaryDataTransferRequestSent += (timestamp,
-                                                                        sender,
-                                                                        //connection,
-                                                                        request) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request,
+                                                                         sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnBinaryDataTransferRequestSent),
                                      new JObject(
@@ -5608,11 +5612,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.IN.OnBinaryDataTransferResponseReceived += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnBinaryDataTransferResponseReceived),
                                      new JObject(
