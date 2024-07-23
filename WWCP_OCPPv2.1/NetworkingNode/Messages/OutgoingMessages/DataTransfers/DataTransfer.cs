@@ -29,27 +29,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// A delegate called whenever a DataTransfer request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the DataTransfer request.</param>
-    /// <param name="Sender">The sender of the DataTransfer request.</param>
-    /// <param name="Request">The DataTransfer request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
     /// <param name="SendMessageResult">The result of the send message process.</param>
-    public delegate Task OnDataTransferRequestSentDelegate(DateTime               Timestamp,
-                                                           IEventSender           Sender,
-                                                           DataTransferRequest    Request,
-                                                           SendMessageResult      SendMessageResult);
+    public delegate Task OnDataTransferRequestSentDelegate(DateTime              Timestamp,
+                                                           IEventSender          Sender,
+                                                           DataTransferRequest   Request,
+                                                           SendMessageResult     SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a DataTransfer request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the DataTransfer request.</param>
-    /// <param name="Sender">The sender of the DataTransfer request.</param>
-    /// <param name="Request">The DataTransfer request.</param>
-    /// <param name="Response">The DataTransfer response.</param>
-    /// <param name="Runtime">The runtime of the DataTransfer request.</param>
-    public delegate Task OnDataTransferResponseReceivedDelegate(DateTime                Timestamp,
-                                                                IEventSender            Sender,
-                                                                DataTransferRequest     Request,
-                                                                DataTransferResponse    Response,
-                                                                TimeSpan                Runtime);
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request/response.</param>
+    public delegate Task OnDataTransferResponseReceivedDelegate(DateTime               Timestamp,
+                                                                IEventSender           Sender,
+                                                                DataTransferRequest    Request,
+                                                                DataTransferResponse   Response,
+                                                                TimeSpan               Runtime);
 
 }

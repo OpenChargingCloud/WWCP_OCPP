@@ -253,7 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               OfType<OnDeleteFileRequestSentDelegate>().
                                               Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                              parentNetworkingNode,
-                                                                                             request)).
+                                                                                             request,
+                                                                                             SendMessageResult.Success)).
                                               ToArray());
 
                     }

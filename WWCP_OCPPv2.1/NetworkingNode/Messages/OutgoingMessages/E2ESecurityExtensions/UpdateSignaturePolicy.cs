@@ -19,35 +19,35 @@
 
 using org.GraphDefined.Vanaheimr.Hermod;
 
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A delegate called whenever a UpdateSignaturePolicy request will be sent to the CSMS.
+    /// A delegate called whenever a UpdateSignaturePolicy request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the UpdateSignaturePolicy request.</param>
-    /// <param name="Sender">The sender of the UpdateSignaturePolicy request.</param>
-    /// <param name="Connection">The HTTP Web Socket server connection.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
+    /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnUpdateSignaturePolicyRequestSentDelegate(DateTime                       Timestamp,
                                                                     IEventSender                   Sender,
-                                                                    //IWebSocketConnection           Connection,
-                                                                    UpdateSignaturePolicyRequest   Request);
+                                                                    UpdateSignaturePolicyRequest   Request,
+                                                                    SendMessageResult              SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a UpdateSignaturePolicy request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the UpdateSignaturePolicy request.</param>
-    /// <param name="Sender">The sender of the UpdateSignaturePolicy request.</param>
-    /// <param name="Connection">The HTTP Web Socket server connection.</param>
-    /// <param name="Request">The UpdateSignaturePolicy request.</param>
-    /// <param name="Response">The UpdateSignaturePolicy response.</param>
-    /// <param name="Runtime">The runtime of the UpdateSignaturePolicy request.</param>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request/response.</param>
     public delegate Task OnUpdateSignaturePolicyResponseReceivedDelegate(DateTime                        Timestamp,
                                                                          IEventSender                    Sender,
-                                                                         //IWebSocketConnection    Connection,
                                                                          UpdateSignaturePolicyRequest    Request,
                                                                          UpdateSignaturePolicyResponse   Response,
                                                                          TimeSpan                        Runtime);

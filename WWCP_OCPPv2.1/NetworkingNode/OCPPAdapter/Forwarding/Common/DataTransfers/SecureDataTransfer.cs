@@ -256,7 +256,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               OfType<OnSecureDataTransferRequestSentDelegate>().
                                               Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                              parentNetworkingNode,
-                                                                                             request)).
+                                                                                             request,
+                                                                                             SendMessageResult.Success)).
                                               ToArray());
 
                     }

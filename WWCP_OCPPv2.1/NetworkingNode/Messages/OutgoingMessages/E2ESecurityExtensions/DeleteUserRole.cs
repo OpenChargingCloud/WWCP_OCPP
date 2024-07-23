@@ -19,35 +19,35 @@
 
 using org.GraphDefined.Vanaheimr.Hermod;
 
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A delegate called whenever a DeleteUserRole request will be sent to the CSMS.
+    /// A delegate called whenever a DeleteUserRole request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the DeleteUserRole request.</param>
-    /// <param name="Sender">The sender of the DeleteUserRole request.</param>
-    /// <param name="Connection">The HTTP Web Socket server connection.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
+    /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnDeleteUserRoleRequestSentDelegate(DateTime                Timestamp,
                                                              IEventSender            Sender,
-                                                             //IWebSocketConnection   Connection,
-                                                             DeleteUserRoleRequest   Request);
+                                                             DeleteUserRoleRequest   Request,
+                                                             SendMessageResult       SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a DeleteUserRole request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the DeleteUserRole request.</param>
-    /// <param name="Sender">The sender of the DeleteUserRole request.</param>
-    /// <param name="Connection">The HTTP Web Socket server connection.</param>
-    /// <param name="Request">The DeleteUserRole request.</param>
-    /// <param name="Response">The DeleteUserRole response.</param>
-    /// <param name="Runtime">The runtime of the DeleteUserRole request.</param>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request/response.</param>
     public delegate Task OnDeleteUserRoleResponseReceivedDelegate(DateTime                 Timestamp,
                                                                   IEventSender             Sender,
-                                                                  //IWebSocketConnection   Connection,
                                                                   DeleteUserRoleRequest    Request,
                                                                   DeleteUserRoleResponse   Response,
                                                                   TimeSpan                 Runtime);

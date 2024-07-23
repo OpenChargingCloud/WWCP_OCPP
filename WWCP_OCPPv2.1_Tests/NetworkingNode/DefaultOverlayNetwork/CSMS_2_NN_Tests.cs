@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnBinaryResponseMessagesSent             = new ConcurrentList<OCPP_BinaryResponseMessage>();
                 var csmsSecureDataTransferResponsesReceived  = new ConcurrentList<SecureDataTransferResponse>();
 
-                CSMS.           OCPP.OUT.OnSecureDataTransferRequestSent      += (timestamp, sender, dataTransferRequest) => {
+                CSMS.           OCPP.OUT.OnSecureDataTransferRequestSent      += (timestamp, sender, dataTransferRequest, sendMessageResult) => {
                     csmsSecureDataTransferRequestsSent.   TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
