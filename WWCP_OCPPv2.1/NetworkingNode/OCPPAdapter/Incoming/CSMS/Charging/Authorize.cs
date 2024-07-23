@@ -106,24 +106,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    #region Send OnAuthorizeRequest event
+                    #region Send OnAuthorizeRequestReceived event
 
-                    try
+                    var logger = OnAuthorizeRequestReceived;
+                    if (logger is not null)
                     {
+                        try
+                        {
 
-                        OnAuthorizeRequestReceived?.Invoke(Timestamp.Now,
-                                                           parentNetworkingNode,
-                                                           WebSocketConnection,
-                                                           request);
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                        OfType<OnAuthorizeRequestReceivedDelegate>().
+                                                        Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                       Timestamp.Now,
+                                                                                       parentNetworkingNode,
+                                                                                       WebSocketConnection,
+                                                                                       request
+                                                                                   )).
+                                                        ToArray());
 
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
                                   nameof(OCPPWebSocketAdapterIN),
                                   nameof(OnAuthorizeRequestReceived),
                                   e
                               );
+                        }
                     }
 
                     #endregion
@@ -190,11 +199,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #region Send OnAuthorizeResponse event
 
                     await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnAuthorizeResponseSent(Timestamp.Now,
-                                                                                                                        parentNetworkingNode,
-                                                                                                                        WebSocketConnection,
-                                                                                                                        request,
-                                                                                                                        response,
-                                                                                                                        response.Runtime);
+                                                                                                                 parentNetworkingNode,
+                                                                                                                 WebSocketConnection,
+                                                                                                                 request,
+                                                                                                                 response,
+                                                                                                                 response.Runtime);
 
                     #endregion
 
@@ -267,12 +276,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Send OnAuthorizeResponse event
 
-        public async Task SendOnAuthorizeResponseSent(DateTime                  Timestamp,
-                                                             IEventSender              Sender,
-                                                             IWebSocketConnection      Connection,
-                                                             AuthorizeRequest   Request,
-                                                             AuthorizeResponse  Response,
-                                                             TimeSpan                  Runtime)
+        public async Task SendOnAuthorizeResponseSent(DateTime              Timestamp,
+                                                      IEventSender          Sender,
+                                                      IWebSocketConnection  Connection,
+                                                      AuthorizeRequest      Request,
+                                                      AuthorizeResponse     Response,
+                                                      TimeSpan              Runtime)
         {
 
             var logger = OnAuthorizeResponseSent;

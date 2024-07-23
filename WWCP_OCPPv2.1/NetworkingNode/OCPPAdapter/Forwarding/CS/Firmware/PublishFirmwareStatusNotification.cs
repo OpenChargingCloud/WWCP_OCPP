@@ -255,7 +255,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               OfType<OnPublishFirmwareStatusNotificationRequestSentDelegate>().
                                               Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                              parentNetworkingNode,
-                                                                                             request)).
+                                                                                             request,
+                                                SendMessageResult.Success)).
                                               ToArray());
 
                     }

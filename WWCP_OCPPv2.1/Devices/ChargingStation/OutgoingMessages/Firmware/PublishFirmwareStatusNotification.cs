@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,27 +28,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A delegate called whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
+    /// A delegate called whenever a PublishFirmwareStatusNotification request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnPublishFirmwareStatusNotificationRequestSentDelegate(DateTime                                   Timestamp,
-                                                                            IEventSender                               Sender,
-                                                                            PublishFirmwareStatusNotificationRequest   Request);
+                                                                                IEventSender                               Sender,
+                                                                                PublishFirmwareStatusNotificationRequest   Request,
+                                                                                SendMessageResult                          SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a PublishFirmwareStatusNotification request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
+    /// <param name="Runtime">The runtime of the request/response.</param>
     public delegate Task OnPublishFirmwareStatusNotificationResponseReceivedDelegate(DateTime                                    Timestamp,
-                                                                             IEventSender                                Sender,
-                                                                             PublishFirmwareStatusNotificationRequest    Request,
-                                                                             PublishFirmwareStatusNotificationResponse   Response,
-                                                                             TimeSpan                                    Runtime);
+                                                                                     IEventSender                                Sender,
+                                                                                     PublishFirmwareStatusNotificationRequest    Request,
+                                                                                     PublishFirmwareStatusNotificationResponse   Response,
+                                                                                     TimeSpan                                    Runtime);
 
 }

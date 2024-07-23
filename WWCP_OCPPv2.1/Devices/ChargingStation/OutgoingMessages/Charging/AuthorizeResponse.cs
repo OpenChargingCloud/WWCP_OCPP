@@ -747,7 +747,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Authorize failed.
         /// </summary>
         /// <param name="Request">The Authorize request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
         public static AuthorizeResponse SignatureError(CS.AuthorizeRequest  Request,
                                                        String               ErrorDescription)
 

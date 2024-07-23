@@ -74,8 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnDeleteCertificateRequestSent?.Invoke(startTime,
-                                                   parentNetworkingNode,
-                                                   Request);
+                                                       parentNetworkingNode,
+                                                       Request,
+                                                       SendMessageResult.Success);
             }
             catch (Exception e)
             {

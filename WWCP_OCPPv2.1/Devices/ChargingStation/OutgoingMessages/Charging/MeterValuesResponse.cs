@@ -59,23 +59,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region MeterValuesResponse(Request, ...)
-
         /// <summary>
         /// Create a new meter values response.
         /// </summary>
         /// <param name="Request">The meter values request leading to this response.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// 
-        /// <param name="DestinationId">The destination networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="Result">The result.</param>
         public MeterValuesResponse(CS.MeterValuesRequest    Request,
+                                   Result?                  Result              = null,
                                    DateTime?                ResponseTimestamp   = null,
 
                                    NetworkingNode_Id?       DestinationId       = null,
@@ -88,11 +78,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                    CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -101,25 +91,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData)
 
         { }
-
-        #endregion
-
-        #region MeterValuesResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new meter values response.
-        /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public MeterValuesResponse(CS.MeterValuesRequest  Request,
-                                   Result                 Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -257,6 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 MeterValuesResponse = new MeterValuesResponse(
 
                                           Request,
+                                          null,
                                           ResponseTimestamp,
 
                                           DestinationId,
@@ -326,12 +298,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The meter values request failed.
+        /// The MeterValues failed because of a request error.
         /// </summary>
-        public static MeterValuesResponse Failed(CS.MeterValuesRequest Request)
+        /// <param name="Request">The MeterValues request.</param>
+        public static MeterValuesResponse RequestError(CS.MeterValuesRequest    Request,
+                                                       EventTracking_Id         EventTrackingId,
+                                                       ResultCode               ErrorCode,
+                                                       String?                  ErrorDescription    = null,
+                                                       JObject?                 ErrorDetails        = null,
+                                                       DateTime?                ResponseTimestamp   = null,
+
+                                                       NetworkingNode_Id?       DestinationId       = null,
+                                                       NetworkPath?             NetworkPath         = null,
+
+                                                       IEnumerable<KeyPair>?    SignKeys            = null,
+                                                       IEnumerable<SignInfo>?   SignInfos           = null,
+                                                       IEnumerable<Signature>?  Signatures          = null,
+
+                                                       CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The MeterValues failed.
+        /// </summary>
+        /// <param name="Request">The MeterValues request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static MeterValuesResponse SignatureError(CS.MeterValuesRequest  Request,
+                                                         String                 ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The MeterValues failed.
+        /// </summary>
+        /// <param name="Request">The MeterValues request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static MeterValuesResponse Failed(CS.MeterValuesRequest  Request,
+                                                 String?                Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The MeterValues failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The MeterValues request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static MeterValuesResponse ExceptionOccured(CS.MeterValuesRequest  Request,
+                                                           Exception              Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 

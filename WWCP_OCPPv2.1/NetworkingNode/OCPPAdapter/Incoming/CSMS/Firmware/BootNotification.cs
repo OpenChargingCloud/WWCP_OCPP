@@ -23,10 +23,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -99,11 +98,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         out errorResponse))
                     {
 
-                        response = new BootNotificationResponse(
-                                       Request:  request,
-                                       Result:   Result.SignatureError(
-                                                     $"Invalid signature(s): {errorResponse}"
-                                                 )
+                        response = BootNotificationResponse.SignatureError(
+                                       request,
+                                       errorResponse
                                    );
 
                     }
@@ -112,22 +109,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnBootNotificationRequest event
 
-                    try
+                    var logger = OnBootNotificationRequestReceived;
+                    if (logger is not null)
                     {
+                        try
+                        {
 
-                        OnBootNotificationRequestReceived?.Invoke(Timestamp.Now,
-                                                                  parentNetworkingNode,
-                                                                  WebSocketConnection,
-                                                                  request);
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnBootNotificationRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                              )).
+                                                   ToArray());
 
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
                                   nameof(OCPPWebSocketAdapterIN),
                                   nameof(OnBootNotificationRequestReceived),
                                   e
                               );
+                        }
                     }
 
                     #endregion

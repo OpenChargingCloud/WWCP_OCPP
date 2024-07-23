@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 //var nnJSONResponseMessagesReceived  = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var csmsResetResponsesReceived      = new ConcurrentList<ResetResponse>();
 
-                CSMS.           OCPP.OUT.    OnResetRequestSent         += (timestamp, sender, resetRequest) => {
+                CSMS.           OCPP.OUT.    OnResetRequestSent         += (timestamp, sender, resetRequest, sendMessageResult) => {
                     csmsResetRequestsSent.     TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };

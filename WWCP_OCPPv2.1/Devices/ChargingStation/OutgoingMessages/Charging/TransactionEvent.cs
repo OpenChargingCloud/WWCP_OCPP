@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,23 +28,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A delegate called whenever a TransactionEvent request will be sent to the CSMS.
+    /// A delegate called whenever a TransactionEvent request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the transaction event request.</param>
-    /// <param name="Sender">The sender of the transaction event request.</param>
-    /// <param name="Request">The transaction event request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnTransactionEventRequestSentDelegate(DateTime                  Timestamp,
                                                                IEventSender              Sender,
-                                                               TransactionEventRequest   Request);
+                                                               TransactionEventRequest   Request,
+                                                               SendMessageResult         SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a TransactionEvent request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the transaction event request.</param>
-    /// <param name="Sender">The sender of the transaction event request.</param>
-    /// <param name="Request">The transaction event request.</param>
-    /// <param name="Response">The transaction event response.</param>
-    /// <param name="Runtime">The runtime of the transaction event request.</param>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request/response.</param>
     public delegate Task OnTransactionEventResponseReceivedDelegate(DateTime                   Timestamp,
                                                                     IEventSender               Sender,
                                                                     TransactionEventRequest    Request,

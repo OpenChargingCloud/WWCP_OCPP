@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -37,87 +38,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<MeterValuesRequest>?       CustomMeterValuesRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<MeterValuesResponse>?  CustomMeterValuesResponseSerializer    { get; set; }
-
-        #endregion
-
         #region Events
 
         /// <summary>
-        /// An event sent whenever a MeterValues WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                 OnMeterValuesWSRequest;
-
-        /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnMeterValuesRequestReceivedDelegate?     OnMeterValuesRequestReceived;
+        public event OnMeterValuesRequestReceivedDelegate?  OnMeterValuesRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a MeterValues request was received.
+        /// An event sent whenever a MeterValues request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnMeterValuesDelegate?            OnMeterValues;
+        public event OnMeterValuesDelegate?                 OnMeterValues;
 
-        /// <summary>
-        /// An event sent whenever a response to a MeterValues request was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnMeterValuesResponseSentDelegate?    OnMeterValuesResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a MeterValues request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?     OnMeterValuesWSResponse;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_MeterValues(DateTime                   RequestTimestamp,
+            Receive_MeterValues(DateTime              RequestTimestamp,
                                 IWebSocketConnection  WebSocketConnection,
-                                NetworkingNode_Id          DestinationId,
-                                NetworkPath                NetworkPath,
-                                EventTracking_Id           EventTrackingId,
-                                Request_Id                 RequestId,
-                                JObject                    JSONRequest,
-                                CancellationToken          CancellationToken)
+                                NetworkingNode_Id     DestinationId,
+                                NetworkPath           NetworkPath,
+                                EventTracking_Id      EventTrackingId,
+                                Request_Id            RequestId,
+                                JObject               JSONRequest,
+                                CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnMeterValuesWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnMeterValuesWSRequest?.Invoke(startTime,
-                                               parentNetworkingNode,
-                                               WebSocketConnection,
-                                               DestinationId,
-                                               NetworkPath,
-                                               EventTrackingId,
-                                               RequestTimestamp,
-                                               JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnMeterValuesWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,149 +79,228 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 NetworkPath,
                                                 out var request,
                                                 out var errorResponse,
-                                                CustomMeterValuesRequestParser)) {
+                                                parentNetworkingNode.OCPP.CustomMeterValuesRequestParser)) {
 
-                    #region Send OnMeterValuesRequest event
+                    MeterValuesResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomMeterValuesRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomMeterValueSerializer,
+                            parentNetworkingNode.OCPP.CustomSampledValueSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnMeterValuesRequestReceived?.Invoke(Timestamp.Now,
-                                                     parentNetworkingNode,
-                                                     WebSocketConnection,
-                                                     request);
+                        response = MeterValuesResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnMeterValuesRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnMeterValuesRequestReceived event
+
+                    var logger = OnMeterValuesRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                        OfType<OnMeterValuesRequestReceivedDelegate>().
+                                                        Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                      Timestamp.Now,
+                                                                                      parentNetworkingNode,
+                                                                                      WebSocketConnection,
+                                                                                      request
+                                                                                  )).
+                                                        ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                  nameof(OCPPWebSocketAdapterIN),
+                                  nameof(OnMeterValuesRequestReceived),
+                                  e
+                              );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    MeterValuesResponse? response = null;
-
-                    var responseTasks = OnMeterValues?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                   parentNetworkingNode,
-                                                                                                                   WebSocketConnection,
-                                                                                                                   request,
-                                                                                                                   CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnMeterValues?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                           parentNetworkingNode,
+                                                                                                                           WebSocketConnection,
+                                                                                                                           request,
+                                                                                                                           CancellationToken)).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : MeterValuesResponse.Failed(request, $"Undefined {nameof(OnMeterValues)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = MeterValuesResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnMeterValues),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= MeterValuesResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnMeterValuesResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnMeterValuesResponseSent?.Invoke(Timestamp.Now,
-                                                      parentNetworkingNode,
-                                                      WebSocketConnection,
-                                                      request,
-                                                      response,
-                                                      response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnMeterValuesResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomMeterValuesResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnMeterValuesResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnMeterValuesResponseSent(Timestamp.Now,
+                                                                                                                   parentNetworkingNode,
+                                                                                                                   WebSocketConnection,
+                                                                                                                   request,
+                                                                                                                   response,
+                                                                                                                   response.Runtime);
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomMeterValuesResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomMeterValuesResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_MeterValues)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_MeterValues)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_MeterValues)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_MeterValues)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnMeterValuesWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnMeterValuesWSResponse?.Invoke(endTime,
-                                                parentNetworkingNode,
-                                                WebSocketConnection,
-                                                DestinationId,
-                                                NetworkPath,
-                                                EventTrackingId,
-                                                RequestTimestamp,
-                                                JSONRequest,
-                                                OCPPResponse?.Payload,
-                                                OCPPErrorResponse?.ToJSON(),
-                                                endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnMeterValuesWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
         /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnMeterValuesResponseSentDelegate? OnMeterValuesResponseSent;
+        public event OnMeterValuesResponseSentDelegate? OnMeterValuesResponseSent;
+
+        #endregion
+
+        #region Send OnMeterValuesResponse event
+
+        public async Task SendOnMeterValuesResponseSent(DateTime              Timestamp,
+                                                        IEventSender          Sender,
+                                                        IWebSocketConnection  Connection,
+                                                        MeterValuesRequest    Request,
+                                                        MeterValuesResponse   Response,
+                                                        TimeSpan              Runtime)
+        {
+
+            var logger = OnMeterValuesResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType <OnMeterValuesResponseSentDelegate>().
+                                              Select (filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                              Sender,
+                                                                                              Connection,
+                                                                                              Request,
+                                                                                              Response,
+                                                                                              Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnMeterValuesResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

@@ -40,9 +40,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// An event fired whenever an authorize request will be sent.
         /// </summary>
-        public event OnAuthorizeRequestSentDelegate?     OnAuthorizeRequestSent;
+        public event OnAuthorizeRequestSentDelegate?  OnAuthorizeRequestSent;
 
         #endregion
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Authorize the given token.
         /// </summary>
         /// <param name="Request">An Authorize request.</param>
-        public async Task<AuthorizeResponse> Authorize(AuthorizeRequest  Request)
+        public async Task<AuthorizeResponse> Authorize(AuthorizeRequest Request)
         {
 
             AuthorizeResponse? response = null;
@@ -73,10 +73,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         out var signingErrors
                     ))
                 {
-                    response = new AuthorizeResponse(
+                    response = AuthorizeResponse.SignatureError(
                                    Request,
-                                   Result.SignatureError(signingErrors),
-                                   AuthorizationStatus.SignatureError
+                                   signingErrors
                                );
                 }
 
@@ -162,10 +161,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = new AuthorizeResponse(
+                response = AuthorizeResponse.ExceptionOccured(
                                Request,
-                               Result.FromException(e),
-                               AuthorizationStatus.Error
+                               e
                            );
 
             }
@@ -186,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a Authorize response was received.
         /// </summary>
-        public event OnAuthorizeResponseReceivedDelegate? OnAuthorizeResponseReceived;
+        public event OnAuthorizeResponseReceivedDelegate?  OnAuthorizeResponseReceived;
 
         #endregion
 
@@ -244,15 +242,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                      OfType <OnAuthorizeResponseReceivedDelegate>().
-                                                      Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                                      Timestamp.Now,
-                                                                                      parentNetworkingNode,
-                                                                                      //    WebSocketConnection,
-                                                                                      Request,
-                                                                                      response,
-                                                                                      response.Runtime
-                                                                                  )).
+                                                      OfType<OnAuthorizeResponseReceivedDelegate>().
+                                                      Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                     Timestamp.Now,
+                                                                                     parentNetworkingNode,
+                                                                                     //    WebSocketConnection,
+                                                                                     Request,
+                                                                                     response,
+                                                                                     response.Runtime
+                                                                                 )).
                                                       ToArray());
 
                         }
@@ -277,10 +275,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = new AuthorizeResponse(
+                response = AuthorizeResponse.ExceptionOccured(
                                Request,
-                               Result.FromException(e),
-                               AuthorizationStatus.Error
+                               e
                            );
 
             }
@@ -336,15 +333,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                                OfType <OnAuthorizeResponseReceivedDelegate>().
-                                                Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                                Timestamp.Now,
-                                                                                parentNetworkingNode,
-                                                                                //    WebSocketConnection,
-                                                                                Request,
-                                                                                response,
-                                                                                response.Runtime
-                                                                            )).
+                                                OfType<OnAuthorizeResponseReceivedDelegate>().
+                                                Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                               Timestamp.Now,
+                                                                               parentNetworkingNode,
+                                                                               //    WebSocketConnection,
+                                                                               Request,
+                                                                               response,
+                                                                               response.Runtime
+                                                                           )).
                                                 ToArray());
 
                 }

@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,27 +28,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A delegate called whenever a Heartbeat request will be sent to the CSMS.
+    /// A delegate called whenever a Heartbeat request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The reserve now request.</param>
-    public delegate Task OnHeartbeatRequestSentDelegate(DateTime           Timestamp,
-                                                    IEventSender       Sender,
-                                                    HeartbeatRequest   Request);
+    /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    public delegate Task OnHeartbeatRequestSentDelegate(DateTime            Timestamp,
+                                                        IEventSender        Sender,
+                                                        HeartbeatRequest    Request,
+                                                        SendMessageResult   SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a Heartbeat request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
+    /// <param name="Runtime">The runtime of the request/response.</param>
     public delegate Task OnHeartbeatResponseReceivedDelegate(DateTime            Timestamp,
-                                                     IEventSender        Sender,
-                                                     HeartbeatRequest    Request,
-                                                     HeartbeatResponse   Response,
-                                                     TimeSpan            Runtime);
+                                                             IEventSender        Sender,
+                                                             HeartbeatRequest    Request,
+                                                             HeartbeatResponse   Response,
+                                                             TimeSpan            Runtime);
 
 }

@@ -259,7 +259,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               OfType<OnTransactionEventRequestSentDelegate>().
                                               Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                              parentNetworkingNode,
-                                                                                             request)).
+                                                                                             request,
+                                                SendMessageResult.Success)).
                                               ToArray());
 
                     }

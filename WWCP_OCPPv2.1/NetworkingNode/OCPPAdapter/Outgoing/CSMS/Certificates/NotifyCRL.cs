@@ -75,7 +75,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnNotifyCRLRequestSent?.Invoke(startTime,
                                            parentNetworkingNode,
-                                           Request);
+                                           Request,
+                                                SendMessageResult.Success);
             }
             catch (Exception e)
             {

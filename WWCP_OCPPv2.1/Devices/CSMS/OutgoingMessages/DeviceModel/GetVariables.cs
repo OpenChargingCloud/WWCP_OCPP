@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,23 +28,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A delegate called whenever a GetVariables request will be sent to a charging station.
+    /// A delegate called whenever a GetVariables request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnGetVariablesRequestSentDelegate(DateTime              Timestamp,
                                                            IEventSender          Sender,
-                                                           GetVariablesRequest   Request);
+                                                           GetVariablesRequest   Request,
+                                                           SendMessageResult     SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a GetVariables request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
+    /// <param name="Runtime">The runtime of the request/response.</param>
     public delegate Task OnGetVariablesResponseReceivedDelegate(DateTime               Timestamp,
                                                                 IEventSender           Sender,
                                                                 GetVariablesRequest    Request,

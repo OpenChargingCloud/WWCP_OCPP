@@ -75,7 +75,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnInstallCertificateRequestSent?.Invoke(startTime,
                                                     parentNetworkingNode,
-                                                    Request);
+                                                    Request,
+                                                SendMessageResult.Success);
             }
             catch (Exception e)
             {

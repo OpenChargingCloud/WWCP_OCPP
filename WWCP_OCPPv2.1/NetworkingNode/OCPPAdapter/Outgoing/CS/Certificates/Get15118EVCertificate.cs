@@ -79,7 +79,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             Select(loggingDelegate => loggingDelegate.Invoke(
                                                                           Timestamp.Now,
                                                                           parentNetworkingNode,
-                                                                          Request
+                                                                          Request,
+                                                SendMessageResult.Success
                                                                       )).
                                             ToArray());
 

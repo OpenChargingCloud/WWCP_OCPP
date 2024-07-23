@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesReceived            = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnGet15118EVCertificateResponsesReceived  = new ConcurrentList<Get15118EVCertificateResponse>();
 
-                localController.OCPP.OUT.OnGet15118EVCertificateRequestSent      += (timestamp, sender, get15118EVCertificateRequest) => {
+                localController.OCPP.OUT.OnGet15118EVCertificateRequestSent      += (timestamp, sender, get15118EVCertificateRequest, sendMessageResult) => {
                     nnGet15118EVCertificateRequestsSent.TryAdd(get15118EVCertificateRequest);
                     return Task.CompletedTask;
                 };

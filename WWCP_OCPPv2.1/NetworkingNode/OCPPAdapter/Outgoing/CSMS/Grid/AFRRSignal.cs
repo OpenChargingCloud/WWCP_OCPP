@@ -71,8 +71,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnAFRRSignalRequestSent?.Invoke(startTime,
-                                            parentNetworkingNode,
-                                            Request);
+                                                parentNetworkingNode,
+                                                Request,
+                                                SendMessageResult.Success);
             }
             catch (Exception e)
             {

@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 var nnJSONResponseMessagesReceived  = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnResetResponsesReceived        = new ConcurrentList<ResetResponse>();
 
-                localController1.OCPP.OUT.OnResetRequestSent             += (timestamp, sender, resetRequest) => {
+                localController1.OCPP.OUT.OnResetRequestSent             += (timestamp, sender, resetRequest, sendMessageResult) => {
                     nnResetRequestsSent.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };

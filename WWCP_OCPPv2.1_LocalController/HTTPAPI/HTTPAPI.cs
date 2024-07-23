@@ -651,7 +651,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGet15118EVCertificateRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
-                                                                           request) =>
+                                                                           request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGet15118EVCertificateRequestSent),
                                      new JObject(
@@ -718,7 +719,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetCertificateStatusRequestSent += (timestamp,
                                                                           sender,
                                                                           //connection,
-                                                                          request) =>
+                                                                          request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCertificateStatusRequestSent),
                                      new JObject(
@@ -785,7 +787,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
                                                             sender,
                                                             //connection,
-                                                            request) =>
+                                                            request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCRLRequestSent),
                                      new JObject(
@@ -852,7 +855,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSignCertificateRequestSent += (timestamp,
                                                                      sender,
                                                                      //connection,
-                                                                     request) =>
+                                                                     request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSignCertificateRequestSent),
                                      new JObject(
@@ -991,7 +995,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnClearedChargingLimitRequestSent += (timestamp,
                                                                           sender,
                                                                           //connection,
-                                                                          request) =>
+                                                                          request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearedChargingLimitRequestSent),
                                      new JObject(
@@ -1125,7 +1130,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyChargingLimitRequestSent += (timestamp,
                                                                          sender,
                                                                          //connection,
-                                                                         request) =>
+                                                                         request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyChargingLimitRequestSent),
                                      new JObject(
@@ -1192,7 +1198,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
-                                                                           request) =>
+                                                                           request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent),
                                      new JObject(
@@ -1259,7 +1266,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent += (timestamp,
                                                                               sender,
                                                                               //connection,
-                                                                              request) =>
+                                                                              request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent),
                                      new JObject(
@@ -1326,7 +1334,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyPriorityChargingRequestSent += (timestamp,
                                                                             sender,
                                                                             //connection,
-                                                                            request) =>
+                                                                            request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyPriorityChargingRequestSent),
                                      new JObject(
@@ -1393,7 +1402,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifySettlementRequestSent += (timestamp,
                                                                       sender,
                                                                       //connection,
-                                                                      request) =>
+                                                                      request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifySettlementRequestSent),
                                      new JObject(
@@ -1460,7 +1470,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent += (timestamp,
                                                                                sender,
                                                                                //connection,
-                                                                               request) =>
+                                                                               request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent),
                                      new JObject(
@@ -1527,7 +1538,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnReportChargingProfilesRequestSent += (timestamp,
                                                                             sender,
                                                                             //connection,
-                                                                            request) =>
+                                                                            request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReportChargingProfilesRequestSent),
                                      new JObject(
@@ -1594,7 +1606,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnReservationStatusUpdateRequestSent += (timestamp,
                                                                              sender,
                                                                              //connection,
-                                                                             request) =>
+                                                                             request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReservationStatusUpdateRequestSent),
                                      new JObject(
@@ -1661,7 +1674,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnStatusNotificationRequestSent += (timestamp,
                                                                         sender,
                                                                         //connection,
-                                                                        request) =>
+                                                                        request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnStatusNotificationRequestSent),
                                      new JObject(
@@ -1728,7 +1742,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnTransactionEventRequestSent += (timestamp,
                                                                       sender,
                                                                       //connection,
-                                                                      request) =>
+                                                                      request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnTransactionEventRequestSent),
                                      new JObject(
@@ -1799,7 +1814,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyCustomerInformationRequestSent += (timestamp,
                                                                                sender,
                                                                                //connection,
-                                                                               request) =>
+                                                                               request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyCustomerInformationRequestSent),
                                      new JObject(
@@ -1866,7 +1882,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyDisplayMessagesRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
-                                                                           request) =>
+                                                                           request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyDisplayMessagesRequestSent),
                                      new JObject(
@@ -1937,7 +1954,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnLogStatusNotificationRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
-                                                                           request) =>
+                                                                           request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnLogStatusNotificationRequestSent),
                                      new JObject(
@@ -2004,7 +2022,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyEventRequestSent += (timestamp,
                                                                  sender,
                                                                  //connection,
-                                                                 request) =>
+                                                                 request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyEventRequestSent),
                                      new JObject(
@@ -2071,7 +2090,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyMonitoringReportRequestSent += (timestamp,
                                                                             sender,
                                                                             //connection,
-                                                                            request) =>
+                                                                            request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyMonitoringReportRequestSent),
                                      new JObject(
@@ -2138,7 +2158,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyReportRequestSent += (timestamp,
                                                                   sender,
                                                                   //connection,
-                                                                  request) =>
+                                                                  request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyReportRequestSent),
                                      new JObject(
@@ -2205,7 +2226,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSecurityEventNotificationRequestSent += (timestamp,
                                                                                sender,
                                                                                //connection,
-                                                                               request) =>
+                                                                               request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSecurityEventNotificationRequestSent),
                                      new JObject(
@@ -2344,7 +2366,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                 sender,
                                                                                 //connection,
-                                                                                request) =>
+                                                                                request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnFirmwareStatusNotificationRequestSent),
                                      new JObject(
@@ -2411,7 +2434,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnHeartbeatRequestSent += (timestamp,
                                                                sender,
                                                                //connection,
-                                                               request) =>
+                                                               request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnHeartbeatRequestSent),
                                      new JObject(
@@ -2478,7 +2502,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                        sender,
                                                                                        //connection,
-                                                                                       request) =>
+                                                                                       request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent),
                                      new JObject(
@@ -2553,7 +2578,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnCertificateSignedRequestSent += (timestamp,
                                                                        sender,
                                                                        //connection,
-                                                                       request) =>
+                                                                       request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCertificateSignedRequestSent),
                                      new JObject(
@@ -2620,7 +2646,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnDeleteCertificateRequestSent += (timestamp,
                                                                        sender,
                                                                        //connection,
-                                                                       request) =>
+                                                                       request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnDeleteCertificateRequestSent),
                                      new JObject(
@@ -2687,7 +2714,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent += (timestamp,
                                                                                 sender,
                                                                                 //connection,
-                                                                                request) =>
+                                                                                request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent),
                                      new JObject(
@@ -2754,7 +2782,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnInstallCertificateRequestSent += (timestamp,
                                                                         sender,
                                                                         //connection,
-                                                                        request) =>
+                                                                        request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnInstallCertificateRequestSent),
                                      new JObject(
@@ -2821,7 +2850,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyCRLRequestSent += (timestamp,
                                                                sender,
                                                                //connection,
-                                                               request) =>
+                                                               request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyCRLRequestSent),
                                      new JObject(
@@ -2892,7 +2922,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnCancelReservationRequestSent += (timestamp,
                                                                        sender,
                                                                        //connection,
-                                                                       request) =>
+                                                                       request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCancelReservationRequestSent),
                                      new JObject(
@@ -2959,7 +2990,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnClearChargingProfileRequestSent += (timestamp,
                                                                           sender,
                                                                           //connection,
-                                                                          request) =>
+                                                                          request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearChargingProfileRequestSent),
                                      new JObject(
@@ -3026,7 +3058,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetChargingProfilesRequestSent += (timestamp,
                                                                          sender,
                                                                          //connection,
-                                                                         request) =>
+                                                                         request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetChargingProfilesRequestSent),
                                      new JObject(
@@ -3093,7 +3126,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetCompositeScheduleRequestSent += (timestamp,
                                                                           sender,
                                                                           //connection,
-                                                                          request) =>
+                                                                          request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCompositeScheduleRequestSent),
                                      new JObject(
@@ -3160,7 +3194,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetTransactionStatusRequestSent += (timestamp,
                                                                           sender,
                                                                           //connection,
-                                                                          request) =>
+                                                                          request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetTransactionStatusRequestSent),
                                      new JObject(
@@ -3227,7 +3262,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
                                                                                  sender,
                                                                                  //connection,
-                                                                                 request) =>
+                                                                                 request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent),
                                      new JObject(
@@ -3294,7 +3330,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnRequestStartTransactionRequestSent += (timestamp,
                                                                              sender,
                                                                              //connection,
-                                                                             request) =>
+                                                                             request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnRequestStartTransactionRequestSent),
                                      new JObject(
@@ -3361,7 +3398,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnRequestStopTransactionRequestSent += (timestamp,
                                                                             sender,
                                                                             //connection,
-                                                                            request) =>
+                                                                            request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnRequestStopTransactionRequestSent),
                                      new JObject(
@@ -3428,7 +3466,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnReserveNowRequestSent += (timestamp,
                                                                 sender,
                                                                 //connection,
-                                                                request) =>
+                                                                request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReserveNowRequestSent),
                                      new JObject(
@@ -3495,7 +3534,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSetChargingProfileRequestSent += (timestamp,
                                                                         sender,
                                                                         //connection,
-                                                                        request) =>
+                                                                        request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetChargingProfileRequestSent),
                                      new JObject(
@@ -3562,7 +3602,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnUnlockConnectorRequestSent += (timestamp,
                                                                      sender,
                                                                      //connection,
-                                                                     request) =>
+                                                                     request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnlockConnectorRequestSent),
                                      new JObject(
@@ -3629,7 +3670,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnUpdateDynamicScheduleRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
-                                                                           request) =>
+                                                                           request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateDynamicScheduleRequestSent),
                                      new JObject(
@@ -3696,7 +3738,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnUsePriorityChargingRequestSent += (timestamp,
                                                                          sender,
                                                                          //connection,
-                                                                         request) =>
+                                                                         request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUsePriorityChargingRequestSent),
                                      new JObject(
@@ -3767,7 +3810,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnClearDisplayMessageRequestSent += (timestamp,
                                                                          sender,
                                                                          //connection,
-                                                                         request) =>
+                                                                         request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearDisplayMessageRequestSent),
                                      new JObject(
@@ -3834,7 +3878,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnCostUpdatedRequestSent += (timestamp,
                                                                  sender,
                                                                  //connection,
-                                                                 request) =>
+                                                                 request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCostUpdatedRequestSent),
                                      new JObject(
@@ -3901,7 +3946,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnCustomerInformationRequestSent += (timestamp,
                                                                          sender,
                                                                          //connection,
-                                                                         request) =>
+                                                                         request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCustomerInformationRequestSent),
                                      new JObject(
@@ -3968,7 +4014,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetDisplayMessagesRequestSent += (timestamp,
                                                                         sender,
                                                                         //connection,
-                                                                        request) =>
+                                                                        request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetDisplayMessagesRequestSent),
                                      new JObject(
@@ -4035,7 +4082,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSetDisplayMessageRequestSent += (timestamp,
                                                                        sender,
                                                                        //connection,
-                                                                       request) =>
+                                                                       request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetDisplayMessageRequestSent),
                                      new JObject(
@@ -4106,7 +4154,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnChangeAvailabilityRequestSent += (timestamp,
                                                                         sender,
                                                                         //connection,
-                                                                        request) =>
+                                                                        request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnChangeAvailabilityRequestSent),
                                      new JObject(
@@ -4173,7 +4222,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnClearVariableMonitoringRequestSent += (timestamp,
                                                                              sender,
                                                                              //connection,
-                                                                             request) =>
+                                                                             request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearVariableMonitoringRequestSent),
                                      new JObject(
@@ -4240,7 +4290,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetBaseReportRequestSent += (timestamp,
                                                                    sender,
                                                                    //connection,
-                                                                   request) =>
+                                                                   request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetBaseReportRequestSent),
                                      new JObject(
@@ -4307,7 +4358,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetLogRequestSent += (timestamp,
                                                             sender,
                                                             //connection,
-                                                            request) =>
+                                                            request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLogRequestSent),
                                      new JObject(
@@ -4374,7 +4426,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetMonitoringReportRequestSent += (timestamp,
                                                                          sender,
                                                                          //connection,
-                                                                         request) =>
+                                                                         request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetMonitoringReportRequestSent),
                                      new JObject(
@@ -4441,7 +4494,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetReportRequestSent += (timestamp,
                                                                sender,
                                                                //connection,
-                                                               request) =>
+                                                               request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetReportRequestSent),
                                      new JObject(
@@ -4508,7 +4562,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetVariablesRequestSent += (timestamp,
                                                                   sender,
                                                                   //connection,
-                                                                  request) =>
+                                                                  request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetVariablesRequestSent),
                                      new JObject(
@@ -4575,7 +4630,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSetMonitoringBaseRequestSent += (timestamp,
                                                                        sender,
                                                                        //connection,
-                                                                       request) =>
+                                                                       request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringBaseRequestSent),
                                      new JObject(
@@ -4642,7 +4698,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSetMonitoringLevelRequestSent += (timestamp,
                                                                         sender,
                                                                         //connection,
-                                                                        request) =>
+                                                                        request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringLevelRequestSent),
                                      new JObject(
@@ -4709,7 +4766,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSetNetworkProfileRequestSent += (timestamp,
                                                                        sender,
                                                                        //connection,
-                                                                       request) =>
+                                                                       request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetNetworkProfileRequestSent),
                                      new JObject(
@@ -4776,7 +4834,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSetVariableMonitoringRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
-                                                                           request) =>
+                                                                           request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariableMonitoringRequestSent),
                                      new JObject(
@@ -4843,7 +4902,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSetVariablesRequestSent += (timestamp,
                                                                   sender,
                                                                   //connection,
-                                                                  request) =>
+                                                                  request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariablesRequestSent),
                                      new JObject(
@@ -4910,7 +4970,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnTriggerMessageRequestSent += (timestamp,
                                                                     sender,
                                                                     //connection,
-                                                                    request) =>
+                                                                    request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnTriggerMessageRequestSent),
                                      new JObject(
@@ -4981,7 +5042,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnPublishFirmwareRequestSent += (timestamp,
                                                                      sender,
                                                                      //connection,
-                                                                     request) =>
+                                                                     request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPublishFirmwareRequestSent),
                                      new JObject(
@@ -5048,7 +5110,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnResetRequestSent += (timestamp,
                                                            sender,
                                                            //connection,
-                                                           request) =>
+                                                           request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnResetRequestSent),
                                      new JObject(
@@ -5115,7 +5178,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnUnpublishFirmwareRequestSent += (timestamp,
                                                                        sender,
                                                                        //connection,
-                                                                       request) =>
+                                                                       request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnpublishFirmwareRequestSent),
                                      new JObject(
@@ -5182,7 +5246,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnUpdateFirmwareRequestSent += (timestamp,
                                                                     sender,
                                                                     //connection,
-                                                                    request) =>
+                                                                    request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateFirmwareRequestSent),
                                      new JObject(
@@ -5253,7 +5318,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnAFRRSignalRequestSent += (timestamp,
                                                                 sender,
                                                                 //connection,
-                                                                request) =>
+                                                                request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnAFRRSignalRequestSent),
                                      new JObject(
@@ -5324,7 +5390,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnClearCacheRequestSent += (timestamp,
                                                                 sender,
                                                                 //connection,
-                                                                request) =>
+                                                                request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearCacheRequestSent),
                                      new JObject(
@@ -5391,7 +5458,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnGetLocalListVersionRequestSent += (timestamp,
                                                                          sender,
                                                                          //connection,
-                                                                         request) =>
+                                                                         request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLocalListVersionRequestSent),
                                      new JObject(
@@ -5458,7 +5526,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             LocalController.OCPP.OUT.OnSendLocalListRequestSent += (timestamp,
                                                                    sender,
                                                                    //connection,
-                                                                   request) =>
+                                                                   request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSendLocalListRequestSent),
                                      new JObject(

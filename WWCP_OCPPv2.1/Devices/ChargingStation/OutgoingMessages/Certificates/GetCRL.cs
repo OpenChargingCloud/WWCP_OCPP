@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,14 +28,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A delegate called whenever a GetCRL (get certificate revocation list) request will be sent to the CSMS.
+    /// A delegate called whenever a GetCRL (get certificate revocation list) request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnGetCRLRequestSentDelegate(DateTime        Timestamp,
-                                                     IEventSender    Sender,
-                                                     GetCRLRequest   Request);
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    public delegate Task OnGetCRLRequestSentDelegate(DateTime            Timestamp,
+                                                     IEventSender        Sender,
+                                                     GetCRLRequest       Request,
+                                                     SendMessageResult   SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a GetCRL (get certificate revocation list) request was received.

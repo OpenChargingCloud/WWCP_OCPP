@@ -89,7 +89,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnPullDynamicScheduleUpdateRequestSent?.Invoke(startTime,
                                                            parentNetworkingNode,
-                                                           Request);
+                                                           Request,
+                                                SendMessageResult.Success);
 
             }
             catch (Exception e)

@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,23 +28,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A delegate called whenever a GetInstalledCertificateIds request will be sent to a charging station.
+    /// A delegate called whenever a GetInstalledCertificateIds request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnGetInstalledCertificateIdsRequestSentDelegate(DateTime                            Timestamp,
                                                                          IEventSender                        Sender,
-                                                                         GetInstalledCertificateIdsRequest   Request);
+                                                                         GetInstalledCertificateIdsRequest   Request,
+                                                                         SendMessageResult                   SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a GetInstalledCertificateIds request was received.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
+    /// <param name="Runtime">The runtime of the request/response.</param>
     public delegate Task OnGetInstalledCertificateIdsResponseReceivedDelegate(DateTime                             Timestamp,
                                                                               IEventSender                         Sender,
                                                                               GetInstalledCertificateIdsRequest    Request,

@@ -584,12 +584,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The BootNotification failed.
         /// </summary>
         /// <param name="Request">The BootNotification request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static BootNotificationResponse SignatureError(CS.BootNotificationRequest  Request,
+                                                              String                      ErrorDescription)
+
+            => new (Request,
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ),
+                    RegistrationStatus.SignatureError);
+
+
+        /// <summary>
+        /// The BootNotification failed.
+        /// </summary>
+        /// <param name="Request">The BootNotification request.</param>
         /// <param name="Description">An optional error decription.</param>
         public static BootNotificationResponse Failed(CS.BootNotificationRequest  Request,
                                                       String?                     Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    Result.Server(Description),
+                    RegistrationStatus.Error);
 
 
         /// <summary>
@@ -601,7 +617,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 Exception                   Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    Result.FromException(Exception),
+                    RegistrationStatus.Error);
 
         #endregion
 

@@ -143,7 +143,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// This may happen when the charging station identification
         /// is not (yet) known by the central system.
         /// </summary>
-        Rejected
+        Rejected,
+
+
+        Error,
+        SignatureError
 
     }
 

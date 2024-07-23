@@ -90,7 +90,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnNotifyDisplayMessagesRequestSent?.Invoke(startTime,
                                                        parentNetworkingNode,
-                                                       Request);
+                                                       Request,
+                                                SendMessageResult.Success);
 
             }
             catch (Exception e)

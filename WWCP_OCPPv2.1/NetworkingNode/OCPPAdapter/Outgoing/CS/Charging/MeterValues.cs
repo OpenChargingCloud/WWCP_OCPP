@@ -41,27 +41,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event fired whenever a meter values request will be sent to the CSMS.
+        /// An event fired whenever a meter values request will be sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnMeterValuesRequestSentDelegate?     OnMeterValuesRequestSent;
-
-        /// <summary>
-        /// An event fired whenever a meter values request will be sent to the CSMS.
-        /// </summary>
-        public event ClientRequestLogHandler?                      OnMeterValuesWSRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?                     OnMeterValuesWSResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnMeterValuesResponseReceivedDelegate?    OnMeterValuesResponseReceived;
+        public event OnMeterValuesRequestSentDelegate?  OnMeterValuesRequestSent;
 
         #endregion
-
 
         #region MeterValues(Request)
 
@@ -69,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send meter values.
         /// </summary>
         /// <param name="Request">A MeterValues request.</param>
-        public async Task<MeterValuesResponse> MeterValues(MeterValuesRequest  Request)
+        public async Task<MeterValuesResponse> MeterValues(MeterValuesRequest Request)
         {
 
             MeterValuesResponse? response = null;
@@ -89,9 +73,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         out var signingErrors
                     ))
                 {
-                    response = new MeterValuesResponse(
+                    response = MeterValuesResponse.SignatureError(
                                    Request,
-                                   Result.SignatureError(signingErrors)
+                                   signingErrors
                                );
                 }
 
@@ -99,21 +83,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var sendRequestState = await SendJSONRequestAndWait(
-                                                 OCPP_JSONRequestMessage.FromRequest(
-                                                     Request,
-                                                     Request.ToJSON(
-                                                         parentNetworkingNode.OCPP.CustomMeterValuesRequestSerializer,
-                                                         parentNetworkingNode.OCPP.CustomMeterValueSerializer,
-                                                         parentNetworkingNode.OCPP.CustomSampledValueSerializer,
-                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                     )
-                                                 )
-                                             );
+
+                                                     OCPP_JSONRequestMessage.FromRequest(
+                                                         Request,
+                                                         Request.ToJSON(
+                                                             parentNetworkingNode.OCPP.CustomMeterValuesRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomMeterValueSerializer,
+                                                             parentNetworkingNode.OCPP.CustomSampledValueSerializer,
+                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                         )
+                                                     ),
+
+                                                     async sendMessageResult => {
+
+                                                         #region Send OnMeterValuesRequestSent event
+
+                                                         var logger = OnMeterValuesRequestSent;
+                                                         if (logger is not null)
+                                                         {
+                                                             try
+                                                             {
+
+                                                                 await Task.WhenAll(logger.GetInvocationList().
+                                                                                         OfType<OnMeterValuesRequestSentDelegate>().
+                                                                                         Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                                                       Timestamp.Now,
+                                                                                                                       parentNetworkingNode,
+                                                                                                                       Request,
+                                                                                                                       sendMessageResult
+                                                                                                                   )).
+                                                                                         ToArray());
+
+                                                             }
+                                                             catch (Exception e)
+                                                             {
+                                                                 DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnMeterValuesRequestSent));
+                                                             }
+                                                         }
+
+                                                         #endregion
+
+                                                     }
+
+                                                 );
 
                     if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
-                    {
-
                         response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_MeterValuesResponse(
                                              Request,
                                              jsonResponse,
@@ -126,7 +141,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              Request.CancellationToken
                                          );
 
-                    }
+                    else if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
+                        response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_MeterValuesRequestError(
+                                             Request,
+                                             jsonRequestError,
+                                             null
+                                         );
 
                     response ??= new MeterValuesResponse(
                                      Request,
@@ -139,9 +159,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = new MeterValuesResponse(
+                response = MeterValuesResponse.ExceptionOccured(
                                Request,
-                               Result.FromException(e)
+                               e
                            );
 
             }
@@ -162,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a MeterValues response was received.
         /// </summary>
-        public event OnMeterValuesResponseReceivedDelegate? OnMeterValuesResponseReceived;
+        public event OnMeterValuesResponseReceivedDelegate?  OnMeterValuesResponseReceived;
 
         #endregion
 
@@ -215,15 +235,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                      OfType <OnMeterValuesResponseReceivedDelegate>().
-                                                      Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                                     Timestamp.Now,
-                                                                                     parentNetworkingNode,
-                                                                                     //    WebSocketConnection,
-                                                                                     Request,
-                                                                                     response,
-                                                                                     response.Runtime
-                                                                                 )).
+                                                      OfType<OnMeterValuesResponseReceivedDelegate>().
+                                                      Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                    Timestamp.Now,
+                                                                                    parentNetworkingNode,
+                                                                                    //    WebSocketConnection,
+                                                                                    Request,
+                                                                                    response,
+                                                                                    response.Runtime
+                                                                                )).
                                                       ToArray());
 
                         }
@@ -247,12 +267,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = new MeterValuesResponse(
+                response = MeterValuesResponse.ExceptionOccured(
                                Request,
-                               Result.FromException(e)
+                               e
                            );
 
             }
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Receive MeterValuesRequestError
+
+        public async Task<MeterValuesResponse>
+
+            Receive_MeterValuesRequestError(MeterValuesRequest            Request,
+                                            OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                            IWebSocketConnection          WebSocketConnection)
+
+        {
+
+            var response = MeterValuesResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomMeterValuesResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
+
+            #region Send OnMeterValuesResponseReceived event
+
+            var logger = OnMeterValuesResponseReceived;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                           OfType<OnMeterValuesResponseReceivedDelegate>().
+                                           Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                          Timestamp.Now,
+                                                                          parentNetworkingNode,
+                                                                          //    WebSocketConnection,
+                                                                          Request,
+                                                                          response,
+                                                                          response.Runtime
+                                                                      )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnMeterValuesResponseReceived));
+                }
+            }
+
+            #endregion
 
             return response;
 
