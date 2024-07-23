@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,246 +32,276 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<CostUpdatedRequest>?       CustomCostUpdatedRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<CostUpdatedResponse>?  CustomCostUpdatedResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a cost updated websocket request was received.
+        /// An event sent whenever a CostUpdated request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                OnCostUpdatedWSRequest;
+        public event OnCostUpdatedRequestReceivedDelegate?  OnCostUpdatedRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a cost updated request was received.
+        /// An event sent whenever a CostUpdated request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnCostUpdatedRequestReceivedDelegate?     OnCostUpdatedRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a cost updated request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCostUpdatedDelegate?            OnCostUpdated;
-
-        /// <summary>
-        /// An event sent whenever a response to a cost updated request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCostUpdatedResponseSentDelegate?    OnCostUpdatedResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a cost updated request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?    OnCostUpdatedWSResponse;
+        public event OnCostUpdatedDelegate?                 OnCostUpdated;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_CostUpdated(DateTime                   RequestTimestamp,
+            Receive_CostUpdated(DateTime              RequestTimestamp,
                                 IWebSocketConnection  WebSocketConnection,
-                                NetworkingNode_Id          DestinationId,
-                                NetworkPath                NetworkPath,
-                                EventTracking_Id           EventTrackingId,
-                                Request_Id                 RequestId,
-                                JObject                    RequestJSON,
-                                CancellationToken          CancellationToken)
+                                NetworkingNode_Id     DestinationId,
+                                NetworkPath           NetworkPath,
+                                EventTracking_Id      EventTrackingId,
+                                Request_Id            RequestId,
+                                JObject               JSONRequest,
+                                CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnCostUpdatedWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnCostUpdatedWSRequest?.Invoke(startTime,
-                                               parentNetworkingNode,
-                                               WebSocketConnection,
-                                               DestinationId,
-                                               NetworkPath,
-                                               EventTrackingId,
-                                               RequestTimestamp,
-                                               RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCostUpdatedWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (CostUpdatedRequest.TryParse(RequestJSON,
+                if (CostUpdatedRequest.TryParse(JSONRequest,
                                                 RequestId,
                                                 DestinationId,
                                                 NetworkPath,
                                                 out var request,
                                                 out var errorResponse,
-                                                CustomCostUpdatedRequestParser)) {
+                                                RequestTimestamp,
+                                                parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                EventTrackingId,
+                                                parentNetworkingNode.OCPP.CustomCostUpdatedRequestParser)) {
 
-                    #region Send OnCostUpdatedRequest event
+                    CostUpdatedResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomCostUpdatedRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnCostUpdatedRequestReceived?.Invoke(Timestamp.Now,
-                                                     parentNetworkingNode,
-                                                     WebSocketConnection,
-                                                     request);
+                        response = CostUpdatedResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCostUpdatedRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnCostUpdatedRequestReceived event
+
+                    var logger = OnCostUpdatedRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnCostUpdatedRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnCostUpdatedRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    CostUpdatedResponse? response = null;
-
-                    var results = OnCostUpdated?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnCostUpdatedDelegate)?.Invoke(Timestamp.Now,
-                                                                                                             parentNetworkingNode,
-                                                                                                             WebSocketConnection,
-                                                                                                             request,
-                                                                                                             CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnCostUpdated?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnCostUpdatedDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : CostUpdatedResponse.Failed(request, $"Undefined {nameof(OnCostUpdated)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = CostUpdatedResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnCostUpdated),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= CostUpdatedResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnCostUpdatedResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnCostUpdatedResponseSent?.Invoke(Timestamp.Now,
-                                                      parentNetworkingNode,
-                                                      WebSocketConnection,
-                                                      request,
-                                                      response,
-                                                      response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCostUpdatedResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomCostUpdatedResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnCostUpdatedResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnCostUpdatedResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomCostUpdatedResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomCostUpdatedResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_CostUpdated)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_CostUpdated)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_CostUpdated)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnCostUpdatedWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnCostUpdatedWSResponse?.Invoke(endTime,
-                                                parentNetworkingNode,
-                                                WebSocketConnection,
-                                                DestinationId,
-                                                NetworkPath,
-                                                EventTrackingId,
-                                                RequestTimestamp,
-                                                RequestJSON,
-                                                OCPPResponse?.Payload,
-                                                OCPPErrorResponse?.ToJSON(),
-                                                endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_CostUpdated)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCostUpdatedWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a cost updated request was sent.
+        /// An event sent whenever a response to a CostUpdated was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnCostUpdatedResponseSentDelegate? OnCostUpdatedResponseSent;
+        public event OnCostUpdatedResponseSentDelegate?  OnCostUpdatedResponseSent;
+
+        #endregion
+
+        #region Send OnCostUpdatedResponse event
+
+        public async Task SendOnCostUpdatedResponseSent(DateTime              Timestamp,
+                                                        IEventSender          Sender,
+                                                        IWebSocketConnection  Connection,
+                                                        CostUpdatedRequest    Request,
+                                                        CostUpdatedResponse   Response,
+                                                        TimeSpan              Runtime)
+        {
+
+            var logger = OnCostUpdatedResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnCostUpdatedResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnCostUpdatedResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

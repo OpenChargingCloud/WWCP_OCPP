@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// An unlock connector response.
+    /// The UnlockConnector response.
     /// </summary>
     public class UnlockConnectorResponse : AResponse<CSMS.UnlockConnectorRequest,
                                                      UnlockConnectorResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the unlock connector request.
+        /// The success or failure of the UnlockConnector request.
         /// </summary>
         public UnlockStatus   Status        { get; }
 
@@ -73,10 +73,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region UnlockConnectorResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new unlock connector response.
+        /// Create a new UnlockConnector response.
         /// </summary>
-        /// <param name="Request">The unlock connector request leading to this response.</param>
-        /// <param name="Status">The success or failure of the unlock connector request.</param>
+        /// <param name="Request">The UnlockConnector request leading to this response.</param>
+        /// <param name="Status">The success or failure of the UnlockConnector request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -121,15 +121,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region UnlockConnectorResponse(Result)
 
         /// <summary>
-        /// Create a new unlock connector response.
+        /// Create a new UnlockConnector response.
         /// </summary>
-        /// <param name="Request">The unlock connector request leading to this response.</param>
+        /// <param name="Request">The UnlockConnector request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public UnlockConnectorResponse(CSMS.UnlockConnectorRequest  Request,
-                                       Result                       Result)
+                                       Result                       Result,
+                                       DateTime?                    ResponseTimestamp   = null,
+
+                                       NetworkingNode_Id?           DestinationId       = null,
+                                       NetworkPath?                 NetworkPath         = null,
+
+                                       IEnumerable<KeyPair>?        SignKeys            = null,
+                                       IEnumerable<SignInfo>?       SignInfos           = null,
+                                       IEnumerable<Signature>?      Signatures          = null,
+
+                                       CustomData?                  CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -219,11 +239,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomUnlockConnectorResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an unlock connector response.
+        /// Parse the given JSON representation of an UnlockConnector response.
         /// </summary>
-        /// <param name="Request">The unlock connector request leading to this response.</param>
+        /// <param name="Request">The UnlockConnector request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom unlock connector responses.</param>
+        /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom UnlockConnector responses.</param>
         public static UnlockConnectorResponse Parse(CSMS.UnlockConnectorRequest                            Request,
                                                     JObject                                                JSON,
                                                     CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null)
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return unlockConnectorResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of an unlock connector response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UnlockConnector response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -248,13 +268,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out UnlockConnectorResponse, out ErrorResponse, CustomUnlockConnectorResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an unlock connector response.
+        /// Try to parse the given JSON representation of an UnlockConnector response.
         /// </summary>
-        /// <param name="Request">The unlock connector request leading to this response.</param>
+        /// <param name="Request">The UnlockConnector request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="UnlockConnectorResponse">The parsed unlock connector response.</param>
+        /// <param name="UnlockConnectorResponse">The parsed UnlockConnector response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom unlock connector responses.</param>
+        /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom UnlockConnector responses.</param>
         public static Boolean TryParse(CSMS.UnlockConnectorRequest                            Request,
                                        JObject                                                JSON,
                                        [NotNullWhen(true)]  out UnlockConnectorResponse?      UnlockConnectorResponse,
@@ -344,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 UnlockConnectorResponse  = null;
-                ErrorResponse            = "The given JSON representation of an unlock connector response is invalid: " + e.Message;
+                ErrorResponse            = "The given JSON representation of an UnlockConnector response is invalid: " + e.Message;
                 return false;
             }
 
@@ -357,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUnlockConnectorResponseSerializer">A delegate to serialize custom unlock connector responses.</param>
+        /// <param name="CustomUnlockConnectorResponseSerializer">A delegate to serialize custom UnlockConnector responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -399,13 +419,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The unlock connector command failed.
+        /// The UnlockConnector failed because of a request error.
         /// </summary>
-        /// <param name="Request">The unlock connector request leading to this response.</param>
-        public static UnlockConnectorResponse Failed(CSMS.UnlockConnectorRequest Request)
+        /// <param name="Request">The UnlockConnector request.</param>
+        public static UnlockConnectorResponse RequestError(CSMS.UnlockConnectorRequest  Request,
+                                                           EventTracking_Id             EventTrackingId,
+                                                           ResultCode                   ErrorCode,
+                                                           String?                      ErrorDescription    = null,
+                                                           JObject?                     ErrorDetails        = null,
+                                                           DateTime?                    ResponseTimestamp   = null,
+
+                                                           NetworkingNode_Id?           DestinationId       = null,
+                                                           NetworkPath?                 NetworkPath         = null,
+
+                                                           IEnumerable<KeyPair>?        SignKeys            = null,
+                                                           IEnumerable<SignInfo>?       SignInfos           = null,
+                                                           IEnumerable<Signature>?      Signatures          = null,
+
+                                                           CustomData?                  CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The UnlockConnector failed.
+        /// </summary>
+        /// <param name="Request">The UnlockConnector request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static UnlockConnectorResponse SignatureError(CSMS.UnlockConnectorRequest  Request,
+                                                             String                       ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The UnlockConnector failed.
+        /// </summary>
+        /// <param name="Request">The UnlockConnector request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static UnlockConnectorResponse Failed(CSMS.UnlockConnectorRequest  Request,
+                                                     String?                      Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The UnlockConnector failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The UnlockConnector request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static UnlockConnectorResponse ExceptionOccured(CSMS.UnlockConnectorRequest  Request,
+                                                               Exception                    Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -415,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (UnlockConnectorResponse1, UnlockConnectorResponse2)
 
         /// <summary>
-        /// Compares two unlock connector responses for equality.
+        /// Compares two UnlockConnector responses for equality.
         /// </summary>
-        /// <param name="UnlockConnectorResponse1">An unlock connector response.</param>
-        /// <param name="UnlockConnectorResponse2">Another unlock connector response.</param>
+        /// <param name="UnlockConnectorResponse1">An UnlockConnector response.</param>
+        /// <param name="UnlockConnectorResponse2">Another UnlockConnector response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UnlockConnectorResponse? UnlockConnectorResponse1,
                                            UnlockConnectorResponse? UnlockConnectorResponse2)
@@ -441,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (UnlockConnectorResponse1, UnlockConnectorResponse2)
 
         /// <summary>
-        /// Compares two unlock connector responses for inequality.
+        /// Compares two UnlockConnector responses for inequality.
         /// </summary>
-        /// <param name="UnlockConnectorResponse1">An unlock connector response.</param>
-        /// <param name="UnlockConnectorResponse2">Another unlock connector response.</param>
+        /// <param name="UnlockConnectorResponse1">An UnlockConnector response.</param>
+        /// <param name="UnlockConnectorResponse2">Another UnlockConnector response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UnlockConnectorResponse? UnlockConnectorResponse1,
                                            UnlockConnectorResponse? UnlockConnectorResponse2)
@@ -460,9 +550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two unlock connector responses for equality.
+        /// Compares two UnlockConnector responses for equality.
         /// </summary>
-        /// <param name="UnlockConnectorResponse">An unlock connector response to compare with.</param>
+        /// <param name="UnlockConnectorResponse">An UnlockConnector response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UnlockConnectorResponse unlockConnectorResponse &&
@@ -473,9 +563,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(UnlockConnectorResponse)
 
         /// <summary>
-        /// Compares two unlock connector responses for equality.
+        /// Compares two UnlockConnector responses for equality.
         /// </summary>
-        /// <param name="UnlockConnectorResponse">An unlock connector response to compare with.</param>
+        /// <param name="UnlockConnectorResponse">An UnlockConnector response to compare with.</param>
         public override Boolean Equals(UnlockConnectorResponse? UnlockConnectorResponse)
 
             => UnlockConnectorResponse is not null &&

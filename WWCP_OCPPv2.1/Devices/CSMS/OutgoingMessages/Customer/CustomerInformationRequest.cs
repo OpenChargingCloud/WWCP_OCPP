@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The customer information request to retrieve raw customer information from a
+    /// The CustomerInformation request to retrieve raw CustomerInformation from a
     /// charging station to be compliant e.g. with local privacy laws.
     /// </summary>
     public class CustomerInformationRequest : ARequest<CustomerInformationRequest>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The unique identification of the customer information request.
+        /// The unique identification of the CustomerInformation request.
         /// </summary>
         [Mandatory]
         public Int64                 CustomerInformationRequestId    { get; }
@@ -108,10 +108,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new customer information request.
+        /// Create a new CustomerInformation request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
-        /// <param name="CustomerInformationRequestId">An unique identification of the customer information request.</param>
+        /// <param name="CustomerInformationRequestId">An unique identification of the CustomerInformation request.</param>
         /// <param name="Report">Whether the charging station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.</param>
         /// <param name="Clear">Whether the charging station should clear all information about the customer referred to.</param>
         /// <param name="CustomerIdentifier">An optional e.g. vendor specific identifier of the customer this request refers to. This field contains a custom identifier other than IdToken and Certificate.</param>
@@ -386,17 +386,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomCustomerInformationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a customer information request.
+        /// Parse the given JSON representation of a CustomerInformation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomCustomerInformationRequestParser">A delegate to parse custom customer information requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomCustomerInformationRequestParser">A delegate to parse custom CustomerInformation requests.</param>
         public static CustomerInformationRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
                                                        NetworkingNode_Id                                         DestinationId,
                                                        NetworkPath                                               NetworkPath,
+                                                       DateTime?                                                 RequestTimestamp                         = null,
+                                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                                       EventTracking_Id?                                         EventTrackingId                          = null,
                                                        CustomJObjectParserDelegate<CustomerInformationRequest>?  CustomCustomerInformationRequestParser   = null)
         {
 
@@ -406,12 +412,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var customerInformationRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomCustomerInformationRequestParser))
             {
                 return customerInformationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a customer information request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a CustomerInformation request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -421,22 +430,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out CustomerInformationRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a customer information request.
+        /// Try to parse the given JSON representation of a CustomerInformation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomerInformationRequest">The parsed customer information request.</param>
+        /// <param name="CustomerInformationRequest">The parsed CustomerInformation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCustomerInformationRequestParser">A delegate to parse custom customer information requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomCustomerInformationRequestParser">A delegate to parse custom CustomerInformation requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
                                        NetworkingNode_Id                                         DestinationId,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out CustomerInformationRequest?      CustomerInformationRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
-                                       CustomJObjectParserDelegate<CustomerInformationRequest>?  CustomCustomerInformationRequestParser)
+                                       DateTime?                                                 RequestTimestamp                         = null,
+                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                       EventTracking_Id?                                         EventTrackingId                          = null,
+                                       CustomJObjectParserDelegate<CustomerInformationRequest>?  CustomCustomerInformationRequestParser   = null)
         {
 
             try
@@ -568,9 +583,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  CustomData,
 
                                                  RequestId,
-                                                 null,
-                                                 null,
-                                                 null,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
                                                  NetworkPath
 
                                              );
@@ -585,7 +600,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 CustomerInformationRequest  = null;
-                ErrorResponse               = "The given JSON representation of a customer information request is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a CustomerInformation request is invalid: " + e.Message;
                 return false;
             }
 
@@ -598,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCustomerInformationRequestSerializer">A delegate to serialize custom customer information requests.</param>
+        /// <param name="CustomCustomerInformationRequestSerializer">A delegate to serialize custom CustomerInformation requests.</param>
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom IdTokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
@@ -657,10 +672,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (CustomerInformationRequest1, CustomerInformationRequest2)
 
         /// <summary>
-        /// Compares two customer information requests for equality.
+        /// Compares two CustomerInformation requests for equality.
         /// </summary>
-        /// <param name="CustomerInformationRequest1">A customer information request.</param>
-        /// <param name="CustomerInformationRequest2">Another customer information request.</param>
+        /// <param name="CustomerInformationRequest1">A CustomerInformation request.</param>
+        /// <param name="CustomerInformationRequest2">Another CustomerInformation request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CustomerInformationRequest? CustomerInformationRequest1,
                                            CustomerInformationRequest? CustomerInformationRequest2)
@@ -683,10 +698,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (CustomerInformationRequest1, CustomerInformationRequest2)
 
         /// <summary>
-        /// Compares two customer information requests for inequality.
+        /// Compares two CustomerInformation requests for inequality.
         /// </summary>
-        /// <param name="CustomerInformationRequest1">A customer information request.</param>
-        /// <param name="CustomerInformationRequest2">Another customer information request.</param>
+        /// <param name="CustomerInformationRequest1">A CustomerInformation request.</param>
+        /// <param name="CustomerInformationRequest2">Another CustomerInformation request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CustomerInformationRequest? CustomerInformationRequest1,
                                            CustomerInformationRequest? CustomerInformationRequest2)
@@ -702,9 +717,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two customer information requests for equality.
+        /// Compares two CustomerInformation requests for equality.
         /// </summary>
-        /// <param name="Object">A customer information request to compare with.</param>
+        /// <param name="Object">A CustomerInformation request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is CustomerInformationRequest customerInformationRequest &&
@@ -715,9 +730,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(CustomerInformationRequest)
 
         /// <summary>
-        /// Compares two customer information requests for equality.
+        /// Compares two CustomerInformation requests for equality.
         /// </summary>
-        /// <param name="CustomerInformationRequest">A customer information request to compare with.</param>
+        /// <param name="CustomerInformationRequest">A CustomerInformation request to compare with.</param>
         public override Boolean Equals(CustomerInformationRequest? CustomerInformationRequest)
 
             => CustomerInformationRequest is not null &&

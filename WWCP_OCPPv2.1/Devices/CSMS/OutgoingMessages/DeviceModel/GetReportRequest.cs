@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get report request.
+    /// The GetReport request.
     /// </summary>
     public class GetReportRequest : ARequest<GetReportRequest>,
                                     IRequest
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The get report request identification.
+        /// The GetReport request identification.
         /// </summary>
         [Mandatory]
         public Int32                           GetReportRequestId    { get; }
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get report request.
+        /// Create a new GetReport request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="GetReportRequestId">The charging station identification.</param>
@@ -313,17 +313,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetReportRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get report request.
+        /// Parse the given JSON representation of a GetReport request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetReportRequestParser">A delegate to parse custom get report requests.</param>
+        /// <param name="CustomGetReportRequestParser">A delegate to parse custom GetReport requests.</param>
         public static GetReportRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
                                              NetworkingNode_Id                               DestinationId,
                                              NetworkPath                                     NetworkPath,
+                                             DateTime?                                       RequestTimestamp               = null,
+                                             TimeSpan?                                       RequestTimeout                 = null,
+                                             EventTracking_Id?                               EventTrackingId                = null,
                                              CustomJObjectParserDelegate<GetReportRequest>?  CustomGetReportRequestParser   = null)
         {
 
@@ -333,12 +336,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getReportRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetReportRequestParser))
             {
                 return getReportRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get report request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetReport request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -348,22 +354,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetReportRequest, out ErrorResponse, CustomGetReportRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get report request.
+        /// Try to parse the given JSON representation of a GetReport request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetReportRequest">The parsed get report request.</param>
+        /// <param name="GetReportRequest">The parsed GetReport request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetReportRequestParser">A delegate to parse custom get report requests.</param>
+        /// <param name="CustomGetReportRequestParser">A delegate to parse custom GetReport requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
                                        NetworkingNode_Id                               DestinationId,
                                        NetworkPath                                     NetworkPath,
                                        [NotNullWhen(true)]  out GetReportRequest?      GetReportRequest,
                                        [NotNullWhen(false)] out String?                ErrorResponse,
-                                       CustomJObjectParserDelegate<GetReportRequest>?  CustomGetReportRequestParser)
+                                       DateTime?                                       RequestTimestamp               = null,
+                                       TimeSpan?                                       RequestTimeout                 = null,
+                                       EventTracking_Id?                               EventTrackingId                = null,
+                                       CustomJObjectParserDelegate<GetReportRequest>?  CustomGetReportRequestParser   = null)
         {
 
             try
@@ -374,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region GetReportRequestId    [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "get report request identification",
+                                         "GetReport request identification",
                                          out Int32 GetReportRequestId,
                                          out ErrorResponse))
                 {
@@ -454,9 +463,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        CustomData,
 
                                        RequestId,
-                                       null,
-                                       null,
-                                       null,
+                                       RequestTimestamp,
+                                       RequestTimeout,
+                                       EventTrackingId,
                                        NetworkPath
 
                                    );
@@ -471,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetReportRequest  = null;
-                ErrorResponse     = "The given JSON representation of a get report request is invalid: " + e.Message;
+                ErrorResponse     = "The given JSON representation of a GetReport request is invalid: " + e.Message;
                 return false;
             }
 
@@ -484,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetReportRequestSerializer">A delegate to serialize custom get report requests.</param>
+        /// <param name="CustomGetReportRequestSerializer">A delegate to serialize custom GetReport requests.</param>
         /// <param name="CustomComponentVariableSerializer">A delegate to serialize custom component variables.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
@@ -541,10 +550,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetReportRequest1, GetReportRequest2)
 
         /// <summary>
-        /// Compares two get report requests for equality.
+        /// Compares two GetReport requests for equality.
         /// </summary>
-        /// <param name="GetReportRequest1">A get report request.</param>
-        /// <param name="GetReportRequest2">Another get report request.</param>
+        /// <param name="GetReportRequest1">A GetReport request.</param>
+        /// <param name="GetReportRequest2">Another GetReport request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetReportRequest? GetReportRequest1,
                                            GetReportRequest? GetReportRequest2)
@@ -567,10 +576,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetReportRequest1, GetReportRequest2)
 
         /// <summary>
-        /// Compares two get report requests for inequality.
+        /// Compares two GetReport requests for inequality.
         /// </summary>
-        /// <param name="GetReportRequest1">A get report request.</param>
-        /// <param name="GetReportRequest2">Another get report request.</param>
+        /// <param name="GetReportRequest1">A GetReport request.</param>
+        /// <param name="GetReportRequest2">Another GetReport request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetReportRequest? GetReportRequest1,
                                            GetReportRequest? GetReportRequest2)
@@ -586,9 +595,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get report requests for equality.
+        /// Compares two GetReport requests for equality.
         /// </summary>
-        /// <param name="Object">A get report request to compare with.</param>
+        /// <param name="Object">A GetReport request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetReportRequest getReportRequest &&
@@ -599,9 +608,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetReportRequest)
 
         /// <summary>
-        /// Compares two get report requests for equality.
+        /// Compares two GetReport requests for equality.
         /// </summary>
-        /// <param name="GetReportRequest">A get report request to compare with.</param>
+        /// <param name="GetReportRequest">A GetReport request to compare with.</param>
         public override Boolean Equals(GetReportRequest? GetReportRequest)
 
             => GetReportRequest is not null &&

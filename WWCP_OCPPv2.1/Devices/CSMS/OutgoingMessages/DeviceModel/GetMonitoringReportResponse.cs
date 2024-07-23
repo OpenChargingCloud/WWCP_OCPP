@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A get monitoring report response.
+    /// The GetMonitoringReport response.
     /// </summary>
     public class GetMonitoringReportResponse : AResponse<CSMS.GetMonitoringReportRequest,
                                                          GetMonitoringReportResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the get monitoring report command.
+        /// The success or failure of the GetMonitoringReport command.
         /// </summary>
         [Mandatory]
         public GenericDeviceModelStatus  Status        { get; }
@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetMonitoringReportResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new get monitoring report response.
+        /// Create a new GetMonitoringReport response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Status">The success or failure of the get monitoring report command.</param>
+        /// <param name="Status">The success or failure of the GetMonitoringReport command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetMonitoringReportResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get monitoring report response.
+        /// Create a new GetMonitoringReport response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetMonitoringReportResponse(CSMS.GetMonitoringReportRequest  Request,
-                                           Result                           Result)
+                                           Result                           Result,
+                                           DateTime?                        ResponseTimestamp   = null,
+
+                                           NetworkingNode_Id?               DestinationId       = null,
+                                           NetworkPath?                     NetworkPath         = null,
+
+                                           IEnumerable<KeyPair>?            SignKeys            = null,
+                                           IEnumerable<SignInfo>?           SignInfos           = null,
+                                           IEnumerable<Signature>?          Signatures          = null,
+
+                                           CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -220,11 +240,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomGetMonitoringReportResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get monitoring report response.
+        /// Parse the given JSON representation of a GetMonitoringReport response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetMonitoringReportResponseParser">A delegate to parse custom get monitoring report responses.</param>
+        /// <param name="CustomGetMonitoringReportResponseParser">A delegate to parse custom GetMonitoringReport responses.</param>
         public static GetMonitoringReportResponse Parse(CSMS.GetMonitoringReportRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<GetMonitoringReportResponse>?  CustomGetMonitoringReportResponseParser   = null)
@@ -239,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return getMonitoringReportResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get monitoring report response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetMonitoringReport response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -249,13 +269,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out GetMonitoringReportResponse, out ErrorResponse, CustomGetMonitoringReportResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get monitoring report response.
+        /// Try to parse the given JSON representation of a GetMonitoringReport response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetMonitoringReportResponse">The parsed get monitoring report response.</param>
+        /// <param name="GetMonitoringReportResponse">The parsed GetMonitoringReport response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetMonitoringReportResponseParser">A delegate to parse custom get monitoring report responses.</param>
+        /// <param name="CustomGetMonitoringReportResponseParser">A delegate to parse custom GetMonitoringReport responses.</param>
         public static Boolean TryParse(CSMS.GetMonitoringReportRequest                            Request,
                                        JObject                                                    JSON,
                                        [NotNullWhen(true)]  out GetMonitoringReportResponse?      GetMonitoringReportResponse,
@@ -271,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "get monitoring report status",
+                                         "GetMonitoringReport status",
                                          GenericDeviceModelStatusExtensions.TryParse,
                                          out GenericDeviceModelStatus Status,
                                          out ErrorResponse))
@@ -345,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 GetMonitoringReportResponse  = null;
-                ErrorResponse                = "The given JSON representation of a get monitoring report response is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a GetMonitoringReport response is invalid: " + e.Message;
                 return false;
             }
 
@@ -358,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetMonitoringReportResponseSerializer">A delegate to serialize custom get monitoring report responses.</param>
+        /// <param name="CustomGetMonitoringReportResponseSerializer">A delegate to serialize custom GetMonitoringReport responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -400,13 +420,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The get monitoring report command failed.
+        /// The GetMonitoringReport failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get monitoring report request leading to this response.</param>
-        public static GetMonitoringReportResponse Failed(CSMS.GetMonitoringReportRequest Request)
+        /// <param name="Request">The GetMonitoringReport request.</param>
+        public static GetMonitoringReportResponse RequestError(CSMS.GetMonitoringReportRequest  Request,
+                                                               EventTracking_Id                 EventTrackingId,
+                                                               ResultCode                       ErrorCode,
+                                                               String?                          ErrorDescription    = null,
+                                                               JObject?                         ErrorDetails        = null,
+                                                               DateTime?                        ResponseTimestamp   = null,
+
+                                                               NetworkingNode_Id?               DestinationId       = null,
+                                                               NetworkPath?                     NetworkPath         = null,
+
+                                                               IEnumerable<KeyPair>?            SignKeys            = null,
+                                                               IEnumerable<SignInfo>?           SignInfos           = null,
+                                                               IEnumerable<Signature>?          Signatures          = null,
+
+                                                               CustomData?                      CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetMonitoringReport failed.
+        /// </summary>
+        /// <param name="Request">The GetMonitoringReport request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetMonitoringReportResponse SignatureError(CSMS.GetMonitoringReportRequest  Request,
+                                                                 String                           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetMonitoringReport failed.
+        /// </summary>
+        /// <param name="Request">The GetMonitoringReport request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetMonitoringReportResponse Failed(CSMS.GetMonitoringReportRequest  Request,
+                                                         String?                          Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetMonitoringReport failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetMonitoringReport request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetMonitoringReportResponse ExceptionOccured(CSMS.GetMonitoringReportRequest  Request,
+                                                                   Exception                        Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -416,10 +506,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (GetMonitoringReportResponse1, GetMonitoringReportResponse2)
 
         /// <summary>
-        /// Compares two get monitoring report responses for equality.
+        /// Compares two GetMonitoringReport responses for equality.
         /// </summary>
-        /// <param name="GetMonitoringReportResponse1">A get monitoring report response.</param>
-        /// <param name="GetMonitoringReportResponse2">Another get monitoring report response.</param>
+        /// <param name="GetMonitoringReportResponse1">A GetMonitoringReport response.</param>
+        /// <param name="GetMonitoringReportResponse2">Another GetMonitoringReport response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetMonitoringReportResponse? GetMonitoringReportResponse1,
                                            GetMonitoringReportResponse? GetMonitoringReportResponse2)
@@ -442,10 +532,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (GetMonitoringReportResponse1, GetMonitoringReportResponse2)
 
         /// <summary>
-        /// Compares two get monitoring report responses for inequality.
+        /// Compares two GetMonitoringReport responses for inequality.
         /// </summary>
-        /// <param name="GetMonitoringReportResponse1">A get monitoring report response.</param>
-        /// <param name="GetMonitoringReportResponse2">Another get monitoring report response.</param>
+        /// <param name="GetMonitoringReportResponse1">A GetMonitoringReport response.</param>
+        /// <param name="GetMonitoringReportResponse2">Another GetMonitoringReport response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetMonitoringReportResponse? GetMonitoringReportResponse1,
                                            GetMonitoringReportResponse? GetMonitoringReportResponse2)
@@ -461,9 +551,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get monitoring report responses for equality.
+        /// Compares two GetMonitoringReport responses for equality.
         /// </summary>
-        /// <param name="Object">A get monitoring report response to compare with.</param>
+        /// <param name="Object">A GetMonitoringReport response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetMonitoringReportResponse getMonitoringReportResponse &&
@@ -474,9 +564,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(GetMonitoringReportResponse)
 
         /// <summary>
-        /// Compares two get monitoring report responses for equality.
+        /// Compares two GetMonitoringReport responses for equality.
         /// </summary>
-        /// <param name="GetMonitoringReportResponse">A get monitoring report response to compare with.</param>
+        /// <param name="GetMonitoringReportResponse">A GetMonitoringReport response to compare with.</param>
         public override Boolean Equals(GetMonitoringReportResponse? GetMonitoringReportResponse)
 
             => GetMonitoringReportResponse is not null &&

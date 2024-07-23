@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A request stop transaction response.
+    /// The RequestStopTransaction response.
     /// </summary>
     public class RequestStopTransactionResponse : AResponse<CSMS.RequestStopTransactionRequest,
                                                             RequestStopTransactionResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region RequestStopTransactionResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new request stop transaction response.
+        /// Create a new RequestStopTransaction response.
         /// </summary>
-        /// <param name="Request">The request stop transaction request leading to this response.</param>
+        /// <param name="Request">The RequestStopTransaction request leading to this response.</param>
         /// <param name="Status">The status indicating whether the charging station accepts the request to stop the charging transaction.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region RequestStopTransactionResponse(Request, Result)
 
         /// <summary>
-        /// Create a new request stop transaction response.
+        /// Create a new RequestStopTransaction response.
         /// </summary>
-        /// <param name="Request">The request stop transaction request leading to this response.</param>
+        /// <param name="Request">The RequestStopTransaction request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public RequestStopTransactionResponse(CSMS.RequestStopTransactionRequest  Request,
-                                              Result                              Result)
+                                              Result                              Result,
+                                              DateTime?                           ResponseTimestamp   = null,
+
+                                              NetworkingNode_Id?                  DestinationId       = null,
+                                              NetworkPath?                        NetworkPath         = null,
+
+                                              IEnumerable<KeyPair>?               SignKeys            = null,
+                                              IEnumerable<SignInfo>?              SignInfos           = null,
+                                              IEnumerable<Signature>?             Signatures          = null,
+
+                                              CustomData?                         CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -218,11 +238,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomRequestStopTransactionResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a request stop transaction response.
+        /// Parse the given JSON representation of a RequestStopTransaction response.
         /// </summary>
-        /// <param name="Request">The request stop transaction request leading to this response.</param>
+        /// <param name="Request">The RequestStopTransaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomRequestStopTransactionResponseParser">A delegate to parse custom request stop transaction responses.</param>
+        /// <param name="CustomRequestStopTransactionResponseParser">A delegate to parse custom RequestStopTransaction responses.</param>
         public static RequestStopTransactionResponse Parse(CSMS.RequestStopTransactionRequest                            Request,
                                                            JObject                                                       JSON,
                                                            CustomJObjectParserDelegate<RequestStopTransactionResponse>?  CustomRequestStopTransactionResponseParser   = null)
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return requestStopTransactionResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a request stop transaction response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a RequestStopTransaction response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,13 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out RequestStopTransactionResponse, out ErrorResponse, CustomRequestStopTransactionResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a request stop transaction response.
+        /// Try to parse the given JSON representation of a RequestStopTransaction response.
         /// </summary>
-        /// <param name="Request">The request stop transaction request leading to this response.</param>
+        /// <param name="Request">The RequestStopTransaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestStopTransactionResponse">The parsed request stop transaction response.</param>
+        /// <param name="RequestStopTransactionResponse">The parsed RequestStopTransaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRequestStopTransactionResponseParser">A delegate to parse custom request stop transaction responses.</param>
+        /// <param name="CustomRequestStopTransactionResponseParser">A delegate to parse custom RequestStopTransaction responses.</param>
         public static Boolean TryParse(CSMS.RequestStopTransactionRequest                            Request,
                                        JObject                                                       JSON,
                                        [NotNullWhen(true)]  out RequestStopTransactionResponse?      RequestStopTransactionResponse,
@@ -343,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 RequestStopTransactionResponse  = null;
-                ErrorResponse                   = "The given JSON representation of a request stop transaction response is invalid: " + e.Message;
+                ErrorResponse                   = "The given JSON representation of a RequestStopTransaction response is invalid: " + e.Message;
                 return false;
             }
 
@@ -356,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomRequestStopTransactionResponseSerializer">A delegate to serialize custom request stop transaction responses.</param>
+        /// <param name="CustomRequestStopTransactionResponseSerializer">A delegate to serialize custom RequestStopTransaction responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -398,13 +418,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The stop transaction failed.
+        /// The RequestStopTransaction failed because of a request error.
         /// </summary>
-        /// <param name="Request">The request stop transaction request leading to this response.</param>
-        public static RequestStopTransactionResponse Failed(CSMS.RequestStopTransactionRequest  Request)
+        /// <param name="Request">The RequestStopTransaction request.</param>
+        public static RequestStopTransactionResponse RequestError(CSMS.RequestStopTransactionRequest  Request,
+                                                                  EventTracking_Id                    EventTrackingId,
+                                                                  ResultCode                          ErrorCode,
+                                                                  String?                             ErrorDescription    = null,
+                                                                  JObject?                            ErrorDetails        = null,
+                                                                  DateTime?                           ResponseTimestamp   = null,
+
+                                                                  NetworkingNode_Id?                  DestinationId       = null,
+                                                                  NetworkPath?                        NetworkPath         = null,
+
+                                                                  IEnumerable<KeyPair>?               SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?              SignInfos           = null,
+                                                                  IEnumerable<Signature>?             Signatures          = null,
+
+                                                                  CustomData?                         CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The RequestStopTransaction failed.
+        /// </summary>
+        /// <param name="Request">The RequestStopTransaction request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static RequestStopTransactionResponse SignatureError(CSMS.RequestStopTransactionRequest  Request,
+                                                                    String                              ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The RequestStopTransaction failed.
+        /// </summary>
+        /// <param name="Request">The RequestStopTransaction request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static RequestStopTransactionResponse Failed(CSMS.RequestStopTransactionRequest  Request,
+                                                            String?                             Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The RequestStopTransaction failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The RequestStopTransaction request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static RequestStopTransactionResponse ExceptionOccured(CSMS.RequestStopTransactionRequest  Request,
+                                                                      Exception                           Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -414,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (RequestStopTransactionResponse1, RequestStopTransactionResponse2)
 
         /// <summary>
-        /// Compares two request stop transaction responses for equality.
+        /// Compares two RequestStopTransaction responses for equality.
         /// </summary>
-        /// <param name="RequestStopTransactionResponse1">A request stop transaction response.</param>
-        /// <param name="RequestStopTransactionResponse2">Another request stop transaction response.</param>
+        /// <param name="RequestStopTransactionResponse1">A RequestStopTransaction response.</param>
+        /// <param name="RequestStopTransactionResponse2">Another RequestStopTransaction response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RequestStopTransactionResponse? RequestStopTransactionResponse1,
                                            RequestStopTransactionResponse? RequestStopTransactionResponse2)
@@ -440,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (RequestStopTransactionResponse1, RequestStopTransactionResponse2)
 
         /// <summary>
-        /// Compares two request stop transaction responses for inequality.
+        /// Compares two RequestStopTransaction responses for inequality.
         /// </summary>
-        /// <param name="RequestStopTransactionResponse1">A request stop transaction response.</param>
-        /// <param name="RequestStopTransactionResponse2">Another request stop transaction response.</param>
+        /// <param name="RequestStopTransactionResponse1">A RequestStopTransaction response.</param>
+        /// <param name="RequestStopTransactionResponse2">Another RequestStopTransaction response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RequestStopTransactionResponse? RequestStopTransactionResponse1,
                                            RequestStopTransactionResponse? RequestStopTransactionResponse2)
@@ -459,9 +549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two request stop transaction responses for equality.
+        /// Compares two RequestStopTransaction responses for equality.
         /// </summary>
-        /// <param name="Object">A request stop transaction response to compare with.</param>
+        /// <param name="Object">A RequestStopTransaction response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is RequestStopTransactionResponse requestStopTransactionResponse &&
@@ -472,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(RequestStopTransactionResponse)
 
         /// <summary>
-        /// Compares two request stop transaction responses for equality.
+        /// Compares two RequestStopTransaction responses for equality.
         /// </summary>
-        /// <param name="RequestStopTransactionResponse">A request stop transaction response to compare with.</param>
+        /// <param name="RequestStopTransactionResponse">A RequestStopTransaction response to compare with.</param>
         public override Boolean Equals(RequestStopTransactionResponse? RequestStopTransactionResponse)
 
             => RequestStopTransactionResponse is not null &&

@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,279 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<GetLogRequest>?       CustomGetLogRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetLogResponse>?  CustomGetLogResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a get log websocket request was received.
+        /// An event sent whenever a GetLog request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                OnGetLogWSRequest;
+        public event OnGetLogRequestReceivedDelegate?  OnGetLogRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a get log request was received.
+        /// An event sent whenever a GetLog request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetLogRequestReceivedDelegate?          OnGetLogRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a get log request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetLogDelegate?                 OnGetLog;
-
-        /// <summary>
-        /// An event sent whenever a response to a get log request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetLogResponseSentDelegate?         OnGetLogResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a get log request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?    OnGetLogWSResponse;
+        public event OnGetLogDelegate?                 OnGetLog;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_GetLog(DateTime                   RequestTimestamp,
+            Receive_GetLog(DateTime              RequestTimestamp,
                            IWebSocketConnection  WebSocketConnection,
-                           NetworkingNode_Id          DestinationId,
-                           NetworkPath                NetworkPath,
-                           EventTracking_Id           EventTrackingId,
-                           Request_Id                 RequestId,
-                           JObject                    RequestJSON,
-                           CancellationToken          CancellationToken)
+                           NetworkingNode_Id     DestinationId,
+                           NetworkPath           NetworkPath,
+                           EventTracking_Id      EventTrackingId,
+                           Request_Id            RequestId,
+                           JObject               JSONRequest,
+                           CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnGetLogWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnGetLogWSRequest?.Invoke(startTime,
-                                          parentNetworkingNode,
-                                          WebSocketConnection,
-                                          DestinationId,
-                                          NetworkPath,
-                                          EventTrackingId,
-                                          RequestTimestamp,
-                                          RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetLogWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (GetLogRequest.TryParse(RequestJSON,
+                if (GetLogRequest.TryParse(JSONRequest,
                                            RequestId,
                                            DestinationId,
                                            NetworkPath,
                                            out var request,
                                            out var errorResponse,
-                                           CustomGetLogRequestParser)) {
+                                           RequestTimestamp,
+                                           parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                           EventTrackingId,
+                                           parentNetworkingNode.OCPP.CustomGetLogRequestParser)) {
 
-                    #region Send OnGetLogRequest event
+                    GetLogResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetLogRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomLogParametersSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnGetLogRequestReceived?.Invoke(Timestamp.Now,
-                                                parentNetworkingNode,
-                                                WebSocketConnection,
-                                                request);
+                        response = GetLogResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetLogRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnGetLogRequestReceived event
+
+                    var logger = OnGetLogRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnGetLogRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetLogRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    GetLogResponse? response = null;
-
-                    var results = OnGetLog?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnGetLogDelegate)?.Invoke(Timestamp.Now,
-                                                                                                        parentNetworkingNode,
-                                                                                                        WebSocketConnection,
-                                                                                                        request,
-                                                                                                        CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnGetLog?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnGetLogDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : GetLogResponse.Failed(request, $"Undefined {nameof(OnGetLog)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = GetLogResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetLog),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= GetLogResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnGetLogResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnGetLogResponseSent?.Invoke(Timestamp.Now,
-                                                 parentNetworkingNode,
-                                                 WebSocketConnection,
-                                                 request,
-                                                 response,
-                                                 response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetLogResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetLogResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnGetLogResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnGetLogResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomGetLogResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomGetLogResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_GetLog)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_GetLog)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_GetLog)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnGetLogWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnGetLogWSResponse?.Invoke(endTime,
-                                           parentNetworkingNode,
-                                           WebSocketConnection,
-                                           DestinationId,
-                                           NetworkPath,
-                                           EventTrackingId,
-                                           RequestTimestamp,
-                                           RequestJSON,
-                                           OCPPResponse?.Payload,
-                                           OCPPErrorResponse?.ToJSON(),
-                                           endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_GetLog)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetLogWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a get log request was sent.
+        /// An event sent whenever a response to a GetLog was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetLogResponseSentDelegate? OnGetLogResponseSent;
+        public event OnGetLogResponseSentDelegate?  OnGetLogResponseSent;
+
+        #endregion
+
+        #region Send OnGetLogResponse event
+
+        public async Task SendOnGetLogResponseSent(DateTime              Timestamp,
+                                                      IEventSender          Sender,
+                                                      IWebSocketConnection  Connection,
+                                                      GetLogRequest      Request,
+                                                      GetLogResponse     Response,
+                                                      TimeSpan              Runtime)
+        {
+
+            var logger = OnGetLogResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnGetLogResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnGetLogResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

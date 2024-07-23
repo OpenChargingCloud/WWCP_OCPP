@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get monitoring report request.
+    /// The GetMonitoringReport request.
     /// </summary>
     public class GetMonitoringReportRequest : ARequest<GetMonitoringReportRequest>,
                                               IRequest
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The get monitoring report request identification.
+        /// The GetMonitoringReport request identification.
         /// </summary>
         [Mandatory]
         public Int32                             GetMonitoringReportRequestId    { get; }
@@ -77,10 +77,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get monitoring report request.
+        /// Create a new GetMonitoringReport request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
-        /// <param name="GetMonitoringReportRequestId">A get monitoring report request identification.</param>
+        /// <param name="GetMonitoringReportRequestId">A GetMonitoringReport request identification.</param>
         /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
         /// 
@@ -322,17 +322,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetMonitoringReportRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get monitoring report request.
+        /// Parse the given JSON representation of a GetMonitoringReport request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetMonitoringReportRequestParser">A delegate to parse custom get monitoring report requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetMonitoringReportRequestParser">A delegate to parse custom GetMonitoringReport requests.</param>
         public static GetMonitoringReportRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
                                                        NetworkingNode_Id                                         DestinationId,
                                                        NetworkPath                                               NetworkPath,
+                                                       DateTime?                                                 RequestTimestamp                         = null,
+                                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                                       EventTracking_Id?                                         EventTrackingId                          = null,
                                                        CustomJObjectParserDelegate<GetMonitoringReportRequest>?  CustomGetMonitoringReportRequestParser   = null)
         {
 
@@ -342,12 +348,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getMonitoringReportRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetMonitoringReportRequestParser))
             {
                 return getMonitoringReportRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get monitoring report request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetMonitoringReport request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -357,22 +366,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetMonitoringReportRequest, out ErrorResponse, CustomGetMonitoringReportRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get monitoring report request.
+        /// Try to parse the given JSON representation of a GetMonitoringReport request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetMonitoringReportRequest">The parsed get monitoring report request.</param>
+        /// <param name="GetMonitoringReportRequest">The parsed GetMonitoringReport request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetMonitoringReportRequestParser">A delegate to parse custom get monitoring report requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetMonitoringReportRequestParser">A delegate to parse custom GetMonitoringReport requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
                                        NetworkingNode_Id                                         DestinationId,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out GetMonitoringReportRequest?      GetMonitoringReportRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
-                                       CustomJObjectParserDelegate<GetMonitoringReportRequest>?  CustomGetMonitoringReportRequestParser)
+                                       DateTime?                                                 RequestTimestamp                         = null,
+                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                       EventTracking_Id?                                         EventTrackingId                          = null,
+                                       CustomJObjectParserDelegate<GetMonitoringReportRequest>?  CustomGetMonitoringReportRequestParser   = null)
         {
 
             try
@@ -383,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region GetMonitoringReportRequestId    [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "get monitoring report request identification",
+                                         "GetMonitoringReport request identification",
                                          out Int32 GetMonitoringReportRequestId,
                                          out ErrorResponse))
                 {
@@ -461,9 +476,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  CustomData,
 
                                                  RequestId,
-                                                 null,
-                                                 null,
-                                                 null,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
                                                  NetworkPath
 
                                              );
@@ -478,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetMonitoringReportRequest  = null;
-                ErrorResponse               = "The given JSON representation of a get monitoring report request is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a GetMonitoringReport request is invalid: " + e.Message;
                 return false;
             }
 
@@ -491,7 +506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetMonitoringReportRequestSerializer">A delegate to serialize custom get monitoring report requests.</param>
+        /// <param name="CustomGetMonitoringReportRequestSerializer">A delegate to serialize custom GetMonitoringReport requests.</param>
         /// <param name="CustomComponentVariableSerializer">A delegate to serialize custom component variables.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
@@ -544,10 +559,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetMonitoringReportRequest1, GetMonitoringReportRequest2)
 
         /// <summary>
-        /// Compares two get monitoring report requests for equality.
+        /// Compares two GetMonitoringReport requests for equality.
         /// </summary>
-        /// <param name="GetMonitoringReportRequest1">A get monitoring report request.</param>
-        /// <param name="GetMonitoringReportRequest2">Another get monitoring report request.</param>
+        /// <param name="GetMonitoringReportRequest1">A GetMonitoringReport request.</param>
+        /// <param name="GetMonitoringReportRequest2">Another GetMonitoringReport request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetMonitoringReportRequest? GetMonitoringReportRequest1,
                                            GetMonitoringReportRequest? GetMonitoringReportRequest2)
@@ -570,10 +585,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetMonitoringReportRequest1, GetMonitoringReportRequest2)
 
         /// <summary>
-        /// Compares two get monitoring report requests for inequality.
+        /// Compares two GetMonitoringReport requests for inequality.
         /// </summary>
-        /// <param name="GetMonitoringReportRequest1">A get monitoring report request.</param>
-        /// <param name="GetMonitoringReportRequest2">Another get monitoring report request.</param>
+        /// <param name="GetMonitoringReportRequest1">A GetMonitoringReport request.</param>
+        /// <param name="GetMonitoringReportRequest2">Another GetMonitoringReport request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetMonitoringReportRequest? GetMonitoringReportRequest1,
                                            GetMonitoringReportRequest? GetMonitoringReportRequest2)
@@ -589,9 +604,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get monitoring report requests for equality.
+        /// Compares two GetMonitoringReport requests for equality.
         /// </summary>
-        /// <param name="Object">A get monitoring report request to compare with.</param>
+        /// <param name="Object">A GetMonitoringReport request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetMonitoringReportRequest getMonitoringReportRequest &&
@@ -602,9 +617,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetMonitoringReportRequest)
 
         /// <summary>
-        /// Compares two get monitoring report requests for equality.
+        /// Compares two GetMonitoringReport requests for equality.
         /// </summary>
-        /// <param name="GetMonitoringReportRequest">A get monitoring report request to compare with.</param>
+        /// <param name="GetMonitoringReportRequest">A GetMonitoringReport request to compare with.</param>
         public override Boolean Equals(GetMonitoringReportRequest? GetMonitoringReportRequest)
 
             => GetMonitoringReportRequest is not null &&

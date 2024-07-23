@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A get charging profiles response.
+    /// The GetChargingProfiles response.
     /// </summary>
     public class GetChargingProfilesResponse : AResponse<CSMS.GetChargingProfilesRequest,
                                                          GetChargingProfilesResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetChargingProfilesResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new get charging profiles response.
+        /// Create a new GetChargingProfiles response.
         /// </summary>
-        /// <param name="Request">The get charging profiles request leading to this response.</param>
+        /// <param name="Request">The GetChargingProfiles request leading to this response.</param>
         /// <param name="Status">Whether the charging station is able to accept this request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetChargingProfilesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get charging profiles response.
+        /// Create a new GetChargingProfiles response.
         /// </summary>
-        /// <param name="Request">The get charging profiles request leading to this response.</param>
+        /// <param name="Request">The GetChargingProfiles request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetChargingProfilesResponse(CSMS.GetChargingProfilesRequest  Request,
-                                           Result                           Result)
+                                           Result                           Result,
+                                           DateTime?                        ResponseTimestamp   = null,
+
+                                           NetworkingNode_Id?               DestinationId       = null,
+                                           NetworkPath?                     NetworkPath         = null,
+
+                                           IEnumerable<KeyPair>?            SignKeys            = null,
+                                           IEnumerable<SignInfo>?           SignInfos           = null,
+                                           IEnumerable<Signature>?          Signatures          = null,
+
+                                           CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -218,9 +238,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomGetChargingProfilesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get charging profiles response.
+        /// Parse the given JSON representation of a GetChargingProfiles response.
         /// </summary>
-        /// <param name="Request">The get charging profiles request leading to this response.</param>
+        /// <param name="Request">The GetChargingProfiles request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetChargingProfilesResponse Parse(CSMS.GetChargingProfilesRequest                            Request,
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return getChargingProfilesResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get charging profiles response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetChargingProfiles response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,13 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out GetChargingProfilesResponse, out ErrorResponse, CustomGetChargingProfilesResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get charging profiles response.
+        /// Try to parse the given JSON representation of a GetChargingProfiles response.
         /// </summary>
-        /// <param name="Request">The get charging profiles request leading to this response.</param>
+        /// <param name="Request">The GetChargingProfiles request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetChargingProfilesResponse">The parsed get charging profiles response.</param>
+        /// <param name="GetChargingProfilesResponse">The parsed GetChargingProfiles response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetChargingProfilesResponseParser">A delegate to parse custom get charging profiles responses.</param>
+        /// <param name="CustomGetChargingProfilesResponseParser">A delegate to parse custom GetChargingProfiles responses.</param>
         public static Boolean TryParse(CSMS.GetChargingProfilesRequest                            Request,
                                        JObject                                                    JSON,
                                        [NotNullWhen(true)]  out GetChargingProfilesResponse?      GetChargingProfilesResponse,
@@ -343,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 GetChargingProfilesResponse  = null;
-                ErrorResponse                = "The given JSON representation of a get charging profiles response is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a GetChargingProfiles response is invalid: " + e.Message;
                 return false;
             }
 
@@ -356,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetChargingProfilesResponseSerializer">A delegate to serialize custom get charging profiles responses.</param>
+        /// <param name="CustomGetChargingProfilesResponseSerializer">A delegate to serialize custom GetChargingProfiles responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -398,13 +418,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The get charging profiles command failed.
+        /// The GetChargingProfiles failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get charging profiles request leading to this response.</param>
-        public static GetChargingProfilesResponse Failed(CSMS.GetChargingProfilesRequest Request)
+        /// <param name="Request">The GetChargingProfiles request.</param>
+        public static GetChargingProfilesResponse RequestError(CSMS.GetChargingProfilesRequest  Request,
+                                                               EventTracking_Id                 EventTrackingId,
+                                                               ResultCode                       ErrorCode,
+                                                               String?                          ErrorDescription    = null,
+                                                               JObject?                         ErrorDetails        = null,
+                                                               DateTime?                        ResponseTimestamp   = null,
+
+                                                               NetworkingNode_Id?               DestinationId       = null,
+                                                               NetworkPath?                     NetworkPath         = null,
+
+                                                               IEnumerable<KeyPair>?            SignKeys            = null,
+                                                               IEnumerable<SignInfo>?           SignInfos           = null,
+                                                               IEnumerable<Signature>?          Signatures          = null,
+
+                                                               CustomData?                      CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetChargingProfiles failed.
+        /// </summary>
+        /// <param name="Request">The GetChargingProfiles request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetChargingProfilesResponse SignatureError(CSMS.GetChargingProfilesRequest  Request,
+                                                                 String                           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetChargingProfiles failed.
+        /// </summary>
+        /// <param name="Request">The GetChargingProfiles request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetChargingProfilesResponse Failed(CSMS.GetChargingProfilesRequest  Request,
+                                                         String?                          Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetChargingProfiles failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetChargingProfiles request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetChargingProfilesResponse ExceptionOccured(CSMS.GetChargingProfilesRequest  Request,
+                                                                   Exception                        Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -414,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (GetChargingProfilesResponse1, GetChargingProfilesResponse2)
 
         /// <summary>
-        /// Compares two get charging profiles responses for equality.
+        /// Compares two GetChargingProfiles responses for equality.
         /// </summary>
-        /// <param name="GetChargingProfilesResponse1">A get charging profiles response.</param>
-        /// <param name="GetChargingProfilesResponse2">Another get charging profiles response.</param>
+        /// <param name="GetChargingProfilesResponse1">A GetChargingProfiles response.</param>
+        /// <param name="GetChargingProfilesResponse2">Another GetChargingProfiles response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetChargingProfilesResponse? GetChargingProfilesResponse1,
                                            GetChargingProfilesResponse? GetChargingProfilesResponse2)
@@ -440,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (GetChargingProfilesResponse1, GetChargingProfilesResponse2)
 
         /// <summary>
-        /// Compares two get charging profiles responses for inequality.
+        /// Compares two GetChargingProfiles responses for inequality.
         /// </summary>
-        /// <param name="GetChargingProfilesResponse1">A get charging profiles response.</param>
-        /// <param name="GetChargingProfilesResponse2">Another get charging profiles response.</param>
+        /// <param name="GetChargingProfilesResponse1">A GetChargingProfiles response.</param>
+        /// <param name="GetChargingProfilesResponse2">Another GetChargingProfiles response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetChargingProfilesResponse? GetChargingProfilesResponse1,
                                            GetChargingProfilesResponse? GetChargingProfilesResponse2)
@@ -459,9 +549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get charging profiles responses for equality.
+        /// Compares two GetChargingProfiles responses for equality.
         /// </summary>
-        /// <param name="Object">A get charging profiles response to compare with.</param>
+        /// <param name="Object">A GetChargingProfiles response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetChargingProfilesResponse getChargingProfilesResponse &&
@@ -472,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(GetChargingProfilesResponse)
 
         /// <summary>
-        /// Compares two get charging profiles responses for equality.
+        /// Compares two GetChargingProfiles responses for equality.
         /// </summary>
-        /// <param name="GetChargingProfilesResponse">A get charging profiles response to compare with.</param>
+        /// <param name="GetChargingProfilesResponse">A GetChargingProfiles response to compare with.</param>
         public override Boolean Equals(GetChargingProfilesResponse? GetChargingProfilesResponse)
 
             => GetChargingProfilesResponse is not null &&

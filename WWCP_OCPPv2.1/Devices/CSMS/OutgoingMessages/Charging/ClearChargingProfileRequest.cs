@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The clear charging profile request.
+    /// The ClearChargingProfile request.
     /// </summary>
     public class ClearChargingProfileRequest : ARequest<ClearChargingProfileRequest>,
                                                IRequest
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new clear charging profile request.
+        /// Create a new ClearChargingProfile request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="ChargingProfileId">An optional identification of the charging profile to clear.</param>
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "evseId": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nSpecifies the id of the EVSE for which to clear charging profiles. An evseId of zero (0) specifies the charging profile for the overall Charging Station. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.\r\n\r\n",
+        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nSpecifies the id of the EVSE for which to ClearChargingProfiles. An evseId of zero (0) specifies the charging profile for the overall Charging Station. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.\r\n\r\n",
         //           "type": "integer"
         //         },
         //         "chargingProfilePurpose": {
@@ -213,17 +213,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomClearChargingProfileRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear charging profile request.
+        /// Parse the given JSON representation of a ClearChargingProfile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom clear charging profile requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom ClearChargingProfile requests.</param>
         public static ClearChargingProfileRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
                                                         NetworkingNode_Id                                          DestinationId,
                                                         NetworkPath                                                NetworkPath,
+                                                        DateTime?                                                  RequestTimestamp                          = null,
+                                                        TimeSpan?                                                  RequestTimeout                            = null,
+                                                        EventTracking_Id?                                          EventTrackingId                           = null,
                                                         CustomJObjectParserDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestParser   = null)
         {
 
@@ -233,12 +239,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var clearChargingProfileRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomClearChargingProfileRequestParser))
             {
                 return clearChargingProfileRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a clear charging profile request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ClearChargingProfile request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -248,21 +257,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ClearChargingProfileRequest, out ErrorResponse, CustomClearChargingProfileRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear charging profile request.
+        /// Try to parse the given JSON representation of a ClearChargingProfile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="ClearChargingProfileRequest">The parsed ClearChargingProfile request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom clear charging profile requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom ClearChargingProfile requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
                                        NetworkingNode_Id                                          DestinationId,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out ClearChargingProfileRequest?      ClearChargingProfileRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
-                                       CustomJObjectParserDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestParser)
+                                       DateTime?                                                  RequestTimestamp                          = null,
+                                       TimeSpan?                                                  RequestTimeout                            = null,
+                                       EventTracking_Id?                                          EventTrackingId                           = null,
+                                       CustomJObjectParserDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestParser   = null)
         {
 
             try
@@ -340,9 +355,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   CustomData,
 
                                                   RequestId,
-                                                  null,
-                                                  null,
-                                                  null,
+                                                  RequestTimestamp,
+                                                  RequestTimeout,
+                                                  EventTrackingId,
                                                   NetworkPath
 
                                               );
@@ -357,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 ClearChargingProfileRequest  = null;
-                ErrorResponse                = "The given JSON representation of a clear charging profile request is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a ClearChargingProfile request is invalid: " + e.Message;
                 return false;
             }
 
@@ -370,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearChargingProfileRequestSerializer">A delegate to serialize custom clear charging profile requests.</param>
+        /// <param name="CustomClearChargingProfileRequestSerializer">A delegate to serialize custom ClearChargingProfile requests.</param>
         /// <param name="CustomClearChargingProfileSerializer">A delegate to serialize custom ClearChargingProfile objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -415,10 +430,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (ClearChargingProfileRequest1, ClearChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two clear charging profile requests for equality.
+        /// Compares two ClearChargingProfile requests for equality.
         /// </summary>
-        /// <param name="ClearChargingProfileRequest1">A clear charging profile request.</param>
-        /// <param name="ClearChargingProfileRequest2">Another clear charging profile request.</param>
+        /// <param name="ClearChargingProfileRequest1">A ClearChargingProfile request.</param>
+        /// <param name="ClearChargingProfileRequest2">Another ClearChargingProfile request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ClearChargingProfileRequest? ClearChargingProfileRequest1,
                                            ClearChargingProfileRequest? ClearChargingProfileRequest2)
@@ -441,10 +456,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (ClearChargingProfileRequest1, ClearChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two clear charging profile requests for inequality.
+        /// Compares two ClearChargingProfile requests for inequality.
         /// </summary>
-        /// <param name="ClearChargingProfileRequest1">A clear charging profile request.</param>
-        /// <param name="ClearChargingProfileRequest2">Another clear charging profile request.</param>
+        /// <param name="ClearChargingProfileRequest1">A ClearChargingProfile request.</param>
+        /// <param name="ClearChargingProfileRequest2">Another ClearChargingProfile request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ClearChargingProfileRequest? ClearChargingProfileRequest1,
                                            ClearChargingProfileRequest? ClearChargingProfileRequest2)
@@ -460,9 +475,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two clear charging profile requests for equality.
+        /// Compares two ClearChargingProfile requests for equality.
         /// </summary>
-        /// <param name="Object">A clear charging profile request to compare with.</param>
+        /// <param name="Object">A ClearChargingProfile request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ClearChargingProfileRequest clearChargingProfileRequest &&
@@ -473,9 +488,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(ClearChargingProfileRequest)
 
         /// <summary>
-        /// Compares two clear charging profile requests for equality.
+        /// Compares two ClearChargingProfile requests for equality.
         /// </summary>
-        /// <param name="ClearChargingProfileRequest">A clear charging profile request to compare with.</param>
+        /// <param name="ClearChargingProfileRequest">A ClearChargingProfile request to compare with.</param>
         public override Boolean Equals(ClearChargingProfileRequest? ClearChargingProfileRequest)
 
             => ClearChargingProfileRequest is not null &&

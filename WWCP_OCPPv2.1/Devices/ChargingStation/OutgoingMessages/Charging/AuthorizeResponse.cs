@@ -24,7 +24,6 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -32,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// An authorize response.
+    /// The Authorize response.
     /// </summary>
     public class AuthorizeResponse : AResponse<CS.AuthorizeRequest,
                                                AuthorizeResponse>,

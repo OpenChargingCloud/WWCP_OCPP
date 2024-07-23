@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A clear charging profile response.
+    /// The ClearChargingProfile response.
     /// </summary>
     public class ClearChargingProfileResponse : AResponse<CSMS.ClearChargingProfileRequest,
                                                           ClearChargingProfileResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the clear charging profile command.
+        /// The success or failure of the ClearChargingProfile command.
         /// </summary>
         [Mandatory]
         public ClearChargingProfileStatus  Status        { get; }
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ClearChargingProfileResponse(Request, Status)
 
         /// <summary>
-        /// Create a new clear charging profile response.
+        /// Create a new ClearChargingProfile response.
         /// </summary>
-        /// <param name="Request">The clear charging profile request leading to this response.</param>
+        /// <param name="Request">The ClearChargingProfile request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ClearChargingProfileResponse(Request, Result)
 
         /// <summary>
-        /// Create a new clear charging profile response.
+        /// Create a new ClearChargingProfile response.
         /// </summary>
-        /// <param name="Request">The clear charging profile request leading to this response.</param>
+        /// <param name="Request">The ClearChargingProfile request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ClearChargingProfileResponse(CSMS.ClearChargingProfileRequest  Request,
-                                            Result                            Result)
+                                            Result                            Result,
+                                            DateTime?                         ResponseTimestamp   = null,
+
+                                            NetworkingNode_Id?                DestinationId       = null,
+                                            NetworkPath?                      NetworkPath         = null,
+
+                                            IEnumerable<KeyPair>?             SignKeys            = null,
+                                            IEnumerable<SignInfo>?            SignInfos           = null,
+                                            IEnumerable<Signature>?           Signatures          = null,
+
+                                            CustomData?                       CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -218,11 +238,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomClearChargingProfileResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear charging profile response.
+        /// Parse the given JSON representation of a ClearChargingProfile response.
         /// </summary>
-        /// <param name="Request">The clear charging profile request leading to this response.</param>
+        /// <param name="Request">The ClearChargingProfile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom clear charging profile responses.</param>
+        /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom ClearChargingProfile responses.</param>
         public static ClearChargingProfileResponse Parse(CSMS.ClearChargingProfileRequest                            Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<ClearChargingProfileResponse>?  CustomClearChargingProfileResponseParser   = null)
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return clearChargingProfileResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a clear charging profile response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ClearChargingProfile response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,13 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out ClearChargingProfileResponse, out ErrorResponse, CustomClearChargingProfileResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear charging profile response.
+        /// Try to parse the given JSON representation of a ClearChargingProfile response.
         /// </summary>
-        /// <param name="Request">The clear charging profile request leading to this response.</param>
+        /// <param name="Request">The ClearChargingProfile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
+        /// <param name="ClearChargingProfileResponse">The parsed ClearChargingProfile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom clear charging profile responses.</param>
+        /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom ClearChargingProfile responses.</param>
         public static Boolean TryParse(CSMS.ClearChargingProfileRequest                            Request,
                                        JObject                                                     JSON,
                                        [NotNullWhen(true)]  out ClearChargingProfileResponse?      ClearChargingProfileResponse,
@@ -269,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "clear charging profile status",
+                                         "ClearChargingProfile status",
                                          ClearChargingProfileStatusExtensions.TryParse,
                                          out ClearChargingProfileStatus Status,
                                          out ErrorResponse))
@@ -343,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 ClearChargingProfileResponse  = null;
-                ErrorResponse                 = "The given JSON representation of a clear charging profile response is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a ClearChargingProfile response is invalid: " + e.Message;
                 return false;
             }
 
@@ -356,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearChargingProfileResponseSerializer">A delegate to serialize custom clear charging profile responses.</param>
+        /// <param name="CustomClearChargingProfileResponseSerializer">A delegate to serialize custom ClearChargingProfile responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -398,13 +418,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The clear charging profile command failed.
+        /// The ClearChargingProfile failed because of a request error.
         /// </summary>
-        /// <param name="Request">The clear charging profile request leading to this response.</param>
-        public static ClearChargingProfileResponse Failed(CSMS.ClearChargingProfileRequest Request)
+        /// <param name="Request">The ClearChargingProfile request.</param>
+        public static ClearChargingProfileResponse RequestError(CSMS.ClearChargingProfileRequest  Request,
+                                                                EventTracking_Id                  EventTrackingId,
+                                                                ResultCode                        ErrorCode,
+                                                                String?                           ErrorDescription    = null,
+                                                                JObject?                          ErrorDetails        = null,
+                                                                DateTime?                         ResponseTimestamp   = null,
+
+                                                                NetworkingNode_Id?                DestinationId       = null,
+                                                                NetworkPath?                      NetworkPath         = null,
+
+                                                                IEnumerable<KeyPair>?             SignKeys            = null,
+                                                                IEnumerable<SignInfo>?            SignInfos           = null,
+                                                                IEnumerable<Signature>?           Signatures          = null,
+
+                                                                CustomData?                       CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ClearChargingProfile failed.
+        /// </summary>
+        /// <param name="Request">The ClearChargingProfile request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ClearChargingProfileResponse SignatureError(CSMS.ClearChargingProfileRequest  Request,
+                                                                  String                            ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ClearChargingProfile failed.
+        /// </summary>
+        /// <param name="Request">The ClearChargingProfile request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ClearChargingProfileResponse Failed(CSMS.ClearChargingProfileRequest  Request,
+                                                          String?                           Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ClearChargingProfile failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ClearChargingProfile request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ClearChargingProfileResponse ExceptionOccured(CSMS.ClearChargingProfileRequest  Request,
+                                                                    Exception                         Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -414,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (ClearChargingProfileResponse1, ClearChargingProfileResponse2)
 
         /// <summary>
-        /// Compares two clear charging profile responses for equality.
+        /// Compares two ClearChargingProfile responses for equality.
         /// </summary>
-        /// <param name="ClearChargingProfileResponse1">A clear charging profile response.</param>
-        /// <param name="ClearChargingProfileResponse2">Another clear charging profile response.</param>
+        /// <param name="ClearChargingProfileResponse1">A ClearChargingProfile response.</param>
+        /// <param name="ClearChargingProfileResponse2">Another ClearChargingProfile response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ClearChargingProfileResponse? ClearChargingProfileResponse1,
                                            ClearChargingProfileResponse? ClearChargingProfileResponse2)
@@ -440,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (ClearChargingProfileResponse1, ClearChargingProfileResponse2)
 
         /// <summary>
-        /// Compares two clear charging profile responses for inequality.
+        /// Compares two ClearChargingProfile responses for inequality.
         /// </summary>
-        /// <param name="ClearChargingProfileResponse1">A clear charging profile response.</param>
-        /// <param name="ClearChargingProfileResponse2">Another clear charging profile response.</param>
+        /// <param name="ClearChargingProfileResponse1">A ClearChargingProfile response.</param>
+        /// <param name="ClearChargingProfileResponse2">Another ClearChargingProfile response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ClearChargingProfileResponse? ClearChargingProfileResponse1,
                                            ClearChargingProfileResponse? ClearChargingProfileResponse2)
@@ -459,9 +549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two clear charging profile responses for equality.
+        /// Compares two ClearChargingProfile responses for equality.
         /// </summary>
-        /// <param name="Object">A clear charging profile response to compare with.</param>
+        /// <param name="Object">A ClearChargingProfile response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ClearChargingProfileResponse clearChargingProfileResponse &&
@@ -472,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(ClearChargingProfileResponse)
 
         /// <summary>
-        /// Compares two clear charging profile responses for equality.
+        /// Compares two ClearChargingProfile responses for equality.
         /// </summary>
-        /// <param name="ClearChargingProfileResponse">A clear charging profile response to compare with.</param>
+        /// <param name="ClearChargingProfileResponse">A ClearChargingProfile response to compare with.</param>
         public override Boolean Equals(ClearChargingProfileResponse? ClearChargingProfileResponse)
 
             => ClearChargingProfileResponse is not null &&

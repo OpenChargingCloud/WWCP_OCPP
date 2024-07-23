@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A get base report response.
+    /// The GetBaseReport response.
     /// </summary>
     public class GetBaseReportResponse : AResponse<CSMS.GetBaseReportRequest,
                                                    GetBaseReportResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetBaseReportResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new get base report response.
+        /// Create a new GetBaseReport response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The GetBaseReport request leading to this response.</param>
         /// <param name="Status">Whether the charging station is able to accept this request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetBaseReportResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get base report response.
+        /// Create a new GetBaseReport response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The GetBaseReport request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetBaseReportResponse(CSMS.GetBaseReportRequest  Request,
-                                     Result                     Result)
+                                     Result                     Result,
+                                     DateTime?                  ResponseTimestamp   = null,
+
+                                     NetworkingNode_Id?         DestinationId       = null,
+                                     NetworkPath?               NetworkPath         = null,
+
+                                     IEnumerable<KeyPair>?      SignKeys            = null,
+                                     IEnumerable<SignInfo>?     SignInfos           = null,
+                                     IEnumerable<Signature>?    Signatures          = null,
+
+                                     CustomData?                CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -220,9 +240,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomGetBaseReportResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get base report response.
+        /// Parse the given JSON representation of a GetBaseReport response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The GetBaseReport request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetBaseReportResponse Parse(CSMS.GetBaseReportRequest                            Request,
@@ -239,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return getBaseReportResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get base report response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetBaseReport response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -249,13 +269,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out GetBaseReportResponse, out ErrorResponse, CustomGetBaseReportResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get base report response.
+        /// Try to parse the given JSON representation of a GetBaseReport response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The GetBaseReport request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetBaseReportResponse">The parsed get base report response.</param>
+        /// <param name="GetBaseReportResponse">The parsed GetBaseReport response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetBaseReportResponseParser">A delegate to parse custom get base report responses.</param>
+        /// <param name="CustomGetBaseReportResponseParser">A delegate to parse custom GetBaseReport responses.</param>
         public static Boolean TryParse(CSMS.GetBaseReportRequest                            Request,
                                        JObject                                              JSON,
                                        [NotNullWhen(true)]  out GetBaseReportResponse?      GetBaseReportResponse,
@@ -345,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 GetBaseReportResponse  = null;
-                ErrorResponse          = "The given JSON representation of a get base report response is invalid: " + e.Message;
+                ErrorResponse          = "The given JSON representation of a GetBaseReport response is invalid: " + e.Message;
                 return false;
             }
 
@@ -358,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetBaseReportResponseSerializer">A delegate to serialize custom get base report responses.</param>
+        /// <param name="CustomGetBaseReportResponseSerializer">A delegate to serialize custom GetBaseReport responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -400,13 +420,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The get base report command failed.
+        /// The GetBaseReport failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
-        public static GetBaseReportResponse Failed(CSMS.GetBaseReportRequest Request)
+        /// <param name="Request">The GetBaseReport request.</param>
+        public static GetBaseReportResponse RequestError(CSMS.GetBaseReportRequest  Request,
+                                                         EventTracking_Id           EventTrackingId,
+                                                         ResultCode                 ErrorCode,
+                                                         String?                    ErrorDescription    = null,
+                                                         JObject?                   ErrorDetails        = null,
+                                                         DateTime?                  ResponseTimestamp   = null,
+
+                                                         NetworkingNode_Id?         DestinationId       = null,
+                                                         NetworkPath?               NetworkPath         = null,
+
+                                                         IEnumerable<KeyPair>?      SignKeys            = null,
+                                                         IEnumerable<SignInfo>?     SignInfos           = null,
+                                                         IEnumerable<Signature>?    Signatures          = null,
+
+                                                         CustomData?                CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetBaseReport failed.
+        /// </summary>
+        /// <param name="Request">The GetBaseReport request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetBaseReportResponse SignatureError(CSMS.GetBaseReportRequest  Request,
+                                                           String                     ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetBaseReport failed.
+        /// </summary>
+        /// <param name="Request">The GetBaseReport request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetBaseReportResponse Failed(CSMS.GetBaseReportRequest  Request,
+                                                   String?                    Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetBaseReport failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetBaseReport request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetBaseReportResponse ExceptionOccured(CSMS.GetBaseReportRequest  Request,
+                                                             Exception                  Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -416,10 +506,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (GetBaseReportResponse1, GetBaseReportResponse2)
 
         /// <summary>
-        /// Compares two get base report responses for equality.
+        /// Compares two GetBaseReport responses for equality.
         /// </summary>
-        /// <param name="GetBaseReportResponse1">A get base report response.</param>
-        /// <param name="GetBaseReportResponse2">Another get base report response.</param>
+        /// <param name="GetBaseReportResponse1">A GetBaseReport response.</param>
+        /// <param name="GetBaseReportResponse2">Another GetBaseReport response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetBaseReportResponse? GetBaseReportResponse1,
                                            GetBaseReportResponse? GetBaseReportResponse2)
@@ -442,10 +532,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (GetBaseReportResponse1, GetBaseReportResponse2)
 
         /// <summary>
-        /// Compares two get base report responses for inequality.
+        /// Compares two GetBaseReport responses for inequality.
         /// </summary>
-        /// <param name="GetBaseReportResponse1">A get base report response.</param>
-        /// <param name="GetBaseReportResponse2">Another get base report response.</param>
+        /// <param name="GetBaseReportResponse1">A GetBaseReport response.</param>
+        /// <param name="GetBaseReportResponse2">Another GetBaseReport response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetBaseReportResponse? GetBaseReportResponse1,
                                            GetBaseReportResponse? GetBaseReportResponse2)
@@ -461,9 +551,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get base report responses for equality.
+        /// Compares two GetBaseReport responses for equality.
         /// </summary>
-        /// <param name="Object">A get base report response to compare with.</param>
+        /// <param name="Object">A GetBaseReport response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetBaseReportResponse getBaseReportResponse &&
@@ -474,9 +564,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(GetBaseReportResponse)
 
         /// <summary>
-        /// Compares two get base report responses for equality.
+        /// Compares two GetBaseReport responses for equality.
         /// </summary>
-        /// <param name="GetBaseReportResponse">A get base report response to compare with.</param>
+        /// <param name="GetBaseReportResponse">A GetBaseReport response to compare with.</param>
         public override Boolean Equals(GetBaseReportResponse? GetBaseReportResponse)
 
             => GetBaseReportResponse is not null &&

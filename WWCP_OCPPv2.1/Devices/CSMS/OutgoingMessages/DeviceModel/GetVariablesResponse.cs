@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A get variables response.
+    /// The GetVariables response.
     /// </summary>
     public class GetVariablesResponse : AResponse<CSMS.GetVariablesRequest,
                                                   GetVariablesResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The get variables results.
+        /// The GetVariables results.
         /// </summary>
         [Mandatory]
         public IEnumerable<GetVariableResult>  Results    { get; }
@@ -68,10 +68,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetVariablesResponse(Request, Results, ...)
 
         /// <summary>
-        /// Create a new get variables response.
+        /// Create a new GetVariables response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Results">The get variables results.</param>
+        /// <param name="Results">The GetVariables results.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         {
 
             if (!Results.Any())
-                throw new ArgumentException("The given enumeration of get variables results must not be empty!",
+                throw new ArgumentException("The given enumeration of GetVariables results must not be empty!",
                                             nameof(Results));
 
             this.Results = Results.Distinct();
@@ -125,15 +125,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetVariablesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get variables response.
+        /// Create a new GetVariables response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetVariablesResponse(CSMS.GetVariablesRequest  Request,
-                                    Result                    Result)
+                                    Result                    Result,
+                                    DateTime?                 ResponseTimestamp   = null,
+
+                                    NetworkingNode_Id?        DestinationId       = null,
+                                    NetworkPath?              NetworkPath         = null,
+
+                                    IEnumerable<KeyPair>?     SignKeys            = null,
+                                    IEnumerable<SignInfo>?    SignInfos           = null,
+                                    IEnumerable<Signature>?   Signatures          = null,
+
+                                    CustomData?               CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -352,12 +372,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, ..., CustomGetVariablesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get variables response.
+        /// Parse the given JSON representation of a GetVariables response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom get variables responses.</param>
+        /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom GetVariables responses.</param>
         public static GetVariablesResponse Parse(CSMS.GetVariablesRequest                            Request,
                                                  JObject                                             JSON,
                                                  DateTime?                                           ResponseTimestamp                  = null,
@@ -374,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return getVariablesResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get variables response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetVariables response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -384,14 +404,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out GetVariablesResponse, out ErrorResponse, ..., CustomGetVariablesResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get variables response.
+        /// Try to parse the given JSON representation of a GetVariables response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetVariablesResponse">The parsed get variables response.</param>
+        /// <param name="GetVariablesResponse">The parsed GetVariables response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom get variables responses.</param>
+        /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom GetVariables responses.</param>
         public static Boolean TryParse(CSMS.GetVariablesRequest                            Request,
                                        JObject                                             JSON,
                                        [NotNullWhen(true)]  out GetVariablesResponse?      GetVariablesResponse,
@@ -471,7 +491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 GetVariablesResponse  = null;
-                ErrorResponse         = "The given JSON representation of a get variables response is invalid: " + e.Message;
+                ErrorResponse         = "The given JSON representation of a GetVariables response is invalid: " + e.Message;
                 return false;
             }
 
@@ -484,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetVariablesResponseSerializer">A delegate to serialize custom get variables responses.</param>
+        /// <param name="CustomGetVariablesResponseSerializer">A delegate to serialize custom GetVariables responses.</param>
         /// <param name="CustomGetVariableResultSerializer">A delegate to serialize custom get variable results.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
@@ -534,13 +554,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The get variables command failed.
+        /// The GetVariables failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get variables request leading to this response.</param>
-        public static GetVariablesResponse Failed(CSMS.GetVariablesRequest Request)
+        /// <param name="Request">The GetVariables request.</param>
+        public static GetVariablesResponse RequestError(CSMS.GetVariablesRequest  Request,
+                                                        EventTracking_Id          EventTrackingId,
+                                                        ResultCode                ErrorCode,
+                                                        String?                   ErrorDescription    = null,
+                                                        JObject?                  ErrorDetails        = null,
+                                                        DateTime?                 ResponseTimestamp   = null,
+
+                                                        NetworkingNode_Id?        DestinationId       = null,
+                                                        NetworkPath?              NetworkPath         = null,
+
+                                                        IEnumerable<KeyPair>?     SignKeys            = null,
+                                                        IEnumerable<SignInfo>?    SignInfos           = null,
+                                                        IEnumerable<Signature>?   Signatures          = null,
+
+                                                        CustomData?               CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetVariables failed.
+        /// </summary>
+        /// <param name="Request">The GetVariables request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetVariablesResponse SignatureError(CSMS.GetVariablesRequest  Request,
+                                                          String                    ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetVariables failed.
+        /// </summary>
+        /// <param name="Request">The GetVariables request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetVariablesResponse Failed(CSMS.GetVariablesRequest  Request,
+                                                  String?                   Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetVariables failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetVariables request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetVariablesResponse ExceptionOccured(CSMS.GetVariablesRequest  Request,
+                                                            Exception                 Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -550,10 +640,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (GetVariablesResponse1, GetVariablesResponse2)
 
         /// <summary>
-        /// Compares two get variables responses for equality.
+        /// Compares two GetVariables responses for equality.
         /// </summary>
-        /// <param name="GetVariablesResponse1">A get variables response.</param>
-        /// <param name="GetVariablesResponse2">Another get variables response.</param>
+        /// <param name="GetVariablesResponse1">A GetVariables response.</param>
+        /// <param name="GetVariablesResponse2">Another GetVariables response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetVariablesResponse? GetVariablesResponse1,
                                            GetVariablesResponse? GetVariablesResponse2)
@@ -576,10 +666,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (GetVariablesResponse1, GetVariablesResponse2)
 
         /// <summary>
-        /// Compares two get variables responses for inequality.
+        /// Compares two GetVariables responses for inequality.
         /// </summary>
-        /// <param name="GetVariablesResponse1">A get variables response.</param>
-        /// <param name="GetVariablesResponse2">Another get variables response.</param>
+        /// <param name="GetVariablesResponse1">A GetVariables response.</param>
+        /// <param name="GetVariablesResponse2">Another GetVariables response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator !=(GetVariablesResponse? GetVariablesResponse1,
                                            GetVariablesResponse? GetVariablesResponse2)
@@ -595,9 +685,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get variables responses for equality.
+        /// Compares two GetVariables responses for equality.
         /// </summary>
-        /// <param name="Object">A get variables response to compare with.</param>
+        /// <param name="Object">A GetVariables response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetVariablesResponse getVariablesResponse &&
@@ -608,9 +698,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(GetVariablesResponse)
 
         /// <summary>
-        /// Compares two get variables responses for equality.
+        /// Compares two GetVariables responses for equality.
         /// </summary>
-        /// <param name="GetVariablesResponse">A get variables response to compare with.</param>
+        /// <param name="GetVariablesResponse">A GetVariables response to compare with.</param>
         public override Boolean Equals(GetVariablesResponse? GetVariablesResponse)
 
             => GetVariablesResponse is not null &&

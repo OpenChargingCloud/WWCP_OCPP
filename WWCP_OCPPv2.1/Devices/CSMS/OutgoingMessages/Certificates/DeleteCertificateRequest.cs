@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The delete certificate request.
+    /// The DeleteCertificate request.
     /// </summary>
     public class DeleteCertificateRequest : ARequest<DeleteCertificateRequest>,
                                             IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a delete certificate request.
+        /// Create a DeleteCertificate request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         IEnumerable<KeyPair>?    SignKeys            = null,
                                         IEnumerable<SignInfo>?   SignInfos           = null,
-                                        IEnumerable<Signature>?       Signatures          = null,
+                                        IEnumerable<Signature>?  Signatures          = null,
 
                                         CustomData?              CustomData          = null,
 
@@ -212,17 +212,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomDeleteCertificateRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a delete certificate request.
+        /// Parse the given JSON representation of a DeleteCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDeleteCertificateRequestParser">A delegate to parse custom delete certificate requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDeleteCertificateRequestParser">A delegate to parse custom DeleteCertificate requests.</param>
         public static DeleteCertificateRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      NetworkingNode_Id                                       DestinationId,
                                                      NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               RequestTimestamp                       = null,
+                                                     TimeSpan?                                               RequestTimeout                         = null,
+                                                     EventTracking_Id?                                       EventTrackingId                        = null,
                                                      CustomJObjectParserDelegate<DeleteCertificateRequest>?  CustomDeleteCertificateRequestParser   = null)
         {
 
@@ -232,12 +238,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var deleteCertificateRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomDeleteCertificateRequestParser))
             {
                 return deleteCertificateRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a delete certificate request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DeleteCertificate request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,22 +256,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out DeleteCertificateRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a delete certificate request.
+        /// Try to parse the given JSON representation of a DeleteCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DeleteCertificateRequest">The parsed delete certificate request.</param>
+        /// <param name="DeleteCertificateRequest">The parsed DeleteCertificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteCertificateRequestParser">A delegate to parse custom delete certificate requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDeleteCertificateRequestParser">A delegate to parse custom DeleteCertificate requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       DestinationId,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out DeleteCertificateRequest?      DeleteCertificateRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       CustomJObjectParserDelegate<DeleteCertificateRequest>?  CustomDeleteCertificateRequestParser)
+                                       DateTime?                                               RequestTimestamp                       = null,
+                                       TimeSpan?                                               RequestTimeout                         = null,
+                                       EventTracking_Id?                                       EventTrackingId                        = null,
+                                       CustomJObjectParserDelegate<DeleteCertificateRequest>?  CustomDeleteCertificateRequestParser   = null)
         {
 
             try
@@ -325,9 +340,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CustomData,
 
                                                RequestId,
-                                               null,
-                                               null,
-                                               null,
+                                               RequestTimestamp,
+                                               RequestTimeout,
+                                               EventTrackingId,
                                                NetworkPath
 
                                            );
@@ -342,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 DeleteCertificateRequest  = null;
-                ErrorResponse             = "The given JSON representation of a delete certificate request is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a DeleteCertificate request is invalid: " + e.Message;
                 return false;
             }
 
@@ -355,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDeleteCertificateRequestSerializer">A delegate to serialize custom delete certificate requests.</param>
+        /// <param name="CustomDeleteCertificateRequestSerializer">A delegate to serialize custom DeleteCertificate requests.</param>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -395,10 +410,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (DeleteCertificateRequest1, DeleteCertificateRequest2)
 
         /// <summary>
-        /// Compares two delete certificate requests for equality.
+        /// Compares two DeleteCertificate requests for equality.
         /// </summary>
-        /// <param name="DeleteCertificateRequest1">A delete certificate request.</param>
-        /// <param name="DeleteCertificateRequest2">Another delete certificate request.</param>
+        /// <param name="DeleteCertificateRequest1">A DeleteCertificate request.</param>
+        /// <param name="DeleteCertificateRequest2">Another DeleteCertificate request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (DeleteCertificateRequest? DeleteCertificateRequest1,
                                            DeleteCertificateRequest? DeleteCertificateRequest2)
@@ -421,10 +436,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (DeleteCertificateRequest1, DeleteCertificateRequest2)
 
         /// <summary>
-        /// Compares two delete certificate requests for inequality.
+        /// Compares two DeleteCertificate requests for inequality.
         /// </summary>
-        /// <param name="DeleteCertificateRequest1">A delete certificate request.</param>
-        /// <param name="DeleteCertificateRequest2">Another delete certificate request.</param>
+        /// <param name="DeleteCertificateRequest1">A DeleteCertificate request.</param>
+        /// <param name="DeleteCertificateRequest2">Another DeleteCertificate request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (DeleteCertificateRequest? DeleteCertificateRequest1,
                                            DeleteCertificateRequest? DeleteCertificateRequest2)
@@ -440,9 +455,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two delete certificate requests for equality.
+        /// Compares two DeleteCertificate requests for equality.
         /// </summary>
-        /// <param name="Object">A delete certificate request to compare with.</param>
+        /// <param name="Object">A DeleteCertificate request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DeleteCertificateRequest deleteCertificateRequest &&
@@ -453,9 +468,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(DeleteCertificateRequest)
 
         /// <summary>
-        /// Compares two delete certificate requests for equality.
+        /// Compares two DeleteCertificate requests for equality.
         /// </summary>
-        /// <param name="DeleteCertificateRequest">A delete certificate request to compare with.</param>
+        /// <param name="DeleteCertificateRequest">A DeleteCertificate request to compare with.</param>
         public override Boolean Equals(DeleteCertificateRequest? DeleteCertificateRequest)
 
             => DeleteCertificateRequest is not null &&

@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The set display message request.
+    /// The SetDisplayMessage request.
     /// </summary>
     public class SetDisplayMessageRequest : ARequest<SetDisplayMessageRequest>,
                                             IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new set display message request.
+        /// Create a new SetDisplayMessage request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="Message">A display message to be shown at the charging station.</param>
@@ -327,17 +327,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSetDisplayMessageRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set display message request.
+        /// Parse the given JSON representation of a SetDisplayMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom set display message requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom SetDisplayMessage requests.</param>
         public static SetDisplayMessageRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      NetworkingNode_Id                                       DestinationId,
                                                      NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               RequestTimestamp                       = null,
+                                                     TimeSpan?                                               RequestTimeout                         = null,
+                                                     EventTracking_Id?                                       EventTrackingId                        = null,
                                                      CustomJObjectParserDelegate<SetDisplayMessageRequest>?  CustomSetDisplayMessageRequestParser   = null)
         {
 
@@ -347,12 +353,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var setDisplayMessageRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomSetDisplayMessageRequestParser))
             {
                 return setDisplayMessageRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a set display message request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetDisplayMessage request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -362,22 +371,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SetDisplayMessageRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set display message request.
+        /// Try to parse the given JSON representation of a SetDisplayMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SetDisplayMessageRequest">The parsed set display message request.</param>
+        /// <param name="SetDisplayMessageRequest">The parsed SetDisplayMessage request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom set display message requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom SetDisplayMessage requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       DestinationId,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out SetDisplayMessageRequest?      SetDisplayMessageRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       CustomJObjectParserDelegate<SetDisplayMessageRequest>?  CustomSetDisplayMessageRequestParser)
+                                       DateTime?                                               RequestTimestamp                       = null,
+                                       TimeSpan?                                               RequestTimeout                         = null,
+                                       EventTracking_Id?                                       EventTrackingId                        = null,
+                                       CustomJObjectParserDelegate<SetDisplayMessageRequest>?  CustomSetDisplayMessageRequestParser   = null)
         {
 
             try
@@ -440,9 +455,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CustomData,
 
                                                RequestId,
-                                               null,
-                                               null,
-                                               null,
+                                               RequestTimestamp,
+                                               RequestTimeout,
+                                               EventTrackingId,
                                                NetworkPath
 
                                            );
@@ -457,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 SetDisplayMessageRequest  = null;
-                ErrorResponse             = "The given JSON representation of a set display message request is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a SetDisplayMessage request is invalid: " + e.Message;
                 return false;
             }
 
@@ -470,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetDisplayMessageRequestSerializer">A delegate to serialize custom set display message requests.</param>
+        /// <param name="CustomSetDisplayMessageRequestSerializer">A delegate to serialize custom SetDisplayMessage requests.</param>
         /// <param name="CustomMessageInfoSerializer">A delegate to serialize custom message info objects.</param>
         /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom component objects.</param>
@@ -519,10 +534,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SetDisplayMessageRequest1, SetDisplayMessageRequest2)
 
         /// <summary>
-        /// Compares two set display message requests for equality.
+        /// Compares two SetDisplayMessage requests for equality.
         /// </summary>
-        /// <param name="SetDisplayMessageRequest1">A set display message request.</param>
-        /// <param name="SetDisplayMessageRequest2">Another set display message request.</param>
+        /// <param name="SetDisplayMessageRequest1">A SetDisplayMessage request.</param>
+        /// <param name="SetDisplayMessageRequest2">Another SetDisplayMessage request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetDisplayMessageRequest? SetDisplayMessageRequest1,
                                            SetDisplayMessageRequest? SetDisplayMessageRequest2)
@@ -545,10 +560,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SetDisplayMessageRequest1, SetDisplayMessageRequest2)
 
         /// <summary>
-        /// Compares two set display message requests for inequality.
+        /// Compares two SetDisplayMessage requests for inequality.
         /// </summary>
-        /// <param name="SetDisplayMessageRequest1">A set display message request.</param>
-        /// <param name="SetDisplayMessageRequest2">Another set display message request.</param>
+        /// <param name="SetDisplayMessageRequest1">A SetDisplayMessage request.</param>
+        /// <param name="SetDisplayMessageRequest2">Another SetDisplayMessage request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetDisplayMessageRequest? SetDisplayMessageRequest1,
                                            SetDisplayMessageRequest? SetDisplayMessageRequest2)
@@ -564,9 +579,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set display message requests for equality.
+        /// Compares two SetDisplayMessage requests for equality.
         /// </summary>
-        /// <param name="Object">A set display message request to compare with.</param>
+        /// <param name="Object">A SetDisplayMessage request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetDisplayMessageRequest setDisplayMessageRequest &&
@@ -577,9 +592,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(SetDisplayMessageRequest)
 
         /// <summary>
-        /// Compares two set display message requests for equality.
+        /// Compares two SetDisplayMessage requests for equality.
         /// </summary>
-        /// <param name="SetDisplayMessageRequest">A set display message request to compare with.</param>
+        /// <param name="SetDisplayMessageRequest">A SetDisplayMessage request to compare with.</param>
         public override Boolean Equals(SetDisplayMessageRequest? SetDisplayMessageRequest)
 
             => SetDisplayMessageRequest is not null &&

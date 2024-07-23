@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// An install certificate response.
+    /// The InstallCertificate response.
     /// </summary>
     public class InstallCertificateResponse : AResponse<CSMS.InstallCertificateRequest,
                                                         InstallCertificateResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the install certificate request.
+        /// The success or failure of the InstallCertificate request.
         /// </summary>
         [Mandatory]
         public CertificateStatus  Status        { get; }
@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region InstallCertificateResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new install certificate response.
+        /// Create a new InstallCertificate response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        /// <param name="Status">The success or failure of the install certificate request.</param>
+        /// <param name="Request">The InstallCertificate request leading to this response.</param>
+        /// <param name="Status">The success or failure of the InstallCertificate request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region InstallCertificateResponse(Request, Result)
 
         /// <summary>
-        /// Create a new install certificate response.
+        /// Create a new InstallCertificate response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The InstallCertificate request leading to this response.</param>
         /// <param name="Result">A result.</param>
         public InstallCertificateResponse(CSMS.InstallCertificateRequest  Request,
-                                          Result                          Result)
+                                          Result                          Result,
+                                          DateTime?                       ResponseTimestamp   = null,
+
+                                          NetworkingNode_Id?              DestinationId       = null,
+                                          NetworkPath?                    NetworkPath         = null,
+
+                                          IEnumerable<KeyPair>?           SignKeys            = null,
+                                          IEnumerable<SignInfo>?          SignInfos           = null,
+                                          IEnumerable<Signature>?         Signatures          = null,
+
+                                          CustomData?                     CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -219,11 +239,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomInstallCertificateResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an install certificate response.
+        /// Parse the given JSON representation of an InstallCertificate response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The InstallCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
+        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom InstallCertificate responses.</param>
         public static InstallCertificateResponse Parse(CSMS.InstallCertificateRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return installCertificateResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of an install certificate response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an InstallCertificate response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -248,13 +268,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out InstallCertificateResponse, out ErrorResponse, CustomInstallCertificateResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an install certificate response.
+        /// Try to parse the given JSON representation of an InstallCertificate response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The InstallCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="InstallCertificateResponse">The parsed install certificate response.</param>
+        /// <param name="InstallCertificateResponse">The parsed InstallCertificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
+        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom InstallCertificate responses.</param>
         public static Boolean TryParse(CSMS.InstallCertificateRequest                            Request,
                                        JObject                                                   JSON,
                                        [NotNullWhen(true)]  out InstallCertificateResponse?      InstallCertificateResponse,
@@ -270,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "install certificate status",
+                                         "InstallCertificate status",
                                          CertificateStatusExtensions.TryParse,
                                          out CertificateStatus Status,
                                          out ErrorResponse))
@@ -344,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 InstallCertificateResponse  = null;
-                ErrorResponse               = "The given JSON representation of an install certificate response is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of an InstallCertificate response is invalid: " + e.Message;
                 return false;
             }
 
@@ -357,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomInstallCertificateResponseSerializer">A delegate to serialize custom install certificate responses.</param>
+        /// <param name="CustomInstallCertificateResponseSerializer">A delegate to serialize custom InstallCertificate responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -399,13 +419,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The install certificate failed.
+        /// The InstallCertificate failed because of a request error.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        public static InstallCertificateResponse Failed(CSMS.InstallCertificateRequest Request)
+        /// <param name="Request">The InstallCertificate request.</param>
+        public static InstallCertificateResponse RequestError(CSMS.InstallCertificateRequest  Request,
+                                                              EventTracking_Id                EventTrackingId,
+                                                              ResultCode                      ErrorCode,
+                                                              String?                         ErrorDescription    = null,
+                                                              JObject?                        ErrorDetails        = null,
+                                                              DateTime?                       ResponseTimestamp   = null,
+
+                                                              NetworkingNode_Id?              DestinationId       = null,
+                                                              NetworkPath?                    NetworkPath         = null,
+
+                                                              IEnumerable<KeyPair>?           SignKeys            = null,
+                                                              IEnumerable<SignInfo>?          SignInfos           = null,
+                                                              IEnumerable<Signature>?         Signatures          = null,
+
+                                                              CustomData?                     CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The InstallCertificate failed.
+        /// </summary>
+        /// <param name="Request">The InstallCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static InstallCertificateResponse SignatureError(CSMS.InstallCertificateRequest  Request,
+                                                                String                          ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The InstallCertificate failed.
+        /// </summary>
+        /// <param name="Request">The InstallCertificate request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static InstallCertificateResponse Failed(CSMS.InstallCertificateRequest  Request,
+                                                        String?                         Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The InstallCertificate failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The InstallCertificate request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static InstallCertificateResponse ExceptionOccured(CSMS.InstallCertificateRequest  Request,
+                                                                  Exception                       Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -415,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (InstallCertificateResponse1, InstallCertificateResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two InstallCertificate responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="InstallCertificateResponse1">An InstallCertificate response.</param>
+        /// <param name="InstallCertificateResponse2">Another InstallCertificate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (InstallCertificateResponse? InstallCertificateResponse1,
                                            InstallCertificateResponse? InstallCertificateResponse2)
@@ -441,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (InstallCertificateResponse1, InstallCertificateResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for inequality.
+        /// Compares two InstallCertificate responses for inequality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="InstallCertificateResponse1">An InstallCertificate response.</param>
+        /// <param name="InstallCertificateResponse2">Another InstallCertificate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (InstallCertificateResponse? InstallCertificateResponse1,
                                            InstallCertificateResponse? InstallCertificateResponse2)
@@ -460,9 +550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two InstallCertificate responses for equality.
         /// </summary>
-        /// <param name="Object">An install certificate response to compare with.</param>
+        /// <param name="Object">An InstallCertificate response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is InstallCertificateResponse installCertificateResponse &&
@@ -473,9 +563,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(InstallCertificateResponse)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two InstallCertificate responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse">An install certificate response to compare with.</param>
+        /// <param name="InstallCertificateResponse">An InstallCertificate response to compare with.</param>
         public override Boolean Equals(InstallCertificateResponse? InstallCertificateResponse)
 
             => InstallCertificateResponse is not null &&

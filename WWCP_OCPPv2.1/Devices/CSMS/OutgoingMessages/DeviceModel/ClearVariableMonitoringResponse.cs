@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A clear variable monitoring response.
+    /// The ClearVariableMonitoring response.
     /// </summary>
     public class ClearVariableMonitoringResponse : AResponse<CSMS.ClearVariableMonitoringRequest,
                                                              ClearVariableMonitoringResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The enumeration of clear variable monitoring results.
+        /// The enumeration of ClearVariableMonitoring results.
         /// </summary>
         [Mandatory]
         public IEnumerable<ClearMonitoringResult>  ClearMonitoringResults    { get; }
@@ -68,10 +68,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ClearVariableMonitoringResponse(Request, ClearMonitoringResults, ...)
 
         /// <summary>
-        /// Create a new clear variable monitoring response.
+        /// Create a new ClearVariableMonitoring response.
         /// </summary>
-        /// <param name="Request">The clear variable monitoring request leading to this response.</param>
-        /// <param name="ClearMonitoringResults">An enumeration of clear variable monitoring results.</param>
+        /// <param name="Request">The ClearVariableMonitoring request leading to this response.</param>
+        /// <param name="ClearMonitoringResults">An enumeration of ClearVariableMonitoring results.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         {
 
             if (!ClearMonitoringResults.Any())
-                throw new ArgumentException("The given enumeration of clear variable monitoring results must not be empty!",
+                throw new ArgumentException("The given enumeration of ClearVariableMonitoring results must not be empty!",
                                             nameof(ClearMonitoringResults));
 
             this.ClearMonitoringResults = ClearMonitoringResults.Distinct();
@@ -117,19 +117,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ClearVariableMonitoringResponse(Request, Result)
 
         /// <summary>
-        /// Create a new clear variable monitoring response.
+        /// Create a new ClearVariableMonitoring response.
         /// </summary>
-        /// <param name="Request">The clear variable monitoring request leading to this response.</param>
+        /// <param name="Request">The ClearVariableMonitoring request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ClearVariableMonitoringResponse(CSMS.ClearVariableMonitoringRequest  Request,
-                                               Result                             Result)
+                                               Result                               Result,
+                                               DateTime?                            ResponseTimestamp   = null,
+
+                                               NetworkingNode_Id?                   DestinationId       = null,
+                                               NetworkPath?                         NetworkPath         = null,
+
+                                               IEnumerable<KeyPair>?                SignKeys            = null,
+                                               IEnumerable<SignInfo>?               SignInfos           = null,
+                                               IEnumerable<Signature>?              Signatures          = null,
+
+                                               CustomData?                          CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
-            this.ClearMonitoringResults = Array.Empty<ClearMonitoringResult>();
+            this.ClearMonitoringResults = [];
 
         }
 
@@ -244,11 +264,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomClearVariableMonitoringResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear variable monitoring response.
+        /// Parse the given JSON representation of a ClearVariableMonitoring response.
         /// </summary>
-        /// <param name="Request">The clear variable monitoring request leading to this response.</param>
+        /// <param name="Request">The ClearVariableMonitoring request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom clear variable monitoring responses.</param>
+        /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom ClearVariableMonitoring responses.</param>
         public static ClearVariableMonitoringResponse Parse(CSMS.ClearVariableMonitoringRequest                            Request,
                                                             JObject                                                        JSON,
                                                             CustomJObjectParserDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseParser   = null)
@@ -263,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return clearVariableMonitoringResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a clear variable monitoring response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ClearVariableMonitoring response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -273,13 +293,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out ClearVariableMonitoringResponse, out ErrorResponse, CustomClearVariableMonitoringResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear variable monitoring response.
+        /// Try to parse the given JSON representation of a ClearVariableMonitoring response.
         /// </summary>
-        /// <param name="Request">The clear variable monitoring request leading to this response.</param>
+        /// <param name="Request">The ClearVariableMonitoring request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ClearVariableMonitoringResponse">The parsed clear variable monitoring response.</param>
+        /// <param name="ClearVariableMonitoringResponse">The parsed ClearVariableMonitoring response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom clear variable monitoring responses.</param>
+        /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom ClearVariableMonitoring responses.</param>
         public static Boolean TryParse(CSMS.ClearVariableMonitoringRequest                            Request,
                                        JObject                                                        JSON,
                                        [NotNullWhen(true)]  out ClearVariableMonitoringResponse?      ClearVariableMonitoringResponse,
@@ -295,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region ClearMonitoringResults    [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("clearMonitoringResult",
-                                                "clear variable monitoring results",
+                                                "ClearVariableMonitoring results",
                                                 ClearMonitoringResult.TryParse,
                                                 out HashSet<ClearMonitoringResult> ClearMonitoringResults,
                                                 out ErrorResponse))
@@ -354,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 ClearVariableMonitoringResponse  = null;
-                ErrorResponse                    = "The given JSON representation of a clear variable monitoring response is invalid: " + e.Message;
+                ErrorResponse                    = "The given JSON representation of a ClearVariableMonitoring response is invalid: " + e.Message;
                 return false;
             }
 
@@ -367,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearVariableMonitoringResponseSerializer">A delegate to serialize custom clear variable monitoring responses.</param>
+        /// <param name="CustomClearVariableMonitoringResponseSerializer">A delegate to serialize custom ClearVariableMonitoring responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -407,13 +427,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The clear variable monitoring command failed.
+        /// The ClearVariableMonitoring failed because of a request error.
         /// </summary>
-        /// <param name="Request">The clear variable monitoring request leading to this response.</param>
-        public static ClearVariableMonitoringResponse Failed(CSMS.ClearVariableMonitoringRequest Request)
+        /// <param name="Request">The ClearVariableMonitoring request.</param>
+        public static ClearVariableMonitoringResponse RequestError(CSMS.ClearVariableMonitoringRequest  Request,
+                                                                   EventTracking_Id                     EventTrackingId,
+                                                                   ResultCode                           ErrorCode,
+                                                                   String?                              ErrorDescription    = null,
+                                                                   JObject?                             ErrorDetails        = null,
+                                                                   DateTime?                            ResponseTimestamp   = null,
+
+                                                                   NetworkingNode_Id?                   DestinationId       = null,
+                                                                   NetworkPath?                         NetworkPath         = null,
+
+                                                                   IEnumerable<KeyPair>?                SignKeys            = null,
+                                                                   IEnumerable<SignInfo>?               SignInfos           = null,
+                                                                   IEnumerable<Signature>?              Signatures          = null,
+
+                                                                   CustomData?                          CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ClearVariableMonitoring failed.
+        /// </summary>
+        /// <param name="Request">The ClearVariableMonitoring request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ClearVariableMonitoringResponse SignatureError(CSMS.ClearVariableMonitoringRequest  Request,
+                                                                     String                               ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ClearVariableMonitoring failed.
+        /// </summary>
+        /// <param name="Request">The ClearVariableMonitoring request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ClearVariableMonitoringResponse Failed(CSMS.ClearVariableMonitoringRequest  Request,
+                                                             String?                              Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ClearVariableMonitoring failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ClearVariableMonitoring request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ClearVariableMonitoringResponse ExceptionOccured(CSMS.ClearVariableMonitoringRequest  Request,
+                                                                       Exception                            Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -423,10 +513,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (ClearVariableMonitoringResponse1, ClearVariableMonitoringResponse2)
 
         /// <summary>
-        /// Compares two clear variable monitoring responses for equality.
+        /// Compares two ClearVariableMonitoring responses for equality.
         /// </summary>
-        /// <param name="ClearVariableMonitoringResponse1">A clear variable monitoring response.</param>
-        /// <param name="ClearVariableMonitoringResponse2">Another clear variable monitoring response.</param>
+        /// <param name="ClearVariableMonitoringResponse1">A ClearVariableMonitoring response.</param>
+        /// <param name="ClearVariableMonitoringResponse2">Another ClearVariableMonitoring response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ClearVariableMonitoringResponse? ClearVariableMonitoringResponse1,
                                            ClearVariableMonitoringResponse? ClearVariableMonitoringResponse2)
@@ -449,10 +539,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (ClearVariableMonitoringResponse1, ClearVariableMonitoringResponse2)
 
         /// <summary>
-        /// Compares two clear variable monitoring responses for inequality.
+        /// Compares two ClearVariableMonitoring responses for inequality.
         /// </summary>
-        /// <param name="ClearVariableMonitoringResponse1">A clear variable monitoring response.</param>
-        /// <param name="ClearVariableMonitoringResponse2">Another clear variable monitoring response.</param>
+        /// <param name="ClearVariableMonitoringResponse1">A ClearVariableMonitoring response.</param>
+        /// <param name="ClearVariableMonitoringResponse2">Another ClearVariableMonitoring response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ClearVariableMonitoringResponse? ClearVariableMonitoringResponse1,
                                            ClearVariableMonitoringResponse? ClearVariableMonitoringResponse2)
@@ -468,9 +558,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two clear variable monitoring responses for equality.
+        /// Compares two ClearVariableMonitoring responses for equality.
         /// </summary>
-        /// <param name="Object">A clear variable monitoring response to compare with.</param>
+        /// <param name="Object">A ClearVariableMonitoring response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ClearVariableMonitoringResponse clearVariableMonitoringResponse &&
@@ -481,9 +571,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(ClearVariableMonitoringResponse)
 
         /// <summary>
-        /// Compares two clear variable monitoring responses for equality.
+        /// Compares two ClearVariableMonitoring responses for equality.
         /// </summary>
-        /// <param name="ClearVariableMonitoringResponse">A clear variable monitoring response to compare with.</param>
+        /// <param name="ClearVariableMonitoringResponse">A ClearVariableMonitoring response to compare with.</param>
         public override Boolean Equals(ClearVariableMonitoringResponse? ClearVariableMonitoringResponse)
 
             => ClearVariableMonitoringResponse is not null &&

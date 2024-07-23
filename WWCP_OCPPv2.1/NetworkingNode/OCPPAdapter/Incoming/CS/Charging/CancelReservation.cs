@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,54 +32,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<CancelReservationRequest>?       CustomCancelReservationRequestParser         { get; set; }
-        public CustomJObjectSerializerDelegate<CancelReservationResponse>?  CustomCancelReservationResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a cancel reservation websocket request was received.
+        /// An event sent whenever a CancelReservation request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                     OnCancelReservationWSRequest;
+        public event OnCancelReservationRequestReceivedDelegate?  OnCancelReservationRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a cancel reservation request was received.
+        /// An event sent whenever a CancelReservation request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationRequestReceivedDelegate?     OnCancelReservationRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a cancel reservation request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationDelegate?            OnCancelReservation;
-
-        /// <summary>
-        /// An event sent whenever a response to a cancel reservation request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationResponseSentDelegate?    OnCancelReservationResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a cancel reservation request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?         OnCancelReservationWSResponse;
+        public event OnCancelReservationDelegate?                 OnCancelReservation;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_CancelReservation(DateTime              RequestTimestamp,
                                       IWebSocketConnection  WebSocketConnection,
@@ -86,191 +59,251 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                       NetworkPath           NetworkPath,
                                       EventTracking_Id      EventTrackingId,
                                       Request_Id            RequestId,
-                                      JObject               RequestJSON,
+                                      JObject               JSONRequest,
                                       CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnCancelReservationWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnCancelReservationWSRequest?.Invoke(startTime,
-                                                     parentNetworkingNode,
-                                                     WebSocketConnection,
-                                                     DestinationId,
-                                                     NetworkPath,
-                                                     EventTrackingId,
-                                                     RequestTimestamp,
-                                                     RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCancelReservationWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (CancelReservationRequest.TryParse(RequestJSON,
+                if (CancelReservationRequest.TryParse(JSONRequest,
                                                       RequestId,
                                                       DestinationId,
                                                       NetworkPath,
                                                       out var request,
                                                       out var errorResponse,
-                                                      CustomCancelReservationRequestParser)) {
+                                                      RequestTimestamp,
+                                                      parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                      EventTrackingId,
+                                                      parentNetworkingNode.OCPP.CustomCancelReservationRequestParser)) {
 
-                    #region Send OnCancelReservationRequest event
+                    CancelReservationResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomCancelReservationRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnCancelReservationRequestReceived?.Invoke(Timestamp.Now,
-                                                           parentNetworkingNode,
-                                                           WebSocketConnection,
-                                                           request);
+                        response = CancelReservationResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCancelReservationRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnCancelReservationRequestReceived event
+
+                    var logger = OnCancelReservationRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                        OfType<OnCancelReservationRequestReceivedDelegate>().
+                                                        Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                       Timestamp.Now,
+                                                                                       parentNetworkingNode,
+                                                                                       WebSocketConnection,
+                                                                                       request
+                                                                                  )).
+                                                        ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                  nameof(OCPPWebSocketAdapterIN),
+                                  nameof(OnCancelReservationRequestReceived),
+                                  e
+                              );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    CancelReservationResponse? response = null;
-
-                    var results = OnCancelReservation?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                   parentNetworkingNode,
-                                                                                                                   WebSocketConnection,
-                                                                                                                   request,
-                                                                                                                   CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnCancelReservation?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : CancelReservationResponse.Failed(request, $"Undefined {nameof(OnCancelReservation)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = CancelReservationResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnCancelReservation),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= CancelReservationResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnCancelReservationResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnCancelReservationResponseSent?.Invoke(Timestamp.Now,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            request,
-                                                            response,
-                                                            response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCancelReservationResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomCancelReservationResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnCancelReservationResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnCancelReservationResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomCancelReservationResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomCancelReservationResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_CancelReservation)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_CancelReservation)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_CancelReservation)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnCancelReservationWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnCancelReservationWSResponse?.Invoke(endTime,
-                                                      parentNetworkingNode,
-                                                      WebSocketConnection,
-                                                      DestinationId,
-                                                      NetworkPath,
-                                                      EventTrackingId,
-                                                      RequestTimestamp,
-                                                      RequestJSON,
-                                                      OCPPResponse?.Payload,
-                                                      OCPPErrorResponse?.ToJSON(),
-                                                      endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_CancelReservation)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCancelReservationWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// An event sent whenever a response to a CancelReservation was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationResponseSentDelegate? OnCancelReservationResponseSent;
+        public event OnCancelReservationResponseSentDelegate?  OnCancelReservationResponseSent;
+
+        #endregion
+
+        #region Send OnCancelReservationResponse event
+
+        public async Task SendOnCancelReservationResponseSent(DateTime              Timestamp,
+                                                      IEventSender          Sender,
+                                                      IWebSocketConnection  Connection,
+                                                      CancelReservationRequest      Request,
+                                                      CancelReservationResponse     Response,
+                                                      TimeSpan              Runtime)
+        {
+
+            var logger = OnCancelReservationResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnCancelReservationResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnCancelReservationResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

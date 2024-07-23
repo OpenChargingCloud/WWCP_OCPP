@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A set display message response.
+    /// The SetDisplayMessage response.
     /// </summary>
     public class SetDisplayMessageResponse : AResponse<CSMS.SetDisplayMessageRequest,
                                                        SetDisplayMessageResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetDisplayMessageResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new set display message response.
+        /// Create a new SetDisplayMessage response.
         /// </summary>
-        /// <param name="Request">The set display message request leading to this response.</param>
+        /// <param name="Request">The SetDisplayMessage request leading to this response.</param>
         /// <param name="Status">Whether the charging station is able to display the message.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetDisplayMessageResponse(Request, Result)
 
         /// <summary>
-        /// Create a new set display message response.
+        /// Create a new SetDisplayMessage response.
         /// </summary>
-        /// <param name="Request">The set display message request leading to this response.</param>
+        /// <param name="Request">The SetDisplayMessage request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetDisplayMessageResponse(CSMS.SetDisplayMessageRequest  Request,
-                                         Result                         Result)
+                                         Result                         Result,
+                                         DateTime?                      ResponseTimestamp   = null,
+
+                                         NetworkingNode_Id?             DestinationId       = null,
+                                         NetworkPath?                   NetworkPath         = null,
+
+                                         IEnumerable<KeyPair>?          SignKeys            = null,
+                                         IEnumerable<SignInfo>?         SignInfos           = null,
+                                         IEnumerable<Signature>?        Signatures          = null,
+
+                                         CustomData?                    CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -222,11 +242,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomSetDisplayMessageResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set display message response.
+        /// Parse the given JSON representation of a SetDisplayMessage response.
         /// </summary>
-        /// <param name="Request">The set display message request leading to this response.</param>
+        /// <param name="Request">The SetDisplayMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom set display message responses.</param>
+        /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom SetDisplayMessage responses.</param>
         public static SetDisplayMessageResponse Parse(CSMS.SetDisplayMessageRequest                              Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseParser   = null)
@@ -241,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return setDisplayMessageResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a set display message response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetDisplayMessage response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -251,13 +271,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out SetDisplayMessageResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set display message response.
+        /// Try to parse the given JSON representation of a SetDisplayMessage response.
         /// </summary>
-        /// <param name="Request">The set display message request leading to this response.</param>
+        /// <param name="Request">The SetDisplayMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SetDisplayMessageResponse">The parsed set display message response.</param>
+        /// <param name="SetDisplayMessageResponse">The parsed SetDisplayMessage response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom set display message responses.</param>
+        /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom SetDisplayMessage responses.</param>
         public static Boolean TryParse(CSMS.SetDisplayMessageRequest                            Request,
                                        JObject                                                  JSON,
                                        [NotNullWhen(true)]  out SetDisplayMessageResponse?      SetDisplayMessageResponse,
@@ -347,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SetDisplayMessageResponse  = null;
-                ErrorResponse              = "The given JSON representation of a set display message response is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a SetDisplayMessage response is invalid: " + e.Message;
                 return false;
             }
 
@@ -402,13 +422,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The set display message command failed.
+        /// The SetDisplayMessage failed because of a request error.
         /// </summary>
-        /// <param name="Request">The set display message request leading to this response.</param>
-        public static SetDisplayMessageResponse Failed(CSMS.SetDisplayMessageRequest Request)
+        /// <param name="Request">The SetDisplayMessage request.</param>
+        public static SetDisplayMessageResponse RequestError(CSMS.SetDisplayMessageRequest    Request,
+                                                     EventTracking_Id         EventTrackingId,
+                                                     ResultCode               ErrorCode,
+                                                     String?                  ErrorDescription    = null,
+                                                     JObject?                 ErrorDetails        = null,
+                                                     DateTime?                ResponseTimestamp   = null,
+
+                                                     NetworkingNode_Id?       DestinationId       = null,
+                                                     NetworkPath?             NetworkPath         = null,
+
+                                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                                     CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SetDisplayMessage failed.
+        /// </summary>
+        /// <param name="Request">The SetDisplayMessage request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SetDisplayMessageResponse SignatureError(CSMS.SetDisplayMessageRequest  Request,
+                                                       String                 ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SetDisplayMessage failed.
+        /// </summary>
+        /// <param name="Request">The SetDisplayMessage request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SetDisplayMessageResponse Failed(CSMS.SetDisplayMessageRequest  Request,
+                                               String?                Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SetDisplayMessage failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SetDisplayMessage request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SetDisplayMessageResponse ExceptionOccured(CSMS.SetDisplayMessageRequest  Request,
+                                                         Exception              Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -418,10 +508,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (SetDisplayMessageResponse1, SetDisplayMessageResponse2)
 
         /// <summary>
-        /// Compares two set display message responses for equality.
+        /// Compares two SetDisplayMessage responses for equality.
         /// </summary>
-        /// <param name="SetDisplayMessageResponse1">A set display message response.</param>
-        /// <param name="SetDisplayMessageResponse2">Another set display message response.</param>
+        /// <param name="SetDisplayMessageResponse1">A SetDisplayMessage response.</param>
+        /// <param name="SetDisplayMessageResponse2">Another SetDisplayMessage response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetDisplayMessageResponse? SetDisplayMessageResponse1,
                                            SetDisplayMessageResponse? SetDisplayMessageResponse2)
@@ -444,10 +534,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (SetDisplayMessageResponse1, SetDisplayMessageResponse2)
 
         /// <summary>
-        /// Compares two set display message responses for inequality.
+        /// Compares two SetDisplayMessage responses for inequality.
         /// </summary>
-        /// <param name="SetDisplayMessageResponse1">A set display message response.</param>
-        /// <param name="SetDisplayMessageResponse2">Another set display message response.</param>
+        /// <param name="SetDisplayMessageResponse1">A SetDisplayMessage response.</param>
+        /// <param name="SetDisplayMessageResponse2">Another SetDisplayMessage response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetDisplayMessageResponse? SetDisplayMessageResponse1,
                                            SetDisplayMessageResponse? SetDisplayMessageResponse2)
@@ -463,9 +553,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set display message responses for equality.
+        /// Compares two SetDisplayMessage responses for equality.
         /// </summary>
-        /// <param name="Object">A set display message response to compare with.</param>
+        /// <param name="Object">A SetDisplayMessage response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetDisplayMessageResponse setDisplayMessageResponse &&
@@ -476,9 +566,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(SetDisplayMessageResponse)
 
         /// <summary>
-        /// Compares two set display message responses for equality.
+        /// Compares two SetDisplayMessage responses for equality.
         /// </summary>
-        /// <param name="SetDisplayMessageResponse">A set display message response to compare with.</param>
+        /// <param name="SetDisplayMessageResponse">A SetDisplayMessage response to compare with.</param>
         public override Boolean Equals(SetDisplayMessageResponse? SetDisplayMessageResponse)
 
             => SetDisplayMessageResponse is not null &&

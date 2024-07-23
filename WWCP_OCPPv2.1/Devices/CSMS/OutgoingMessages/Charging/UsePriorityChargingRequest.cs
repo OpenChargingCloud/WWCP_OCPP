@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A use priority charging request.
+    /// The UsePriorityCharging request.
     /// </summary>
     public class UsePriorityChargingRequest : ARequest<UsePriorityChargingRequest>,
                                               IRequest
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a use priority charging request.
+        /// Create a UsePriorityCharging request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
@@ -147,17 +147,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a use priority charging request.
+        /// Parse the given JSON representation of a UsePriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom use priority charging requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom UsePriorityCharging requests.</param>
         public static UsePriorityChargingRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
                                                        NetworkingNode_Id                                         DestinationId,
                                                        NetworkPath                                               NetworkPath,
+                                                       DateTime?                                                 RequestTimestamp                         = null,
+                                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                                       EventTracking_Id?                                         EventTrackingId                          = null,
                                                        CustomJObjectParserDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestParser   = null)
         {
 
@@ -167,12 +173,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var usePriorityChargingRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomUsePriorityChargingRequestParser))
             {
                 return usePriorityChargingRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a use priority charging request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a UsePriorityCharging request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -182,22 +191,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a use priority charging request.
+        /// Try to parse the given JSON representation of a UsePriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="UsePriorityChargingRequest">The parsed use priority charging request.</param>
+        /// <param name="UsePriorityChargingRequest">The parsed UsePriorityCharging request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom use priority charging requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom UsePriorityCharging requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
                                        NetworkingNode_Id                                         DestinationId,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out UsePriorityChargingRequest?      UsePriorityChargingRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
-                                       CustomJObjectParserDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestParser)
+                                       DateTime?                                                 RequestTimestamp                         = null,
+                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                       EventTracking_Id?                                         EventTrackingId                          = null,
+                                       CustomJObjectParserDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestParser   = null)
         {
 
             try
@@ -272,9 +287,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  CustomData,
 
                                                  RequestId,
-                                                 null,
-                                                 null,
-                                                 null,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
                                                  NetworkPath
 
                                              );
@@ -289,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 UsePriorityChargingRequest  = null;
-                ErrorResponse               = "The given JSON representation of a use priority charging request is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a UsePriorityCharging request is invalid: " + e.Message;
                 return false;
             }
 
@@ -338,10 +353,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (UsePriorityChargingRequest1, UsePriorityChargingRequest2)
 
         /// <summary>
-        /// Compares two use priority charging requests for equality.
+        /// Compares two UsePriorityCharging requests for equality.
         /// </summary>
-        /// <param name="UsePriorityChargingRequest1">A use priority charging request.</param>
-        /// <param name="UsePriorityChargingRequest2">Another use priority charging request.</param>
+        /// <param name="UsePriorityChargingRequest1">A UsePriorityCharging request.</param>
+        /// <param name="UsePriorityChargingRequest2">Another UsePriorityCharging request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UsePriorityChargingRequest? UsePriorityChargingRequest1,
                                            UsePriorityChargingRequest? UsePriorityChargingRequest2)
@@ -364,10 +379,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (UsePriorityChargingRequest1, UsePriorityChargingRequest2)
 
         /// <summary>
-        /// Compares two use priority charging requests for inequality.
+        /// Compares two UsePriorityCharging requests for inequality.
         /// </summary>
-        /// <param name="UsePriorityChargingRequest1">A use priority charging request.</param>
-        /// <param name="UsePriorityChargingRequest2">Another use priority charging request.</param>
+        /// <param name="UsePriorityChargingRequest1">A UsePriorityCharging request.</param>
+        /// <param name="UsePriorityChargingRequest2">Another UsePriorityCharging request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UsePriorityChargingRequest? UsePriorityChargingRequest1,
                                            UsePriorityChargingRequest? UsePriorityChargingRequest2)
@@ -383,9 +398,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two use priority charging requests for equality.
+        /// Compares two UsePriorityCharging requests for equality.
         /// </summary>
-        /// <param name="Object">A use priority charging request to compare with.</param>
+        /// <param name="Object">A UsePriorityCharging request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UsePriorityChargingRequest usePriorityChargingRequest &&
@@ -396,9 +411,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(UsePriorityChargingRequest)
 
         /// <summary>
-        /// Compares two use priority charging requests for equality.
+        /// Compares two UsePriorityCharging requests for equality.
         /// </summary>
-        /// <param name="UsePriorityChargingRequest">A use priority charging request to compare with.</param>
+        /// <param name="UsePriorityChargingRequest">A UsePriorityCharging request to compare with.</param>
         public override Boolean Equals(UsePriorityChargingRequest? UsePriorityChargingRequest)
 
             => UsePriorityChargingRequest is not null &&

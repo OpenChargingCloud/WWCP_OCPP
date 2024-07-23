@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A get log response.
+    /// The GetLog response.
     /// </summary>
     public class GetLogResponse : AResponse<CSMS.GetLogRequest,
                                             GetLogResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the get log command.
+        /// The success or failure of the GetLog command.
         /// </summary>
         [Mandatory]
         public LogStatus      Status        { get; }
@@ -81,10 +81,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetLogResponse(Request, Status, Filename = null, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new get log response.
+        /// Create a new GetLog response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Status">The success or failure of the get log command.</param>
+        /// <param name="Status">The success or failure of the GetLog command.</param>
         /// <param name="Filename">The name of the log file that will be uploaded. This field is not present when no logging information is available.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -132,15 +132,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetLogResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get log response.
+        /// Create a new GetLog response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public GetLogResponse(CSMS.GetLogRequest  Request,
-                              Result              Result)
+        public GetLogResponse(CSMS.GetLogRequest       Request,
+                              Result                   Result,
+                              DateTime?                ResponseTimestamp   = null,
+
+                              NetworkingNode_Id?       DestinationId       = null,
+                              NetworkPath?             NetworkPath         = null,
+
+                              IEnumerable<KeyPair>?    SignKeys            = null,
+                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              IEnumerable<Signature>?  Signatures          = null,
+
+                              CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -186,11 +206,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomGetLogResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get log response.
+        /// Parse the given JSON representation of a GetLog response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetLogResponseParser">A delegate to parse custom get log responses.</param>
+        /// <param name="CustomGetLogResponseParser">A delegate to parse custom GetLog responses.</param>
         public static GetLogResponse Parse(CSMS.GetLogRequest                            Request,
                                            JObject                                       JSON,
                                            CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null)
@@ -205,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return getLogResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get log response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetLog response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -215,13 +235,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out GetLogResponse, out ErrorResponse, CustomGetLogResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get log response.
+        /// Try to parse the given JSON representation of a GetLog response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetLogResponse">The parsed get log response.</param>
+        /// <param name="GetLogResponse">The parsed GetLog response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetLogResponseParser">A delegate to parse custom get log responses.</param>
+        /// <param name="CustomGetLogResponseParser">A delegate to parse custom GetLog responses.</param>
         public static Boolean TryParse(CSMS.GetLogRequest                            Request,
                                        JObject                                       JSON,
                                        [NotNullWhen(true)]  out GetLogResponse?      GetLogResponse,
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "get log status",
+                                         "GetLog status",
                                          LogStatusExtensions.TryParse,
                                          out LogStatus Status,
                                          out ErrorResponse))
@@ -318,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 GetLogResponse  = null;
-                ErrorResponse   = "The given JSON representation of a get log response is invalid: " + e.Message;
+                ErrorResponse   = "The given JSON representation of a GetLog response is invalid: " + e.Message;
                 return false;
             }
 
@@ -331,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetLogResponseSerializer">A delegate to serialize custom get log responses.</param>
+        /// <param name="CustomGetLogResponseSerializer">A delegate to serialize custom GetLog responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -377,13 +397,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The get log command failed.
+        /// The GetLog failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get log request leading to this response.</param>
-        public static GetLogResponse Failed(CSMS.GetLogRequest Request)
+        /// <param name="Request">The GetLog request.</param>
+        public static GetLogResponse RequestError(CSMS.GetLogRequest       Request,
+                                                  EventTracking_Id         EventTrackingId,
+                                                  ResultCode               ErrorCode,
+                                                  String?                  ErrorDescription    = null,
+                                                  JObject?                 ErrorDetails        = null,
+                                                  DateTime?                ResponseTimestamp   = null,
+
+                                                  NetworkingNode_Id?       DestinationId       = null,
+                                                  NetworkPath?             NetworkPath         = null,
+
+                                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                                  IEnumerable<Signature>?  Signatures          = null,
+
+                                                  CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetLog failed.
+        /// </summary>
+        /// <param name="Request">The GetLog request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetLogResponse SignatureError(CSMS.GetLogRequest  Request,
+                                                    String              ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetLog failed.
+        /// </summary>
+        /// <param name="Request">The GetLog request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetLogResponse Failed(CSMS.GetLogRequest  Request,
+                                            String?             Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetLog failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetLog request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetLogResponse ExceptionOccured(CSMS.GetLogRequest  Request,
+                                                      Exception           Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -393,10 +483,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (GetLogResponse1, GetLogResponse2)
 
         /// <summary>
-        /// Compares two get log responses for equality.
+        /// Compares two GetLog responses for equality.
         /// </summary>
-        /// <param name="GetLogResponse1">A get log response.</param>
-        /// <param name="GetLogResponse2">Another get log response.</param>
+        /// <param name="GetLogResponse1">A GetLog response.</param>
+        /// <param name="GetLogResponse2">Another GetLog response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetLogResponse? GetLogResponse1,
                                            GetLogResponse? GetLogResponse2)
@@ -419,10 +509,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (GetLogResponse1, GetLogResponse2)
 
         /// <summary>
-        /// Compares two get log responses for inequality.
+        /// Compares two GetLog responses for inequality.
         /// </summary>
-        /// <param name="GetLogResponse1">A get log response.</param>
-        /// <param name="GetLogResponse2">Another get log response.</param>
+        /// <param name="GetLogResponse1">A GetLog response.</param>
+        /// <param name="GetLogResponse2">Another GetLog response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetLogResponse? GetLogResponse1,
                                            GetLogResponse? GetLogResponse2)
@@ -438,9 +528,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get log responses for equality.
+        /// Compares two GetLog responses for equality.
         /// </summary>
-        /// <param name="Object">A get log response to compare with.</param>
+        /// <param name="Object">A GetLog response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetLogResponse getLogResponse &&
@@ -451,9 +541,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(GetLogResponse)
 
         /// <summary>
-        /// Compares two get log responses for equality.
+        /// Compares two GetLog responses for equality.
         /// </summary>
-        /// <param name="GetLogResponse">A get log response to compare with.</param>
+        /// <param name="GetLogResponse">A GetLog response to compare with.</param>
         public override Boolean Equals(GetLogResponse? GetLogResponse)
 
             => GetLogResponse is not null &&

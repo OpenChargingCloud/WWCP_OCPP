@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A notify notify certificate revocation list response.
+    /// The NotifyCRL response.
     /// </summary>
     public class NotifyCRLResponse : AResponse<CSMS.NotifyCRLRequest,
                                                     NotifyCRLResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region NotifyCRLResponse(Request, ...)
 
         /// <summary>
-        /// Create a new notify certificate revocation list response.
+        /// Create a new NotifyCRL response.
         /// </summary>
-        /// <param name="Request">The notify certificate revocation list request leading to this response.</param>
+        /// <param name="Request">The NotifyCRL request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region NotifyCRLResponse(Request, Result)
 
         /// <summary>
-        /// Create a new notify certificate revocation list response.
+        /// Create a new NotifyCRL response.
         /// </summary>
-        /// <param name="Request">The notify certificate revocation list request leading to this response.</param>
+        /// <param name="Request">The NotifyCRL request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public NotifyCRLResponse(CSMS.NotifyCRLRequest  Request,
-                                 Result                 Result)
+        public NotifyCRLResponse(CSMS.NotifyCRLRequest    Request,
+                                 Result                   Result,
+                                 DateTime?                ResponseTimestamp   = null,
+
+                                 NetworkingNode_Id?       DestinationId       = null,
+                                 NetworkPath?             NetworkPath         = null,
+
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<Signature>?  Signatures          = null,
+
+                                 CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -128,11 +148,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomNotifyCRLResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify certificate revocation list response.
+        /// Parse the given JSON representation of a NotifyCRL response.
         /// </summary>
-        /// <param name="Request">The notify certificate revocation list request leading to this response.</param>
+        /// <param name="Request">The NotifyCRL request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyCRLResponseParser">A delegate to parse custom notify certificate revocation list responses.</param>
+        /// <param name="CustomNotifyCRLResponseParser">A delegate to parse custom NotifyCRL responses.</param>
         public static NotifyCRLResponse Parse(CSMS.NotifyCRLRequest                            Request,
                                               JObject                                          JSON,
                                               CustomJObjectParserDelegate<NotifyCRLResponse>?  CustomNotifyCRLResponseParser   = null)
@@ -147,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return notifyCRLResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify certificate revocation list response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyCRL response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -157,13 +177,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out NotifyCRLResponse, out ErrorResponse, CustomNotifyCRLResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify certificate revocation list response.
+        /// Try to parse the given JSON representation of a NotifyCRL response.
         /// </summary>
-        /// <param name="Request">The notify certificate revocation list request leading to this response.</param>
+        /// <param name="Request">The NotifyCRL request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NotifyCRLResponse">The parsed notify certificate revocation list response.</param>
+        /// <param name="NotifyCRLResponse">The parsed NotifyCRL response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyCRLResponseParser">A delegate to parse custom notify certificate revocation list responses.</param>
+        /// <param name="CustomNotifyCRLResponseParser">A delegate to parse custom NotifyCRL responses.</param>
         public static Boolean TryParse(CSMS.NotifyCRLRequest                            Request,
                                        JObject                                          JSON,
                                        [NotNullWhen(true)]  out NotifyCRLResponse?      NotifyCRLResponse,
@@ -224,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 NotifyCRLResponse  = null;
-                ErrorResponse      = "The given JSON representation of a notify certificate revocation list response is invalid: " + e.Message;
+                ErrorResponse      = "The given JSON representation of a NotifyCRL response is invalid: " + e.Message;
                 return false;
             }
 
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyCRLResponseSerializer">A delegate to serialize custom notify certificate revocation list responses.</param>
+        /// <param name="CustomNotifyCRLResponseSerializer">A delegate to serialize custom NotifyCRL responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyCRLResponse>?  CustomNotifyCRLResponseSerializer   = null,
@@ -270,13 +290,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The notify certificate revocation list request failed.
+        /// The NotifyCRL failed because of a request error.
         /// </summary>
-        /// <param name="Request">The notify certificate revocation list request leading to this response.</param>
-        public static NotifyCRLResponse Failed(CSMS.NotifyCRLRequest Request)
+        /// <param name="Request">The NotifyCRL request.</param>
+        public static NotifyCRLResponse RequestError(CSMS.NotifyCRLRequest    Request,
+                                                     EventTracking_Id         EventTrackingId,
+                                                     ResultCode               ErrorCode,
+                                                     String?                  ErrorDescription    = null,
+                                                     JObject?                 ErrorDetails        = null,
+                                                     DateTime?                ResponseTimestamp   = null,
+
+                                                     NetworkingNode_Id?       DestinationId       = null,
+                                                     NetworkPath?             NetworkPath         = null,
+
+                                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                                     CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifyCRL failed.
+        /// </summary>
+        /// <param name="Request">The NotifyCRL request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifyCRLResponse SignatureError(CSMS.NotifyCRLRequest  Request,
+                                                       String                 ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifyCRL failed.
+        /// </summary>
+        /// <param name="Request">The NotifyCRL request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifyCRLResponse Failed(CSMS.NotifyCRLRequest  Request,
+                                               String?                Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifyCRL failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifyCRL request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifyCRLResponse ExceptionOccured(CSMS.NotifyCRLRequest  Request,
+                                                         Exception              Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -286,10 +376,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (NotifyCRLResponse1, NotifyCRLResponse2)
 
         /// <summary>
-        /// Compares two notify certificate revocation list responses for equality.
+        /// Compares two NotifyCRL responses for equality.
         /// </summary>
-        /// <param name="NotifyCRLResponse1">A notify certificate revocation list response.</param>
-        /// <param name="NotifyCRLResponse2">Another notify certificate revocation list response.</param>
+        /// <param name="NotifyCRLResponse1">A NotifyCRL response.</param>
+        /// <param name="NotifyCRLResponse2">Another NotifyCRL response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyCRLResponse? NotifyCRLResponse1,
                                            NotifyCRLResponse? NotifyCRLResponse2)
@@ -312,10 +402,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (NotifyCRLResponse1, NotifyCRLResponse2)
 
         /// <summary>
-        /// Compares two notify certificate revocation list responses for inequality.
+        /// Compares two NotifyCRL responses for inequality.
         /// </summary>
-        /// <param name="NotifyCRLResponse1">A notify certificate revocation list response.</param>
-        /// <param name="NotifyCRLResponse2">Another notify certificate revocation list response.</param>
+        /// <param name="NotifyCRLResponse1">A NotifyCRL response.</param>
+        /// <param name="NotifyCRLResponse2">Another NotifyCRL response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyCRLResponse? NotifyCRLResponse1,
                                            NotifyCRLResponse? NotifyCRLResponse2)
@@ -331,9 +421,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify certificate revocation list responses for equality.
+        /// Compares two NotifyCRL responses for equality.
         /// </summary>
-        /// <param name="Object">A notify certificate revocation list response to compare with.</param>
+        /// <param name="Object">A NotifyCRL response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyCRLResponse notifyCRLResponse &&
@@ -344,9 +434,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(NotifyCRLResponse)
 
         /// <summary>
-        /// Compares two notify certificate revocation list responses for equality.
+        /// Compares two NotifyCRL responses for equality.
         /// </summary>
-        /// <param name="NotifyCRLResponse">A notify certificate revocation list response to compare with.</param>
+        /// <param name="NotifyCRLResponse">A NotifyCRL response to compare with.</param>
         public override Boolean Equals(NotifyCRLResponse? NotifyCRLResponse)
 
             => NotifyCRLResponse is not null &&

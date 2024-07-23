@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,308 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<RequestStartTransactionRequest>?       CustomRequestStartTransactionRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<RequestStartTransactionResponse>?  CustomRequestStartTransactionResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a request start transaction websocket request was received.
+        /// An event sent whenever a RequestStartTransaction request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                            OnRequestStartTransactionWSRequest;
+        public event OnRequestStartTransactionRequestReceivedDelegate?  OnRequestStartTransactionRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a request start transaction request was received.
+        /// An event sent whenever a RequestStartTransaction request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnRequestStartTransactionRequestReceivedDelegate?     OnRequestStartTransactionRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a request start transaction request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnRequestStartTransactionDelegate?            OnRequestStartTransaction;
-
-        /// <summary>
-        /// An event sent whenever a response to a request start transaction request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnRequestStartTransactionResponseSentDelegate?    OnRequestStartTransactionResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a request start transaction request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?                OnRequestStartTransactionWSResponse;
+        public event OnRequestStartTransactionDelegate?                 OnRequestStartTransaction;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_RequestStartTransaction(DateTime                   RequestTimestamp,
+            Receive_RequestStartTransaction(DateTime              RequestTimestamp,
                                             IWebSocketConnection  WebSocketConnection,
-                                            NetworkingNode_Id          DestinationId,
-                                            NetworkPath                NetworkPath,
-                                            EventTracking_Id           EventTrackingId,
-                                            Request_Id                 RequestId,
-                                            JObject                    RequestJSON,
-                                            CancellationToken          CancellationToken)
+                                            NetworkingNode_Id     DestinationId,
+                                            NetworkPath           NetworkPath,
+                                            EventTracking_Id      EventTrackingId,
+                                            Request_Id            RequestId,
+                                            JObject               JSONRequest,
+                                            CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnRequestStartTransactionWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnRequestStartTransactionWSRequest?.Invoke(startTime,
-                                                           parentNetworkingNode,
-                                                           WebSocketConnection,
-                                                           DestinationId,
-                                                           NetworkPath,
-                                                           EventTrackingId,
-                                                           RequestTimestamp,
-                                                           RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnRequestStartTransactionWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (RequestStartTransactionRequest.TryParse(RequestJSON,
+                if (RequestStartTransactionRequest.TryParse(JSONRequest,
                                                             RequestId,
                                                             DestinationId,
                                                             NetworkPath,
                                                             out var request,
                                                             out var errorResponse,
-                                                            CustomRequestStartTransactionRequestParser)) {
+                                                            RequestTimestamp,
+                                                            parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                            EventTrackingId,
+                                                            parentNetworkingNode.OCPP.CustomRequestStartTransactionRequestParser)) {
 
-                    #region Send OnRequestStartTransactionRequest event
+                    RequestStartTransactionResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+
+                            parentNetworkingNode.OCPP.CustomRequestStartTransactionRequestSerializer,
+
+                            parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                            parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingProfileSerializer,
+                            parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
+                            parentNetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
+                            parentNetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
+                            parentNetworkingNode.OCPP.CustomSalesTariffSerializer,
+                            parentNetworkingNode.OCPP.CustomSalesTariffEntrySerializer,
+                            parentNetworkingNode.OCPP.CustomRelativeTimeIntervalSerializer,
+                            parentNetworkingNode.OCPP.CustomConsumptionCostSerializer,
+                            parentNetworkingNode.OCPP.CustomCostSerializer,
+
+                            parentNetworkingNode.OCPP.CustomAbsolutePriceScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceRuleStackSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceRuleSerializer,
+                            parentNetworkingNode.OCPP.CustomTaxRuleSerializer,
+                            parentNetworkingNode.OCPP.CustomOverstayRuleListSerializer,
+                            parentNetworkingNode.OCPP.CustomOverstayRuleSerializer,
+                            parentNetworkingNode.OCPP.CustomAdditionalServiceSerializer,
+
+                            parentNetworkingNode.OCPP.CustomPriceLevelScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceLevelScheduleEntrySerializer,
+
+                            parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+
+                        ),
+                        out errorResponse))
                     {
 
-                        OnRequestStartTransactionRequestReceived?.Invoke(Timestamp.Now,
-                                                                 parentNetworkingNode,
-                                                                 WebSocketConnection,
-                                                                 request);
+                        response = RequestStartTransactionResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnRequestStartTransactionRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnRequestStartTransactionRequestReceived event
+
+                    var logger = OnRequestStartTransactionRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnRequestStartTransactionRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnRequestStartTransactionRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    RequestStartTransactionResponse? response = null;
-
-                    var results = OnRequestStartTransaction?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnRequestStartTransactionDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                         parentNetworkingNode,
-                                                                                                                         WebSocketConnection,
-                                                                                                                         request,
-                                                                                                                         CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnRequestStartTransaction?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnRequestStartTransactionDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : RequestStartTransactionResponse.Failed(request, $"Undefined {nameof(OnRequestStartTransaction)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = RequestStartTransactionResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnRequestStartTransaction),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= RequestStartTransactionResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnRequestStartTransactionResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnRequestStartTransactionResponseSent?.Invoke(Timestamp.Now,
-                                                                  parentNetworkingNode,
-                                                                  WebSocketConnection,
-                                                                  request,
-                                                                  response,
-                                                                  response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnRequestStartTransactionResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomRequestStartTransactionResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnRequestStartTransactionResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnRequestStartTransactionResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomRequestStartTransactionResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomRequestStartTransactionResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_RequestStartTransaction)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_RequestStartTransaction)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_RequestStartTransaction)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnRequestStartTransactionWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnRequestStartTransactionWSResponse?.Invoke(endTime,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            DestinationId,
-                                                            NetworkPath,
-                                                            EventTrackingId,
-                                                            RequestTimestamp,
-                                                            RequestJSON,
-                                                            OCPPResponse?.Payload,
-                                                            OCPPErrorResponse?.ToJSON(),
-                                                            endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_RequestStartTransaction)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnRequestStartTransactionWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a request start transaction request was sent.
+        /// An event sent whenever a response to a RequestStartTransaction was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnRequestStartTransactionResponseSentDelegate? OnRequestStartTransactionResponseSent;
+        public event OnRequestStartTransactionResponseSentDelegate?  OnRequestStartTransactionResponseSent;
+
+        #endregion
+
+        #region Send OnRequestStartTransactionResponse event
+
+        public async Task SendOnRequestStartTransactionResponseSent(DateTime                         Timestamp,
+                                                                    IEventSender                     Sender,
+                                                                    IWebSocketConnection             Connection,
+                                                                    RequestStartTransactionRequest   Request,
+                                                                    RequestStartTransactionResponse  Response,
+                                                                    TimeSpan                         Runtime)
+        {
+
+            var logger = OnRequestStartTransactionResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnRequestStartTransactionResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnRequestStartTransactionResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// An update dynamic schedule request.
+    /// The UpdateDynamicSchedule request.
     /// </summary>
     public class UpdateDynamicScheduleRequest : ARequest<UpdateDynamicScheduleRequest>,
                                                 IRequest
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create an update dynamic schedule request.
+        /// Create an UpdateDynamicSchedule request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
@@ -309,17 +309,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId,  DestinationId, NetworkPath, CustomUpdateDynamicScheduleRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an update dynamic schedule request.
+        /// Parse the given JSON representation of an UpdateDynamicSchedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomUpdateDynamicScheduleRequestParser">A delegate to parse custom update dynamic schedule requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUpdateDynamicScheduleRequestParser">A delegate to parse custom UpdateDynamicSchedule requests.</param>
         public static UpdateDynamicScheduleRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
                                                          NetworkingNode_Id                                           DestinationId,
                                                          NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   RequestTimestamp                           = null,
+                                                         TimeSpan?                                                   RequestTimeout                             = null,
+                                                         EventTracking_Id?                                           EventTrackingId                            = null,
                                                          CustomJObjectParserDelegate<UpdateDynamicScheduleRequest>?  CustomUpdateDynamicScheduleRequestParser   = null)
         {
 
@@ -329,12 +335,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var updateDynamicScheduleRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomUpdateDynamicScheduleRequestParser))
             {
                 return updateDynamicScheduleRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an update dynamic schedule request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UpdateDynamicSchedule request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -344,21 +353,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId,  DestinationId, NetworkPath, out UpdateDynamicScheduleRequest, out ErrorResponse, CustomUpdateDynamicScheduleRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an update dynamic schedule request.
+        /// Try to parse the given JSON representation of an UpdateDynamicSchedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="UpdateDynamicScheduleRequest">The parsed update dynamic schedule request.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="UpdateDynamicScheduleRequest">The parsed UpdateDynamicSchedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUpdateDynamicScheduleRequestParser">A delegate to parse custom update dynamic schedule requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUpdateDynamicScheduleRequestParser">A delegate to parse custom UpdateDynamicSchedule requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
                                        NetworkingNode_Id                                           DestinationId,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out UpdateDynamicScheduleRequest?      UpdateDynamicScheduleRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<UpdateDynamicScheduleRequest>?  CustomUpdateDynamicScheduleRequestParser)
+                                       DateTime?                                                   RequestTimestamp                           = null,
+                                       TimeSpan?                                                   RequestTimeout                             = null,
+                                       EventTracking_Id?                                           EventTrackingId                            = null,
+                                       CustomJObjectParserDelegate<UpdateDynamicScheduleRequest>?  CustomUpdateDynamicScheduleRequestParser   = null)
         {
 
             try
@@ -597,9 +612,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                    CustomData,
 
                                                    RequestId,
-                                                   null,
-                                                   null,
-                                                   null,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
                                                    NetworkPath
 
                                                );
@@ -614,7 +629,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 UpdateDynamicScheduleRequest  = null;
-                ErrorResponse                 = "The given JSON representation of an update dynamic schedule request is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of an UpdateDynamicSchedule request is invalid: " + e.Message;
                 return false;
             }
 
@@ -714,10 +729,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (UpdateDynamicScheduleRequest1, UpdateDynamicScheduleRequest2)
 
         /// <summary>
-        /// Compares two update dynamic schedule requests for equality.
+        /// Compares two UpdateDynamicSchedule requests for equality.
         /// </summary>
-        /// <param name="UpdateDynamicScheduleRequest1">An update dynamic schedule request.</param>
-        /// <param name="UpdateDynamicScheduleRequest2">Another update dynamic schedule request.</param>
+        /// <param name="UpdateDynamicScheduleRequest1">An UpdateDynamicSchedule request.</param>
+        /// <param name="UpdateDynamicScheduleRequest2">Another UpdateDynamicSchedule request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UpdateDynamicScheduleRequest? UpdateDynamicScheduleRequest1,
                                            UpdateDynamicScheduleRequest? UpdateDynamicScheduleRequest2)
@@ -740,10 +755,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (UpdateDynamicScheduleRequest1, UpdateDynamicScheduleRequest2)
 
         /// <summary>
-        /// Compares two update dynamic schedule requests for inequality.
+        /// Compares two UpdateDynamicSchedule requests for inequality.
         /// </summary>
-        /// <param name="UpdateDynamicScheduleRequest1">An update dynamic schedule request.</param>
-        /// <param name="UpdateDynamicScheduleRequest2">Another update dynamic schedule request.</param>
+        /// <param name="UpdateDynamicScheduleRequest1">An UpdateDynamicSchedule request.</param>
+        /// <param name="UpdateDynamicScheduleRequest2">Another UpdateDynamicSchedule request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UpdateDynamicScheduleRequest? UpdateDynamicScheduleRequest1,
                                            UpdateDynamicScheduleRequest? UpdateDynamicScheduleRequest2)
@@ -759,9 +774,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two update dynamic schedule requests for equality.
+        /// Compares two UpdateDynamicSchedule requests for equality.
         /// </summary>
-        /// <param name="Object">An update dynamic schedule request to compare with.</param>
+        /// <param name="Object">An UpdateDynamicSchedule request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UpdateDynamicScheduleRequest updateDynamicScheduleRequest &&
@@ -772,9 +787,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(UpdateDynamicScheduleRequest)
 
         /// <summary>
-        /// Compares two update dynamic schedule requests for equality.
+        /// Compares two UpdateDynamicSchedule requests for equality.
         /// </summary>
-        /// <param name="UpdateDynamicScheduleRequest">An update dynamic schedule request to compare with.</param>
+        /// <param name="UpdateDynamicScheduleRequest">An UpdateDynamicSchedule request to compare with.</param>
         public override Boolean Equals(UpdateDynamicScheduleRequest? UpdateDynamicScheduleRequest)
 
             => UpdateDynamicScheduleRequest is not null &&

@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A certificate signed response.
+    /// The CertificateSigned response.
     /// </summary>
     public class CertificateSignedResponse : AResponse<CSMS.CertificateSignedRequest,
                                                        CertificateSignedResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region CertificateSignedResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new certificate signed response.
+        /// Create a new CertificateSigned response.
         /// </summary>
-        /// <param name="Request">The certificate signed request leading to this response.</param>
+        /// <param name="Request">The CertificateSigned request leading to this response.</param>
         /// <param name="Status">The success or failure of the certificate sign request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region CertificateSignedResponse(Request, Result)
 
         /// <summary>
-        /// Create a new certificate signed response.
+        /// Create a new CertificateSigned response.
         /// </summary>
-        /// <param name="Request">The certificate signed request leading to this response.</param>
+        /// <param name="Request">The CertificateSigned request leading to this response.</param>
         /// <param name="Result">A result.</param>
         public CertificateSignedResponse(CSMS.CertificateSignedRequest  Request,
-                                         Result                         Result)
+                                         Result                         Result,
+                                         DateTime?                      ResponseTimestamp   = null,
+
+                                         NetworkingNode_Id?             DestinationId       = null,
+                                         NetworkPath?                   NetworkPath         = null,
+
+                                         IEnumerable<KeyPair>?          SignKeys            = null,
+                                         IEnumerable<SignInfo>?         SignInfos           = null,
+                                         IEnumerable<Signature>?        Signatures          = null,
+
+                                         CustomData?                    CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -218,11 +238,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomCertificateSignedResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a certificate signed response.
+        /// Parse the given JSON representation of a CertificateSigned response.
         /// </summary>
-        /// <param name="Request">The certificate signed request leading to this response.</param>
+        /// <param name="Request">The CertificateSigned request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCertificateSignedResponseParser">A delegate to parse custom certificate signed responses.</param>
+        /// <param name="CustomCertificateSignedResponseParser">A delegate to parse custom CertificateSigned responses.</param>
         public static CertificateSignedResponse Parse(CSMS.CertificateSignedRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<CertificateSignedResponse>?  CustomCertificateSignedResponseParser   = null)
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return certificateSignedResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a certificate signed response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a CertificateSigned response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,13 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out CertificateSignedResponse, out ErrorResponse, CustomCertificateSignedResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a certificate signed response.
+        /// Try to parse the given JSON representation of a CertificateSigned response.
         /// </summary>
-        /// <param name="Request">The certificate signed request leading to this response.</param>
+        /// <param name="Request">The CertificateSigned request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CertificateSignedResponse">The parsed certificate signed response.</param>
+        /// <param name="CertificateSignedResponse">The parsed CertificateSigned response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCertificateSignedResponseParser">A delegate to parse custom certificate signed responses.</param>
+        /// <param name="CustomCertificateSignedResponseParser">A delegate to parse custom CertificateSigned responses.</param>
         public static Boolean TryParse(CSMS.CertificateSignedRequest                            Request,
                                        JObject                                                  JSON,
                                        [NotNullWhen(true)]  out CertificateSignedResponse?      CertificateSignedResponse,
@@ -269,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "certificate signed status",
+                                         "CertificateSigned status",
                                          CertificateSignedStatusExtensions.TryParse,
                                          out CertificateSignedStatus Status,
                                          out ErrorResponse))
@@ -343,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 CertificateSignedResponse  = null;
-                ErrorResponse              = "The given JSON representation of a certificate signed response is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a CertificateSigned response is invalid: " + e.Message;
                 return false;
             }
 
@@ -356,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCertificateSignedResponseSerializer">A delegate to serialize custom certificate signed responses.</param>
+        /// <param name="CustomCertificateSignedResponseSerializer">A delegate to serialize custom CertificateSigned responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -398,13 +418,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The certificate signed failed.
+        /// The CertificateSigned failed because of a request error.
         /// </summary>
-        /// <param name="Request">The certificate signed request leading to this response.</param>
-        public static CertificateSignedResponse Failed(CSMS.CertificateSignedRequest Request)
+        /// <param name="Request">The CertificateSigned request.</param>
+        public static CertificateSignedResponse RequestError(CSMS.CertificateSignedRequest  Request,
+                                                             EventTracking_Id               EventTrackingId,
+                                                             ResultCode                     ErrorCode,
+                                                             String?                        ErrorDescription    = null,
+                                                             JObject?                       ErrorDetails        = null,
+                                                             DateTime?                      ResponseTimestamp   = null,
+
+                                                             NetworkingNode_Id?             DestinationId       = null,
+                                                             NetworkPath?                   NetworkPath         = null,
+
+                                                             IEnumerable<KeyPair>?          SignKeys            = null,
+                                                             IEnumerable<SignInfo>?         SignInfos           = null,
+                                                             IEnumerable<Signature>?        Signatures          = null,
+
+                                                             CustomData?                    CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The CertificateSigned failed.
+        /// </summary>
+        /// <param name="Request">The CertificateSigned request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static CertificateSignedResponse SignatureError(CSMS.CertificateSignedRequest  Request,
+                                                               String                         ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The CertificateSigned failed.
+        /// </summary>
+        /// <param name="Request">The CertificateSigned request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static CertificateSignedResponse Failed(CSMS.CertificateSignedRequest  Request,
+                                                       String?                        Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The CertificateSigned failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The CertificateSigned request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static CertificateSignedResponse ExceptionOccured(CSMS.CertificateSignedRequest  Request,
+                                                                 Exception                      Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -414,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (CertificateSignedResponse1, CertificateSignedResponse2)
 
         /// <summary>
-        /// Compares two certificate signed responses for equality.
+        /// Compares two CertificateSigned responses for equality.
         /// </summary>
-        /// <param name="CertificateSignedResponse1">A certificate signed response.</param>
-        /// <param name="CertificateSignedResponse2">Another certificate signed response.</param>
+        /// <param name="CertificateSignedResponse1">A CertificateSigned response.</param>
+        /// <param name="CertificateSignedResponse2">Another CertificateSigned response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CertificateSignedResponse? CertificateSignedResponse1,
                                            CertificateSignedResponse? CertificateSignedResponse2)
@@ -440,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (CertificateSignedResponse1, CertificateSignedResponse2)
 
         /// <summary>
-        /// Compares two certificate signed responses for inequality.
+        /// Compares two CertificateSigned responses for inequality.
         /// </summary>
-        /// <param name="CertificateSignedResponse1">A certificate signed response.</param>
-        /// <param name="CertificateSignedResponse2">Another certificate signed response.</param>
+        /// <param name="CertificateSignedResponse1">A CertificateSigned response.</param>
+        /// <param name="CertificateSignedResponse2">Another CertificateSigned response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CertificateSignedResponse? CertificateSignedResponse1,
                                            CertificateSignedResponse? CertificateSignedResponse2)
@@ -459,9 +549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two certificate signed responses for equality.
+        /// Compares two CertificateSigned responses for equality.
         /// </summary>
-        /// <param name="Object">A certificate signed response to compare with.</param>
+        /// <param name="Object">A CertificateSigned response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is CertificateSignedResponse certificateSignedResponse &&
@@ -472,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(CertificateSignedResponse)
 
         /// <summary>
-        /// Compares two certificate signed responses for equality.
+        /// Compares two CertificateSigned responses for equality.
         /// </summary>
-        /// <param name="CertificateSignedResponse">A certificate signed response to compare with.</param>
+        /// <param name="CertificateSignedResponse">A CertificateSigned response to compare with.</param>
         public override Boolean Equals(CertificateSignedResponse? CertificateSignedResponse)
 
             => CertificateSignedResponse is not null &&

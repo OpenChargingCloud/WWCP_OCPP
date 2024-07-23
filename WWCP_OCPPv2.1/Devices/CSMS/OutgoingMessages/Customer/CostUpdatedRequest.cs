@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The cost updated request.
+    /// The CostUpdated request.
     /// </summary>
     public class CostUpdatedRequest : ARequest<CostUpdatedRequest>,
                                       IRequest
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new cost updated request.
+        /// Create a new CostUpdated request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="TotalCost">The current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [Currency]</param>
@@ -187,17 +187,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomCostUpdatedRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a cost updated request.
+        /// Parse the given JSON representation of a CostUpdated request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom cost updated requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom CostUpdated requests.</param>
         public static CostUpdatedRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
                                                NetworkingNode_Id                                 DestinationId,
                                                NetworkPath                                       NetworkPath,
+                                               DateTime?                                         RequestTimestamp                 = null,
+                                               TimeSpan?                                         RequestTimeout                   = null,
+                                               EventTracking_Id?                                 EventTrackingId                  = null,
                                                CustomJObjectParserDelegate<CostUpdatedRequest>?  CustomCostUpdatedRequestParser   = null)
         {
 
@@ -207,12 +213,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var costUpdatedRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomCostUpdatedRequestParser))
             {
                 return costUpdatedRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a cost updated request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a CostUpdated request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -222,21 +231,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out CostUpdatedRequest, out ErrorResponse, CustomCostUpdatedRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a cost updated request.
+        /// Try to parse the given JSON representation of a CostUpdated request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="CostUpdatedRequest">The parsed cost updated request.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="CostUpdatedRequest">The parsed CostUpdated request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom cost updated requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom CostUpdated requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
                                        NetworkingNode_Id                                 DestinationId,
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out CostUpdatedRequest?      CostUpdatedRequest,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
-                                       CustomJObjectParserDelegate<CostUpdatedRequest>?  CustomCostUpdatedRequestParser)
+                                       DateTime?                                         RequestTimestamp                 = null,
+                                       TimeSpan?                                         RequestTimeout                   = null,
+                                       EventTracking_Id?                                 EventTrackingId                  = null,
+                                       CustomJObjectParserDelegate<CostUpdatedRequest>?  CustomCostUpdatedRequestParser   = null)
         {
 
             try
@@ -311,9 +326,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          CustomData,
 
                                          RequestId,
-                                         null,
-                                         null,
-                                         null,
+                                         RequestTimestamp,
+                                         RequestTimeout,
+                                         EventTrackingId,
                                          NetworkPath
 
                                      );
@@ -328,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 CostUpdatedRequest  = null;
-                ErrorResponse       = "The given JSON representation of a cost updated request is invalid: " + e.Message;
+                ErrorResponse       = "The given JSON representation of a CostUpdated request is invalid: " + e.Message;
                 return false;
             }
 
@@ -341,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCostUpdatedRequestSerializer">A delegate to serialize custom cost updated requests.</param>
+        /// <param name="CustomCostUpdatedRequestSerializer">A delegate to serialize custom CostUpdated requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CostUpdatedRequest>?  CustomCostUpdatedRequestSerializer   = null,
@@ -379,10 +394,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (CostUpdatedRequest1, CostUpdatedRequest2)
 
         /// <summary>
-        /// Compares two cost updated requests for equality.
+        /// Compares two CostUpdated requests for equality.
         /// </summary>
-        /// <param name="CostUpdatedRequest1">A cost updated request.</param>
-        /// <param name="CostUpdatedRequest2">Another cost updated request.</param>
+        /// <param name="CostUpdatedRequest1">A CostUpdated request.</param>
+        /// <param name="CostUpdatedRequest2">Another CostUpdated request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CostUpdatedRequest? CostUpdatedRequest1,
                                            CostUpdatedRequest? CostUpdatedRequest2)
@@ -405,10 +420,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (CostUpdatedRequest1, CostUpdatedRequest2)
 
         /// <summary>
-        /// Compares two cost updated requests for inequality.
+        /// Compares two CostUpdated requests for inequality.
         /// </summary>
-        /// <param name="CostUpdatedRequest1">A cost updated request.</param>
-        /// <param name="CostUpdatedRequest2">Another cost updated request.</param>
+        /// <param name="CostUpdatedRequest1">A CostUpdated request.</param>
+        /// <param name="CostUpdatedRequest2">Another CostUpdated request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CostUpdatedRequest? CostUpdatedRequest1,
                                            CostUpdatedRequest? CostUpdatedRequest2)
@@ -424,9 +439,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two cost updated requests for equality.
+        /// Compares two CostUpdated requests for equality.
         /// </summary>
-        /// <param name="Object">A cost updated request to compare with.</param>
+        /// <param name="Object">A CostUpdated request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is CostUpdatedRequest costUpdatedRequest &&
@@ -437,9 +452,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(CostUpdatedRequest)
 
         /// <summary>
-        /// Compares two cost updated requests for equality.
+        /// Compares two CostUpdated requests for equality.
         /// </summary>
-        /// <param name="CostUpdatedRequest">A cost updated request to compare with.</param>
+        /// <param name="CostUpdatedRequest">A CostUpdated request to compare with.</param>
         public override Boolean Equals(CostUpdatedRequest? CostUpdatedRequest)
 
             => CostUpdatedRequest is not null &&

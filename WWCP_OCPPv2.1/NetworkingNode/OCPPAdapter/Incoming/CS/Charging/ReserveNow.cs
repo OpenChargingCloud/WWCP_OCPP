@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,280 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<ReserveNowRequest>?       CustomReserveNowRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<ReserveNowResponse>?  CustomReserveNowResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a reserve now websocket request was received.
+        /// An event sent whenever a ReserveNow request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                OnReserveNowWSRequest;
+        public event OnReserveNowRequestReceivedDelegate?  OnReserveNowRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a reserve now request was received.
+        /// An event sent whenever a ReserveNow request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnReserveNowRequestReceivedDelegate?      OnReserveNowRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a reserve now request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnReserveNowDelegate?             OnReserveNow;
-
-        /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnReserveNowResponseSentDelegate?     OnReserveNowResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a reserve now request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?    OnReserveNowWSResponse;
+        public event OnReserveNowDelegate?                 OnReserveNow;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_ReserveNow(DateTime                   RequestTimestamp,
+            Receive_ReserveNow(DateTime              RequestTimestamp,
                                IWebSocketConnection  WebSocketConnection,
-                               NetworkingNode_Id          DestinationId,
-                               NetworkPath                NetworkPath,
-                               EventTracking_Id           EventTrackingId,
-                               Request_Id                 RequestId,
-                               JObject                    RequestJSON,
-                               CancellationToken          CancellationToken)
+                               NetworkingNode_Id     DestinationId,
+                               NetworkPath           NetworkPath,
+                               EventTracking_Id      EventTrackingId,
+                               Request_Id            RequestId,
+                               JObject               JSONRequest,
+                               CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnReserveNowWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnReserveNowWSRequest?.Invoke(startTime,
-                                              parentNetworkingNode,
-                                              WebSocketConnection,
-                                              DestinationId,
-                                              NetworkPath,
-                                              EventTrackingId,
-                                              RequestTimestamp,
-                                              RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReserveNowWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (ReserveNowRequest.TryParse(RequestJSON,
+                if (ReserveNowRequest.TryParse(JSONRequest,
                                                RequestId,
                                                DestinationId,
                                                NetworkPath,
                                                out var request,
                                                out var errorResponse,
-                                               CustomReserveNowRequestParser)) {
+                                               RequestTimestamp,
+                                               parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                               EventTrackingId,
+                                               parentNetworkingNode.OCPP.CustomReserveNowRequestParser)) {
 
-                    #region Send OnReserveNowRequest event
+                    ReserveNowResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomReserveNowRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                            parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnReserveNowRequestReceived?.Invoke(Timestamp.Now,
-                                                    parentNetworkingNode,
-                                                    WebSocketConnection,
-                                                    request);
+                        response = ReserveNowResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReserveNowRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnReserveNowRequestReceived event
+
+                    var logger = OnReserveNowRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnReserveNowRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnReserveNowRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    ReserveNowResponse? response = null;
-
-                    var results = OnReserveNow?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)?.Invoke(Timestamp.Now,
-                                                                                                            parentNetworkingNode,
-                                                                                                            WebSocketConnection,
-                                                                                                            request,
-                                                                                                            CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnReserveNow?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : ReserveNowResponse.Failed(request, $"Undefined {nameof(OnReserveNow)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = ReserveNowResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnReserveNow),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= ReserveNowResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnReserveNowResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnReserveNowResponseSent?.Invoke(Timestamp.Now,
-                                                     parentNetworkingNode,
-                                                     WebSocketConnection,
-                                                     request,
-                                                     response,
-                                                     response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReserveNowResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomReserveNowResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnReserveNowResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnReserveNowResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomReserveNowResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomReserveNowResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_ReserveNow)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_ReserveNow)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_ReserveNow)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnReserveNowWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnReserveNowWSResponse?.Invoke(endTime,
-                                               parentNetworkingNode,
-                                               WebSocketConnection,
-                                               DestinationId,
-                                               NetworkPath,
-                                               EventTrackingId,
-                                               RequestTimestamp,
-                                               RequestJSON,
-                                               OCPPResponse?.Payload,
-                                               OCPPErrorResponse?.ToJSON(),
-                                               endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_ReserveNow)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReserveNowWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
+        /// An event sent whenever a response to a ReserveNow was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnReserveNowResponseSentDelegate? OnReserveNowResponseSent;
+        public event OnReserveNowResponseSentDelegate?  OnReserveNowResponseSent;
+
+        #endregion
+
+        #region Send OnReserveNowResponse event
+
+        public async Task SendOnReserveNowResponseSent(DateTime              Timestamp,
+                                                       IEventSender          Sender,
+                                                       IWebSocketConnection  Connection,
+                                                       ReserveNowRequest     Request,
+                                                       ReserveNowResponse    Response,
+                                                       TimeSpan              Runtime)
+        {
+
+            var logger = OnReserveNowResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnReserveNowResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnReserveNowResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

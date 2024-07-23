@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The certificate signed request.
+    /// The CertificateSigned request.
     /// </summary>
     public class CertificateSignedRequest : ARequest<CertificateSignedRequest>,
                                             IRequest
@@ -208,17 +208,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomCertificateSignedRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a certificate signed request.
+        /// Parse the given JSON representation of a CertificateSigned request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomCertificateSignedRequestParser">A delegate to parse custom certificate signed requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomCertificateSignedRequestParser">A delegate to parse custom CertificateSigned requests.</param>
         public static CertificateSignedRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      NetworkingNode_Id                                       DestinationId,
                                                      NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               RequestTimestamp                       = null,
+                                                     TimeSpan?                                               RequestTimeout                         = null,
+                                                     EventTracking_Id?                                       EventTrackingId                        = null,
                                                      CustomJObjectParserDelegate<CertificateSignedRequest>?  CustomCertificateSignedRequestParser   = null)
         {
 
@@ -228,12 +234,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var certificateSignedRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomCertificateSignedRequestParser))
             {
                 return certificateSignedRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a certificate signed request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a CertificateSigned request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -243,22 +252,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out CertificateSignedRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a certificate signed request.
+        /// Try to parse the given JSON representation of a CertificateSigned request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CertificateSignedRequest">The parsed certificate signed request.</param>
+        /// <param name="CertificateSignedRequest">The parsed CertificateSigned request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCertificateSignedRequestParser">A delegate to parse custom certificate signed requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomCertificateSignedRequestParser">A delegate to parse custom CertificateSigned requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       DestinationId,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out CertificateSignedRequest?      CertificateSignedRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       CustomJObjectParserDelegate<CertificateSignedRequest>?  CustomCertificateSignedRequestParser)
+                                       DateTime?                                               RequestTimestamp                       = null,
+                                       TimeSpan?                                               RequestTimeout                         = null,
+                                       EventTracking_Id?                                       EventTrackingId                        = null,
+                                       CustomJObjectParserDelegate<CertificateSignedRequest>?  CustomCertificateSignedRequestParser   = null)
         {
 
             try
@@ -342,9 +357,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CustomData,
 
                                                RequestId,
-                                               null,
-                                               null,
-                                               null,
+                                               RequestTimestamp,
+                                               RequestTimeout,
+                                               EventTrackingId,
                                                NetworkPath
 
                                            );
@@ -359,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 CertificateSignedRequest  = null;
-                ErrorResponse             = "The given JSON representation of a certificate signed request is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a CertificateSigned request is invalid: " + e.Message;
                 return false;
             }
 
@@ -372,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCertificateSignedRequestSerializer">A delegate to serialize custom certificate signed requests.</param>
+        /// <param name="CustomCertificateSignedRequestSerializer">A delegate to serialize custom CertificateSigned requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CertificateSignedRequest>?  CustomCertificateSignedRequestSerializer   = null,
@@ -413,10 +428,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (CertificateSignedRequest1, CertificateSignedRequest2)
 
         /// <summary>
-        /// Compares two certificate signed requests for equality.
+        /// Compares two CertificateSigned requests for equality.
         /// </summary>
-        /// <param name="CertificateSignedRequest1">A certificate signed request.</param>
-        /// <param name="CertificateSignedRequest2">Another certificate signed request.</param>
+        /// <param name="CertificateSignedRequest1">A CertificateSigned request.</param>
+        /// <param name="CertificateSignedRequest2">Another CertificateSigned request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CertificateSignedRequest? CertificateSignedRequest1,
                                            CertificateSignedRequest? CertificateSignedRequest2)
@@ -439,10 +454,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (CertificateSignedRequest1, CertificateSignedRequest2)
 
         /// <summary>
-        /// Compares two certificate signed requests for inequality.
+        /// Compares two CertificateSigned requests for inequality.
         /// </summary>
-        /// <param name="CertificateSignedRequest1">A certificate signed request.</param>
-        /// <param name="CertificateSignedRequest2">Another certificate signed request.</param>
+        /// <param name="CertificateSignedRequest1">A CertificateSigned request.</param>
+        /// <param name="CertificateSignedRequest2">Another CertificateSigned request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CertificateSignedRequest? CertificateSignedRequest1,
                                            CertificateSignedRequest? CertificateSignedRequest2)
@@ -458,9 +473,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two certificate signed requests for equality.
+        /// Compares two CertificateSigned requests for equality.
         /// </summary>
-        /// <param name="Object">A certificate signed request to compare with.</param>
+        /// <param name="Object">A CertificateSigned request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is CertificateSignedRequest certificateSignedRequest &&
@@ -471,9 +486,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(CertificateSignedRequest)
 
         /// <summary>
-        /// Compares two certificate signed requests for equality.
+        /// Compares two CertificateSigned requests for equality.
         /// </summary>
-        /// <param name="CertificateSignedRequest">A certificate signed request to compare with.</param>
+        /// <param name="CertificateSignedRequest">A CertificateSigned request to compare with.</param>
         public override Boolean Equals(CertificateSignedRequest? CertificateSignedRequest)
 
             => CertificateSignedRequest is not null &&

@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A clear display message response.
+    /// The ClearDisplayMessage response.
     /// </summary>
     public class ClearDisplayMessageResponse : AResponse<CSMS.ClearDisplayMessageRequest,
                                                          ClearDisplayMessageResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the clear display message command.
+        /// The success or failure of the ClearDisplayMessage command.
         /// </summary>
         [Mandatory]
         public ClearMessageStatus  Status        { get; }
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ClearDisplayMessageResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new clear display message response.
+        /// Create a new ClearDisplayMessage response.
         /// </summary>
-        /// <param name="Request">The clear display message request leading to this response.</param>
+        /// <param name="Request">The ClearDisplayMessage request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ClearDisplayMessageResponse(Request, Result)
 
         /// <summary>
-        /// Create a new clear display message response.
+        /// Create a new ClearDisplayMessage response.
         /// </summary>
-        /// <param name="Request">The clear display message request leading to this response.</param>
+        /// <param name="Request">The ClearDisplayMessage request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ClearDisplayMessageResponse(CSMS.ClearDisplayMessageRequest  Request,
-                                           Result                           Result)
+                                           Result                           Result,
+                                           DateTime?                        ResponseTimestamp   = null,
+
+                                           NetworkingNode_Id?               DestinationId       = null,
+                                           NetworkPath?                     NetworkPath         = null,
+
+                                           IEnumerable<KeyPair>?            SignKeys            = null,
+                                           IEnumerable<SignInfo>?           SignInfos           = null,
+                                           IEnumerable<Signature>?          Signatures          = null,
+
+                                           CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -218,11 +238,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomClearDisplayMessageResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear display message response.
+        /// Parse the given JSON representation of a ClearDisplayMessage response.
         /// </summary>
-        /// <param name="Request">The clear display message request leading to this response.</param>
+        /// <param name="Request">The ClearDisplayMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom clear display message responses.</param>
+        /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom ClearDisplayMessage responses.</param>
         public static ClearDisplayMessageResponse Parse(CSMS.ClearDisplayMessageRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<ClearDisplayMessageResponse>?  CustomClearDisplayMessageResponseParser   = null)
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return clearDisplayMessageResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a clear display message response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ClearDisplayMessage response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,13 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out ClearDisplayMessageResponse, out ErrorResponse, CustomClearDisplayMessageResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear display message response.
+        /// Try to parse the given JSON representation of a ClearDisplayMessage response.
         /// </summary>
-        /// <param name="Request">The clear display message request leading to this response.</param>
+        /// <param name="Request">The ClearDisplayMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ClearDisplayMessageResponse">The parsed clear display message response.</param>
+        /// <param name="ClearDisplayMessageResponse">The parsed ClearDisplayMessage response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom clear display message responses.</param>
+        /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom ClearDisplayMessage responses.</param>
         public static Boolean TryParse(CSMS.ClearDisplayMessageRequest                            Request,
                                        JObject                                                    JSON,
                                        [NotNullWhen(true)]  out ClearDisplayMessageResponse?      ClearDisplayMessageResponse,
@@ -269,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "clear display message status",
+                                         "ClearDisplayMessage status",
                                          ClearMessageStatusExtensions.TryParse,
                                          out ClearMessageStatus Status,
                                          out ErrorResponse))
@@ -343,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 ClearDisplayMessageResponse  = null;
-                ErrorResponse                = "The given JSON representation of a clear display message response is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a ClearDisplayMessage response is invalid: " + e.Message;
                 return false;
             }
 
@@ -356,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearDisplayMessageResponseSerializer">A delegate to serialize custom clear display message responses.</param>
+        /// <param name="CustomClearDisplayMessageResponseSerializer">A delegate to serialize custom ClearDisplayMessage responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -398,13 +418,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The clear display message command failed.
+        /// The ClearDisplayMessage failed because of a request error.
         /// </summary>
-        /// <param name="Request">The clear display message request leading to this response.</param>
-        public static ClearDisplayMessageResponse Failed(CSMS.ClearDisplayMessageRequest Request)
+        /// <param name="Request">The ClearDisplayMessage request.</param>
+        public static ClearDisplayMessageResponse RequestError(CSMS.ClearDisplayMessageRequest  Request,
+                                                               EventTracking_Id                 EventTrackingId,
+                                                               ResultCode                       ErrorCode,
+                                                               String?                          ErrorDescription    = null,
+                                                               JObject?                         ErrorDetails        = null,
+                                                               DateTime?                        ResponseTimestamp   = null,
+
+                                                               NetworkingNode_Id?               DestinationId       = null,
+                                                               NetworkPath?                     NetworkPath         = null,
+
+                                                               IEnumerable<KeyPair>?            SignKeys            = null,
+                                                               IEnumerable<SignInfo>?           SignInfos           = null,
+                                                               IEnumerable<Signature>?          Signatures          = null,
+
+                                                               CustomData?                      CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ClearDisplayMessage failed.
+        /// </summary>
+        /// <param name="Request">The ClearDisplayMessage request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ClearDisplayMessageResponse SignatureError(CSMS.ClearDisplayMessageRequest  Request,
+                                                                 String                           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ClearDisplayMessage failed.
+        /// </summary>
+        /// <param name="Request">The ClearDisplayMessage request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ClearDisplayMessageResponse Failed(CSMS.ClearDisplayMessageRequest  Request,
+                                                         String?                          Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ClearDisplayMessage failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ClearDisplayMessage request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ClearDisplayMessageResponse ExceptionOccured(CSMS.ClearDisplayMessageRequest  Request,
+                                                                   Exception                        Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -414,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (ClearDisplayMessageResponse1, ClearDisplayMessageResponse2)
 
         /// <summary>
-        /// Compares two clear display message responses for equality.
+        /// Compares two ClearDisplayMessage responses for equality.
         /// </summary>
-        /// <param name="ClearDisplayMessageResponse1">A clear display message response.</param>
-        /// <param name="ClearDisplayMessageResponse2">Another clear display message response.</param>
+        /// <param name="ClearDisplayMessageResponse1">A ClearDisplayMessage response.</param>
+        /// <param name="ClearDisplayMessageResponse2">Another ClearDisplayMessage response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ClearDisplayMessageResponse? ClearDisplayMessageResponse1,
                                            ClearDisplayMessageResponse? ClearDisplayMessageResponse2)
@@ -440,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (ClearDisplayMessageResponse1, ClearDisplayMessageResponse2)
 
         /// <summary>
-        /// Compares two clear display message responses for inequality.
+        /// Compares two ClearDisplayMessage responses for inequality.
         /// </summary>
-        /// <param name="ClearDisplayMessageResponse1">A clear display message response.</param>
-        /// <param name="ClearDisplayMessageResponse2">Another clear display message response.</param>
+        /// <param name="ClearDisplayMessageResponse1">A ClearDisplayMessage response.</param>
+        /// <param name="ClearDisplayMessageResponse2">Another ClearDisplayMessage response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ClearDisplayMessageResponse? ClearDisplayMessageResponse1,
                                            ClearDisplayMessageResponse? ClearDisplayMessageResponse2)
@@ -459,9 +549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two clear display message responses for equality.
+        /// Compares two ClearDisplayMessage responses for equality.
         /// </summary>
-        /// <param name="Object">A clear display message response to compare with.</param>
+        /// <param name="Object">A ClearDisplayMessage response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ClearDisplayMessageResponse clearDisplayMessageResponse &&
@@ -472,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(ClearDisplayMessageResponse)
 
         /// <summary>
-        /// Compares two clear display message responses for equality.
+        /// Compares two ClearDisplayMessage responses for equality.
         /// </summary>
-        /// <param name="ClearDisplayMessageResponse">A clear display message response to compare with.</param>
+        /// <param name="ClearDisplayMessageResponse">A ClearDisplayMessage response to compare with.</param>
         public override Boolean Equals(ClearDisplayMessageResponse? ClearDisplayMessageResponse)
 
             => ClearDisplayMessageResponse is not null &&

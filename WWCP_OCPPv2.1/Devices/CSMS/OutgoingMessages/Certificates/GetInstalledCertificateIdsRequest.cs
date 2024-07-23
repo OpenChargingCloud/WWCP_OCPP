@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get installed certificate ids request.
+    /// The GetInstalledCertificateIds request.
     /// </summary>
     public class GetInstalledCertificateIdsRequest : ARequest<GetInstalledCertificateIdsRequest>,
                                                      IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get installed certificate ids request.
+        /// Create a new GetInstalledCertificateIds request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="CertificateTypes">An optional enumeration of certificate types requested.</param>
@@ -183,17 +183,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetInstalledCertificateIdsRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get installed certificate ids request.
+        /// Parse the given JSON representation of a GetInstalledCertificateIds request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetInstalledCertificateIdsRequestParser">A delegate to parse custom get installed certificate ids requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetInstalledCertificateIdsRequestParser">A delegate to parse custom GetInstalledCertificateIds requests.</param>
         public static GetInstalledCertificateIdsRequest Parse(JObject                                                          JSON,
                                                               Request_Id                                                       RequestId,
                                                               NetworkingNode_Id                                                DestinationId,
                                                               NetworkPath                                                      NetworkPath,
+                                                              DateTime?                                                        RequestTimestamp                                = null,
+                                                              TimeSpan?                                                        RequestTimeout                                  = null,
+                                                              EventTracking_Id?                                                EventTrackingId                                 = null,
                                                               CustomJObjectParserDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestParser   = null)
         {
 
@@ -203,12 +209,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getInstalledCertificateIdsRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetInstalledCertificateIdsRequestParser))
             {
                 return getInstalledCertificateIdsRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get installed certificate ids request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetInstalledCertificateIds request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -218,22 +227,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetInstalledCertificateIdsRequest, out ErrorResponse, CustomGetInstalledCertificateIdsRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get installed certificate ids request.
+        /// Try to parse the given JSON representation of a GetInstalledCertificateIds request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetInstalledCertificateIdsRequest">The parsed get installed certificate ids request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest">The parsed GetInstalledCertificateIds request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetInstalledCertificateIdsRequestParser">A delegate to parse custom get installed certificate ids requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetInstalledCertificateIdsRequestParser">A delegate to parse custom GetInstalledCertificateIds requests.</param>
         public static Boolean TryParse(JObject                                                          JSON,
                                        Request_Id                                                       RequestId,
                                        NetworkingNode_Id                                                DestinationId,
                                        NetworkPath                                                      NetworkPath,
                                        [NotNullWhen(true)]  out GetInstalledCertificateIdsRequest?      GetInstalledCertificateIdsRequest,
                                        [NotNullWhen(false)] out String?                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestParser)
+                                       DateTime?                                                        RequestTimestamp                                = null,
+                                       TimeSpan?                                                        RequestTimeout                                  = null,
+                                       EventTracking_Id?                                                EventTrackingId                                 = null,
+                                       CustomJObjectParserDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestParser   = null)
         {
 
             try
@@ -296,9 +311,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         CustomData,
 
                                                         RequestId,
-                                                        null,
-                                                        null,
-                                                        null,
+                                                        RequestTimestamp,
+                                                        RequestTimeout,
+                                                        EventTrackingId,
                                                         NetworkPath
 
                                                     );
@@ -313,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetInstalledCertificateIdsRequest  = null;
-                ErrorResponse                      = "The given JSON representation of a get installed certificate ids request is invalid: " + e.Message;
+                ErrorResponse                      = "The given JSON representation of a GetInstalledCertificateIds request is invalid: " + e.Message;
                 return false;
             }
 
@@ -326,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetInstalledCertificateIdsRequestSerializer">A delegate to serialize custom get installed certificate ids requests.</param>
+        /// <param name="CustomGetInstalledCertificateIdsRequestSerializer">A delegate to serialize custom GetInstalledCertificateIds requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestSerializer   = null,
@@ -365,10 +380,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetInstalledCertificateIdsRequest1, GetInstalledCertificateIdsRequest2)
 
         /// <summary>
-        /// Compares two get installed certificate ids requests for equality.
+        /// Compares two GetInstalledCertificateIds requests for equality.
         /// </summary>
-        /// <param name="GetInstalledCertificateIdsRequest1">A get installed certificate ids request.</param>
-        /// <param name="GetInstalledCertificateIdsRequest2">Another get installed certificate ids request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest1">A GetInstalledCertificateIds request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest2">Another GetInstalledCertificateIds request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest1,
                                            GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest2)
@@ -391,10 +406,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetInstalledCertificateIdsRequest1, GetInstalledCertificateIdsRequest2)
 
         /// <summary>
-        /// Compares two get installed certificate ids requests for inequality.
+        /// Compares two GetInstalledCertificateIds requests for inequality.
         /// </summary>
-        /// <param name="GetInstalledCertificateIdsRequest1">A get installed certificate ids request.</param>
-        /// <param name="GetInstalledCertificateIdsRequest2">Another get installed certificate ids request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest1">A GetInstalledCertificateIds request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest2">Another GetInstalledCertificateIds request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest1,
                                            GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest2)
@@ -410,9 +425,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get installed certificate ids requests for equality.
+        /// Compares two GetInstalledCertificateIds requests for equality.
         /// </summary>
-        /// <param name="Object">A get installed certificate ids request to compare with.</param>
+        /// <param name="Object">A GetInstalledCertificateIds request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetInstalledCertificateIdsRequest getInstalledCertificateIdsRequest &&
@@ -423,9 +438,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetInstalledCertificateIdsRequest)
 
         /// <summary>
-        /// Compares two get installed certificate ids requests for equality.
+        /// Compares two GetInstalledCertificateIds requests for equality.
         /// </summary>
-        /// <param name="GetInstalledCertificateIdsRequest">A get installed certificate ids request to compare with.</param>
+        /// <param name="GetInstalledCertificateIdsRequest">A GetInstalledCertificateIds request to compare with.</param>
         public override Boolean Equals(GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest)
 
             => GetInstalledCertificateIdsRequest is not null &&

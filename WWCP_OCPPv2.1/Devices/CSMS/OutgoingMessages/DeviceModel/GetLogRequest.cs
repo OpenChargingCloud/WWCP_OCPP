@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get log request.
+    /// The GetLog request.
     /// </summary>
     public class GetLogRequest : ARequest<GetLogRequest>,
                                  IRequest
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get log request.
+        /// Create a new GetLog request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="LogType">The type of the certificates requested.</param>
@@ -269,17 +269,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetLogRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get log request.
+        /// Parse the given JSON representation of a GetLog request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetLogRequestParser">A delegate to parse custom get log requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetLogRequestParser">A delegate to parse custom GetLog requests.</param>
         public static GetLogRequest Parse(JObject                                      JSON,
                                           Request_Id                                   RequestId,
                                           NetworkingNode_Id                            DestinationId,
                                           NetworkPath                                  NetworkPath,
+                                          DateTime?                                    RequestTimestamp            = null,
+                                          TimeSpan?                                    RequestTimeout              = null,
+                                          EventTracking_Id?                            EventTrackingId             = null,
                                           CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser   = null)
         {
 
@@ -289,12 +295,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getLogRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetLogRequestParser))
             {
                 return getLogRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get log request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetLog request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -304,22 +313,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetLogRequest, out ErrorResponse, CustomGetLogRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get log request.
+        /// Try to parse the given JSON representation of a GetLog request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetLogRequest">The parsed get log request.</param>
+        /// <param name="GetLogRequest">The parsed GetLog request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetLogRequestParser">A delegate to parse custom get log requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetLogRequestParser">A delegate to parse custom GetLog requests.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        Request_Id                                   RequestId,
                                        NetworkingNode_Id                            DestinationId,
                                        NetworkPath                                  NetworkPath,
                                        [NotNullWhen(true)]  out GetLogRequest?      GetLogRequest,
                                        [NotNullWhen(false)] out String?             ErrorResponse,
-                                       CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser)
+                                       DateTime?                                    RequestTimestamp            = null,
+                                       TimeSpan?                                    RequestTimeout              = null,
+                                       EventTracking_Id?                            EventTrackingId             = null,
+                                       CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser   = null)
         {
 
             try
@@ -437,9 +452,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     CustomData,
 
                                     RequestId,
-                                    null,
-                                    null,
-                                    null,
+                                    RequestTimestamp,
+                                    RequestTimeout,
+                                    EventTrackingId,
                                     NetworkPath
 
                                 );
@@ -454,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetLogRequest  = null;
-                ErrorResponse  = "The given JSON representation of a get log request is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a GetLog request is invalid: " + e.Message;
                 return false;
             }
 
@@ -467,7 +482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetLogRequestSerializer">A delegate to serialize custom get log requests.</param>
+        /// <param name="CustomGetLogRequestSerializer">A delegate to serialize custom GetLog requests.</param>
         /// <param name="CustomLogParametersSerializer">A delegate to serialize custom log parameters.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -516,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetLogRequest1, GetLogRequest2)
 
         /// <summary>
-        /// Compares two get log requests for equality.
+        /// Compares two GetLog requests for equality.
         /// </summary>
-        /// <param name="GetLogRequest1">A get log request.</param>
-        /// <param name="GetLogRequest2">Another get log request.</param>
+        /// <param name="GetLogRequest1">A GetLog request.</param>
+        /// <param name="GetLogRequest2">Another GetLog request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetLogRequest? GetLogRequest1,
                                            GetLogRequest? GetLogRequest2)
@@ -542,10 +557,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetLogRequest1, GetLogRequest2)
 
         /// <summary>
-        /// Compares two get log requests for inequality.
+        /// Compares two GetLog requests for inequality.
         /// </summary>
-        /// <param name="GetLogRequest1">A get log request.</param>
-        /// <param name="GetLogRequest2">Another get log request.</param>
+        /// <param name="GetLogRequest1">A GetLog request.</param>
+        /// <param name="GetLogRequest2">Another GetLog request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetLogRequest? GetLogRequest1,
                                            GetLogRequest? GetLogRequest2)
@@ -561,9 +576,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get log requests for equality.
+        /// Compares two GetLog requests for equality.
         /// </summary>
-        /// <param name="Object">A get log request to compare with.</param>
+        /// <param name="Object">A GetLog request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetLogRequest getLogRequest &&
@@ -574,9 +589,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetLogRequest)
 
         /// <summary>
-        /// Compares two get log requests for equality.
+        /// Compares two GetLog requests for equality.
         /// </summary>
-        /// <param name="GetLogRequest">A get log request to compare with.</param>
+        /// <param name="GetLogRequest">A GetLog request to compare with.</param>
         public override Boolean Equals(GetLogRequest? GetLogRequest)
 
             => GetLogRequest is not null &&

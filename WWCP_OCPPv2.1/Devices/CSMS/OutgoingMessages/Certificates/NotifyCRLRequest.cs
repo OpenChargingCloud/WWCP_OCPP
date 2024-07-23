@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The notify certificate revocation list request.
+    /// The NotifyCRL request.
     /// </summary>
     public class NotifyCRLRequest : ARequest<NotifyCRLRequest>,
                                     IRequest
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new notify certificate revocation list request.
+        /// Create a new NotifyCRL request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NotifyCRLRequestId">An unique identification of this request.</param>
@@ -160,17 +160,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyCRLRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify certificate revocation list request.
+        /// Parse the given JSON representation of a NotifyCRL request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomNotifyCRLRequestParser">A delegate to parse custom notify certificate revocation list requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyCRLRequestParser">A delegate to parse custom NotifyCRL requests.</param>
         public static NotifyCRLRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
                                              NetworkingNode_Id                               DestinationId,
                                              NetworkPath                                     NetworkPath,
+                                             DateTime?                                       RequestTimestamp               = null,
+                                             TimeSpan?                                       RequestTimeout                 = null,
+                                             EventTracking_Id?                               EventTrackingId                = null,
                                              CustomJObjectParserDelegate<NotifyCRLRequest>?  CustomNotifyCRLRequestParser   = null)
         {
 
@@ -180,12 +186,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var notifyCRLRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomNotifyCRLRequestParser))
             {
                 return notifyCRLRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify certificate revocation list request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyCRL request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -195,22 +204,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyCRLRequest, out ErrorResponse, CustomNotifyCRLRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify certificate revocation list request.
+        /// Try to parse the given JSON representation of a NotifyCRL request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="NotifyCRLRequest">The parsed notify certificate revocation list request.</param>
+        /// <param name="NotifyCRLRequest">The parsed NotifyCRL request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyCRLRequestParser">A delegate to parse custom notify certificate revocation list requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyCRLRequestParser">A delegate to parse custom NotifyCRL requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
                                        NetworkingNode_Id                               DestinationId,
                                        NetworkPath                                     NetworkPath,
                                        [NotNullWhen(true)]  out NotifyCRLRequest?      NotifyCRLRequest,
                                        [NotNullWhen(false)] out String?                ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyCRLRequest>?  CustomNotifyCRLRequestParser)
+                                       DateTime?                                       RequestTimestamp               = null,
+                                       TimeSpan?                                       RequestTimeout                 = null,
+                                       EventTracking_Id?                               EventTrackingId                = null,
+                                       CustomJObjectParserDelegate<NotifyCRLRequest>?  CustomNotifyCRLRequestParser   = null)
         {
 
             try
@@ -221,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region NotifyCRLRequestId    [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "notify certificate revocation list request identification",
+                                         "NotifyCRL request identification",
                                          out Int32 NotifyCRLRequestId,
                                          out ErrorResponse))
                 {
@@ -300,9 +315,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        CustomData,
 
                                        RequestId,
-                                       null,
-                                       null,
-                                       null,
+                                       RequestTimestamp,
+                                       RequestTimeout,
+                                       EventTrackingId,
                                        NetworkPath
 
                                    );
@@ -317,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 NotifyCRLRequest  = null;
-                ErrorResponse     = "The given JSON representation of a notify certificate revocation list request is invalid: " + e.Message;
+                ErrorResponse     = "The given JSON representation of a NotifyCRL request is invalid: " + e.Message;
                 return false;
             }
 
@@ -330,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyCRLRequestSerializer">A delegate to serialize custom notify certificate revocation list requests.</param>
+        /// <param name="CustomNotifyCRLRequestSerializer">A delegate to serialize custom NotifyCRL requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyCRLRequest>?  CustomNotifyCRLRequestSerializer   = null,
@@ -372,10 +387,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (NotifyCRLRequest1, NotifyCRLRequest2)
 
         /// <summary>
-        /// Compares two notify certificate revocation list requests for equality.
+        /// Compares two NotifyCRL requests for equality.
         /// </summary>
-        /// <param name="NotifyCRLRequest1">A notify certificate revocation list request.</param>
-        /// <param name="NotifyCRLRequest2">Another notify certificate revocation list request.</param>
+        /// <param name="NotifyCRLRequest1">A NotifyCRL request.</param>
+        /// <param name="NotifyCRLRequest2">Another NotifyCRL request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyCRLRequest? NotifyCRLRequest1,
                                            NotifyCRLRequest? NotifyCRLRequest2)
@@ -398,10 +413,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (NotifyCRLRequest1, NotifyCRLRequest2)
 
         /// <summary>
-        /// Compares two notify certificate revocation list requests for inequality.
+        /// Compares two NotifyCRL requests for inequality.
         /// </summary>
-        /// <param name="NotifyCRLRequest1">A notify certificate revocation list request.</param>
-        /// <param name="NotifyCRLRequest2">Another notify certificate revocation list request.</param>
+        /// <param name="NotifyCRLRequest1">A NotifyCRL request.</param>
+        /// <param name="NotifyCRLRequest2">Another NotifyCRL request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyCRLRequest? NotifyCRLRequest1,
                                            NotifyCRLRequest? NotifyCRLRequest2)
@@ -417,9 +432,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify certificate revocation list requests for equality.
+        /// Compares two NotifyCRL requests for equality.
         /// </summary>
-        /// <param name="Object">A notify certificate revocation list request to compare with.</param>
+        /// <param name="Object">A NotifyCRL request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyCRLRequest notifyCRLRequest &&
@@ -430,9 +445,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(NotifyCRLRequest)
 
         /// <summary>
-        /// Compares two notify certificate revocation list requests for equality.
+        /// Compares two NotifyCRL requests for equality.
         /// </summary>
-        /// <param name="NotifyCRLRequest">A notify certificate revocation list request to compare with.</param>
+        /// <param name="NotifyCRLRequest">A NotifyCRL request to compare with.</param>
         public override Boolean Equals(NotifyCRLRequest? NotifyCRLRequest)
 
             => NotifyCRLRequest is not null &&

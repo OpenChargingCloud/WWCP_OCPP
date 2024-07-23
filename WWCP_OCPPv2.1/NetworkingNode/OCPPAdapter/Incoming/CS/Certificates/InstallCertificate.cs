@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,55 +32,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<InstallCertificateRequest>?       CustomInstallCertificateRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever an install certificate websocket request was received.
+        /// An event sent whenever an InstallCertificate request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                      OnInstallCertificateWSRequest;
+        public event OnInstallCertificateRequestReceivedDelegate?  OnInstallCertificateRequestReceived;
 
         /// <summary>
-        /// An event sent whenever an install certificate request was received.
+        /// An event sent whenever an InstallCertificate request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnInstallCertificateRequestReceivedDelegate?     OnInstallCertificateRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever an install certificate request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnInstallCertificateDelegate?            OnInstallCertificate;
-
-        /// <summary>
-        /// An event sent whenever a response to an install certificate request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnInstallCertificateResponseSentDelegate?    OnInstallCertificateResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to an install certificate request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?          OnInstallCertificateWSResponse;
+        public event OnInstallCertificateDelegate?                 OnInstallCertificate;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_InstallCertificate(DateTime              RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
@@ -87,191 +59,251 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath           NetworkPath,
                                        EventTracking_Id      EventTrackingId,
                                        Request_Id            RequestId,
-                                       JObject               RequestJSON,
+                                       JObject               JSONRequest,
                                        CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnInstallCertificateWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnInstallCertificateWSRequest?.Invoke(startTime,
-                                                      parentNetworkingNode,
-                                                      WebSocketConnection,
-                                                      DestinationId,
-                                                      NetworkPath,
-                                                      EventTrackingId,
-                                                      RequestTimestamp,
-                                                      RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnInstallCertificateWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (InstallCertificateRequest.TryParse(RequestJSON,
+                if (InstallCertificateRequest.TryParse(JSONRequest,
                                                        RequestId,
                                                        DestinationId,
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
-                                                       CustomInstallCertificateRequestParser)) {
+                                                       RequestTimestamp,
+                                                       parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                       EventTrackingId,
+                                                       parentNetworkingNode.OCPP.CustomInstallCertificateRequestParser)) {
 
-                    #region Send OnInstallCertificateRequest event
+                    InstallCertificateResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomInstallCertificateRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnInstallCertificateRequestReceived?.Invoke(Timestamp.Now,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            request);
+                        response = InstallCertificateResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnInstallCertificateRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnInstallCertificateRequestReceived event
+
+                    var logger = OnInstallCertificateRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnInstallCertificateRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnInstallCertificateRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    InstallCertificateResponse? response = null;
-
-                    var results = OnInstallCertificate?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnInstallCertificateDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                    parentNetworkingNode,
-                                                                                                                    WebSocketConnection,
-                                                                                                                    request,
-                                                                                                                    CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnInstallCertificate?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnInstallCertificateDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : InstallCertificateResponse.Failed(request, $"Undefined {nameof(OnInstallCertificate)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = InstallCertificateResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnInstallCertificate),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= InstallCertificateResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnInstallCertificateResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnInstallCertificateResponseSent?.Invoke(Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             request,
-                                                             response,
-                                                             response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnInstallCertificateResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomInstallCertificateResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnInstallCertificateResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnInstallCertificateResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomInstallCertificateResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomInstallCertificateResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_InstallCertificate)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_InstallCertificate)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_InstallCertificate)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnInstallCertificateWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnInstallCertificateWSResponse?.Invoke(endTime,
-                                                       parentNetworkingNode,
-                                                       WebSocketConnection,
-                                                       DestinationId,
-                                                       NetworkPath,
-                                                       EventTrackingId,
-                                                       RequestTimestamp,
-                                                       RequestJSON,
-                                                       OCPPResponse?.Payload,
-                                                       OCPPErrorResponse?.ToJSON(),
-                                                       endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_InstallCertificate)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnInstallCertificateWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to an install certificate request was sent.
+        /// An event sent whenever a response to an InstallCertificate was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnInstallCertificateResponseSentDelegate? OnInstallCertificateResponseSent;
+        public event OnInstallCertificateResponseSentDelegate?  OnInstallCertificateResponseSent;
+
+        #endregion
+
+        #region Send OnInstallCertificateResponse event
+
+        public async Task SendOnInstallCertificateResponseSent(DateTime                    Timestamp,
+                                                               IEventSender                Sender,
+                                                               IWebSocketConnection        Connection,
+                                                               InstallCertificateRequest   Request,
+                                                               InstallCertificateResponse  Response,
+                                                               TimeSpan                    Runtime)
+        {
+
+            var logger = OnInstallCertificateResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnInstallCertificateResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnInstallCertificateResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

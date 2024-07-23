@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,55 +32,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<GetCompositeScheduleRequest>?       CustomGetCompositeScheduleRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a GetCompositeSchedule websocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                        OnGetCompositeScheduleWSRequest;
-
-        /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCompositeScheduleRequestReceivedDelegate?     OnGetCompositeScheduleRequestReceived;
+        public event OnGetCompositeScheduleRequestReceivedDelegate?  OnGetCompositeScheduleRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a GetCompositeSchedule request was received.
+        /// An event sent whenever a GetCompositeSchedule request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCompositeScheduleDelegate?            OnGetCompositeSchedule;
-
-        /// <summary>
-        /// An event sent whenever a response to a GetCompositeSchedule request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetCompositeScheduleResponseSentDelegate?    OnGetCompositeScheduleResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a GetCompositeSchedule request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?            OnGetCompositeScheduleWSResponse;
+        public event OnGetCompositeScheduleDelegate?                 OnGetCompositeSchedule;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_GetCompositeSchedule(DateTime              RequestTimestamp,
                                          IWebSocketConnection  WebSocketConnection,
@@ -87,193 +59,255 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          NetworkPath           NetworkPath,
                                          EventTracking_Id      EventTrackingId,
                                          Request_Id            RequestId,
-                                         JObject               RequestJSON,
+                                         JObject               JSONRequest,
                                          CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnGetCompositeScheduleWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnGetCompositeScheduleWSRequest?.Invoke(startTime,
-                                                        parentNetworkingNode,
-                                                        WebSocketConnection,
-                                                        DestinationId,
-                                                        NetworkPath,
-                                                        EventTrackingId,
-                                                        RequestTimestamp,
-                                                        RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetCompositeScheduleWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (GetCompositeScheduleRequest.TryParse(RequestJSON,
+                if (GetCompositeScheduleRequest.TryParse(JSONRequest,
                                                          RequestId,
                                                          DestinationId,
                                                          NetworkPath,
                                                          out var request,
                                                          out var errorResponse,
-                                                         CustomGetCompositeScheduleRequestParser)) {
+                                                         RequestTimestamp,
+                                                         parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                         EventTrackingId,
+                                                         parentNetworkingNode.OCPP.CustomGetCompositeScheduleRequestParser)) {
 
-                    #region Send OnGetCompositeScheduleRequest event
+                    GetCompositeScheduleResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetCompositeScheduleRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnGetCompositeScheduleRequestReceived?.Invoke(Timestamp.Now,
-                                                              parentNetworkingNode,
-                                                              WebSocketConnection,
-                                                              request);
+                        response = GetCompositeScheduleResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetCompositeScheduleRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnGetCompositeScheduleRequestReceived event
+
+                    var logger = OnGetCompositeScheduleRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnGetCompositeScheduleRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetCompositeScheduleRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    GetCompositeScheduleResponse? response = null;
-
-                    var results = OnGetCompositeSchedule?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                      parentNetworkingNode,
-                                                                                                                      WebSocketConnection,
-                                                                                                                      request,
-                                                                                                                      CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnGetCompositeSchedule?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : GetCompositeScheduleResponse.Failed(request, $"Undefined {nameof(OnGetCompositeSchedule)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = GetCompositeScheduleResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetCompositeSchedule),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= GetCompositeScheduleResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnGetCompositeScheduleResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnGetCompositeScheduleResponseSent?.Invoke(Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               WebSocketConnection,
-                                                               request,
-                                                               response,
-                                                               response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetCompositeScheduleResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetCompositeScheduleResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomCompositeScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnGetCompositeScheduleResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnGetCompositeScheduleResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomGetCompositeScheduleResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomGetCompositeScheduleResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomCompositeScheduleSerializer,
                                            parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_GetCompositeSchedule)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_GetCompositeSchedule)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_GetCompositeSchedule)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnGetCompositeScheduleWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnGetCompositeScheduleWSResponse?.Invoke(endTime,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         DestinationId,
-                                                         NetworkPath,
-                                                         EventTrackingId,
-                                                         RequestTimestamp,
-                                                         RequestJSON,
-                                                         OCPPResponse?.Payload,
-                                                         OCPPErrorResponse?.ToJSON(),
-                                                         endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_GetCompositeSchedule)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetCompositeScheduleWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a GetCompositeSchedule request was sent.
+        /// An event sent whenever a response to a GetCompositeSchedule was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCompositeScheduleResponseSentDelegate? OnGetCompositeScheduleResponseSent;
+        public event OnGetCompositeScheduleResponseSentDelegate?  OnGetCompositeScheduleResponseSent;
+
+        #endregion
+
+        #region Send OnGetCompositeScheduleResponse event
+
+        public async Task SendOnGetCompositeScheduleResponseSent(DateTime                      Timestamp,
+                                                                 IEventSender                  Sender,
+                                                                 IWebSocketConnection          Connection,
+                                                                 GetCompositeScheduleRequest   Request,
+                                                                 GetCompositeScheduleResponse  Response,
+                                                                 TimeSpan                      Runtime)
+        {
+
+            var logger = OnGetCompositeScheduleResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnGetCompositeScheduleResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnGetCompositeScheduleResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

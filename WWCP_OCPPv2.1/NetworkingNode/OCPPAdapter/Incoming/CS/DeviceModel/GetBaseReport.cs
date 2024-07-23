@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,278 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<GetBaseReportRequest>?       CustomGetBaseReportRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a get base report websocket request was received.
+        /// An event sent whenever a GetBaseReport request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                  OnGetBaseReportWSRequest;
+        public event OnGetBaseReportRequestReceivedDelegate?  OnGetBaseReportRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a get base report request was received.
+        /// An event sent whenever a GetBaseReport request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetBaseReportRequestReceivedDelegate?     OnGetBaseReportRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a get base report request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetBaseReportDelegate?            OnGetBaseReport;
-
-        /// <summary>
-        /// An event sent whenever a response to a get base report request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetBaseReportResponseSentDelegate?    OnGetBaseReportResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a get base report request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?      OnGetBaseReportWSResponse;
+        public event OnGetBaseReportDelegate?                 OnGetBaseReport;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_GetBaseReport(DateTime                   RequestTimestamp,
+            Receive_GetBaseReport(DateTime              RequestTimestamp,
                                   IWebSocketConnection  WebSocketConnection,
-                                  NetworkingNode_Id          DestinationId,
-                                  NetworkPath                NetworkPath,
-                                  EventTracking_Id           EventTrackingId,
-                                  Request_Id                 RequestId,
-                                  JObject                    RequestJSON,
-                                  CancellationToken          CancellationToken)
+                                  NetworkingNode_Id     DestinationId,
+                                  NetworkPath           NetworkPath,
+                                  EventTracking_Id      EventTrackingId,
+                                  Request_Id            RequestId,
+                                  JObject               JSONRequest,
+                                  CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnGetBaseReportWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnGetBaseReportWSRequest?.Invoke(startTime,
-                                                 parentNetworkingNode,
-                                                 WebSocketConnection,
-                                                 DestinationId,
-                                                 NetworkPath,
-                                                 EventTrackingId,
-                                                 RequestTimestamp,
-                                                 RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetBaseReportWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (GetBaseReportRequest.TryParse(RequestJSON,
+                if (GetBaseReportRequest.TryParse(JSONRequest,
                                                   RequestId,
                                                   DestinationId,
                                                   NetworkPath,
                                                   out var request,
                                                   out var errorResponse,
-                                                  CustomGetBaseReportRequestParser)) {
+                                                  RequestTimestamp,
+                                                  parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                  EventTrackingId,
+                                                  parentNetworkingNode.OCPP.CustomGetBaseReportRequestParser)) {
 
-                    #region Send OnGetBaseReportRequest event
+                    GetBaseReportResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetBaseReportRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnGetBaseReportRequestReceived?.Invoke(Timestamp.Now,
-                                                       parentNetworkingNode,
-                                                       WebSocketConnection,
-                                                       request);
+                        response = GetBaseReportResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetBaseReportRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnGetBaseReportRequestReceived event
+
+                    var logger = OnGetBaseReportRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnGetBaseReportRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetBaseReportRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    GetBaseReportResponse? response = null;
-
-                    var results = OnGetBaseReport?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnGetBaseReportDelegate)?.Invoke(Timestamp.Now,
-                                                                                                               parentNetworkingNode,
-                                                                                                               WebSocketConnection,
-                                                                                                               request,
-                                                                                                               CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnGetBaseReport?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnGetBaseReportDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : GetBaseReportResponse.Failed(request, $"Undefined {nameof(OnGetBaseReport)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = GetBaseReportResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetBaseReport),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= GetBaseReportResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnGetBaseReportResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnGetBaseReportResponseSent?.Invoke(Timestamp.Now,
-                                                        parentNetworkingNode,
-                                                        WebSocketConnection,
-                                                        request,
-                                                        response,
-                                                        response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetBaseReportResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetBaseReportResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnGetBaseReportResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnGetBaseReportResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomGetBaseReportResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomGetBaseReportResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_GetBaseReport)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_GetBaseReport)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_GetBaseReport)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnGetBaseReportWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnGetBaseReportWSResponse?.Invoke(endTime,
-                                                  parentNetworkingNode,
-                                                  WebSocketConnection,
-                                                  DestinationId,
-                                                  NetworkPath,
-                                                  EventTrackingId,
-                                                  RequestTimestamp,
-                                                  RequestJSON,
-                                                  OCPPResponse?.Payload,
-                                                  OCPPErrorResponse?.ToJSON(),
-                                                  endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_GetBaseReport)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetBaseReportWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a get base report request was sent.
+        /// An event sent whenever a response to a GetBaseReport was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetBaseReportResponseSentDelegate? OnGetBaseReportResponseSent;
+        public event OnGetBaseReportResponseSentDelegate?  OnGetBaseReportResponseSent;
+
+        #endregion
+
+        #region Send OnGetBaseReportResponse event
+
+        public async Task SendOnGetBaseReportResponseSent(DateTime              Timestamp,
+                                                      IEventSender          Sender,
+                                                      IWebSocketConnection  Connection,
+                                                      GetBaseReportRequest      Request,
+                                                      GetBaseReportResponse     Response,
+                                                      TimeSpan              Runtime)
+        {
+
+            var logger = OnGetBaseReportResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnGetBaseReportResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnGetBaseReportResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

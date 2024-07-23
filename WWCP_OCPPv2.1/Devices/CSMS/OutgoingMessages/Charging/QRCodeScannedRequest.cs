@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A QR Code scanned request.
+    /// A QRCodeScanned request.
     /// </summary>
     public class QRCodeScannedRequest : ARequest<QRCodeScannedRequest>,
                                         IRequest
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a QR Code scanned request.
+        /// Create a QRCodeScanned request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="EVSEId">An EVSE identification for which the transaction is requested.</param>
@@ -146,17 +146,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomQRCodeScannedRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a QR Code scanned request.
+        /// Parse the given JSON representation of a QRCodeScanned request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomQRCodeScannedRequestParser">A delegate to parse custom QR Code scanned requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomQRCodeScannedRequestParser">A delegate to parse custom QRCodeScanned requests.</param>
         public static QRCodeScannedRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
                                                  NetworkingNode_Id                                   DestinationId,
                                                  NetworkPath                                         NetworkPath,
+                                                 DateTime?                                           RequestTimestamp                   = null,
+                                                 TimeSpan?                                           RequestTimeout                     = null,
+                                                 EventTracking_Id?                                   EventTrackingId                    = null,
                                                  CustomJObjectParserDelegate<QRCodeScannedRequest>?  CustomQRCodeScannedRequestParser   = null)
         {
 
@@ -166,12 +172,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var qrCodeScannedRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomQRCodeScannedRequestParser))
             {
                 return qrCodeScannedRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a QR Code scanned request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a QRCodeScanned request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -181,22 +190,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out QRCodeScannedRequest, out ErrorResponse, CustomQRCodeScannedRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a QR Code scanned request.
+        /// Try to parse the given JSON representation of a QRCodeScanned request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="QRCodeScannedRequest">The parsed QR Code scanned request.</param>
+        /// <param name="QRCodeScannedRequest">The parsed QRCodeScanned request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomQRCodeScannedRequestParser">A delegate to parse custom QR Code scanned requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomQRCodeScannedRequestParser">A delegate to parse custom QRCodeScanned requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
                                        NetworkingNode_Id                                   DestinationId,
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out QRCodeScannedRequest?      QRCodeScannedRequest,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
-                                       CustomJObjectParserDelegate<QRCodeScannedRequest>?  CustomQRCodeScannedRequestParser)
+                                       DateTime?                                           RequestTimestamp                   = null,
+                                       TimeSpan?                                           RequestTimeout                     = null,
+                                       EventTracking_Id?                                   EventTrackingId                    = null,
+                                       CustomJObjectParserDelegate<QRCodeScannedRequest>?  CustomQRCodeScannedRequestParser   = null)
         {
 
             try
@@ -271,9 +286,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            CustomData,
 
                                            RequestId,
-                                           null,
-                                           null,
-                                           null,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
                                            NetworkPath
 
                                        );
@@ -288,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 QRCodeScannedRequest  = null;
-                ErrorResponse         = "The given JSON representation of a QR Code scanned request is invalid: " + e.Message;
+                ErrorResponse         = "The given JSON representation of a QRCodeScanned request is invalid: " + e.Message;
                 return false;
             }
 
@@ -337,10 +352,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (QRCodeScannedRequest1, QRCodeScannedRequest2)
 
         /// <summary>
-        /// Compares two QR Code scanned requests for equality.
+        /// Compares two QRCodeScanned requests for equality.
         /// </summary>
-        /// <param name="QRCodeScannedRequest1">A QR Code scanned request.</param>
-        /// <param name="QRCodeScannedRequest2">Another QR Code scanned request.</param>
+        /// <param name="QRCodeScannedRequest1">A QRCodeScanned request.</param>
+        /// <param name="QRCodeScannedRequest2">Another QRCodeScanned request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (QRCodeScannedRequest? QRCodeScannedRequest1,
                                            QRCodeScannedRequest? QRCodeScannedRequest2)
@@ -363,10 +378,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (QRCodeScannedRequest1, QRCodeScannedRequest2)
 
         /// <summary>
-        /// Compares two QR Code scanned requests for inequality.
+        /// Compares two QRCodeScanned requests for inequality.
         /// </summary>
-        /// <param name="QRCodeScannedRequest1">A QR Code scanned request.</param>
-        /// <param name="QRCodeScannedRequest2">Another QR Code scanned request.</param>
+        /// <param name="QRCodeScannedRequest1">A QRCodeScanned request.</param>
+        /// <param name="QRCodeScannedRequest2">Another QRCodeScanned request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (QRCodeScannedRequest? QRCodeScannedRequest1,
                                            QRCodeScannedRequest? QRCodeScannedRequest2)
@@ -382,9 +397,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two QR Code scanned requests for equality.
+        /// Compares two QRCodeScanned requests for equality.
         /// </summary>
-        /// <param name="Object">A QR Code scanned request to compare with.</param>
+        /// <param name="Object">A QRCodeScanned request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is QRCodeScannedRequest qrCodeScannedRequest &&
@@ -395,9 +410,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(QRCodeScannedRequest)
 
         /// <summary>
-        /// Compares two QR Code scanned requests for equality.
+        /// Compares two QRCodeScanned requests for equality.
         /// </summary>
-        /// <param name="QRCodeScannedRequest">A QR Code scanned request to compare with.</param>
+        /// <param name="QRCodeScannedRequest">A QRCodeScanned request to compare with.</param>
         public override Boolean Equals(QRCodeScannedRequest? QRCodeScannedRequest)
 
             => QRCodeScannedRequest is not null &&
@@ -430,7 +445,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => $"QR Code scanned for '{EVSEId}', timeout: {Timeout.TotalSeconds} secs";
+            => $"QRCodeScanned for '{EVSEId}', timeout: {Timeout.TotalSeconds} secs";
 
         #endregion
 

@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get base report request.
+    /// The GetBaseReport request.
     /// </summary>
     public class GetBaseReportRequest : ARequest<GetBaseReportRequest>,
                                         IRequest
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The unique identification of the get base report request.
+        /// The unique identification of the GetBaseReport request.
         /// </summary>
         [Mandatory]
         public Int64          GetBaseReportRequestId    { get; }
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a get base report request.
+        /// Create a GetBaseReport request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
-        /// <param name="GetBaseReportRequestId">An unique identification of the get base report request.</param>
+        /// <param name="GetBaseReportRequestId">An unique identification of the GetBaseReport request.</param>
         /// <param name="ReportBase">The requested reporting base.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -194,17 +194,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetBaseReportRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get base report request.
+        /// Parse the given JSON representation of a GetBaseReport request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom get base report requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom GetBaseReport requests.</param>
         public static GetBaseReportRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
                                                  NetworkingNode_Id                                   DestinationId,
                                                  NetworkPath                                         NetworkPath,
+                                                 DateTime?                                           RequestTimestamp                   = null,
+                                                 TimeSpan?                                           RequestTimeout                     = null,
+                                                 EventTracking_Id?                                   EventTrackingId                    = null,
                                                  CustomJObjectParserDelegate<GetBaseReportRequest>?  CustomGetBaseReportRequestParser   = null)
         {
 
@@ -214,12 +220,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getBaseReportRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetBaseReportRequestParser))
             {
                 return getBaseReportRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get base report request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetBaseReport request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -229,22 +238,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetBaseReportRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get base report request.
+        /// Try to parse the given JSON representation of a GetBaseReport request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetBaseReportRequest">The parsed get base report request.</param>
+        /// <param name="GetBaseReportRequest">The parsed GetBaseReport request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom get base report requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom GetBaseReport requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
                                        NetworkingNode_Id                                   DestinationId,
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out GetBaseReportRequest?      GetBaseReportRequest,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
-                                       CustomJObjectParserDelegate<GetBaseReportRequest>?  CustomGetBaseReportRequestParser)
+                                       DateTime?                                           RequestTimestamp                   = null,
+                                       TimeSpan?                                           RequestTimeout                     = null,
+                                       EventTracking_Id?                                   EventTrackingId                    = null,
+                                       CustomJObjectParserDelegate<GetBaseReportRequest>?  CustomGetBaseReportRequestParser   = null)
         {
 
             try
@@ -319,9 +334,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            CustomData,
 
                                            RequestId,
-                                           null,
-                                           null,
-                                           null,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
                                            NetworkPath
 
                                        );
@@ -336,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetBaseReportRequest  = null;
-                ErrorResponse         = "The given JSON representation of a get base report request is invalid: " + e.Message;
+                ErrorResponse         = "The given JSON representation of a GetBaseReport request is invalid: " + e.Message;
                 return false;
             }
 
@@ -349,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetBaseReportRequestSerializer">A delegate to serialize custom get base report requests.</param>
+        /// <param name="CustomGetBaseReportRequestSerializer">A delegate to serialize custom GetBaseReport requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetBaseReportRequest>?  CustomGetBaseReportRequestSerializer   = null,
@@ -387,10 +402,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetBaseReportRequest1, GetBaseReportRequest2)
 
         /// <summary>
-        /// Compares two get base report requests for equality.
+        /// Compares two GetBaseReport requests for equality.
         /// </summary>
-        /// <param name="GetBaseReportRequest1">A get base report request.</param>
-        /// <param name="GetBaseReportRequest2">Another get base report request.</param>
+        /// <param name="GetBaseReportRequest1">A GetBaseReport request.</param>
+        /// <param name="GetBaseReportRequest2">Another GetBaseReport request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetBaseReportRequest? GetBaseReportRequest1,
                                            GetBaseReportRequest? GetBaseReportRequest2)
@@ -413,10 +428,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetBaseReportRequest1, GetBaseReportRequest2)
 
         /// <summary>
-        /// Compares two get base report requests for inequality.
+        /// Compares two GetBaseReport requests for inequality.
         /// </summary>
-        /// <param name="GetBaseReportRequest1">A get base report request.</param>
-        /// <param name="GetBaseReportRequest2">Another get base report request.</param>
+        /// <param name="GetBaseReportRequest1">A GetBaseReport request.</param>
+        /// <param name="GetBaseReportRequest2">Another GetBaseReport request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetBaseReportRequest? GetBaseReportRequest1,
                                            GetBaseReportRequest? GetBaseReportRequest2)
@@ -432,9 +447,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get base report requests for equality.
+        /// Compares two GetBaseReport requests for equality.
         /// </summary>
-        /// <param name="Object">A get base report request to compare with.</param>
+        /// <param name="Object">A GetBaseReport request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetBaseReportRequest getBaseReportRequest &&
@@ -445,9 +460,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetBaseReportRequest)
 
         /// <summary>
-        /// Compares two get base report requests for equality.
+        /// Compares two GetBaseReport requests for equality.
         /// </summary>
-        /// <param name="GetBaseReportRequest">A get base report request to compare with.</param>
+        /// <param name="GetBaseReportRequest">A GetBaseReport request to compare with.</param>
         public override Boolean Equals(GetBaseReportRequest? GetBaseReportRequest)
 
             => GetBaseReportRequest is not null &&

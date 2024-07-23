@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A set charging profile response.
+    /// The SetChargingProfile response.
     /// </summary>
     public class SetChargingProfileResponse : AResponse<CSMS.SetChargingProfileRequest,
                                                         SetChargingProfileResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the set charging profile command.
+        /// The success or failure of the SetChargingProfile command.
         /// </summary>
         [Mandatory]
         public ChargingProfileStatus  Status        { get; }
@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetChargingProfileResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new set charging profile response.
+        /// Create a new SetChargingProfile response.
         /// </summary>
-        /// <param name="Request">The set charging profile request leading to this response.</param>
-        /// <param name="Status">The success or failure of the set charging profile command.</param>
+        /// <param name="Request">The SetChargingProfile request leading to this response.</param>
+        /// <param name="Status">The success or failure of the SetChargingProfile command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetChargingProfileResponse(Request, Result)
 
         /// <summary>
-        /// Create a new set charging profile response.
+        /// Create a new SetChargingProfile response.
         /// </summary>
-        /// <param name="Request">The set charging profile request leading to this response.</param>
+        /// <param name="Request">The SetChargingProfile request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetChargingProfileResponse(CSMS.SetChargingProfileRequest  Request,
-                                          Result                          Result)
+                                          Result                          Result,
+                                          DateTime?                       ResponseTimestamp   = null,
+
+                                          NetworkingNode_Id?              DestinationId       = null,
+                                          NetworkPath?                    NetworkPath         = null,
+
+                                          IEnumerable<KeyPair>?           SignKeys            = null,
+                                          IEnumerable<SignInfo>?          SignInfos           = null,
+                                          IEnumerable<Signature>?         Signatures          = null,
+
+                                          CustomData?                     CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -218,11 +238,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomSetChargingProfileResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set charging profile response.
+        /// Parse the given JSON representation of a SetChargingProfile response.
         /// </summary>
-        /// <param name="Request">The set charging profile request leading to this response.</param>
+        /// <param name="Request">The SetChargingProfile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetChargingProfileResponseParser">A delegate to parse custom set charging profile responses.</param>
+        /// <param name="CustomSetChargingProfileResponseParser">A delegate to parse custom SetChargingProfile responses.</param>
         public static SetChargingProfileResponse Parse(CSMS.SetChargingProfileRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<SetChargingProfileResponse>?  CustomSetChargingProfileResponseParser   = null)
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return setChargingProfileResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a set charging profile response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetChargingProfile response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,13 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out SetChargingProfileResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set charging profile response.
+        /// Try to parse the given JSON representation of a SetChargingProfile response.
         /// </summary>
-        /// <param name="Request">The set charging profile request leading to this response.</param>
+        /// <param name="Request">The SetChargingProfile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>
+        /// <param name="SetChargingProfileResponse">The parsed SetChargingProfile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetChargingProfileResponseParser">A delegate to parse custom set charging profile responses.</param>
+        /// <param name="CustomSetChargingProfileResponseParser">A delegate to parse custom SetChargingProfile responses.</param>
         public static Boolean TryParse(CSMS.SetChargingProfileRequest                            Request,
                                        JObject                                                   JSON,
                                        [NotNullWhen(true)]  out SetChargingProfileResponse?      SetChargingProfileResponse,
@@ -343,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SetChargingProfileResponse  = null;
-                ErrorResponse               = "The given JSON representation of a set charging profile response is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a SetChargingProfile response is invalid: " + e.Message;
                 return false;
             }
 
@@ -398,13 +418,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The set charging profile command failed.
+        /// The SetChargingProfile failed because of a request error.
         /// </summary>
-        /// <param name="Request">The set charging profile request leading to this response.</param>
-        public static SetChargingProfileResponse Failed(CSMS.SetChargingProfileRequest Request)
+        /// <param name="Request">The SetChargingProfile request.</param>
+        public static SetChargingProfileResponse RequestError(CSMS.SetChargingProfileRequest  Request,
+                                                              EventTracking_Id                EventTrackingId,
+                                                              ResultCode                      ErrorCode,
+                                                              String?                         ErrorDescription    = null,
+                                                              JObject?                        ErrorDetails        = null,
+                                                              DateTime?                       ResponseTimestamp   = null,
+
+                                                              NetworkingNode_Id?              DestinationId       = null,
+                                                              NetworkPath?                    NetworkPath         = null,
+
+                                                              IEnumerable<KeyPair>?           SignKeys            = null,
+                                                              IEnumerable<SignInfo>?          SignInfos           = null,
+                                                              IEnumerable<Signature>?         Signatures          = null,
+
+                                                              CustomData?                     CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SetChargingProfile failed.
+        /// </summary>
+        /// <param name="Request">The SetChargingProfile request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SetChargingProfileResponse SignatureError(CSMS.SetChargingProfileRequest  Request,
+                                                                String                          ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SetChargingProfile failed.
+        /// </summary>
+        /// <param name="Request">The SetChargingProfile request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SetChargingProfileResponse Failed(CSMS.SetChargingProfileRequest  Request,
+                                                        String?                         Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SetChargingProfile failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SetChargingProfile request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SetChargingProfileResponse ExceptionOccured(CSMS.SetChargingProfileRequest  Request,
+                                                                  Exception                       Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -414,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (SetChargingProfileResponse1, SetChargingProfileResponse2)
 
         /// <summary>
-        /// Compares two set charging profile responses for equality.
+        /// Compares two SetChargingProfile responses for equality.
         /// </summary>
-        /// <param name="SetChargingProfileResponse1">A set charging profile response.</param>
-        /// <param name="SetChargingProfileResponse2">Another set charging profile response.</param>
+        /// <param name="SetChargingProfileResponse1">A SetChargingProfile response.</param>
+        /// <param name="SetChargingProfileResponse2">Another SetChargingProfile response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetChargingProfileResponse? SetChargingProfileResponse1,
                                            SetChargingProfileResponse? SetChargingProfileResponse2)
@@ -440,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (SetChargingProfileResponse1, SetChargingProfileResponse2)
 
         /// <summary>
-        /// Compares two set charging profile responses for inequality.
+        /// Compares two SetChargingProfile responses for inequality.
         /// </summary>
-        /// <param name="SetChargingProfileResponse1">A set charging profile response.</param>
-        /// <param name="SetChargingProfileResponse2">Another set charging profile response.</param>
+        /// <param name="SetChargingProfileResponse1">A SetChargingProfile response.</param>
+        /// <param name="SetChargingProfileResponse2">Another SetChargingProfile response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetChargingProfileResponse? SetChargingProfileResponse1,
                                            SetChargingProfileResponse? SetChargingProfileResponse2)
@@ -459,9 +549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set charging profile responses for equality.
+        /// Compares two SetChargingProfile responses for equality.
         /// </summary>
-        /// <param name="Object">A set charging profile response to compare with.</param>
+        /// <param name="Object">A SetChargingProfile response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetChargingProfileResponse setChargingProfileResponse &&
@@ -472,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(SetChargingProfileResponse)
 
         /// <summary>
-        /// Compares two set charging profile responses for equality.
+        /// Compares two SetChargingProfile responses for equality.
         /// </summary>
-        /// <param name="SetChargingProfileResponse">A set charging profile response to compare with.</param>
+        /// <param name="SetChargingProfileResponse">A SetChargingProfile response to compare with.</param>
         public override Boolean Equals(SetChargingProfileResponse? SetChargingProfileResponse)
 
             => SetChargingProfileResponse is not null &&

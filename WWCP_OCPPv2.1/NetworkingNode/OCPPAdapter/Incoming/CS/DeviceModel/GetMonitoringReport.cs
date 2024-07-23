@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,282 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<GetMonitoringReportRequest>?       CustomGetMonitoringReportRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetMonitoringReportResponse>?  CustomGetMonitoringReportResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a get monitoring report websocket request was received.
+        /// An event sent whenever a GetMonitoringReport request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                        OnGetMonitoringReportWSRequest;
+        public event OnGetMonitoringReportRequestReceivedDelegate?  OnGetMonitoringReportRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a get monitoring report request was received.
+        /// An event sent whenever a GetMonitoringReport request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetMonitoringReportRequestReceivedDelegate?     OnGetMonitoringReportRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a get monitoring report request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetMonitoringReportDelegate?            OnGetMonitoringReport;
-
-        /// <summary>
-        /// An event sent whenever a response to a get monitoring report request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetMonitoringReportResponseSentDelegate?    OnGetMonitoringReportResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a get monitoring report request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?            OnGetMonitoringReportWSResponse;
+        public event OnGetMonitoringReportDelegate?                 OnGetMonitoringReport;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_GetMonitoringReport(DateTime                   RequestTimestamp,
+            Receive_GetMonitoringReport(DateTime              RequestTimestamp,
                                         IWebSocketConnection  WebSocketConnection,
-                                        NetworkingNode_Id          DestinationId,
-                                        NetworkPath                NetworkPath,
-                                        EventTracking_Id           EventTrackingId,
-                                        Request_Id                 RequestId,
-                                        JObject                    RequestJSON,
-                                        CancellationToken          CancellationToken)
+                                        NetworkingNode_Id     DestinationId,
+                                        NetworkPath           NetworkPath,
+                                        EventTracking_Id      EventTrackingId,
+                                        Request_Id            RequestId,
+                                        JObject               JSONRequest,
+                                        CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnGetMonitoringReportWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnGetMonitoringReportWSRequest?.Invoke(startTime,
-                                                       parentNetworkingNode,
-                                                       WebSocketConnection,
-                                                       DestinationId,
-                                                       NetworkPath,
-                                                       EventTrackingId,
-                                                       RequestTimestamp,
-                                                       RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetMonitoringReportWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (GetMonitoringReportRequest.TryParse(RequestJSON,
+                if (GetMonitoringReportRequest.TryParse(JSONRequest,
                                                         RequestId,
                                                         DestinationId,
                                                         NetworkPath,
                                                         out var request,
                                                         out var errorResponse,
-                                                        CustomGetMonitoringReportRequestParser)) {
+                                                        RequestTimestamp,
+                                                        parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                        EventTrackingId,
+                                                        parentNetworkingNode.OCPP.CustomGetMonitoringReportRequestParser)) {
 
-                    #region Send OnGetMonitoringReportRequest event
+                    GetMonitoringReportResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetMonitoringReportRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomComponentVariableSerializer,
+                            parentNetworkingNode.OCPP.CustomComponentSerializer,
+                            parentNetworkingNode.OCPP.CustomEVSESerializer,
+                            parentNetworkingNode.OCPP.CustomVariableSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnGetMonitoringReportRequestReceived?.Invoke(Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             request);
+                        response = GetMonitoringReportResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetMonitoringReportRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnGetMonitoringReportRequestReceived event
+
+                    var logger = OnGetMonitoringReportRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnGetMonitoringReportRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetMonitoringReportRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    GetMonitoringReportResponse? response = null;
-
-                    var results = OnGetMonitoringReport?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnGetMonitoringReportDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                     parentNetworkingNode,
-                                                                                                                     WebSocketConnection,
-                                                                                                                     request,
-                                                                                                                     CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnGetMonitoringReport?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnGetMonitoringReportDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : GetMonitoringReportResponse.Failed(request, $"Undefined {nameof(OnGetMonitoringReport)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = GetMonitoringReportResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetMonitoringReport),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= GetMonitoringReportResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnGetMonitoringReportResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnGetMonitoringReportResponseSent?.Invoke(Timestamp.Now,
-                                                              parentNetworkingNode,
-                                                              WebSocketConnection,
-                                                              request,
-                                                              response,
-                                                              response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetMonitoringReportResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetMonitoringReportResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnGetMonitoringReportResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnGetMonitoringReportResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomGetMonitoringReportResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomGetMonitoringReportResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_GetMonitoringReport)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_GetMonitoringReport)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_GetMonitoringReport)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnGetMonitoringReportWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnGetMonitoringReportWSResponse?.Invoke(endTime,
-                                                        parentNetworkingNode,
-                                                        WebSocketConnection,
-                                                        DestinationId,
-                                                        NetworkPath,
-                                                        EventTrackingId,
-                                                        RequestTimestamp,
-                                                        RequestJSON,
-                                                        OCPPResponse?.Payload,
-                                                        OCPPErrorResponse?.ToJSON(),
-                                                        endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_GetMonitoringReport)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetMonitoringReportWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a get monitoring report request was sent.
+        /// An event sent whenever a response to a GetMonitoringReport was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetMonitoringReportResponseSentDelegate? OnGetMonitoringReportResponseSent;
+        public event OnGetMonitoringReportResponseSentDelegate?  OnGetMonitoringReportResponseSent;
+
+        #endregion
+
+        #region Send OnGetMonitoringReportResponse event
+
+        public async Task SendOnGetMonitoringReportResponseSent(DateTime                     Timestamp,
+                                                                IEventSender                 Sender,
+                                                                IWebSocketConnection         Connection,
+                                                                GetMonitoringReportRequest   Request,
+                                                                GetMonitoringReportResponse  Response,
+                                                                TimeSpan                     Runtime)
+        {
+
+            var logger = OnGetMonitoringReportResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnGetMonitoringReportResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnGetMonitoringReportResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

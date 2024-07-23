@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,279 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>?       CustomChangeAvailabilityRequestParser    { get; set; }
-
-        public CustomJObjectSerializerDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a change availability websocket request was received.
+        /// An event sent whenever a ChangeAvailability request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                       OnChangeAvailabilityWSRequest;
+        public event OnChangeAvailabilityRequestReceivedDelegate?  OnChangeAvailabilityRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a change availability request was received.
+        /// An event sent whenever a ChangeAvailability request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnChangeAvailabilityRequestReceivedDelegate?     OnChangeAvailabilityRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a change availability request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnChangeAvailabilityDelegate?            OnChangeAvailability;
-
-        /// <summary>
-        /// An event sent whenever a response to a change availability request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnChangeAvailabilityResponseSentDelegate?    OnChangeAvailabilityResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a change availability request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?           OnChangeAvailabilityWSResponse;
+        public event OnChangeAvailabilityDelegate?                 OnChangeAvailability;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_ChangeAvailability(DateTime                   RequestTimestamp,
+            Receive_ChangeAvailability(DateTime              RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
-                                       NetworkingNode_Id          DestinationId,
-                                       NetworkPath                NetworkPath,
-                                       EventTracking_Id           EventTrackingId,
-                                       Request_Id                 RequestId,
-                                       JObject                    RequestJSON,
-                                       CancellationToken          CancellationToken)
+                                       NetworkingNode_Id     DestinationId,
+                                       NetworkPath           NetworkPath,
+                                       EventTracking_Id      EventTrackingId,
+                                       Request_Id            RequestId,
+                                       JObject               JSONRequest,
+                                       CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnChangeAvailabilityWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnChangeAvailabilityWSRequest?.Invoke(startTime,
-                                                      parentNetworkingNode,
-                                                      WebSocketConnection,
-                                                      DestinationId,
-                                                      NetworkPath,
-                                                      EventTrackingId,
-                                                      RequestTimestamp,
-                                                      RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnChangeAvailabilityWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (ChangeAvailabilityRequest.TryParse(RequestJSON,
+                if (ChangeAvailabilityRequest.TryParse(JSONRequest,
                                                        RequestId,
                                                        DestinationId,
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
-                                                       CustomChangeAvailabilityRequestParser)) {
+                                                       RequestTimestamp,
+                                                       parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                       EventTrackingId,
+                                                       parentNetworkingNode.OCPP.CustomChangeAvailabilityRequestParser)) {
 
-                    #region Send OnChangeAvailabilityRequest event
+                    ChangeAvailabilityResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomChangeAvailabilityRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomEVSESerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnChangeAvailabilityRequestReceived?.Invoke(Timestamp.Now,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            request);
+                        response = ChangeAvailabilityResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnChangeAvailabilityRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnChangeAvailabilityRequestReceived event
+
+                    var logger = OnChangeAvailabilityRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnChangeAvailabilityRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnChangeAvailabilityRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    ChangeAvailabilityResponse? response = null;
-
-                    var results = OnChangeAvailability?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                    parentNetworkingNode,
-                                                                                                                    WebSocketConnection,
-                                                                                                                    request,
-                                                                                                                    CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnChangeAvailability?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : ChangeAvailabilityResponse.Failed(request, $"Undefined {nameof(OnChangeAvailability)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = ChangeAvailabilityResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnChangeAvailability),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= ChangeAvailabilityResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnChangeAvailabilityResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnChangeAvailabilityResponseSent?.Invoke(Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             request,
-                                                             response,
-                                                             response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnChangeAvailabilityResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomChangeAvailabilityResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnChangeAvailabilityResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnChangeAvailabilityResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomChangeAvailabilityResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomChangeAvailabilityResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_ChangeAvailability)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_ChangeAvailability)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_ChangeAvailability)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnChangeAvailabilityWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnChangeAvailabilityWSResponse?.Invoke(endTime,
-                                                       parentNetworkingNode,
-                                                       WebSocketConnection,
-                                                       DestinationId,
-                                                       NetworkPath,
-                                                       EventTrackingId,
-                                                       RequestTimestamp,
-                                                       RequestJSON,
-                                                       OCPPResponse?.Payload,
-                                                       OCPPErrorResponse?.ToJSON(),
-                                                       endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_ChangeAvailability)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnChangeAvailabilityWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a change availability request was sent.
+        /// An event sent whenever a response to a ChangeAvailability was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnChangeAvailabilityResponseSentDelegate? OnChangeAvailabilityResponseSent;
+        public event OnChangeAvailabilityResponseSentDelegate?  OnChangeAvailabilityResponseSent;
+
+        #endregion
+
+        #region Send OnChangeAvailabilityResponse event
+
+        public async Task SendOnChangeAvailabilityResponseSent(DateTime                    Timestamp,
+                                                               IEventSender                Sender,
+                                                               IWebSocketConnection        Connection,
+                                                               ChangeAvailabilityRequest   Request,
+                                                               ChangeAvailabilityResponse  Response,
+                                                               TimeSpan                    Runtime)
+        {
+
+            var logger = OnChangeAvailabilityResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnChangeAvailabilityResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnChangeAvailabilityResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

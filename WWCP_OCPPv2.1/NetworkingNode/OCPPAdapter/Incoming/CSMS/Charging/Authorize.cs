@@ -32,9 +32,6 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The OCPP HTTP Web Socket Adapter for incoming requests.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
@@ -115,23 +112,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                        OfType<OnAuthorizeRequestReceivedDelegate>().
-                                                        Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                       Timestamp.Now,
-                                                                                       parentNetworkingNode,
-                                                                                       WebSocketConnection,
-                                                                                       request
-                                                                                   )).
-                                                        ToArray());
+                                                   OfType<OnAuthorizeRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
 
                         }
                         catch (Exception e)
                         {
                             await HandleErrors(
-                                  nameof(OCPPWebSocketAdapterIN),
-                                  nameof(OnAuthorizeRequestReceived),
-                                  e
-                              );
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnAuthorizeRequestReceived),
+                                      e
+                                  );
                         }
                     }
 
@@ -147,11 +144,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             var responseTasks = OnAuthorize?.
                                                     GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                         parentNetworkingNode,
-                                                                                                                         WebSocketConnection,
-                                                                                                                         request,
-                                                                                                                         CancellationToken)).
+                                                    SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
                                                     ToArray();
 
                             response = responseTasks?.Length > 0
@@ -198,12 +197,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnAuthorizeResponse event
 
-                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnAuthorizeResponseSent(Timestamp.Now,
-                                                                                                                 parentNetworkingNode,
-                                                                                                                 WebSocketConnection,
-                                                                                                                 request,
-                                                                                                                 response,
-                                                                                                                 response.Runtime);
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnAuthorizeResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
 
                     #endregion
 
@@ -258,10 +259,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
-
-    /// <summary>
-    /// The OCPP HTTP Web Socket Adapter for outgoing requests.
-    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
@@ -291,13 +288,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                              OfType <OnAuthorizeResponseSentDelegate>().
-                                              Select (filterDelegate => filterDelegate.Invoke(Timestamp,
-                                                                                              Sender,
-                                                                                              Connection,
-                                                                                              Request,
-                                                                                              Response,
-                                                                                              Runtime)).
+                                              OfType<OnAuthorizeResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
                                               ToArray());
 
                 }

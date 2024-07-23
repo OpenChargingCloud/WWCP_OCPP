@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The change availability request.
+    /// The ChangeAvailability request.
     /// </summary>
     public class ChangeAvailabilityRequest : ARequest<ChangeAvailabilityRequest>,
                                              IRequest
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new change availability request.
+        /// Create a new ChangeAvailability request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
@@ -214,17 +214,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomChangeAvailabilityRequestSerializer = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a change availability request.
+        /// Parse the given JSON representation of a ChangeAvailability request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomChangeAvailabilityRequestSerializer">A delegate to parse custom ChangeAvailability requests.</param>
         public static ChangeAvailabilityRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
                                                       NetworkingNode_Id                                        DestinationId,
                                                       NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                RequestTimestamp                            = null,
+                                                      TimeSpan?                                                RequestTimeout                              = null,
+                                                      EventTracking_Id?                                        EventTrackingId                             = null,
                                                       CustomJObjectParserDelegate<ChangeAvailabilityRequest>?  CustomChangeAvailabilityRequestSerializer   = null)
         {
 
@@ -234,12 +240,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var changeAvailabilityRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomChangeAvailabilityRequestSerializer))
             {
                 return changeAvailabilityRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a change availability request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ChangeAvailability request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -249,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ChangeAvailabilityRequest, out ErrorResponse, CustomChangeAvailabilityRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a change availability request.
+        /// Try to parse the given JSON representation of a ChangeAvailability request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -257,6 +266,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ChangeAvailabilityRequest">The parsed ChangeAvailability request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomChangeAvailabilityRequestParser">A delegate to parse custom ChangeAvailability requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
@@ -264,7 +276,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out ChangeAvailabilityRequest?      ChangeAvailabilityRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       CustomJObjectParserDelegate<ChangeAvailabilityRequest>?  CustomChangeAvailabilityRequestParser)
+                                       DateTime?                                                RequestTimestamp                        = null,
+                                       TimeSpan?                                                RequestTimeout                          = null,
+                                       EventTracking_Id?                                        EventTrackingId                         = null,
+                                       CustomJObjectParserDelegate<ChangeAvailabilityRequest>?  CustomChangeAvailabilityRequestParser   = null)
         {
 
             try
@@ -341,9 +356,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 CustomData,
 
                                                 RequestId,
-                                                null,
-                                                null,
-                                                null,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
                                                 NetworkPath
 
                                             );
@@ -358,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 ChangeAvailabilityRequest  = null;
-                ErrorResponse              = "The given JSON representation of a change availability request is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a ChangeAvailability request is invalid: " + e.Message;
                 return false;
             }
 
@@ -460,9 +475,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two change availability requests for equality.
+        /// Compares two ChangeAvailability requests for equality.
         /// </summary>
-        /// <param name="Object">A change availability request to compare with.</param>
+        /// <param name="Object">A ChangeAvailability request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChangeAvailabilityRequest changeAvailabilityRequest &&
@@ -473,9 +488,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(ChangeAvailabilityRequest)
 
         /// <summary>
-        /// Compares two change availability requests for equality.
+        /// Compares two ChangeAvailability requests for equality.
         /// </summary>
-        /// <param name="ChangeAvailabilityRequest">A change availability request to compare with.</param>
+        /// <param name="ChangeAvailabilityRequest">A ChangeAvailability request to compare with.</param>
         public override Boolean Equals(ChangeAvailabilityRequest? ChangeAvailabilityRequest)
 
             => ChangeAvailabilityRequest is not null &&

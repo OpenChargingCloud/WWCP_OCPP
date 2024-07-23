@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A get display messages response.
+    /// The GetDisplayMessages response.
     /// </summary>
     public class GetDisplayMessagesResponse : AResponse<CSMS.GetDisplayMessagesRequest,
                                                            GetDisplayMessagesResponse>,
@@ -75,9 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetDisplayMessagesResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new get display messages response.
+        /// Create a new GetDisplayMessages response.
         /// </summary>
-        /// <param name="Request">The get display messages request leading to this response.</param>
+        /// <param name="Request">The GetDisplayMessages request leading to this response.</param>
         /// <param name="Status">The charging station will indicate whether it has display messages that match the request criteria.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -123,15 +123,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetDisplayMessagesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get display messages response.
+        /// Create a new GetDisplayMessages response.
         /// </summary>
-        /// <param name="Request">The get display messages request leading to this response.</param>
+        /// <param name="Request">The GetDisplayMessages request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetDisplayMessagesResponse(CSMS.GetDisplayMessagesRequest  Request,
-                                          Result                          Result)
+                                          Result                          Result,
+                                          DateTime?                       ResponseTimestamp   = null,
+
+                                          NetworkingNode_Id?              DestinationId       = null,
+                                          NetworkPath?                    NetworkPath         = null,
+
+                                          IEnumerable<KeyPair>?           SignKeys            = null,
+                                          IEnumerable<SignInfo>?          SignInfos           = null,
+                                          IEnumerable<Signature>?         Signatures          = null,
+
+                                          CustomData?                     CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -219,11 +239,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomGetDisplayMessagesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get display messages response.
+        /// Parse the given JSON representation of a GetDisplayMessages response.
         /// </summary>
-        /// <param name="Request">The get display messages request leading to this response.</param>
+        /// <param name="Request">The GetDisplayMessages request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetDisplayMessagesResponseParser">A delegate to parse custom get display messages responses.</param>
+        /// <param name="CustomGetDisplayMessagesResponseParser">A delegate to parse custom GetDisplayMessages responses.</param>
         public static GetDisplayMessagesResponse Parse(CSMS.GetDisplayMessagesRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<GetDisplayMessagesResponse>?  CustomGetDisplayMessagesResponseParser   = null)
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return getDisplayMessagesResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get display messages response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetDisplayMessages response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -248,13 +268,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out GetDisplayMessagesResponse, out ErrorResponse, CustomGetDisplayMessagesResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get display messages response.
+        /// Try to parse the given JSON representation of a GetDisplayMessages response.
         /// </summary>
-        /// <param name="Request">The get display messages request leading to this response.</param>
+        /// <param name="Request">The GetDisplayMessages request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetDisplayMessagesResponse">The parsed get display messages response.</param>
+        /// <param name="GetDisplayMessagesResponse">The parsed GetDisplayMessages response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetDisplayMessagesResponseParser">A delegate to parse custom get display messages responses.</param>
+        /// <param name="CustomGetDisplayMessagesResponseParser">A delegate to parse custom GetDisplayMessages responses.</param>
         public static Boolean TryParse(CSMS.GetDisplayMessagesRequest                            Request,
                                        JObject                                                   JSON,
                                        [NotNullWhen(true)]  out GetDisplayMessagesResponse?      GetDisplayMessagesResponse,
@@ -270,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "get display messages status",
+                                         "GetDisplayMessages status",
                                          GetDisplayMessagesStatusExtensions.TryParse,
                                          out GetDisplayMessagesStatus Status,
                                          out ErrorResponse))
@@ -344,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 GetDisplayMessagesResponse  = null;
-                ErrorResponse               = "The given JSON representation of a get display messages response is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a GetDisplayMessages response is invalid: " + e.Message;
                 return false;
             }
 
@@ -357,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetDisplayMessagesResponseSerializer">A delegate to serialize custom get display messages responses.</param>
+        /// <param name="CustomGetDisplayMessagesResponseSerializer">A delegate to serialize custom GetDisplayMessages responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -399,13 +419,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The get display messages request failed.
+        /// The GetDisplayMessages failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get display messages request leading to this response.</param>
-        public static GetDisplayMessagesResponse Failed(CSMS.GetDisplayMessagesRequest Request)
+        /// <param name="Request">The GetDisplayMessages request.</param>
+        public static GetDisplayMessagesResponse RequestError(CSMS.GetDisplayMessagesRequest  Request,
+                                                              EventTracking_Id                EventTrackingId,
+                                                              ResultCode                      ErrorCode,
+                                                              String?                         ErrorDescription    = null,
+                                                              JObject?                        ErrorDetails        = null,
+                                                              DateTime?                       ResponseTimestamp   = null,
+
+                                                              NetworkingNode_Id?              DestinationId       = null,
+                                                              NetworkPath?                    NetworkPath         = null,
+
+                                                              IEnumerable<KeyPair>?           SignKeys            = null,
+                                                              IEnumerable<SignInfo>?          SignInfos           = null,
+                                                              IEnumerable<Signature>?         Signatures          = null,
+
+                                                              CustomData?                     CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetDisplayMessages failed.
+        /// </summary>
+        /// <param name="Request">The GetDisplayMessages request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetDisplayMessagesResponse SignatureError(CSMS.GetDisplayMessagesRequest  Request,
+                                                                String                          ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetDisplayMessages failed.
+        /// </summary>
+        /// <param name="Request">The GetDisplayMessages request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetDisplayMessagesResponse Failed(CSMS.GetDisplayMessagesRequest  Request,
+                                                        String?                         Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetDisplayMessages failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetDisplayMessages request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetDisplayMessagesResponse ExceptionOccured(CSMS.GetDisplayMessagesRequest  Request,
+                                                                  Exception                       Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -415,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (GetDisplayMessagesResponse1, GetDisplayMessagesResponse2)
 
         /// <summary>
-        /// Compares two get display messages responses for equality.
+        /// Compares two GetDisplayMessages responses for equality.
         /// </summary>
-        /// <param name="GetDisplayMessagesResponse1">A get display messages response.</param>
-        /// <param name="GetDisplayMessagesResponse2">Another get display messages response.</param>
+        /// <param name="GetDisplayMessagesResponse1">A GetDisplayMessages response.</param>
+        /// <param name="GetDisplayMessagesResponse2">Another GetDisplayMessages response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetDisplayMessagesResponse? GetDisplayMessagesResponse1,
                                            GetDisplayMessagesResponse? GetDisplayMessagesResponse2)
@@ -441,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (GetDisplayMessagesResponse1, GetDisplayMessagesResponse2)
 
         /// <summary>
-        /// Compares two get display messages responses for inequality.
+        /// Compares two GetDisplayMessages responses for inequality.
         /// </summary>
-        /// <param name="GetDisplayMessagesResponse1">A get display messages response.</param>
-        /// <param name="GetDisplayMessagesResponse2">Another get display messages response.</param>
+        /// <param name="GetDisplayMessagesResponse1">A GetDisplayMessages response.</param>
+        /// <param name="GetDisplayMessagesResponse2">Another GetDisplayMessages response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetDisplayMessagesResponse? GetDisplayMessagesResponse1,
                                            GetDisplayMessagesResponse? GetDisplayMessagesResponse2)
@@ -460,9 +550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get display messages responses for equality.
+        /// Compares two GetDisplayMessages responses for equality.
         /// </summary>
-        /// <param name="Object">A get display messages response to compare with.</param>
+        /// <param name="Object">A GetDisplayMessages response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetDisplayMessagesResponse getDisplayMessagesResponse &&
@@ -473,9 +563,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(GetDisplayMessagesResponse)
 
         /// <summary>
-        /// Compares two get display messages responses for equality.
+        /// Compares two GetDisplayMessages responses for equality.
         /// </summary>
-        /// <param name="GetDisplayMessagesResponse">A get display messages response to compare with.</param>
+        /// <param name="GetDisplayMessagesResponse">A GetDisplayMessages response to compare with.</param>
         public override Boolean Equals(GetDisplayMessagesResponse? GetDisplayMessagesResponse)
 
             => GetDisplayMessagesResponse is not null &&

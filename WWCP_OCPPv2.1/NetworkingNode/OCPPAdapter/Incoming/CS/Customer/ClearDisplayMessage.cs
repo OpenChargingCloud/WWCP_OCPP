@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,278 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<ClearDisplayMessageRequest>?       CustomClearDisplayMessageRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearDisplayMessageResponse>?  CustomClearDisplayMessageResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a clear display message websocket request was received.
+        /// An event sent whenever a ClearDisplayMessage request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                        OnClearDisplayMessageWSRequest;
+        public event OnClearDisplayMessageRequestReceivedDelegate?  OnClearDisplayMessageRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a clear display message request was received.
+        /// An event sent whenever a ClearDisplayMessage request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearDisplayMessageRequestReceivedDelegate?     OnClearDisplayMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a clear display message request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearDisplayMessageDelegate?            OnClearDisplayMessage;
-
-        /// <summary>
-        /// An event sent whenever a response to a clear display message request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearDisplayMessageResponseSentDelegate?    OnClearDisplayMessageResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a clear display message request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?            OnClearDisplayMessageWSResponse;
+        public event OnClearDisplayMessageDelegate?                 OnClearDisplayMessage;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_ClearDisplayMessage(DateTime                   RequestTimestamp,
+            Receive_ClearDisplayMessage(DateTime              RequestTimestamp,
                                         IWebSocketConnection  WebSocketConnection,
-                                        NetworkingNode_Id          DestinationId,
-                                        NetworkPath                NetworkPath,
-                                        EventTracking_Id           EventTrackingId,
-                                        Request_Id                 RequestId,
-                                        JObject                    RequestJSON,
-                                        CancellationToken          CancellationToken)
+                                        NetworkingNode_Id     DestinationId,
+                                        NetworkPath           NetworkPath,
+                                        EventTracking_Id      EventTrackingId,
+                                        Request_Id            RequestId,
+                                        JObject               JSONRequest,
+                                        CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnClearDisplayMessageWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnClearDisplayMessageWSRequest?.Invoke(startTime,
-                                                       parentNetworkingNode,
-                                                       WebSocketConnection,
-                                                       DestinationId,
-                                                       NetworkPath,
-                                                       EventTrackingId,
-                                                       RequestTimestamp,
-                                                       RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearDisplayMessageWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (ClearDisplayMessageRequest.TryParse(RequestJSON,
+                if (ClearDisplayMessageRequest.TryParse(JSONRequest,
                                                         RequestId,
                                                         DestinationId,
                                                         NetworkPath,
                                                         out var request,
                                                         out var errorResponse,
-                                                        CustomClearDisplayMessageRequestParser)) {
+                                                        RequestTimestamp,
+                                                        parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                        EventTrackingId,
+                                                        parentNetworkingNode.OCPP.CustomClearDisplayMessageRequestParser)) {
 
-                    #region Send OnClearDisplayMessageRequest event
+                    ClearDisplayMessageResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomClearDisplayMessageRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnClearDisplayMessageRequestReceived?.Invoke(Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             request);
+                        response = ClearDisplayMessageResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearDisplayMessageRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnClearDisplayMessageRequestReceived event
+
+                    var logger = OnClearDisplayMessageRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnClearDisplayMessageRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnClearDisplayMessageRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    ClearDisplayMessageResponse? response = null;
-
-                    var results = OnClearDisplayMessage?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnClearDisplayMessageDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                     parentNetworkingNode,
-                                                                                                                     WebSocketConnection,
-                                                                                                                     request,
-                                                                                                                     CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnClearDisplayMessage?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnClearDisplayMessageDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : ClearDisplayMessageResponse.Failed(request, $"Undefined {nameof(OnClearDisplayMessage)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = ClearDisplayMessageResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnClearDisplayMessage),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= ClearDisplayMessageResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnClearDisplayMessageResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnClearDisplayMessageResponseSent?.Invoke(Timestamp.Now,
-                                                              parentNetworkingNode,
-                                                              WebSocketConnection,
-                                                              request,
-                                                              response,
-                                                              response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearDisplayMessageResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomClearDisplayMessageResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnClearDisplayMessageResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnClearDisplayMessageResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomClearDisplayMessageResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomClearDisplayMessageResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_ClearDisplayMessage)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_ClearDisplayMessage)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_ClearDisplayMessage)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnClearDisplayMessageWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnClearDisplayMessageWSResponse?.Invoke(endTime,
-                                                        parentNetworkingNode,
-                                                        WebSocketConnection,
-                                                        DestinationId,
-                                                        NetworkPath,
-                                                        EventTrackingId,
-                                                        RequestTimestamp,
-                                                        RequestJSON,
-                                                        OCPPResponse?.Payload,
-                                                        OCPPErrorResponse?.ToJSON(),
-                                                        endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_ClearDisplayMessage)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearDisplayMessageWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a clear display message request was sent.
+        /// An event sent whenever a response to a ClearDisplayMessage was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearDisplayMessageResponseSentDelegate? OnClearDisplayMessageResponseSent;
+        public event OnClearDisplayMessageResponseSentDelegate?  OnClearDisplayMessageResponseSent;
+
+        #endregion
+
+        #region Send OnClearDisplayMessageResponse event
+
+        public async Task SendOnClearDisplayMessageResponseSent(DateTime              Timestamp,
+                                                      IEventSender          Sender,
+                                                      IWebSocketConnection  Connection,
+                                                      ClearDisplayMessageRequest      Request,
+                                                      ClearDisplayMessageResponse     Response,
+                                                      TimeSpan              Runtime)
+        {
+
+            var logger = OnClearDisplayMessageResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnClearDisplayMessageResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnClearDisplayMessageResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

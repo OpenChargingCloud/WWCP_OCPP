@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get composite schedule request.
+    /// The GetCompositeSchedule request.
     /// </summary>
     public class GetCompositeScheduleRequest : ARequest<GetCompositeScheduleRequest>,
                                                IRequest
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get composite schedule request.
+        /// Create a new GetCompositeSchedule request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="Duration">The length of requested schedule.</param>
@@ -212,17 +212,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetCompositeScheduleRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get composite schedule request.
+        /// Parse the given JSON representation of a GetCompositeSchedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom get composite schedule requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom GetCompositeSchedule requests.</param>
         public static GetCompositeScheduleRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
                                                         NetworkingNode_Id                                          DestinationId,
                                                         NetworkPath                                                NetworkPath,
+                                                        DateTime?                                                  RequestTimestamp                          = null,
+                                                        TimeSpan?                                                  RequestTimeout                            = null,
+                                                        EventTracking_Id?                                          EventTrackingId                           = null,
                                                         CustomJObjectParserDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestParser   = null)
         {
 
@@ -232,12 +238,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getCompositeScheduleRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetCompositeScheduleRequestParser))
             {
                 return getCompositeScheduleRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get composite schedule request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetCompositeSchedule request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,22 +256,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetCompositeScheduleRequest, out ErrorResponse, CustomGetCompositeScheduleRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get composite schedule request.
+        /// Try to parse the given JSON representation of a GetCompositeSchedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetCompositeScheduleRequest">The parsed get composite schedule request.</param>
+        /// <param name="GetCompositeScheduleRequest">The parsed GetCompositeSchedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom get composite schedule requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom GetCompositeSchedule requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
                                        NetworkingNode_Id                                          DestinationId,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out GetCompositeScheduleRequest?      GetCompositeScheduleRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
-                                       CustomJObjectParserDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestParser)
+                                       DateTime?                                                  RequestTimestamp                          = null,
+                                       TimeSpan?                                                  RequestTimeout                            = null,
+                                       EventTracking_Id?                                          EventTrackingId                           = null,
+                                       CustomJObjectParserDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestParser   = null)
         {
 
             try
@@ -352,9 +367,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   CustomData,
 
                                                   RequestId,
-                                                  null,
-                                                  null,
-                                                  null,
+                                                  RequestTimestamp,
+                                                  RequestTimeout,
+                                                  EventTrackingId,
                                                   NetworkPath
 
                                               );
@@ -369,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetCompositeScheduleRequest  = null;
-                ErrorResponse                = "The given JSON representation of a get composite schedule request is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a GetCompositeSchedule request is invalid: " + e.Message;
                 return false;
             }
 
@@ -382,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetCompositeScheduleRequestSerializer">A delegate to serialize custom get composite schedule requests.</param>
+        /// <param name="CustomGetCompositeScheduleRequestSerializer">A delegate to serialize custom GetCompositeSchedule requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestSerializer   = null,
@@ -424,10 +439,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetCompositeScheduleRequest1, GetCompositeScheduleRequest2)
 
         /// <summary>
-        /// Compares two get composite schedule requests for equality.
+        /// Compares two GetCompositeSchedule requests for equality.
         /// </summary>
-        /// <param name="GetCompositeScheduleRequest1">A get composite schedule request.</param>
-        /// <param name="GetCompositeScheduleRequest2">Another get composite schedule request.</param>
+        /// <param name="GetCompositeScheduleRequest1">A GetCompositeSchedule request.</param>
+        /// <param name="GetCompositeScheduleRequest2">Another GetCompositeSchedule request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetCompositeScheduleRequest? GetCompositeScheduleRequest1,
                                            GetCompositeScheduleRequest? GetCompositeScheduleRequest2)
@@ -450,10 +465,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetCompositeScheduleRequest1, GetCompositeScheduleRequest2)
 
         /// <summary>
-        /// Compares two get composite schedule requests for inequality.
+        /// Compares two GetCompositeSchedule requests for inequality.
         /// </summary>
-        /// <param name="GetCompositeScheduleRequest1">A get composite schedule request.</param>
-        /// <param name="GetCompositeScheduleRequest2">Another get composite schedule request.</param>
+        /// <param name="GetCompositeScheduleRequest1">A GetCompositeSchedule request.</param>
+        /// <param name="GetCompositeScheduleRequest2">Another GetCompositeSchedule request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetCompositeScheduleRequest? GetCompositeScheduleRequest1,
                                            GetCompositeScheduleRequest? GetCompositeScheduleRequest2)
@@ -469,9 +484,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get composite schedule requests for equality.
+        /// Compares two GetCompositeSchedule requests for equality.
         /// </summary>
-        /// <param name="Object">A get composite schedule request to compare with.</param>
+        /// <param name="Object">A GetCompositeSchedule request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetCompositeScheduleRequest getCompositeScheduleRequest &&
@@ -482,9 +497,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetCompositeScheduleRequest)
 
         /// <summary>
-        /// Compares two get composite schedule requests for equality.
+        /// Compares two GetCompositeSchedule requests for equality.
         /// </summary>
-        /// <param name="GetCompositeScheduleRequest">A get composite schedule request to compare with.</param>
+        /// <param name="GetCompositeScheduleRequest">A GetCompositeSchedule request to compare with.</param>
         public override Boolean Equals(GetCompositeScheduleRequest? GetCompositeScheduleRequest)
 
             => GetCompositeScheduleRequest is not null &&

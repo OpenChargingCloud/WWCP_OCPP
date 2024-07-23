@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,55 +32,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<DeleteCertificateRequest>?       CustomDeleteCertificateRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a delete certificate websocket request was received.
+        /// An event sent whenever a DeleteCertificate request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                     OnDeleteCertificateWSRequest;
+        public event OnDeleteCertificateRequestReceivedDelegate?  OnDeleteCertificateRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a delete certificate request was received.
+        /// An event sent whenever a DeleteCertificate request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateRequestReceivedDelegate?     OnDeleteCertificateRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a delete certificate request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateDelegate?            OnDeleteCertificate;
-
-        /// <summary>
-        /// An event sent whenever a response to a delete certificate request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateResponseSentDelegate?    OnDeleteCertificateResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a delete certificate request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?         OnDeleteCertificateWSResponse;
+        public event OnDeleteCertificateDelegate?                 OnDeleteCertificate;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_DeleteCertificate(DateTime              RequestTimestamp,
                                       IWebSocketConnection  WebSocketConnection,
@@ -87,191 +59,252 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                       NetworkPath           NetworkPath,
                                       EventTracking_Id      EventTrackingId,
                                       Request_Id            RequestId,
-                                      JObject               RequestJSON,
+                                      JObject               JSONRequest,
                                       CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnDeleteCertificateWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnDeleteCertificateWSRequest?.Invoke(startTime,
-                                                     parentNetworkingNode,
-                                                     WebSocketConnection,
-                                                     DestinationId,
-                                                     NetworkPath,
-                                                     EventTrackingId,
-                                                     RequestTimestamp,
-                                                     RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteCertificateWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (DeleteCertificateRequest.TryParse(RequestJSON,
+                if (DeleteCertificateRequest.TryParse(JSONRequest,
                                                       RequestId,
                                                       DestinationId,
                                                       NetworkPath,
                                                       out var request,
                                                       out var errorResponse,
-                                                      CustomDeleteCertificateRequestParser)) {
+                                                      RequestTimestamp,
+                                                      parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                      EventTrackingId,
+                                                      parentNetworkingNode.OCPP.CustomDeleteCertificateRequestParser)) {
 
-                    #region Send OnDeleteCertificateRequest event
+                    DeleteCertificateResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomDeleteCertificateRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnDeleteCertificateRequestReceived?.Invoke(Timestamp.Now,
-                                                           parentNetworkingNode,
-                                                           WebSocketConnection,
-                                                           request);
+                        response = DeleteCertificateResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteCertificateRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnDeleteCertificateRequestReceived event
+
+                    var logger = OnDeleteCertificateRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnDeleteCertificateRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnDeleteCertificateRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    DeleteCertificateResponse? response = null;
-
-                    var results = OnDeleteCertificate?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnDeleteCertificateDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                   parentNetworkingNode,
-                                                                                                                   WebSocketConnection,
-                                                                                                                   request,
-                                                                                                                   CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnDeleteCertificate?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnDeleteCertificateDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : DeleteCertificateResponse.Failed(request, $"Undefined {nameof(OnDeleteCertificate)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = DeleteCertificateResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnDeleteCertificate),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= DeleteCertificateResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnDeleteCertificateResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnDeleteCertificateResponseSent?.Invoke(Timestamp.Now,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            request,
-                                                            response,
-                                                            response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteCertificateResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomDeleteCertificateResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnDeleteCertificateResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnDeleteCertificateResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomDeleteCertificateResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomDeleteCertificateResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_DeleteCertificate)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_DeleteCertificate)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_DeleteCertificate)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnDeleteCertificateWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnDeleteCertificateWSResponse?.Invoke(endTime,
-                                                      parentNetworkingNode,
-                                                      WebSocketConnection,
-                                                      DestinationId,
-                                                      NetworkPath,
-                                                      EventTrackingId,
-                                                      RequestTimestamp,
-                                                      RequestJSON,
-                                                      OCPPResponse?.Payload,
-                                                      OCPPErrorResponse?.ToJSON(),
-                                                      endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_DeleteCertificate)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteCertificateWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a delete certificate request was sent.
+        /// An event sent whenever a response to a DeleteCertificate was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateResponseSentDelegate? OnDeleteCertificateResponseSent;
+        public event OnDeleteCertificateResponseSentDelegate?  OnDeleteCertificateResponseSent;
+
+        #endregion
+
+        #region Send OnDeleteCertificateResponse event
+
+        public async Task SendOnDeleteCertificateResponseSent(DateTime                   Timestamp,
+                                                              IEventSender               Sender,
+                                                              IWebSocketConnection       Connection,
+                                                              DeleteCertificateRequest   Request,
+                                                              DeleteCertificateResponse  Response,
+                                                              TimeSpan                   Runtime)
+        {
+
+            var logger = OnDeleteCertificateResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnDeleteCertificateResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnDeleteCertificateResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

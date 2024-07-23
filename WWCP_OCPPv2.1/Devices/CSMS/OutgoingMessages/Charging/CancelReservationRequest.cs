@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The cancel reservation request.
+    /// The CancelReservation request.
     /// </summary>
     public class CancelReservationRequest : ARequest<CancelReservationRequest>,
                                             IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a cancel reservation request.
+        /// Create a CancelReservation request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="ReservationId">The unique identification of the reservation to cancel.</param>
@@ -169,17 +169,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomCancelReservationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a cancel reservation request.
+        /// Parse the given JSON representation of a CancelReservation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom CancelReservation requests.</param>
         public static CancelReservationRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      NetworkingNode_Id                                       DestinationId,
                                                      NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               RequestTimestamp                       = null,
+                                                     TimeSpan?                                               RequestTimeout                         = null,
+                                                     EventTracking_Id?                                       EventTrackingId                        = null,
                                                      CustomJObjectParserDelegate<CancelReservationRequest>?  CustomCancelReservationRequestParser   = null)
         {
 
@@ -189,12 +195,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var cancelReservationRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomCancelReservationRequestParser))
             {
                 return cancelReservationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a cancel reservation request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a CancelReservation request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -204,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out CancelReservationRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a cancel reservation request.
+        /// Try to parse the given JSON representation of a CancelReservation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -212,14 +221,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancelReservationRequest">The parsed CancelReservation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom cancel reservation requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom CancelReservation requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       DestinationId,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out CancelReservationRequest?      CancelReservationRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       CustomJObjectParserDelegate<CancelReservationRequest>?  CustomCancelReservationRequestParser)
+                                       DateTime?                                               RequestTimestamp                       = null,
+                                       TimeSpan?                                               RequestTimeout                         = null,
+                                       EventTracking_Id?                                       EventTrackingId                        = null,
+                                       CustomJObjectParserDelegate<CancelReservationRequest>?  CustomCancelReservationRequestParser   = null)
         {
 
             try
@@ -281,9 +296,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CustomData,
 
                                                RequestId,
-                                               null,
-                                               null,
-                                               null,
+                                               RequestTimestamp,
+                                               RequestTimeout,
+                                               EventTrackingId,
                                                NetworkPath
 
                                            );
@@ -298,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 CancelReservationRequest  = null;
-                ErrorResponse             = "The given JSON representation of a cancel reservation request is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a CancelReservation request is invalid: " + e.Message;
                 return false;
             }
 
@@ -311,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCancelReservationRequestSerializer">A delegate to serialize custom cancel reservation requests.</param>
+        /// <param name="CustomCancelReservationRequestSerializer">A delegate to serialize custom CancelReservation requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationRequest>?  CustomCancelReservationRequestSerializer   = null,
@@ -393,9 +408,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two cancel reservation requests for equality.
+        /// Compares two CancelReservation requests for equality.
         /// </summary>
-        /// <param name="Object">A cancel reservation request to compare with.</param>
+        /// <param name="Object">A CancelReservation request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is CancelReservationRequest cancelReservationRequest &&
@@ -406,9 +421,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(CancelReservationRequest)
 
         /// <summary>
-        /// Compares two cancel reservation requests for equality.
+        /// Compares two CancelReservation requests for equality.
         /// </summary>
-        /// <param name="CancelReservationRequest">A cancel reservation request to compare with.</param>
+        /// <param name="CancelReservationRequest">A CancelReservation request to compare with.</param>
         public override Boolean Equals(CancelReservationRequest? CancelReservationRequest)
 
             => CancelReservationRequest is not null &&

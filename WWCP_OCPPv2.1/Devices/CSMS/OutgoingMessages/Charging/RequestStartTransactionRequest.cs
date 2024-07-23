@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The request start transaction request.
+    /// The RequestStartTransaction request.
     /// </summary>
     public class RequestStartTransactionRequest : ARequest<RequestStartTransactionRequest>,
                                                   IRequest
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new request start transaction request.
+        /// Create a new RequestStartTransaction request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="RequestStartTransactionRequestId">Request identification given by the server to this start request. The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.</param>
@@ -649,17 +649,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomRequestStartTransactionRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a request start transaction request.
+        /// Parse the given JSON representation of a RequestStartTransaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomRequestStartTransactionRequestParser">A delegate to parse custom request start transaction requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomRequestStartTransactionRequestParser">A delegate to parse custom RequestStartTransaction requests.</param>
         public static RequestStartTransactionRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
                                                            NetworkingNode_Id                                             DestinationId,
                                                            NetworkPath                                                   NetworkPath,
+                                                           DateTime?                                                     RequestTimestamp                             = null,
+                                                           TimeSpan?                                                     RequestTimeout                               = null,
+                                                           EventTracking_Id?                                             EventTrackingId                              = null,
                                                            CustomJObjectParserDelegate<RequestStartTransactionRequest>?  CustomRequestStartTransactionRequestParser   = null)
         {
 
@@ -669,12 +675,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var requestStartTransactionRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomRequestStartTransactionRequestParser))
             {
                 return requestStartTransactionRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a request start transaction request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a RequestStartTransaction request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -684,22 +693,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out RequestStartTransactionRequest, out ErrorResponse, CustomRequestStartTransactionRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a request start transaction request.
+        /// Try to parse the given JSON representation of a RequestStartTransaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="RequestStartTransactionRequest">The parsed request start transaction request.</param>
+        /// <param name="RequestStartTransactionRequest">The parsed RequestStartTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRequestStartTransactionRequestParser">A delegate to parse custom request start transaction requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomRequestStartTransactionRequestParser">A delegate to parse custom RequestStartTransaction requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
                                        NetworkingNode_Id                                             DestinationId,
                                        NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out RequestStartTransactionRequest?      RequestStartTransactionRequest,
                                        [NotNullWhen(false)] out String?                              ErrorResponse,
-                                       CustomJObjectParserDelegate<RequestStartTransactionRequest>?  CustomRequestStartTransactionRequestParser)
+                                       DateTime?                                                     RequestTimestamp                             = null,
+                                       TimeSpan?                                                     RequestTimeout                               = null,
+                                       EventTracking_Id?                                             EventTrackingId                              = null,
+                                       CustomJObjectParserDelegate<RequestStartTransactionRequest>?  CustomRequestStartTransactionRequestParser   = null)
         {
 
             try
@@ -837,9 +852,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      CustomData,
 
                                                      RequestId,
-                                                     null,
-                                                     null,
-                                                     null,
+                                                     RequestTimestamp,
+                                                     RequestTimeout,
+                                                     EventTrackingId,
                                                      NetworkPath
 
                                                  );
@@ -854,7 +869,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 RequestStartTransactionRequest  = null;
-                ErrorResponse                   = "The given JSON representation of a request start transaction request is invalid: " + e.Message;
+                ErrorResponse                   = "The given JSON representation of a RequestStartTransaction request is invalid: " + e.Message;
                 return false;
             }
 
@@ -867,7 +882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomRequestStartTransactionRequestSerializer">A delegate to serialize custom request start transaction requests.</param>
+        /// <param name="CustomRequestStartTransactionRequestSerializer">A delegate to serialize custom RequestStartTransaction requests.</param>
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom IdTokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
@@ -1004,10 +1019,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (RequestStartTransactionRequest1, RequestStartTransactionRequest2)
 
         /// <summary>
-        /// Compares two request start transaction requests for equality.
+        /// Compares two RequestStartTransaction requests for equality.
         /// </summary>
-        /// <param name="RequestStartTransactionRequest1">A request start transaction request.</param>
-        /// <param name="RequestStartTransactionRequest2">Another request start transaction request.</param>
+        /// <param name="RequestStartTransactionRequest1">A RequestStartTransaction request.</param>
+        /// <param name="RequestStartTransactionRequest2">Another RequestStartTransaction request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RequestStartTransactionRequest? RequestStartTransactionRequest1,
                                            RequestStartTransactionRequest? RequestStartTransactionRequest2)
@@ -1030,10 +1045,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (RequestStartTransactionRequest1, RequestStartTransactionRequest2)
 
         /// <summary>
-        /// Compares two request start transaction requests for inequality.
+        /// Compares two RequestStartTransaction requests for inequality.
         /// </summary>
-        /// <param name="RequestStartTransactionRequest1">A request start transaction request.</param>
-        /// <param name="RequestStartTransactionRequest2">Another request start transaction request.</param>
+        /// <param name="RequestStartTransactionRequest1">A RequestStartTransaction request.</param>
+        /// <param name="RequestStartTransactionRequest2">Another RequestStartTransaction request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RequestStartTransactionRequest? RequestStartTransactionRequest1,
                                            RequestStartTransactionRequest? RequestStartTransactionRequest2)
@@ -1049,9 +1064,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two request start transaction requests for equality.
+        /// Compares two RequestStartTransaction requests for equality.
         /// </summary>
-        /// <param name="Object">A request start transaction request to compare with.</param>
+        /// <param name="Object">A RequestStartTransaction request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is RequestStartTransactionRequest requestStartTransactionRequest &&
@@ -1062,9 +1077,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(RequestStartTransactionRequest)
 
         /// <summary>
-        /// Compares two request start transaction requests for equality.
+        /// Compares two RequestStartTransaction requests for equality.
         /// </summary>
-        /// <param name="RequestStartTransactionRequest">A request start transaction request to compare with.</param>
+        /// <param name="RequestStartTransactionRequest">A RequestStartTransaction request to compare with.</param>
         public override Boolean Equals(RequestStartTransactionRequest? RequestStartTransactionRequest)
 
             => RequestStartTransactionRequest is not null &&

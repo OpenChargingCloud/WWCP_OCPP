@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The install certificate request.
+    /// The InstallCertificate request.
     /// </summary>
     public class InstallCertificateRequest : ARequest<InstallCertificateRequest>,
                                              IRequest
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new install certificate request.
+        /// Create a new InstallCertificate request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
@@ -198,17 +198,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomInstallCertificateRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an install certificate request.
+        /// Parse the given JSON representation of an InstallCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomInstallCertificateRequestParser">A delegate to parse custom install certificate requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomInstallCertificateRequestParser">A delegate to parse custom InstallCertificate requests.</param>
         public static InstallCertificateRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
                                                       NetworkingNode_Id                                        DestinationId,
                                                       NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      TimeSpan?                                                RequestTimeout                          = null,
+                                                      EventTracking_Id?                                        EventTrackingId                         = null,
                                                       CustomJObjectParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser   = null)
         {
 
@@ -218,12 +224,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var installCertificateRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomInstallCertificateRequestParser))
             {
                 return installCertificateRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an install certificate request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an InstallCertificate request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -233,21 +242,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out InstallCertificateRequest, out ErrorResponse, CustomInstallCertificateRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an install certificate request.
+        /// Try to parse the given JSON representation of an InstallCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="InstallCertificateRequest">The parsed install certificate request.</param>
+        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="InstallCertificateRequest">The parsed InstallCertificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomInstallCertificateRequestParser">A delegate to parse custom install certificate requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomInstallCertificateRequestParser">A delegate to parse custom InstallCertificate requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
                                        NetworkingNode_Id                                        DestinationId,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out InstallCertificateRequest?      InstallCertificateRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       CustomJObjectParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser)
+                                       DateTime?                                                RequestTimestamp                        = null,
+                                       TimeSpan?                                                RequestTimeout                          = null,
+                                       EventTracking_Id?                                        EventTrackingId                         = null,
+                                       CustomJObjectParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser   = null)
         {
 
             try
@@ -332,9 +348,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 CustomData,
 
                                                 RequestId,
-                                                null,
-                                                null,
-                                                null,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
                                                 NetworkPath
 
                                             );
@@ -349,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 InstallCertificateRequest  = null;
-                ErrorResponse              = "The given JSON representation of an install certificate request is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of an InstallCertificate request is invalid: " + e.Message;
                 return false;
             }
 
@@ -362,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomInstallCertificateRequestSerializer">A delegate to serialize custom install certificate requests.</param>
+        /// <param name="CustomInstallCertificateRequestSerializer">A delegate to serialize custom InstallCertificate requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestSerializer   = null,
@@ -400,10 +416,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (InstallCertificateRequest1, InstallCertificateRequest2)
 
         /// <summary>
-        /// Compares two install certificate requests for equality.
+        /// Compares two InstallCertificate requests for equality.
         /// </summary>
-        /// <param name="InstallCertificateRequest1">An install certificate request.</param>
-        /// <param name="InstallCertificateRequest2">Another install certificate request.</param>
+        /// <param name="InstallCertificateRequest1">An InstallCertificate request.</param>
+        /// <param name="InstallCertificateRequest2">Another InstallCertificate request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (InstallCertificateRequest? InstallCertificateRequest1,
                                            InstallCertificateRequest? InstallCertificateRequest2)
@@ -426,10 +442,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (InstallCertificateRequest1, InstallCertificateRequest2)
 
         /// <summary>
-        /// Compares two install certificate requests for inequality.
+        /// Compares two InstallCertificate requests for inequality.
         /// </summary>
-        /// <param name="InstallCertificateRequest1">An install certificate request.</param>
-        /// <param name="InstallCertificateRequest2">Another install certificate request.</param>
+        /// <param name="InstallCertificateRequest1">An InstallCertificate request.</param>
+        /// <param name="InstallCertificateRequest2">Another InstallCertificate request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (InstallCertificateRequest? InstallCertificateRequest1,
                                            InstallCertificateRequest? InstallCertificateRequest2)
@@ -445,9 +461,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two install certificate requests for equality.
+        /// Compares two InstallCertificate requests for equality.
         /// </summary>
-        /// <param name="Object">An install certificate request to compare with.</param>
+        /// <param name="Object">An InstallCertificate request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is InstallCertificateRequest installCertificateRequest &&
@@ -458,9 +474,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(InstallCertificateRequest)
 
         /// <summary>
-        /// Compares two install certificate requests for equality.
+        /// Compares two InstallCertificate requests for equality.
         /// </summary>
-        /// <param name="InstallCertificateRequest">An install certificate request to compare with.</param>
+        /// <param name="InstallCertificateRequest">An InstallCertificate request to compare with.</param>
         public override Boolean Equals(InstallCertificateRequest? InstallCertificateRequest)
 
             => InstallCertificateRequest is not null &&

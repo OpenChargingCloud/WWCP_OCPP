@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A reserve now response.
+    /// The ReserveNow response.
     /// </summary>
     public class ReserveNowResponse : AResponse<CSMS.ReserveNowRequest,
                                                 ReserveNowResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ReserveNowResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new reserve now response.
+        /// Create a new ReserveNow response.
         /// </summary>
-        /// <param name="Request">The reserve now request leading to this response.</param>
+        /// <param name="Request">The ReserveNow request leading to this response.</param>
         /// <param name="Status">The success or failure of the reservation.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ReserveNowResponse(Request, Result)
 
         /// <summary>
-        /// Create a new reserve now response.
+        /// Create a new ReserveNow response.
         /// </summary>
-        /// <param name="Request">The reserve now request leading to this response.</param>
+        /// <param name="Request">The ReserveNow request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ReserveNowResponse(CSMS.ReserveNowRequest  Request,
-                                  Result                  Result)
+                                  Result                  Result,
+                                  DateTime?                ResponseTimestamp   = null,
+
+                                  NetworkingNode_Id?       DestinationId       = null,
+                                  NetworkPath?             NetworkPath         = null,
+
+                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  IEnumerable<Signature>?  Signatures          = null,
+
+                                  CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -221,11 +241,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomReserveNowResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a reserve now response.
+        /// Parse the given JSON representation of a ReserveNow response.
         /// </summary>
-        /// <param name="Request">The reserve now request leading to this response.</param>
+        /// <param name="Request">The ReserveNow request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
+        /// <param name="CustomReserveNowResponseParser">A delegate to parse custom ReserveNow responses.</param>
         public static ReserveNowResponse Parse(CSMS.ReserveNowRequest                            Request,
                                                JObject                                           JSON,
                                                CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null)
@@ -240,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return reserveNowResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a reserve now response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ReserveNow response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -250,13 +270,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out ReserveNowResponse, out ErrorResponse, CustomReserveNowResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a reserve now response.
+        /// Try to parse the given JSON representation of a ReserveNow response.
         /// </summary>
-        /// <param name="Request">The reserve now request leading to this response.</param>
+        /// <param name="Request">The ReserveNow request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
+        /// <param name="ReserveNowResponse">The parsed ReserveNow response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
+        /// <param name="CustomReserveNowResponseParser">A delegate to parse custom ReserveNow responses.</param>
         public static Boolean TryParse(CSMS.ReserveNowRequest                            Request,
                                        JObject                                           JSON,
                                        [NotNullWhen(true)]  out ReserveNowResponse?      ReserveNowResponse,
@@ -346,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 ReserveNowResponse  = null;
-                ErrorResponse       = "The given JSON representation of a reserve now response is invalid: " + e.Message;
+                ErrorResponse       = "The given JSON representation of a ReserveNow response is invalid: " + e.Message;
                 return false;
             }
 
@@ -359,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomReserveNowResponseSerializer">A delegate to serialize custom reserve now responses.</param>
+        /// <param name="CustomReserveNowResponseSerializer">A delegate to serialize custom ReserveNow responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -401,13 +421,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The reserve now failed.
+        /// The ReserveNow failed because of a request error.
         /// </summary>
-        /// <param name="Request">The reserve now request leading to this response.</param>
-        public static ReserveNowResponse Failed(CSMS.ReserveNowRequest Request)
+        /// <param name="Request">The ReserveNow request.</param>
+        public static ReserveNowResponse RequestError(CSMS.ReserveNowRequest   Request,
+                                                      EventTracking_Id         EventTrackingId,
+                                                      ResultCode               ErrorCode,
+                                                      String?                  ErrorDescription    = null,
+                                                      JObject?                 ErrorDetails        = null,
+                                                      DateTime?                ResponseTimestamp   = null,
+
+                                                      NetworkingNode_Id?       DestinationId       = null,
+                                                      NetworkPath?             NetworkPath         = null,
+
+                                                      IEnumerable<KeyPair>?    SignKeys            = null,
+                                                      IEnumerable<SignInfo>?   SignInfos           = null,
+                                                      IEnumerable<Signature>?  Signatures          = null,
+
+                                                      CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ReserveNow failed.
+        /// </summary>
+        /// <param name="Request">The ReserveNow request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ReserveNowResponse SignatureError(CSMS.ReserveNowRequest  Request,
+                                                        String                  ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ReserveNow failed.
+        /// </summary>
+        /// <param name="Request">The ReserveNow request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ReserveNowResponse Failed(CSMS.ReserveNowRequest  Request,
+                                                String?                 Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ReserveNow failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ReserveNow request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ReserveNowResponse ExceptionOccured(CSMS.ReserveNowRequest  Request,
+                                                          Exception               Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -417,10 +507,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (ReserveNowResponse1, ReserveNowResponse2)
 
         /// <summary>
-        /// Compares two reserve now responses for equality.
+        /// Compares two ReserveNow responses for equality.
         /// </summary>
-        /// <param name="ReserveNowResponse1">A reserve now response.</param>
-        /// <param name="ReserveNowResponse2">Another reserve now response.</param>
+        /// <param name="ReserveNowResponse1">A ReserveNow response.</param>
+        /// <param name="ReserveNowResponse2">Another ReserveNow response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ReserveNowResponse? ReserveNowResponse1,
                                            ReserveNowResponse? ReserveNowResponse2)
@@ -443,10 +533,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (ReserveNowResponse1, ReserveNowResponse2)
 
         /// <summary>
-        /// Compares two reserve now responses for inequality.
+        /// Compares two ReserveNow responses for inequality.
         /// </summary>
-        /// <param name="ReserveNowResponse1">A reserve now response.</param>
-        /// <param name="ReserveNowResponse2">Another reserve now response.</param>
+        /// <param name="ReserveNowResponse1">A ReserveNow response.</param>
+        /// <param name="ReserveNowResponse2">Another ReserveNow response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ReserveNowResponse? ReserveNowResponse1,
                                            ReserveNowResponse? ReserveNowResponse2)
@@ -462,9 +552,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two reserve now responses for equality.
+        /// Compares two ReserveNow responses for equality.
         /// </summary>
-        /// <param name="Object">A reserve now response to compare with.</param>
+        /// <param name="Object">A ReserveNow response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ReserveNowResponse reserveNowResponse &&
@@ -475,9 +565,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(ReserveNowResponse)
 
         /// <summary>
-        /// Compares two reserve now responses for equality.
+        /// Compares two ReserveNow responses for equality.
         /// </summary>
-        /// <param name="ReserveNowResponse">A reserve now response to compare with.</param>
+        /// <param name="ReserveNowResponse">A ReserveNow response to compare with.</param>
         public override Boolean Equals(ReserveNowResponse? ReserveNowResponse)
 
             => ReserveNowResponse is not null &&

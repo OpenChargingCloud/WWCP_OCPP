@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A change availability response.
+    /// The ChangeAvailability response.
     /// </summary>
     public class ChangeAvailabilityResponse : AResponse<CSMS.ChangeAvailabilityRequest,
                                                         ChangeAvailabilityResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the change availability command.
+        /// The success or failure of the ChangeAvailability command.
         /// </summary>
         [Mandatory]
         public ChangeAvailabilityStatus  Status        { get; }
@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ChangeAvailabilityResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new change availability response.
+        /// Create a new ChangeAvailability response.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
-        /// <param name="Status">The success or failure of the change availability command.</param>
+        /// <param name="Request">The ChangeAvailability request leading to this response.</param>
+        /// <param name="Status">The success or failure of the ChangeAvailability command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ChangeAvailabilityResponse(Request, Result)
 
         /// <summary>
-        /// Create a new change availability response.
+        /// Create a new ChangeAvailability response.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
+        /// <param name="Request">The ChangeAvailability request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ChangeAvailabilityResponse(CSMS.ChangeAvailabilityRequest  Request,
-                                          Result                          Result)
+                                          Result                          Result,
+                                          DateTime?                       ResponseTimestamp   = null,
+
+                                          NetworkingNode_Id?              DestinationId       = null,
+                                          NetworkPath?                    NetworkPath         = null,
+
+                                          IEnumerable<KeyPair>?           SignKeys            = null,
+                                          IEnumerable<SignInfo>?          SignInfos           = null,
+                                          IEnumerable<Signature>?         Signatures          = null,
+
+                                          CustomData?                     CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -219,11 +239,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomChangeAvailabilityResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a change availability response.
+        /// Parse the given JSON representation of a ChangeAvailability response.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
+        /// <param name="Request">The ChangeAvailability request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
+        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom ChangeAvailability responses.</param>
         public static ChangeAvailabilityResponse Parse(CSMS.ChangeAvailabilityRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null)
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return changeAvailabilityResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a change availability response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ChangeAvailability response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -248,13 +268,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out ChangeAvailabilityResponse, out ErrorResponse, CustomChangeAvailabilityResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a change availability response.
+        /// Try to parse the given JSON representation of a ChangeAvailability response.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
+        /// <param name="Request">The ChangeAvailability request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
+        /// <param name="ChangeAvailabilityResponse">The parsed ChangeAvailability response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
+        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom ChangeAvailability responses.</param>
         public static Boolean TryParse(CSMS.ChangeAvailabilityRequest                            Request,
                                        JObject                                                   JSON,
                                        [NotNullWhen(true)]  out ChangeAvailabilityResponse?      ChangeAvailabilityResponse,
@@ -344,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 ChangeAvailabilityResponse  = null;
-                ErrorResponse               = "The given JSON representation of a change availability response is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a ChangeAvailability response is invalid: " + e.Message;
                 return false;
             }
 
@@ -357,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomChangeAvailabilityResponseSerializer">A delegate to serialize custom change availability responses.</param>
+        /// <param name="CustomChangeAvailabilityResponseSerializer">A delegate to serialize custom ChangeAvailability responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -399,13 +419,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The change availability command failed.
+        /// The ChangeAvailability failed because of a request error.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
-        public static ChangeAvailabilityResponse Failed(CSMS.ChangeAvailabilityRequest Request)
+        /// <param name="Request">The ChangeAvailability request.</param>
+        public static ChangeAvailabilityResponse RequestError(CSMS.ChangeAvailabilityRequest  Request,
+                                                              EventTracking_Id                EventTrackingId,
+                                                              ResultCode                      ErrorCode,
+                                                              String?                         ErrorDescription    = null,
+                                                              JObject?                        ErrorDetails        = null,
+                                                              DateTime?                       ResponseTimestamp   = null,
+
+                                                              NetworkingNode_Id?              DestinationId       = null,
+                                                              NetworkPath?                    NetworkPath         = null,
+
+                                                              IEnumerable<KeyPair>?           SignKeys            = null,
+                                                              IEnumerable<SignInfo>?          SignInfos           = null,
+                                                              IEnumerable<Signature>?         Signatures          = null,
+
+                                                              CustomData?                     CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ChangeAvailability failed.
+        /// </summary>
+        /// <param name="Request">The ChangeAvailability request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ChangeAvailabilityResponse SignatureError(CSMS.ChangeAvailabilityRequest  Request,
+                                                                String                          ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ChangeAvailability failed.
+        /// </summary>
+        /// <param name="Request">The ChangeAvailability request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ChangeAvailabilityResponse Failed(CSMS.ChangeAvailabilityRequest  Request,
+                                                        String?                         Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ChangeAvailability failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ChangeAvailability request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ChangeAvailabilityResponse ExceptionOccured(CSMS.ChangeAvailabilityRequest  Request,
+                                                                  Exception                       Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -415,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (ChangeAvailabilityResponse1, ChangeAvailabilityResponse2)
 
         /// <summary>
-        /// Compares two change availability responses for equality.
+        /// Compares two ChangeAvailability responses for equality.
         /// </summary>
-        /// <param name="ChangeAvailabilityResponse1">A change availability response.</param>
-        /// <param name="ChangeAvailabilityResponse2">Another change availability response.</param>
+        /// <param name="ChangeAvailabilityResponse1">A ChangeAvailability response.</param>
+        /// <param name="ChangeAvailabilityResponse2">Another ChangeAvailability response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ChangeAvailabilityResponse? ChangeAvailabilityResponse1,
                                            ChangeAvailabilityResponse? ChangeAvailabilityResponse2)
@@ -441,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (ChangeAvailabilityResponse1, ChangeAvailabilityResponse2)
 
         /// <summary>
-        /// Compares two change availability responses for inequality.
+        /// Compares two ChangeAvailability responses for inequality.
         /// </summary>
-        /// <param name="ChangeAvailabilityResponse1">A change availability response.</param>
-        /// <param name="ChangeAvailabilityResponse2">Another change availability response.</param>
+        /// <param name="ChangeAvailabilityResponse1">A ChangeAvailability response.</param>
+        /// <param name="ChangeAvailabilityResponse2">Another ChangeAvailability response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ChangeAvailabilityResponse? ChangeAvailabilityResponse1,
                                            ChangeAvailabilityResponse? ChangeAvailabilityResponse2)
@@ -460,9 +550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two change availability responses for equality.
+        /// Compares two ChangeAvailability responses for equality.
         /// </summary>
-        /// <param name="Object">A change availability response to compare with.</param>
+        /// <param name="Object">A ChangeAvailability response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChangeAvailabilityResponse changeAvailabilityResponse &&
@@ -473,9 +563,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(ChangeAvailabilityResponse)
 
         /// <summary>
-        /// Compares two change availability responses for equality.
+        /// Compares two ChangeAvailability responses for equality.
         /// </summary>
-        /// <param name="ChangeAvailabilityResponse">A change availability response to compare with.</param>
+        /// <param name="ChangeAvailabilityResponse">A ChangeAvailability response to compare with.</param>
         public override Boolean Equals(ChangeAvailabilityResponse? ChangeAvailabilityResponse)
 
             => ChangeAvailabilityResponse is not null &&

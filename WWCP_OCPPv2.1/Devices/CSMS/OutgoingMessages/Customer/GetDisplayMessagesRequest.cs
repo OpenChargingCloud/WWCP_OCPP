@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get display messages request.
+    /// The GetDisplayMessages request.
     /// </summary>
     public class GetDisplayMessagesRequest : ARequest<GetDisplayMessagesRequest>,
                                              IRequest
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The unique identification of this get display messages request.
+        /// The unique identification of this GetDisplayMessages request.
         /// </summary>
         [Mandatory]
         public Int32                           GetDisplayMessagesRequestId    { get; }
@@ -84,10 +84,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get display messages request.
+        /// Create a new GetDisplayMessages request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
-        /// <param name="GetDisplayMessagesRequestId">The unique identification of this get display messages request.</param>
+        /// <param name="GetDisplayMessagesRequestId">The unique identification of this GetDisplayMessages request.</param>
         /// <param name="Ids">An optional filter on display message identifications. This field SHALL NOT contain more ids than set in NumberOfDisplayMessages.maxLimit.</param>
         /// <param name="Priority">The optional filter on message priorities.</param>
         /// <param name="State">The optional filter on message states.</param>
@@ -242,17 +242,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetDisplayMessagesRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get display messages request.
+        /// Parse the given JSON representation of a GetDisplayMessages request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetDisplayMessagesRequestParser">A delegate to parse custom get display messages requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetDisplayMessagesRequestParser">A delegate to parse custom GetDisplayMessages requests.</param>
         public static GetDisplayMessagesRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
                                                       NetworkingNode_Id                                        DestinationId,
                                                       NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      TimeSpan?                                                RequestTimeout                          = null,
+                                                      EventTracking_Id?                                        EventTrackingId                         = null,
                                                       CustomJObjectParserDelegate<GetDisplayMessagesRequest>?  CustomGetDisplayMessagesRequestParser   = null)
         {
 
@@ -262,12 +268,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getDisplayMessagesRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetDisplayMessagesRequestParser))
             {
                 return getDisplayMessagesRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get display messages request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetDisplayMessages request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -277,22 +286,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetDisplayMessagesRequest, out ErrorResponse, CustomGetDisplayMessagesRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get display messages request.
+        /// Try to parse the given JSON representation of a GetDisplayMessages request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetDisplayMessagesRequest">The parsed get display messages request.</param>
+        /// <param name="GetDisplayMessagesRequest">The parsed GetDisplayMessages request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetDisplayMessagesRequestParser">A delegate to parse custom get display messages requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetDisplayMessagesRequestParser">A delegate to parse custom GetDisplayMessages requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
                                        NetworkingNode_Id                                        DestinationId,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out GetDisplayMessagesRequest?      GetDisplayMessagesRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       CustomJObjectParserDelegate<GetDisplayMessagesRequest>?  CustomGetDisplayMessagesRequestParser)
+                                       DateTime?                                                RequestTimestamp                        = null,
+                                       TimeSpan?                                                RequestTimeout                          = null,
+                                       EventTracking_Id?                                        EventTrackingId                         = null,
+                                       CustomJObjectParserDelegate<GetDisplayMessagesRequest>?  CustomGetDisplayMessagesRequestParser   = null)
         {
 
             try
@@ -303,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region GetDisplayMessagesRequestId    [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "get display messages request identification",
+                                         "GetDisplayMessages request identification",
                                          out Int32 GetDisplayMessagesRequestId,
                                          out ErrorResponse))
                 {
@@ -398,9 +413,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 CustomData,
 
                                                 RequestId,
-                                                null,
-                                                null,
-                                                null,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
                                                 NetworkPath
 
                                             );
@@ -415,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetDisplayMessagesRequest  = null;
-                ErrorResponse              = "The given JSON representation of a get display messages request is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a GetDisplayMessages request is invalid: " + e.Message;
                 return false;
             }
 
@@ -428,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetDisplayMessagesRequestSerializer">A delegate to serialize custom get display messages requests.</param>
+        /// <param name="CustomGetDisplayMessagesRequestSerializer">A delegate to serialize custom GetDisplayMessages requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?  CustomGetDisplayMessagesRequestSerializer   = null,
@@ -477,10 +492,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetDisplayMessagesRequest1, GetDisplayMessagesRequest2)
 
         /// <summary>
-        /// Compares two get display messages requests for equality.
+        /// Compares two GetDisplayMessages requests for equality.
         /// </summary>
-        /// <param name="GetDisplayMessagesRequest1">A get display messages request.</param>
-        /// <param name="GetDisplayMessagesRequest2">Another get display messages request.</param>
+        /// <param name="GetDisplayMessagesRequest1">A GetDisplayMessages request.</param>
+        /// <param name="GetDisplayMessagesRequest2">Another GetDisplayMessages request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetDisplayMessagesRequest? GetDisplayMessagesRequest1,
                                            GetDisplayMessagesRequest? GetDisplayMessagesRequest2)
@@ -503,10 +518,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetDisplayMessagesRequest1, GetDisplayMessagesRequest2)
 
         /// <summary>
-        /// Compares two get display messages requests for inequality.
+        /// Compares two GetDisplayMessages requests for inequality.
         /// </summary>
-        /// <param name="GetDisplayMessagesRequest1">A get display messages request.</param>
-        /// <param name="GetDisplayMessagesRequest2">Another get display messages request.</param>
+        /// <param name="GetDisplayMessagesRequest1">A GetDisplayMessages request.</param>
+        /// <param name="GetDisplayMessagesRequest2">Another GetDisplayMessages request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetDisplayMessagesRequest? GetDisplayMessagesRequest1,
                                            GetDisplayMessagesRequest? GetDisplayMessagesRequest2)
@@ -522,9 +537,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get display messages requests for equality.
+        /// Compares two GetDisplayMessages requests for equality.
         /// </summary>
-        /// <param name="Object">A get display messages request to compare with.</param>
+        /// <param name="Object">A GetDisplayMessages request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetDisplayMessagesRequest getDisplayMessagesRequest &&
@@ -535,9 +550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetDisplayMessagesRequest)
 
         /// <summary>
-        /// Compares two get display messages requests for equality.
+        /// Compares two GetDisplayMessages requests for equality.
         /// </summary>
-        /// <param name="GetDisplayMessagesRequest">A get display messages request to compare with.</param>
+        /// <param name="GetDisplayMessagesRequest">A GetDisplayMessages request to compare with.</param>
         public override Boolean Equals(GetDisplayMessagesRequest? GetDisplayMessagesRequest)
 
             => GetDisplayMessagesRequest is not null &&

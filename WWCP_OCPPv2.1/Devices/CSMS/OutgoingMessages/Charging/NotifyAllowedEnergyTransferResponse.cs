@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A notify allowed energy transfer response.
+    /// The NotifyAllowedEnergyTransfer response.
     /// </summary>
     public class NotifyAllowedEnergyTransferResponse : AResponse<CSMS.NotifyAllowedEnergyTransferRequest,
                                                                       NotifyAllowedEnergyTransferResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region NotifyAllowedEnergyTransferResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new notify allowed energy transfer response.
+        /// Create a new NotifyAllowedEnergyTransfer response.
         /// </summary>
-        /// <param name="Request">The notify allowed energy transfer request leading to this response.</param>
+        /// <param name="Request">The NotifyAllowedEnergyTransfer request leading to this response.</param>
         /// <param name="Status">The charging station will indicate if it was able to process the request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region NotifyAllowedEnergyTransferResponse(Request, Result)
 
         /// <summary>
-        /// Create a new notify allowed energy transfer response.
+        /// Create a new NotifyAllowedEnergyTransfer response.
         /// </summary>
-        /// <param name="Request">The notify allowed energy transfer request leading to this response.</param>
+        /// <param name="Request">The NotifyAllowedEnergyTransfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public NotifyAllowedEnergyTransferResponse(CSMS.NotifyAllowedEnergyTransferRequest  Request,
-                                                   Result                                   Result)
+                                                   Result                                   Result,
+                                                   DateTime?                                ResponseTimestamp   = null,
+
+                                                   NetworkingNode_Id?                       DestinationId       = null,
+                                                   NetworkPath?                             NetworkPath         = null,
+
+                                                   IEnumerable<KeyPair>?                    SignKeys            = null,
+                                                   IEnumerable<SignInfo>?                   SignInfos           = null,
+                                                   IEnumerable<Signature>?                  Signatures          = null,
+
+                                                   CustomData?                              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -149,11 +169,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomNotifyAllowedEnergyTransferResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify allowed energy transfer response.
+        /// Parse the given JSON representation of a NotifyAllowedEnergyTransfer response.
         /// </summary>
-        /// <param name="Request">The notify allowed energy transfer request leading to this response.</param>
+        /// <param name="Request">The NotifyAllowedEnergyTransfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyAllowedEnergyTransferResponseParser">A delegate to parse custom notify allowed energy transfer responses.</param>
+        /// <param name="CustomNotifyAllowedEnergyTransferResponseParser">A delegate to parse custom NotifyAllowedEnergyTransfer responses.</param>
         public static NotifyAllowedEnergyTransferResponse Parse(CSMS.NotifyAllowedEnergyTransferRequest                            Request,
                                                                 JObject                                                            JSON,
                                                                 CustomJObjectParserDelegate<NotifyAllowedEnergyTransferResponse>?  CustomNotifyAllowedEnergyTransferResponseParser   = null)
@@ -168,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return notifyAllowedEnergyTransferResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify allowed energy transfer response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyAllowedEnergyTransfer response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -178,13 +198,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out NotifyAllowedEnergyTransferResponse, out ErrorResponse, CustomNotifyAllowedEnergyTransferResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify allowed energy transfer response.
+        /// Try to parse the given JSON representation of a NotifyAllowedEnergyTransfer response.
         /// </summary>
-        /// <param name="Request">The notify allowed energy transfer request leading to this response.</param>
+        /// <param name="Request">The NotifyAllowedEnergyTransfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NotifyAllowedEnergyTransferResponse">The parsed notify allowed energy transfer response.</param>
+        /// <param name="NotifyAllowedEnergyTransferResponse">The parsed NotifyAllowedEnergyTransfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyAllowedEnergyTransferResponseParser">A delegate to parse custom notify allowed energy transfer responses.</param>
+        /// <param name="CustomNotifyAllowedEnergyTransferResponseParser">A delegate to parse custom NotifyAllowedEnergyTransfer responses.</param>
         public static Boolean TryParse(CSMS.NotifyAllowedEnergyTransferRequest                            Request,
                                        JObject                                                            JSON,
                                        [NotNullWhen(true)]  out NotifyAllowedEnergyTransferResponse?      NotifyAllowedEnergyTransferResponse,
@@ -200,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "notify allowed energy transfer status",
+                                         "NotifyAllowedEnergyTransfer status",
                                          NotifyAllowedEnergyTransferStatusExtensions.TryParse,
                                          out NotifyAllowedEnergyTransferStatus Status,
                                          out ErrorResponse))
@@ -274,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 NotifyAllowedEnergyTransferResponse  = null;
-                ErrorResponse                        = "The given JSON representation of a notify allowed energy transfer response is invalid: " + e.Message;
+                ErrorResponse                        = "The given JSON representation of a NotifyAllowedEnergyTransfer response is invalid: " + e.Message;
                 return false;
             }
 
@@ -287,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyAllowedEnergyTransferResponseSerializer">A delegate to serialize custom notify allowed energy transfer responses.</param>
+        /// <param name="CustomNotifyAllowedEnergyTransferResponseSerializer">A delegate to serialize custom NotifyAllowedEnergyTransfer responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -329,13 +349,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The notify allowed energy transfer request failed.
+        /// The NotifyAllowedEnergyTransfer failed because of a request error.
         /// </summary>
-        /// <param name="Request">The notify allowed energy transfer request leading to this response.</param>
-        public static NotifyAllowedEnergyTransferResponse Failed(CSMS.NotifyAllowedEnergyTransferRequest Request)
+        /// <param name="Request">The NotifyAllowedEnergyTransfer request.</param>
+        public static NotifyAllowedEnergyTransferResponse RequestError(CSMS.NotifyAllowedEnergyTransferRequest  Request,
+                                                                       EventTracking_Id                         EventTrackingId,
+                                                                       ResultCode                               ErrorCode,
+                                                                       String?                                  ErrorDescription    = null,
+                                                                       JObject?                                 ErrorDetails        = null,
+                                                                       DateTime?                                ResponseTimestamp   = null,
+
+                                                                       NetworkingNode_Id?                       DestinationId       = null,
+                                                                       NetworkPath?                             NetworkPath         = null,
+
+                                                                       IEnumerable<KeyPair>?                    SignKeys            = null,
+                                                                       IEnumerable<SignInfo>?                   SignInfos           = null,
+                                                                       IEnumerable<Signature>?                  Signatures          = null,
+
+                                                                       CustomData?                              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifyAllowedEnergyTransfer failed.
+        /// </summary>
+        /// <param name="Request">The NotifyAllowedEnergyTransfer request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifyAllowedEnergyTransferResponse SignatureError(CSMS.NotifyAllowedEnergyTransferRequest  Request,
+                                                                         String                                   ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifyAllowedEnergyTransfer failed.
+        /// </summary>
+        /// <param name="Request">The NotifyAllowedEnergyTransfer request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifyAllowedEnergyTransferResponse Failed(CSMS.NotifyAllowedEnergyTransferRequest  Request,
+                                                                 String?                                  Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifyAllowedEnergyTransfer failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifyAllowedEnergyTransfer request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifyAllowedEnergyTransferResponse ExceptionOccured(CSMS.NotifyAllowedEnergyTransferRequest  Request,
+                                                                           Exception                                Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -345,10 +435,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (NotifyAllowedEnergyTransferResponse1, NotifyAllowedEnergyTransferResponse2)
 
         /// <summary>
-        /// Compares two notify allowed energy transfer responses for equality.
+        /// Compares two NotifyAllowedEnergyTransfer responses for equality.
         /// </summary>
-        /// <param name="NotifyAllowedEnergyTransferResponse1">A notify allowed energy transfer response.</param>
-        /// <param name="NotifyAllowedEnergyTransferResponse2">Another notify allowed energy transfer response.</param>
+        /// <param name="NotifyAllowedEnergyTransferResponse1">A NotifyAllowedEnergyTransfer response.</param>
+        /// <param name="NotifyAllowedEnergyTransferResponse2">Another NotifyAllowedEnergyTransfer response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyAllowedEnergyTransferResponse? NotifyAllowedEnergyTransferResponse1,
                                            NotifyAllowedEnergyTransferResponse? NotifyAllowedEnergyTransferResponse2)
@@ -371,10 +461,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (NotifyAllowedEnergyTransferResponse1, NotifyAllowedEnergyTransferResponse2)
 
         /// <summary>
-        /// Compares two notify allowed energy transfer responses for inequality.
+        /// Compares two NotifyAllowedEnergyTransfer responses for inequality.
         /// </summary>
-        /// <param name="NotifyAllowedEnergyTransferResponse1">A notify allowed energy transfer response.</param>
-        /// <param name="NotifyAllowedEnergyTransferResponse2">Another notify allowed energy transfer response.</param>
+        /// <param name="NotifyAllowedEnergyTransferResponse1">A NotifyAllowedEnergyTransfer response.</param>
+        /// <param name="NotifyAllowedEnergyTransferResponse2">Another NotifyAllowedEnergyTransfer response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyAllowedEnergyTransferResponse? NotifyAllowedEnergyTransferResponse1,
                                            NotifyAllowedEnergyTransferResponse? NotifyAllowedEnergyTransferResponse2)
@@ -390,9 +480,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify allowed energy transfer responses for equality.
+        /// Compares two NotifyAllowedEnergyTransfer responses for equality.
         /// </summary>
-        /// <param name="Object">A notify allowed energy transfer response to compare with.</param>
+        /// <param name="Object">A NotifyAllowedEnergyTransfer response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyAllowedEnergyTransferResponse notifyAllowedEnergyTransferResponse &&
@@ -403,9 +493,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(NotifyAllowedEnergyTransferResponse)
 
         /// <summary>
-        /// Compares two notify allowed energy transfer responses for equality.
+        /// Compares two NotifyAllowedEnergyTransfer responses for equality.
         /// </summary>
-        /// <param name="NotifyAllowedEnergyTransferResponse">A notify allowed energy transfer response to compare with.</param>
+        /// <param name="NotifyAllowedEnergyTransferResponse">A NotifyAllowedEnergyTransfer response to compare with.</param>
         public override Boolean Equals(NotifyAllowedEnergyTransferResponse? NotifyAllowedEnergyTransferResponse)
 
             => NotifyAllowedEnergyTransferResponse is not null &&

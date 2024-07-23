@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// An use priority charging response.
+    /// The UsePriorityCharging response.
     /// </summary>
     public class UsePriorityChargingResponse : AResponse<CSMS.UsePriorityChargingRequest,
                                                               UsePriorityChargingResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the use priority chargingl request.
+        /// The success or failure of the UsePriorityChargingl request.
         /// </summary>
         public GenericStatus  Status        { get; }
 
@@ -73,10 +73,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region UsePriorityChargingResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new use priority charging response.
+        /// Create a new UsePriorityCharging response.
         /// </summary>
-        /// <param name="Request">The use priority charging request leading to this response.</param>
-        /// <param name="Status">The success or failure of the use priority charging request.</param>
+        /// <param name="Request">The UsePriorityCharging request leading to this response.</param>
+        /// <param name="Status">The success or failure of the UsePriorityCharging request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -121,15 +121,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region UsePriorityChargingResponse(Result)
 
         /// <summary>
-        /// Create a new use priority charging response.
+        /// Create a new UsePriorityCharging response.
         /// </summary>
-        /// <param name="Request">The use priority charging request leading to this response.</param>
+        /// <param name="Request">The UsePriorityCharging request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public UsePriorityChargingResponse(CSMS.UsePriorityChargingRequest  Request,
-                                           Result                           Result)
+                                           Result                           Result,
+                                           DateTime?                        ResponseTimestamp   = null,
+
+                                           NetworkingNode_Id?               DestinationId       = null,
+                                           NetworkPath?                     NetworkPath         = null,
+
+                                           IEnumerable<KeyPair>?            SignKeys            = null,
+                                           IEnumerable<SignInfo>?           SignInfos           = null,
+                                           IEnumerable<Signature>?          Signatures          = null,
+
+                                           CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -148,11 +168,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomUsePriorityChargingResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an use priority charging response.
+        /// Parse the given JSON representation of an UsePriorityCharging response.
         /// </summary>
-        /// <param name="Request">The use priority charging request leading to this response.</param>
+        /// <param name="Request">The UsePriorityCharging request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUsePriorityChargingResponseParser">A delegate to parse custom use priority charging responses.</param>
+        /// <param name="CustomUsePriorityChargingResponseParser">A delegate to parse custom UsePriorityCharging responses.</param>
         public static UsePriorityChargingResponse Parse(CSMS.UsePriorityChargingRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<UsePriorityChargingResponse>?  CustomUsePriorityChargingResponseParser   = null)
@@ -167,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return usePriorityChargingResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of an use priority charging response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UsePriorityCharging response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -177,13 +197,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out UsePriorityChargingResponse, out ErrorResponse, CustomUsePriorityChargingResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an use priority charging response.
+        /// Try to parse the given JSON representation of an UsePriorityCharging response.
         /// </summary>
-        /// <param name="Request">The use priority charging request leading to this response.</param>
+        /// <param name="Request">The UsePriorityCharging request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="UsePriorityChargingResponse">The parsed use priority charging response.</param>
+        /// <param name="UsePriorityChargingResponse">The parsed UsePriorityCharging response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUsePriorityChargingResponseParser">A delegate to parse custom use priority charging responses.</param>
+        /// <param name="CustomUsePriorityChargingResponseParser">A delegate to parse custom UsePriorityCharging responses.</param>
         public static Boolean TryParse(CSMS.UsePriorityChargingRequest                            Request,
                                        JObject                                                    JSON,
                                        [NotNullWhen(true)]  out UsePriorityChargingResponse?      UsePriorityChargingResponse,
@@ -273,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 UsePriorityChargingResponse  = null;
-                ErrorResponse                = "The given JSON representation of an use priority charging response is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of an UsePriorityCharging response is invalid: " + e.Message;
                 return false;
             }
 
@@ -286,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUsePriorityChargingResponseSerializer">A delegate to serialize custom use priority charging responses.</param>
+        /// <param name="CustomUsePriorityChargingResponseSerializer">A delegate to serialize custom UsePriorityCharging responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -328,13 +348,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The use priority charging command failed.
+        /// The UsePriorityCharging failed because of a request error.
         /// </summary>
-        /// <param name="Request">The use priority charging request leading to this response.</param>
-        public static UsePriorityChargingResponse Failed(CSMS.UsePriorityChargingRequest Request)
+        /// <param name="Request">The UsePriorityCharging request.</param>
+        public static UsePriorityChargingResponse RequestError(CSMS.UsePriorityChargingRequest  Request,
+                                                               EventTracking_Id                 EventTrackingId,
+                                                               ResultCode                       ErrorCode,
+                                                               String?                          ErrorDescription    = null,
+                                                               JObject?                         ErrorDetails        = null,
+                                                               DateTime?                        ResponseTimestamp   = null,
+
+                                                               NetworkingNode_Id?               DestinationId       = null,
+                                                               NetworkPath?                     NetworkPath         = null,
+
+                                                               IEnumerable<KeyPair>?            SignKeys            = null,
+                                                               IEnumerable<SignInfo>?           SignInfos           = null,
+                                                               IEnumerable<Signature>?          Signatures          = null,
+
+                                                               CustomData?                      CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The UsePriorityCharging failed.
+        /// </summary>
+        /// <param name="Request">The UsePriorityCharging request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static UsePriorityChargingResponse SignatureError(CSMS.UsePriorityChargingRequest  Request,
+                                                                 String                           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The UsePriorityCharging failed.
+        /// </summary>
+        /// <param name="Request">The UsePriorityCharging request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static UsePriorityChargingResponse Failed(CSMS.UsePriorityChargingRequest  Request,
+                                                         String?                          Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The UsePriorityCharging failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The UsePriorityCharging request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static UsePriorityChargingResponse ExceptionOccured(CSMS.UsePriorityChargingRequest  Request,
+                                                                   Exception                        Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -344,10 +434,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (UsePriorityChargingResponse1, UsePriorityChargingResponse2)
 
         /// <summary>
-        /// Compares two use priority charging responses for equality.
+        /// Compares two UsePriorityCharging responses for equality.
         /// </summary>
-        /// <param name="UsePriorityChargingResponse1">An use priority charging response.</param>
-        /// <param name="UsePriorityChargingResponse2">Another use priority charging response.</param>
+        /// <param name="UsePriorityChargingResponse1">An UsePriorityCharging response.</param>
+        /// <param name="UsePriorityChargingResponse2">Another UsePriorityCharging response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UsePriorityChargingResponse? UsePriorityChargingResponse1,
                                            UsePriorityChargingResponse? UsePriorityChargingResponse2)
@@ -370,10 +460,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (UsePriorityChargingResponse1, UsePriorityChargingResponse2)
 
         /// <summary>
-        /// Compares two use priority charging responses for inequality.
+        /// Compares two UsePriorityCharging responses for inequality.
         /// </summary>
-        /// <param name="UsePriorityChargingResponse1">An use priority charging response.</param>
-        /// <param name="UsePriorityChargingResponse2">Another use priority charging response.</param>
+        /// <param name="UsePriorityChargingResponse1">An UsePriorityCharging response.</param>
+        /// <param name="UsePriorityChargingResponse2">Another UsePriorityCharging response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UsePriorityChargingResponse? UsePriorityChargingResponse1,
                                            UsePriorityChargingResponse? UsePriorityChargingResponse2)
@@ -389,9 +479,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two use priority charging responses for equality.
+        /// Compares two UsePriorityCharging responses for equality.
         /// </summary>
-        /// <param name="UsePriorityChargingResponse">An use priority charging response to compare with.</param>
+        /// <param name="UsePriorityChargingResponse">An UsePriorityCharging response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UsePriorityChargingResponse usePriorityChargingResponse &&
@@ -402,9 +492,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(UsePriorityChargingResponse)
 
         /// <summary>
-        /// Compares two use priority charging responses for equality.
+        /// Compares two UsePriorityCharging responses for equality.
         /// </summary>
-        /// <param name="UsePriorityChargingResponse">An use priority charging response to compare with.</param>
+        /// <param name="UsePriorityChargingResponse">An UsePriorityCharging response to compare with.</param>
         public override Boolean Equals(UsePriorityChargingResponse? UsePriorityChargingResponse)
 
             => UsePriorityChargingResponse is not null &&

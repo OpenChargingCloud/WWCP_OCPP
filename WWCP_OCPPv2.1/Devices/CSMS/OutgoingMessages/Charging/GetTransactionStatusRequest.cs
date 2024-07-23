@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get transaction status request.
+    /// The GetTransactionStatus request.
     /// </summary>
     public class GetTransactionStatusRequest : ARequest<GetTransactionStatusRequest>,
                                                IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get transaction status request.
+        /// Create a new GetTransactionStatus request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
@@ -167,17 +167,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetTransactionStatusRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get transaction status request.
+        /// Parse the given JSON representation of a GetTransactionStatus request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetTransactionStatusRequestParser">A delegate to parse custom get transaction status requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetTransactionStatusRequestParser">A delegate to parse custom GetTransactionStatus requests.</param>
         public static GetTransactionStatusRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
                                                         NetworkingNode_Id                                          DestinationId,
                                                         NetworkPath                                                NetworkPath,
+                                                        DateTime?                                                  RequestTimestamp                          = null,
+                                                        TimeSpan?                                                  RequestTimeout                            = null,
+                                                        EventTracking_Id?                                          EventTrackingId                           = null,
                                                         CustomJObjectParserDelegate<GetTransactionStatusRequest>?  CustomGetTransactionStatusRequestParser   = null)
         {
 
@@ -187,12 +193,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getTransactionStatusRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetTransactionStatusRequestParser))
             {
                 return getTransactionStatusRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get transaction status request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetTransactionStatus request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -202,22 +211,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetTransactionStatusRequest, out ErrorResponse, CustomGetTransactionStatusRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get transaction status request.
+        /// Try to parse the given JSON representation of a GetTransactionStatus request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetTransactionStatusRequest">The parsed get transaction status request.</param>
+        /// <param name="GetTransactionStatusRequest">The parsed GetTransactionStatus request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetTransactionStatusRequestParser">A delegate to parse custom get transaction status requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetTransactionStatusRequestParser">A delegate to parse custom GetTransactionStatus requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
                                        NetworkingNode_Id                                          DestinationId,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out GetTransactionStatusRequest?      GetTransactionStatusRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
-                                       CustomJObjectParserDelegate<GetTransactionStatusRequest>?  CustomGetTransactionStatusRequestParser)
+                                       DateTime?                                                  RequestTimestamp                          = null,
+                                       TimeSpan?                                                  RequestTimeout                            = null,
+                                       EventTracking_Id?                                          EventTrackingId                           = null,
+                                       CustomJObjectParserDelegate<GetTransactionStatusRequest>?  CustomGetTransactionStatusRequestParser   = null)
         {
 
             try
@@ -280,9 +295,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   CustomData,
 
                                                   RequestId,
-                                                  null,
-                                                  null,
-                                                  null,
+                                                  RequestTimestamp,
+                                                  RequestTimeout,
+                                                  EventTrackingId,
                                                   NetworkPath
 
                                               );
@@ -297,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetTransactionStatusRequest  = null;
-                ErrorResponse                = "The given JSON representation of a get transaction status request is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a GetTransactionStatus request is invalid: " + e.Message;
                 return false;
             }
 
@@ -310,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetTransactionStatusRequestSerializer">A delegate to serialize custom get transaction status requests.</param>
+        /// <param name="CustomGetTransactionStatusRequestSerializer">A delegate to serialize custom GetTransactionStatus requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?  CustomGetTransactionStatusRequestSerializer   = null,
@@ -349,10 +364,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetTransactionStatusRequest1, GetTransactionStatusRequest2)
 
         /// <summary>
-        /// Compares two get transaction status requests for equality.
+        /// Compares two GetTransactionStatus requests for equality.
         /// </summary>
-        /// <param name="GetTransactionStatusRequest1">A get transaction status request.</param>
-        /// <param name="GetTransactionStatusRequest2">Another get transaction status request.</param>
+        /// <param name="GetTransactionStatusRequest1">A GetTransactionStatus request.</param>
+        /// <param name="GetTransactionStatusRequest2">Another GetTransactionStatus request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetTransactionStatusRequest? GetTransactionStatusRequest1,
                                            GetTransactionStatusRequest? GetTransactionStatusRequest2)
@@ -375,10 +390,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetTransactionStatusRequest1, GetTransactionStatusRequest2)
 
         /// <summary>
-        /// Compares two get transaction status requests for inequality.
+        /// Compares two GetTransactionStatus requests for inequality.
         /// </summary>
-        /// <param name="GetTransactionStatusRequest1">A get transaction status request.</param>
-        /// <param name="GetTransactionStatusRequest2">Another get transaction status request.</param>
+        /// <param name="GetTransactionStatusRequest1">A GetTransactionStatus request.</param>
+        /// <param name="GetTransactionStatusRequest2">Another GetTransactionStatus request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetTransactionStatusRequest? GetTransactionStatusRequest1,
                                            GetTransactionStatusRequest? GetTransactionStatusRequest2)
@@ -394,9 +409,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get transaction status requests for equality.
+        /// Compares two GetTransactionStatus requests for equality.
         /// </summary>
-        /// <param name="Object">A get transaction status request to compare with.</param>
+        /// <param name="Object">A GetTransactionStatus request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetTransactionStatusRequest getTransactionStatusRequest &&
@@ -407,9 +422,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetTransactionStatusRequest)
 
         /// <summary>
-        /// Compares two get transaction status requests for equality.
+        /// Compares two GetTransactionStatus requests for equality.
         /// </summary>
-        /// <param name="GetTransactionStatusRequest">A get transaction status request to compare with.</param>
+        /// <param name="GetTransactionStatusRequest">A GetTransactionStatus request to compare with.</param>
         public override Boolean Equals(GetTransactionStatusRequest? GetTransactionStatusRequest)
 
             => GetTransactionStatusRequest is not null &&

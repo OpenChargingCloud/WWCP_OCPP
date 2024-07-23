@@ -94,8 +94,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    JSONRequestMessage.RequestId,
                                                    JSONRequestMessage.DestinationId,
                                                    JSONRequestMessage.NetworkPath,
-                                                   out var Request,
+                                                   out var request,
                                                    out var errorResponse,
+                                                   JSONRequestMessage.RequestTimestamp,
+                                                   JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                                   JSONRequestMessage.EventTrackingId,
                                                    parentNetworkingNode.OCPP.CustomDeleteCertificateRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
@@ -116,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
-                                                                                                     Request,
+                                                                                                     request,
                                                                                                      CancellationToken)).
                                                      ToArray());
 
@@ -141,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<DeleteCertificateRequest, DeleteCertificateResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -151,12 +154,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new DeleteCertificateResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<DeleteCertificateRequest, DeleteCertificateResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -185,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
-                                                                                         Request,
+                                                                                         request,
                                                                                          forwardingDecision)).
                                        ToArray());
 

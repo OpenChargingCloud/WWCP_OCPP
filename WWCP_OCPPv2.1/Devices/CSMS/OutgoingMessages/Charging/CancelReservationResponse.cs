@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A cancel reservation response.
+    /// The CancelReservation response.
     /// </summary>
     public class CancelReservationResponse : AResponse<CSMS.CancelReservationRequest,
                                                        CancelReservationResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region CancelReservationResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new cancel reservation response.
+        /// Create a new CancelReservation response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The CancelReservation request leading to this response.</param>
         /// <param name="Status">The success or failure of the reservation.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region CancelReservationResponse(Request, Result)
 
         /// <summary>
-        /// Create a new cancel reservation response.
+        /// Create a new CancelReservation response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The CancelReservation request leading to this response.</param>
         /// <param name="Result">A result.</param>
         public CancelReservationResponse(CSMS.CancelReservationRequest  Request,
-                                         Result                         Result)
+                                         Result                         Result,
+                                         DateTime?                      ResponseTimestamp   = null,
+
+                                         NetworkingNode_Id?             DestinationId       = null,
+                                         NetworkPath?                   NetworkPath         = null,
+
+                                         IEnumerable<KeyPair>?          SignKeys            = null,
+                                         IEnumerable<SignInfo>?         SignInfos           = null,
+                                         IEnumerable<Signature>?        Signatures          = null,
+
+                                         CustomData?                    CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -218,11 +238,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomCancelReservationResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a cancel reservation response.
+        /// Parse the given JSON representation of a CancelReservation response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The CancelReservation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom cancel reservation responses.</param>
+        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom CancelReservation responses.</param>
         public static CancelReservationResponse Parse(CSMS.CancelReservationRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null)
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return cancelReservationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a cancel reservation response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a CancelReservation response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,13 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out CancelReservationResponse, out ErrorResponse, CustomCancelReservationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a cancel reservation response.
+        /// Try to parse the given JSON representation of a CancelReservation response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The CancelReservation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
+        /// <param name="CancelReservationResponse">The parsed CancelReservation response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom cancel reservation responses.</param>
+        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom CancelReservation responses.</param>
         public static Boolean TryParse(CSMS.CancelReservationRequest                            Request,
                                        JObject                                                  JSON,
                                        [NotNullWhen(true)]  out CancelReservationResponse?      CancelReservationResponse,
@@ -269,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "cancel reservation status",
+                                         "CancelReservation status",
                                          CancelReservationStatusExtensions.TryParse,
                                          out CancelReservationStatus Status,
                                          out ErrorResponse))
@@ -343,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 CancelReservationResponse  = null;
-                ErrorResponse              = "The given JSON representation of a cancel reservation response is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a CancelReservation response is invalid: " + e.Message;
                 return false;
             }
 
@@ -356,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCancelReservationResponseSerializer">A delegate to serialize custom cancel reservation responses.</param>
+        /// <param name="CustomCancelReservationResponseSerializer">A delegate to serialize custom CancelReservation responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -398,13 +418,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The cancel reservation failed.
+        /// The CancelReservation failed because of a request error.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
-        public static CancelReservationResponse Failed(CSMS.CancelReservationRequest Request)
+        /// <param name="Request">The CancelReservation request.</param>
+        public static CancelReservationResponse RequestError(CSMS.CancelReservationRequest  Request,
+                                                             EventTracking_Id               EventTrackingId,
+                                                             ResultCode                     ErrorCode,
+                                                             String?                        ErrorDescription    = null,
+                                                             JObject?                       ErrorDetails        = null,
+                                                             DateTime?                      ResponseTimestamp   = null,
+
+                                                             NetworkingNode_Id?             DestinationId       = null,
+                                                             NetworkPath?                   NetworkPath         = null,
+
+                                                             IEnumerable<KeyPair>?          SignKeys            = null,
+                                                             IEnumerable<SignInfo>?         SignInfos           = null,
+                                                             IEnumerable<Signature>?        Signatures          = null,
+
+                                                             CustomData?                    CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The CancelReservation failed.
+        /// </summary>
+        /// <param name="Request">The CancelReservation request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static CancelReservationResponse SignatureError(CSMS.CancelReservationRequest  Request,
+                                                               String                         ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The CancelReservation failed.
+        /// </summary>
+        /// <param name="Request">The CancelReservation request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static CancelReservationResponse Failed(CSMS.CancelReservationRequest  Request,
+                                                       String?                        Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The CancelReservation failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The CancelReservation request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static CancelReservationResponse ExceptionOccured(CSMS.CancelReservationRequest  Request,
+                                                                 Exception                      Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -414,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (CancelReservationResponse1, CancelReservationResponse2)
 
         /// <summary>
-        /// Compares two cancel reservation responses for equality.
+        /// Compares two CancelReservation responses for equality.
         /// </summary>
-        /// <param name="CancelReservationResponse1">A cancel reservation response.</param>
-        /// <param name="CancelReservationResponse2">Another cancel reservation response.</param>
+        /// <param name="CancelReservationResponse1">A CancelReservation response.</param>
+        /// <param name="CancelReservationResponse2">Another CancelReservation response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CancelReservationResponse? CancelReservationResponse1,
                                            CancelReservationResponse? CancelReservationResponse2)
@@ -440,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (CancelReservationResponse1, CancelReservationResponse2)
 
         /// <summary>
-        /// Compares two cancel reservation responses for inequality.
+        /// Compares two CancelReservation responses for inequality.
         /// </summary>
-        /// <param name="CancelReservationResponse1">A cancel reservation response.</param>
-        /// <param name="CancelReservationResponse2">Another cancel reservation response.</param>
+        /// <param name="CancelReservationResponse1">A CancelReservation response.</param>
+        /// <param name="CancelReservationResponse2">Another CancelReservation response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CancelReservationResponse? CancelReservationResponse1,
                                            CancelReservationResponse? CancelReservationResponse2)
@@ -459,9 +549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two cancel reservation responses for equality.
+        /// Compares two CancelReservation responses for equality.
         /// </summary>
-        /// <param name="Object">A cancel reservation response to compare with.</param>
+        /// <param name="Object">A CancelReservation response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is CancelReservationResponse cancelReservationResponse &&
@@ -472,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(CancelReservationResponse)
 
         /// <summary>
-        /// Compares two cancel reservation responses for equality.
+        /// Compares two CancelReservation responses for equality.
         /// </summary>
-        /// <param name="CancelReservationResponse">A cancel reservation response to compare with.</param>
+        /// <param name="CancelReservationResponse">A CancelReservation response to compare with.</param>
         public override Boolean Equals(CancelReservationResponse? CancelReservationResponse)
 
             => CancelReservationResponse is not null &&

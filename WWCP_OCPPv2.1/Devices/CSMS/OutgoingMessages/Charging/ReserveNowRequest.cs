@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The reserve now request.
+    /// The ReserveNow request.
     /// </summary>
     public class ReserveNowRequest : ARequest<ReserveNowRequest>,
                                      IRequest
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new reserve now request.
+        /// Create a new ReserveNow request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="Id">The unique identification of this reservation.</param>
@@ -348,17 +348,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomReserveNowRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a reserve now request.
+        /// Parse the given JSON representation of a ReserveNow request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomReserveNowRequestParser">A delegate to parse custom reserve now requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNow requests.</param>
         public static ReserveNowRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
                                               NetworkingNode_Id                                DestinationId,
                                               NetworkPath                                      NetworkPath,
+                                              DateTime?                                        RequestTimestamp                = null,
+                                              TimeSpan?                                        RequestTimeout                  = null,
+                                              EventTracking_Id?                                EventTrackingId                 = null,
                                               CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser   = null)
         {
 
@@ -368,12 +374,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var reserveNowRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomReserveNowRequestParser))
             {
                 return reserveNowRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a reserve now response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ReserveNow response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -383,14 +392,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ReserveNowRequest, out ErrorResponse, CustomReserveNowRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a reserve now request.
+        /// Try to parse the given JSON representation of a ReserveNow request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
+        /// <param name="ReserveNowRequest">The parsed ReserveNow request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNowRequest requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
@@ -398,7 +410,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out ReserveNowRequest?      ReserveNowRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
-                                       CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser)
+                                       DateTime?                                        RequestTimestamp                = null,
+                                       TimeSpan?                                        RequestTimeout                  = null,
+                                       EventTracking_Id?                                EventTrackingId                 = null,
+                                       CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser   = null)
         {
 
             try
@@ -533,9 +548,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         CustomData,
 
                                         RequestId,
-                                        null,
-                                        null,
-                                        null,
+                                        RequestTimestamp,
+                                        RequestTimeout,
+                                        EventTrackingId,
                                         NetworkPath
 
                                     );
@@ -550,7 +565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 ReserveNowRequest  = null;
-                ErrorResponse      = "The given JSON representation of a reserve now request is invalid: " + e.Message;
+                ErrorResponse      = "The given JSON representation of a ReserveNow request is invalid: " + e.Message;
                 return false;
             }
 
@@ -563,7 +578,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom reserve now requests.</param>
+        /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom ReserveNow requests.</param>
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
@@ -622,10 +637,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (ReserveNowRequest1, ReserveNowRequest2)
 
         /// <summary>
-        /// Compares two reserve now requests for equality.
+        /// Compares two ReserveNow requests for equality.
         /// </summary>
-        /// <param name="ReserveNowRequest1">A reserve now request.</param>
-        /// <param name="ReserveNowRequest2">Another reserve now request.</param>
+        /// <param name="ReserveNowRequest1">A ReserveNow request.</param>
+        /// <param name="ReserveNowRequest2">Another ReserveNow request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ReserveNowRequest? ReserveNowRequest1,
                                            ReserveNowRequest? ReserveNowRequest2)
@@ -648,10 +663,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (ReserveNowRequest1, ReserveNowRequest2)
 
         /// <summary>
-        /// Compares two reserve now requests for inequality.
+        /// Compares two ReserveNow requests for inequality.
         /// </summary>
-        /// <param name="ReserveNowRequest1">A reserve now request.</param>
-        /// <param name="ReserveNowRequest2">Another reserve now request.</param>
+        /// <param name="ReserveNowRequest1">A ReserveNow request.</param>
+        /// <param name="ReserveNowRequest2">Another ReserveNow request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ReserveNowRequest? ReserveNowRequest1,
                                            ReserveNowRequest? ReserveNowRequest2)
@@ -667,9 +682,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two reserve now requests for equality.
+        /// Compares two ReserveNow requests for equality.
         /// </summary>
-        /// <param name="Object">A reserve now request to compare with.</param>
+        /// <param name="Object">A ReserveNow request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ReserveNowRequest reserveNowRequest &&
@@ -680,9 +695,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(ReserveNowRequest)
 
         /// <summary>
-        /// Compares two reserve now requests for equality.
+        /// Compares two ReserveNow requests for equality.
         /// </summary>
-        /// <param name="ReserveNowRequest">A reserve now request to compare with.</param>
+        /// <param name="ReserveNowRequest">A ReserveNow request to compare with.</param>
         public override Boolean Equals(ReserveNowRequest? ReserveNowRequest)
 
             => ReserveNowRequest is not null &&

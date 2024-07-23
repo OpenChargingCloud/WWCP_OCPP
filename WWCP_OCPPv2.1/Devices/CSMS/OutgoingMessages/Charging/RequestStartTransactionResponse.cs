@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A request start transaction response.
+    /// The RequestStartTransaction response.
     /// </summary>
     public class RequestStartTransactionResponse : AResponse<CSMS.RequestStartTransactionRequest,
                                                              RequestStartTransactionResponse>,
@@ -84,9 +84,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region RequestStartTransactionResponse(Request, Status, TransactionId = null, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new request start transaction response.
+        /// Create a new RequestStartTransaction response.
         /// </summary>
-        /// <param name="Request">The request start transaction request leading to this response.</param>
+        /// <param name="Request">The RequestStartTransaction request leading to this response.</param>
         /// <param name="Status">The status indicating whether the charging station accepts the request to start a charging transaction.</param>
         /// <param name="TransactionId">An optional transaction identification of an already started transaction, when the transaction was already started by the charging station before the RequestStartTransactionRequest was received. For example when the cable was plugged in first.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
@@ -135,15 +135,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region RequestStartTransactionResponse(Request, Result)
 
         /// <summary>
-        /// Create a new request start transaction response.
+        /// Create a new RequestStartTransaction response.
         /// </summary>
-        /// <param name="Request">The request start transaction request leading to this response.</param>
+        /// <param name="Request">The RequestStartTransaction request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public RequestStartTransactionResponse(CSMS.RequestStartTransactionRequest  Request,
-                                               Result                               Result)
+                                               Result                               Result,
+                                               DateTime?                            ResponseTimestamp   = null,
+
+                                               NetworkingNode_Id?                   DestinationId       = null,
+                                               NetworkPath?                         NetworkPath         = null,
+
+                                               IEnumerable<KeyPair>?                SignKeys            = null,
+                                               IEnumerable<SignInfo>?               SignInfos           = null,
+                                               IEnumerable<Signature>?              Signatures          = null,
+
+                                               CustomData?                          CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -236,11 +256,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomRequestStartTransactionResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a request start transaction response.
+        /// Parse the given JSON representation of a RequestStartTransaction response.
         /// </summary>
-        /// <param name="Request">The request start transaction request leading to this response.</param>
+        /// <param name="Request">The RequestStartTransaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomRequestStartTransactionResponseParser">A delegate to parse custom request start transaction responses.</param>
+        /// <param name="CustomRequestStartTransactionResponseParser">A delegate to parse custom RequestStartTransaction responses.</param>
         public static RequestStartTransactionResponse Parse(CSMS.RequestStartTransactionRequest                            Request,
                                                             JObject                                                        JSON,
                                                             CustomJObjectParserDelegate<RequestStartTransactionResponse>?  CustomRequestStartTransactionResponseParser   = null)
@@ -255,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return requestStartTransactionResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a request start transaction response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a RequestStartTransaction response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -265,13 +285,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out RequestStartTransactionResponse, out ErrorResponse, CustomRequestStartTransactionResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a request start transaction response.
+        /// Try to parse the given JSON representation of a RequestStartTransaction response.
         /// </summary>
-        /// <param name="Request">The request start transaction request leading to this response.</param>
+        /// <param name="Request">The RequestStartTransaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestStartTransactionResponse">The parsed request start transaction response.</param>
+        /// <param name="RequestStartTransactionResponse">The parsed RequestStartTransaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRequestStartTransactionResponseParser">A delegate to parse custom request start transaction responses.</param>
+        /// <param name="CustomRequestStartTransactionResponseParser">A delegate to parse custom RequestStartTransaction responses.</param>
         public static Boolean TryParse(CSMS.RequestStartTransactionRequest                            Request,
                                        JObject                                                        JSON,
                                        [NotNullWhen(true)]  out RequestStartTransactionResponse?      RequestStartTransactionResponse,
@@ -376,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 RequestStartTransactionResponse  = null;
-                ErrorResponse                    = "The given JSON representation of a request start transaction response is invalid: " + e.Message;
+                ErrorResponse                    = "The given JSON representation of a RequestStartTransaction response is invalid: " + e.Message;
                 return false;
             }
 
@@ -389,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomRequestStartTransactionResponseSerializer">A delegate to serialize custom request start transaction responses.</param>
+        /// <param name="CustomRequestStartTransactionResponseSerializer">A delegate to serialize custom RequestStartTransaction responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -435,13 +455,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The stop transaction failed.
+        /// The RequestStartTransaction failed because of a request error.
         /// </summary>
-        /// <param name="Request">The request start transaction request leading to this response.</param>
-        public static RequestStartTransactionResponse Failed(CSMS.RequestStartTransactionRequest  Request)
+        /// <param name="Request">The RequestStartTransaction request.</param>
+        public static RequestStartTransactionResponse RequestError(CSMS.RequestStartTransactionRequest  Request,
+                                                                   EventTracking_Id                     EventTrackingId,
+                                                                   ResultCode                           ErrorCode,
+                                                                   String?                              ErrorDescription    = null,
+                                                                   JObject?                             ErrorDetails        = null,
+                                                                   DateTime?                            ResponseTimestamp   = null,
+
+                                                                   NetworkingNode_Id?                   DestinationId       = null,
+                                                                   NetworkPath?                         NetworkPath         = null,
+
+                                                                   IEnumerable<KeyPair>?                SignKeys            = null,
+                                                                   IEnumerable<SignInfo>?               SignInfos           = null,
+                                                                   IEnumerable<Signature>?              Signatures          = null,
+
+                                                                   CustomData?                          CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The RequestStartTransaction failed.
+        /// </summary>
+        /// <param name="Request">The RequestStartTransaction request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static RequestStartTransactionResponse SignatureError(CSMS.RequestStartTransactionRequest  Request,
+                                                                     String                               ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The RequestStartTransaction failed.
+        /// </summary>
+        /// <param name="Request">The RequestStartTransaction request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static RequestStartTransactionResponse Failed(CSMS.RequestStartTransactionRequest  Request,
+                                                             String?                              Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The RequestStartTransaction failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The RequestStartTransaction request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static RequestStartTransactionResponse ExceptionOccured(CSMS.RequestStartTransactionRequest  Request,
+                                                                       Exception                            Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -451,10 +541,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (RequestStartTransactionResponse1, RequestStartTransactionResponse2)
 
         /// <summary>
-        /// Compares two request start transaction responses for equality.
+        /// Compares two RequestStartTransaction responses for equality.
         /// </summary>
-        /// <param name="RequestStartTransactionResponse1">A request start transaction response.</param>
-        /// <param name="RequestStartTransactionResponse2">Another request start transaction response.</param>
+        /// <param name="RequestStartTransactionResponse1">A RequestStartTransaction response.</param>
+        /// <param name="RequestStartTransactionResponse2">Another RequestStartTransaction response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RequestStartTransactionResponse? RequestStartTransactionResponse1,
                                            RequestStartTransactionResponse? RequestStartTransactionResponse2)
@@ -477,10 +567,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (RequestStartTransactionResponse1, RequestStartTransactionResponse2)
 
         /// <summary>
-        /// Compares two request start transaction responses for inequality.
+        /// Compares two RequestStartTransaction responses for inequality.
         /// </summary>
-        /// <param name="RequestStartTransactionResponse1">A request start transaction response.</param>
-        /// <param name="RequestStartTransactionResponse2">Another request start transaction response.</param>
+        /// <param name="RequestStartTransactionResponse1">A RequestStartTransaction response.</param>
+        /// <param name="RequestStartTransactionResponse2">Another RequestStartTransaction response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RequestStartTransactionResponse? RequestStartTransactionResponse1,
                                            RequestStartTransactionResponse? RequestStartTransactionResponse2)
@@ -496,9 +586,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two request start transaction responses for equality.
+        /// Compares two RequestStartTransaction responses for equality.
         /// </summary>
-        /// <param name="Object">A request start transaction response to compare with.</param>
+        /// <param name="Object">A RequestStartTransaction response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is RequestStartTransactionResponse requestStartTransactionResponse &&
@@ -509,9 +599,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(RequestStartTransactionResponse)
 
         /// <summary>
-        /// Compares two request start transaction responses for equality.
+        /// Compares two RequestStartTransaction responses for equality.
         /// </summary>
-        /// <param name="RequestStartTransactionResponse">A request start transaction response to compare with.</param>
+        /// <param name="RequestStartTransactionResponse">A RequestStartTransaction response to compare with.</param>
         public override Boolean Equals(RequestStartTransactionResponse? RequestStartTransactionResponse)
 
             => RequestStartTransactionResponse is not null &&

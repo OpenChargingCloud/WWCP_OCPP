@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// An QR Code scanned response.
+    /// The QRCodeScanned response.
     /// </summary>
     public class QRCodeScannedResponse : AResponse<CSMS.QRCodeScannedRequest,
                                                         QRCodeScannedResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region QRCodeScannedResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new QR Code scanned response.
+        /// Create a new QRCodeScanned response.
         /// </summary>
-        /// <param name="Request">The QR Code scanned request leading to this response.</param>
+        /// <param name="Request">The QRCodeScanned request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region QRCodeScannedResponse(Result)
 
         /// <summary>
-        /// Create a new QR Code scanned response.
+        /// Create a new QRCodeScanned response.
         /// </summary>
-        /// <param name="Request">The QR Code scanned request leading to this response.</param>
+        /// <param name="Request">The QRCodeScanned request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public QRCodeScannedResponse(CSMS.QRCodeScannedRequest  Request,
-                                     Result                     Result)
+                                     Result                     Result,
+                                     DateTime?                  ResponseTimestamp   = null,
+
+                                     NetworkingNode_Id?         DestinationId       = null,
+                                     NetworkPath?               NetworkPath         = null,
+
+                                     IEnumerable<KeyPair>?      SignKeys            = null,
+                                     IEnumerable<SignInfo>?     SignInfos           = null,
+                                     IEnumerable<Signature>?    Signatures          = null,
+
+                                     CustomData?                CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -128,11 +148,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomQRCodeScannedResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an QR Code scanned response.
+        /// Parse the given JSON representation of an QRCodeScanned response.
         /// </summary>
-        /// <param name="Request">The QR Code scanned request leading to this response.</param>
+        /// <param name="Request">The QRCodeScanned request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomQRCodeScannedResponseParser">A delegate to parse custom QR Code scanned responses.</param>
+        /// <param name="CustomQRCodeScannedResponseParser">A delegate to parse custom QRCodeScanned responses.</param>
         public static QRCodeScannedResponse Parse(CSMS.QRCodeScannedRequest                            Request,
                                                   JObject                                              JSON,
                                                   CustomJObjectParserDelegate<QRCodeScannedResponse>?  CustomQRCodeScannedResponseParser   = null)
@@ -147,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return qrCodeScannedResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of an QR Code scanned response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an QRCodeScanned response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -157,13 +177,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out QRCodeScannedResponse, out ErrorResponse, CustomQRCodeScannedResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an QR Code scanned response.
+        /// Try to parse the given JSON representation of an QRCodeScanned response.
         /// </summary>
-        /// <param name="Request">The QR Code scanned request leading to this response.</param>
+        /// <param name="Request">The QRCodeScanned request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="QRCodeScannedResponse">The parsed QR Code scanned response.</param>
+        /// <param name="QRCodeScannedResponse">The parsed QRCodeScanned response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomQRCodeScannedResponseParser">A delegate to parse custom QR Code scanned responses.</param>
+        /// <param name="CustomQRCodeScannedResponseParser">A delegate to parse custom QRCodeScanned responses.</param>
         public static Boolean TryParse(CSMS.QRCodeScannedRequest                            Request,
                                        JObject                                              JSON,
                                        [NotNullWhen(true)]  out QRCodeScannedResponse?      QRCodeScannedResponse,
@@ -224,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 QRCodeScannedResponse  = null;
-                ErrorResponse                = "The given JSON representation of an QR Code scanned response is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of an QRCodeScanned response is invalid: " + e.Message;
                 return false;
             }
 
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomQRCodeScannedResponseSerializer">A delegate to serialize custom QR Code scanned responses.</param>
+        /// <param name="CustomQRCodeScannedResponseSerializer">A delegate to serialize custom QRCodeScanned responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<QRCodeScannedResponse>?  CustomQRCodeScannedResponseSerializer   = null,
@@ -270,13 +290,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The QR Code scanned command failed.
+        /// The QRCodeScanned failed because of a request error.
         /// </summary>
-        /// <param name="Request">The QR Code scanned request leading to this response.</param>
-        public static QRCodeScannedResponse Failed(CSMS.QRCodeScannedRequest Request)
+        /// <param name="Request">The QRCodeScanned request.</param>
+        public static QRCodeScannedResponse RequestError(CSMS.QRCodeScannedRequest  Request,
+                                                         EventTracking_Id           EventTrackingId,
+                                                         ResultCode                 ErrorCode,
+                                                         String?                    ErrorDescription    = null,
+                                                         JObject?                   ErrorDetails        = null,
+                                                         DateTime?                  ResponseTimestamp   = null,
+
+                                                         NetworkingNode_Id?         DestinationId       = null,
+                                                         NetworkPath?               NetworkPath         = null,
+
+                                                         IEnumerable<KeyPair>?      SignKeys            = null,
+                                                         IEnumerable<SignInfo>?     SignInfos           = null,
+                                                         IEnumerable<Signature>?    Signatures          = null,
+
+                                                         CustomData?                CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The QRCodeScanned failed.
+        /// </summary>
+        /// <param name="Request">The QRCodeScanned request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static QRCodeScannedResponse SignatureError(CSMS.QRCodeScannedRequest  Request,
+                                                           String                     ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The QRCodeScanned failed.
+        /// </summary>
+        /// <param name="Request">The QRCodeScanned request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static QRCodeScannedResponse Failed(CSMS.QRCodeScannedRequest  Request,
+                                                   String?                    Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The QRCodeScanned failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The QRCodeScanned request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static QRCodeScannedResponse ExceptionOccured(CSMS.QRCodeScannedRequest  Request,
+                                                             Exception                  Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -286,10 +376,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (QRCodeScannedResponse1, QRCodeScannedResponse2)
 
         /// <summary>
-        /// Compares two QR Code scanned responses for equality.
+        /// Compares two QRCodeScanned responses for equality.
         /// </summary>
-        /// <param name="QRCodeScannedResponse1">An QR Code scanned response.</param>
-        /// <param name="QRCodeScannedResponse2">Another QR Code scanned response.</param>
+        /// <param name="QRCodeScannedResponse1">An QRCodeScanned response.</param>
+        /// <param name="QRCodeScannedResponse2">Another QRCodeScanned response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (QRCodeScannedResponse? QRCodeScannedResponse1,
                                            QRCodeScannedResponse? QRCodeScannedResponse2)
@@ -312,10 +402,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (QRCodeScannedResponse1, QRCodeScannedResponse2)
 
         /// <summary>
-        /// Compares two QR Code scanned responses for inequality.
+        /// Compares two QRCodeScanned responses for inequality.
         /// </summary>
-        /// <param name="QRCodeScannedResponse1">An QR Code scanned response.</param>
-        /// <param name="QRCodeScannedResponse2">Another QR Code scanned response.</param>
+        /// <param name="QRCodeScannedResponse1">An QRCodeScanned response.</param>
+        /// <param name="QRCodeScannedResponse2">Another QRCodeScanned response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (QRCodeScannedResponse? QRCodeScannedResponse1,
                                            QRCodeScannedResponse? QRCodeScannedResponse2)
@@ -331,9 +421,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two QR Code scanned responses for equality.
+        /// Compares two QRCodeScanned responses for equality.
         /// </summary>
-        /// <param name="QRCodeScannedResponse">An QR Code scanned response to compare with.</param>
+        /// <param name="QRCodeScannedResponse">An QRCodeScanned response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is QRCodeScannedResponse qrCodeScannedResponse &&
@@ -344,9 +434,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(QRCodeScannedResponse)
 
         /// <summary>
-        /// Compares two QR Code scanned responses for equality.
+        /// Compares two QRCodeScanned responses for equality.
         /// </summary>
-        /// <param name="QRCodeScannedResponse">An QR Code scanned response to compare with.</param>
+        /// <param name="QRCodeScannedResponse">An QRCodeScanned response to compare with.</param>
         public override Boolean Equals(QRCodeScannedResponse? QRCodeScannedResponse)
 
             => QRCodeScannedResponse is not null &&

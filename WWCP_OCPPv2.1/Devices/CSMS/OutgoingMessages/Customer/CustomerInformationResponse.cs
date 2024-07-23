@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A customer information response.
+    /// The CustomerInformation response.
     /// </summary>
     public class CustomerInformationResponse : AResponse<CSMS.CustomerInformationRequest,
                                                          CustomerInformationResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the customer information command.
+        /// The success or failure of the CustomerInformation command.
         /// </summary>
         [Mandatory]
         public CustomerInformationStatus  Status        { get; }
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region CustomerInformationResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new customer information response.
+        /// Create a new CustomerInformation response.
         /// </summary>
-        /// <param name="Request">The customer information request leading to this response.</param>
+        /// <param name="Request">The CustomerInformation request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region CustomerInformationResponse(Request, Result)
 
         /// <summary>
-        /// Create a new customer information response.
+        /// Create a new CustomerInformation response.
         /// </summary>
-        /// <param name="Request">The customer information request leading to this response.</param>
+        /// <param name="Request">The CustomerInformation request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public CustomerInformationResponse(CSMS.CustomerInformationRequest  Request,
-                                           Result                           Result)
+                                           Result                           Result,
+                                           DateTime?                        ResponseTimestamp   = null,
+
+                                           NetworkingNode_Id?               DestinationId       = null,
+                                           NetworkPath?                     NetworkPath         = null,
+
+                                           IEnumerable<KeyPair>?            SignKeys            = null,
+                                           IEnumerable<SignInfo>?           SignInfos           = null,
+                                           IEnumerable<Signature>?          Signatures          = null,
+
+                                           CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -219,11 +239,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomCustomerInformationResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a customer information response.
+        /// Parse the given JSON representation of a CustomerInformation response.
         /// </summary>
-        /// <param name="Request">The customer information request leading to this response.</param>
+        /// <param name="Request">The CustomerInformation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCustomerInformationResponseParser">A delegate to parse custom customer information responses.</param>
+        /// <param name="CustomCustomerInformationResponseParser">A delegate to parse custom CustomerInformation responses.</param>
         public static CustomerInformationResponse Parse(CSMS.CustomerInformationRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<CustomerInformationResponse>?  CustomCustomerInformationResponseParser   = null)
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return customerInformationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a customer information response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a CustomerInformation response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -248,13 +268,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out CustomerInformationResponse, out ErrorResponse, CustomCustomerInformationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a customer information response.
+        /// Try to parse the given JSON representation of a CustomerInformation response.
         /// </summary>
-        /// <param name="Request">The customer information request leading to this response.</param>
+        /// <param name="Request">The CustomerInformation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomerInformationResponse">The parsed customer information response.</param>
+        /// <param name="CustomerInformationResponse">The parsed CustomerInformation response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCustomerInformationResponseParser">A delegate to parse custom customer information responses.</param>
+        /// <param name="CustomCustomerInformationResponseParser">A delegate to parse custom CustomerInformation responses.</param>
         public static Boolean TryParse(CSMS.CustomerInformationRequest                            Request,
                                        JObject                                                    JSON,
                                        [NotNullWhen(true)]  out CustomerInformationResponse?      CustomerInformationResponse,
@@ -270,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "customer information status",
+                                         "CustomerInformation status",
                                          CustomerInformationStatusExtensions.TryParse,
                                          out CustomerInformationStatus Status,
                                          out ErrorResponse))
@@ -344,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 CustomerInformationResponse  = null;
-                ErrorResponse                = "The given JSON representation of a customer information response is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a CustomerInformation response is invalid: " + e.Message;
                 return false;
             }
 
@@ -357,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCustomerInformationResponseSerializer">A delegate to serialize custom customer information responses.</param>
+        /// <param name="CustomCustomerInformationResponseSerializer">A delegate to serialize custom CustomerInformation responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -399,13 +419,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The customer information command failed.
+        /// The CustomerInformation failed because of a request error.
         /// </summary>
-        /// <param name="Request">The customer information request leading to this response.</param>
-        public static CustomerInformationResponse Failed(CSMS.CustomerInformationRequest Request)
+        /// <param name="Request">The CustomerInformation request.</param>
+        public static CustomerInformationResponse RequestError(CSMS.CustomerInformationRequest    Request,
+                                                     EventTracking_Id         EventTrackingId,
+                                                     ResultCode               ErrorCode,
+                                                     String?                  ErrorDescription    = null,
+                                                     JObject?                 ErrorDetails        = null,
+                                                     DateTime?                ResponseTimestamp   = null,
+
+                                                     NetworkingNode_Id?       DestinationId       = null,
+                                                     NetworkPath?             NetworkPath         = null,
+
+                                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                                     CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The CustomerInformation failed.
+        /// </summary>
+        /// <param name="Request">The CustomerInformation request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static CustomerInformationResponse SignatureError(CSMS.CustomerInformationRequest  Request,
+                                                       String                 ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The CustomerInformation failed.
+        /// </summary>
+        /// <param name="Request">The CustomerInformation request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static CustomerInformationResponse Failed(CSMS.CustomerInformationRequest  Request,
+                                               String?                Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The CustomerInformation failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The CustomerInformation request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static CustomerInformationResponse ExceptionOccured(CSMS.CustomerInformationRequest  Request,
+                                                         Exception              Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -415,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (CustomerInformationResponse1, CustomerInformationResponse2)
 
         /// <summary>
-        /// Compares two customer information responses for equality.
+        /// Compares two CustomerInformation responses for equality.
         /// </summary>
-        /// <param name="CustomerInformationResponse1">A customer information response.</param>
-        /// <param name="CustomerInformationResponse2">Another customer information response.</param>
+        /// <param name="CustomerInformationResponse1">A CustomerInformation response.</param>
+        /// <param name="CustomerInformationResponse2">Another CustomerInformation response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CustomerInformationResponse? CustomerInformationResponse1,
                                            CustomerInformationResponse? CustomerInformationResponse2)
@@ -441,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (CustomerInformationResponse1, CustomerInformationResponse2)
 
         /// <summary>
-        /// Compares two customer information responses for inequality.
+        /// Compares two CustomerInformation responses for inequality.
         /// </summary>
-        /// <param name="CustomerInformationResponse1">A customer information response.</param>
-        /// <param name="CustomerInformationResponse2">Another customer information response.</param>
+        /// <param name="CustomerInformationResponse1">A CustomerInformation response.</param>
+        /// <param name="CustomerInformationResponse2">Another CustomerInformation response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CustomerInformationResponse? CustomerInformationResponse1,
                                            CustomerInformationResponse? CustomerInformationResponse2)
@@ -460,9 +550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two customer information responses for equality.
+        /// Compares two CustomerInformation responses for equality.
         /// </summary>
-        /// <param name="Object">A customer information response to compare with.</param>
+        /// <param name="Object">A CustomerInformation response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is CustomerInformationResponse customerInformationResponse &&
@@ -473,9 +563,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(CustomerInformationResponse)
 
         /// <summary>
-        /// Compares two customer information responses for equality.
+        /// Compares two CustomerInformation responses for equality.
         /// </summary>
-        /// <param name="CustomerInformationResponse">A customer information response to compare with.</param>
+        /// <param name="CustomerInformationResponse">A CustomerInformation response to compare with.</param>
         public override Boolean Equals(CustomerInformationResponse? CustomerInformationResponse)
 
             => CustomerInformationResponse is not null &&
