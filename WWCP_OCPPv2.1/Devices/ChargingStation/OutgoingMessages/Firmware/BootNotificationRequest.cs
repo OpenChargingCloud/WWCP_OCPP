@@ -268,6 +268,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomBootNotificationRequestParser">An optional delegate to parse custom BootNotification requests.</param>
         /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
         /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
@@ -276,6 +279,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     Request_Id                                             RequestId,
                                                     NetworkingNode_Id                                      DestinationId,
                                                     NetworkPath                                            NetworkPath,
+                                                    DateTime?                                              RequestTimestamp                      = null,
+                                                    TimeSpan?                                              RequestTimeout                        = null,
+                                                    EventTracking_Id?                                      EventTrackingId                       = null,
                                                     CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null,
                                                     CustomJObjectParserDelegate<ChargingStation>?          CustomChargingStationParser           = null,
                                                     CustomJObjectParserDelegate<Signature>?                CustomSignatureParser                 = null,
@@ -289,6 +295,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var bootNotificationRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomBootNotificationRequestParser,
                          CustomChargingStationParser,
                          CustomSignatureParser,
@@ -315,6 +324,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomBootNotificationRequestParser">An optional delegate to parse custom BootNotification requests.</param>
         /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
         /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
@@ -325,6 +337,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out BootNotificationRequest?      BootNotificationRequest,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
+                                       DateTime?                                              RequestTimestamp                      = null,
+                                       TimeSpan?                                              RequestTimeout                        = null,
+                                       EventTracking_Id?                                      EventTrackingId                       = null,
                                        CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null,
                                        CustomJObjectParserDelegate<ChargingStation>?          CustomChargingStationParser           = null,
                                        CustomJObjectParserDelegate<Signature>?                CustomSignatureParser                 = null,
@@ -407,9 +422,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               CustomData,
 
                                               RequestId,
-                                              null,
-                                              null,
-                                              null,
+                                              RequestTimestamp,
+                                              RequestTimeout,
+                                              EventTrackingId,
                                               NetworkPath
 
                                           );

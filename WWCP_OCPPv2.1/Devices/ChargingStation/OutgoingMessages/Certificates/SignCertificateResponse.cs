@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A sign certificate response.
+    /// The SignCertificate response.
     /// </summary>
     public class SignCertificateResponse : AResponse<CS.SignCertificateRequest,
                                                      SignCertificateResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure status of the sign certificate request.
+        /// The success or failure status of the SignCertificate request.
         /// </summary>
         [Mandatory]
         public GenericStatus  Status        { get; }
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region SignCertificateResponse(Request, Status, StatusInfo = null)
 
         /// <summary>
-        /// Create a sign certificate response.
+        /// Create a SignCertificate response.
         /// </summary>
-        /// <param name="Request">The sign certificate request leading to this response.</param>
+        /// <param name="Request">The SignCertificate request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -120,21 +120,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region SignCertificateResponse(Request, Result)
 
         /// <summary>
-        /// Create a sign certificate response.
+        /// Create a SignCertificate response.
         /// </summary>
-        /// <param name="Request">The sign certificate request leading to this response.</param>
+        /// <param name="Request">The SignCertificate request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SignCertificateResponse(CS.SignCertificateRequest  Request,
-                                       Result                     Result)
+                                       Result                     Result,
+                                       DateTime?                  ResponseTimestamp   = null,
+
+                                       NetworkingNode_Id?         DestinationId       = null,
+                                       NetworkPath?               NetworkPath         = null,
+
+                                       IEnumerable<KeyPair>?      SignKeys            = null,
+                                       IEnumerable<SignInfo>?     SignInfos           = null,
+                                       IEnumerable<Signature>?    Signatures          = null,
+
+                                       CustomData?                CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
 
-        {
+                   DestinationId,
+                   NetworkPath,
 
-            this.Status = GenericStatus.Unknown;
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
 
-        }
+                   CustomData)
+
+        { }
 
         #endregion
 
@@ -220,11 +236,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomSignCertificateRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a sign certificate response.
+        /// Parse the given JSON representation of a SignCertificate response.
         /// </summary>
-        /// <param name="Request">The sign certificate request leading to this response.</param>
+        /// <param name="Request">The SignCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom sign certificate responses.</param>
+        /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom SignCertificate responses.</param>
         public static SignCertificateResponse Parse(CS.SignCertificateRequest                              Request,
                                                     JObject                                                JSON,
                                                     CustomJObjectParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null)
@@ -240,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return signCertificateResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a sign certificate response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SignCertificate response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -250,12 +266,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out SignCertificateResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a sign certificate response.
+        /// Try to parse the given JSON representation of a SignCertificate response.
         /// </summary>
-        /// <param name="Request">The sign certificate request leading to this response.</param>
+        /// <param name="Request">The SignCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SignCertificateResponse">The parsed sign certificate response.</param>
-        /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom sign certificate responses.</param>
+        /// <param name="SignCertificateResponse">The parsed SignCertificate response.</param>
+        /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom SignCertificate responses.</param>
         public static Boolean TryParse(CS.SignCertificateRequest                              Request,
                                        JObject                                                JSON,
                                        [NotNullWhen(true)]  out SignCertificateResponse?      SignCertificateResponse,
@@ -345,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 SignCertificateResponse  = null;
-                ErrorResponse            = "The given JSON representation of a sign certificate response is invalid: " + e.Message;
+                ErrorResponse            = "The given JSON representation of a SignCertificate response is invalid: " + e.Message;
                 return false;
             }
 
@@ -358,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSignCertificateResponseSerializer">A delegate to serialize custom sign certificate responses.</param>
+        /// <param name="CustomSignCertificateResponseSerializer">A delegate to serialize custom SignCertificate responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -400,13 +416,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The sign certificate request failed.
+        /// The SignCertificate failed because of a request error.
         /// </summary>
-        /// <param name="Request">The sign certificate request leading to this response.</param>
-        public static SignCertificateResponse Failed(CS.SignCertificateRequest Request)
+        /// <param name="Request">The SignCertificate request.</param>
+        public static SignCertificateResponse RequestError(CS.SignCertificateRequest  Request,
+                                                           EventTracking_Id           EventTrackingId,
+                                                           ResultCode                 ErrorCode,
+                                                           String?                    ErrorDescription    = null,
+                                                           JObject?                   ErrorDetails        = null,
+                                                           DateTime?                  ResponseTimestamp   = null,
+
+                                                           NetworkingNode_Id?         DestinationId       = null,
+                                                           NetworkPath?               NetworkPath         = null,
+
+                                                           IEnumerable<KeyPair>?      SignKeys            = null,
+                                                           IEnumerable<SignInfo>?     SignInfos           = null,
+                                                           IEnumerable<Signature>?    Signatures          = null,
+
+                                                           CustomData?                CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SignCertificate failed.
+        /// </summary>
+        /// <param name="Request">The SignCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SignCertificateResponse SignatureError(CS.SignCertificateRequest  Request,
+                                                             String                     ErrorDescription)
 
             => new (Request,
-                    GenericStatus.Unknown);
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SignCertificate failed.
+        /// </summary>
+        /// <param name="Request">The SignCertificate request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SignCertificateResponse Failed(CS.SignCertificateRequest  Request,
+                                                     String?                    Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SignCertificate failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SignCertificate request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SignCertificateResponse ExceptionOccured(CS.SignCertificateRequest  Request,
+                                                               Exception                  Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -416,10 +502,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SignCertificateResponse1, SignCertificateResponse2)
 
         /// <summary>
-        /// Compares two sign certificate responses for equality.
+        /// Compares two SignCertificate responses for equality.
         /// </summary>
-        /// <param name="SignCertificateResponse1">A sign certificate response.</param>
-        /// <param name="SignCertificateResponse2">Another sign certificate response.</param>
+        /// <param name="SignCertificateResponse1">A SignCertificate response.</param>
+        /// <param name="SignCertificateResponse2">Another SignCertificate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SignCertificateResponse? SignCertificateResponse1,
                                            SignCertificateResponse? SignCertificateResponse2)
@@ -442,10 +528,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SignCertificateResponse1, SignCertificateResponse2)
 
         /// <summary>
-        /// Compares two sign certificate responses for inequality.
+        /// Compares two SignCertificate responses for inequality.
         /// </summary>
-        /// <param name="SignCertificateResponse1">A sign certificate response.</param>
-        /// <param name="SignCertificateResponse2">Another sign certificate response.</param>
+        /// <param name="SignCertificateResponse1">A SignCertificate response.</param>
+        /// <param name="SignCertificateResponse2">Another SignCertificate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SignCertificateResponse? SignCertificateResponse1,
                                            SignCertificateResponse? SignCertificateResponse2)
@@ -461,9 +547,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two sign certificate responses for equality.
+        /// Compares two SignCertificate responses for equality.
         /// </summary>
-        /// <param name="Object">A sign certificate response to compare with.</param>
+        /// <param name="Object">A SignCertificate response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SignCertificateResponse signCertificateResponse &&
@@ -474,9 +560,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(SignCertificateResponse)
 
         /// <summary>
-        /// Compares two sign certificate responses for equality.
+        /// Compares two SignCertificate responses for equality.
         /// </summary>
-        /// <param name="SignCertificateResponse">A sign certificate response to compare with.</param>
+        /// <param name="SignCertificateResponse">A SignCertificate response to compare with.</param>
         public override Boolean Equals(SignCertificateResponse? SignCertificateResponse)
 
             => SignCertificateResponse is not null &&

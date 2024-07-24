@@ -28,12 +28,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    // After start-up, every charging station SHALL send a request to the
-    // central system with information about its configuration
-    // (e.g.version, vendor, etc.).
-
     /// <summary>
-    /// A boot notification request.
+    /// The AddUserRole request.
     /// </summary>
     public class AddUserRoleRequest : ARequest<AddUserRoleRequest>,
                                       IRequest
@@ -61,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new boot notification request.
+        /// Create a new AddUserRole request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// 
@@ -74,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AddUserRoleRequest(NetworkingNode_Id        NetworkingNodeId,
+        public AddUserRoleRequest(NetworkingNode_Id        DestinationId,
 
                                   IEnumerable<KeyPair>?    SignKeys            = null,
                                   IEnumerable<SignInfo>?   SignInfos           = null,
@@ -89,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   NetworkPath?             NetworkPath         = null,
                                   CancellationToken        CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationId,
                    nameof(AddUserRoleRequest)[..^7],
 
                    SignKeys,
@@ -238,61 +234,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomAddUserRoleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomAddUserRoleRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification request.
+        /// Parse the given JSON representation of a AddUserRole request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomAddUserRoleRequestParser">An optional delegate to parse custom boot notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomAddUserRoleRequestParser">An optional delegate to parse custom AddUserRole requests.</param>
         public static AddUserRoleRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
-                                               NetworkingNode_Id                                 NetworkingNodeId,
+                                               NetworkingNode_Id                                 DestinationId,
                                                NetworkPath                                       NetworkPath,
+                                               DateTime?                                         RequestTimestamp                 = null,
+                                               TimeSpan?                                         RequestTimeout                   = null,
+                                               EventTracking_Id?                                 EventTrackingId                  = null,
                                                CustomJObjectParserDelegate<AddUserRoleRequest>?  CustomAddUserRoleRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         DestinationId,
                          NetworkPath,
                          out var addUserRoleRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomAddUserRoleRequestParser))
             {
                 return addUserRoleRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a AddUserRole request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out AddUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out AddUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
+        /// Try to parse the given JSON representation of a AddUserRole request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="AddUserRoleRequest">The parsed boot notification request.</param>
+        /// <param name="AddUserRoleRequest">The parsed AddUserRole request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAddUserRoleRequestParser">An optional delegate to parse custom boot notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomAddUserRoleRequestParser">An optional delegate to parse custom AddUserRole requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       NetworkingNode_Id                                 NetworkingNodeId,
+                                       NetworkingNode_Id                                 DestinationId,
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out AddUserRoleRequest?      AddUserRoleRequest,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
-                                       CustomJObjectParserDelegate<AddUserRoleRequest>?  CustomAddUserRoleRequestParser)
+                                       DateTime?                                         RequestTimestamp                 = null,
+                                       TimeSpan?                                         RequestTimeout                   = null,
+                                       EventTracking_Id?                                 EventTrackingId                  = null,
+                                       CustomJObjectParserDelegate<AddUserRoleRequest>?  CustomAddUserRoleRequestParser   = null)
         {
 
             try
@@ -331,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 AddUserRoleRequest = new AddUserRoleRequest(
 
-                                         NetworkingNodeId,
+                                         DestinationId,
 
                                          null,
                                          null,
@@ -340,9 +351,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          CustomData,
 
                                          RequestId,
-                                         null,
-                                         null,
-                                         null,
+                                         RequestTimestamp,
+                                         RequestTimeout,
+                                         EventTrackingId,
                                          NetworkPath
 
                                      );
@@ -357,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 AddUserRoleRequest  = null;
-                ErrorResponse       = "The given JSON representation of a boot notification request is invalid: " + e.Message;
+                ErrorResponse       = "The given JSON representation of a AddUserRole request is invalid: " + e.Message;
                 return false;
             }
 
@@ -370,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomAddUserRoleRequestSerializer">A delegate to serialize custom boot notification requests.</param>
+        /// <param name="CustomAddUserRoleRequestSerializer">A delegate to serialize custom AddUserRole requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AddUserRoleRequest>?  CustomAddUserRoleRequestSerializer   = null,
@@ -405,10 +416,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (AddUserRoleRequest1, AddUserRoleRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two AddUserRole requests for equality.
         /// </summary>
-        /// <param name="AddUserRoleRequest1">A boot notification request.</param>
-        /// <param name="AddUserRoleRequest2">Another boot notification request.</param>
+        /// <param name="AddUserRoleRequest1">A AddUserRole request.</param>
+        /// <param name="AddUserRoleRequest2">Another AddUserRole request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AddUserRoleRequest? AddUserRoleRequest1,
                                            AddUserRoleRequest? AddUserRoleRequest2)
@@ -431,10 +442,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (AddUserRoleRequest1, AddUserRoleRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for inequality.
+        /// Compares two AddUserRole requests for inequality.
         /// </summary>
-        /// <param name="AddUserRoleRequest1">A boot notification request.</param>
-        /// <param name="AddUserRoleRequest2">Another boot notification request.</param>
+        /// <param name="AddUserRoleRequest1">A AddUserRole request.</param>
+        /// <param name="AddUserRoleRequest2">Another AddUserRole request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AddUserRoleRequest? AddUserRoleRequest1,
                                            AddUserRoleRequest? AddUserRoleRequest2)
@@ -450,9 +461,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two AddUserRole requests for equality.
         /// </summary>
-        /// <param name="Object">A boot notification request to compare with.</param>
+        /// <param name="Object">A AddUserRole request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is AddUserRoleRequest addUserRoleRequest &&
@@ -463,9 +474,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(AddUserRoleRequest)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two AddUserRole requests for equality.
         /// </summary>
-        /// <param name="AddUserRoleRequest">A boot notification request to compare with.</param>
+        /// <param name="AddUserRoleRequest">A AddUserRole request to compare with.</param>
         public override Boolean Equals(AddUserRoleRequest? AddUserRoleRequest)
 
             => AddUserRoleRequest is not null &&

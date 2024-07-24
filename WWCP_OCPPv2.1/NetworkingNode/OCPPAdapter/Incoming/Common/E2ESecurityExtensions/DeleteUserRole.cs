@@ -20,8 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -29,59 +32,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<DeleteUserRoleRequest>?  CustomDeleteUserRoleRequestParser    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a DeleteUserRole websocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                OnDeleteUserRoleWSRequest;
-
-        /// <summary>
         /// An event sent whenever a DeleteUserRole request was received.
         /// </summary>
-        public event OnDeleteUserRoleRequestReceivedDelegate?       OnDeleteUserRoleRequestReceived;
+        public event OnDeleteUserRoleRequestReceivedDelegate?  OnDeleteUserRoleRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a DeleteUserRole request was received.
+        /// An event sent whenever a DeleteUserRole request was received for processing.
         /// </summary>
-        public event OnDeleteUserRoleDelegate?                      OnDeleteUserRole;
-
-        /// <summary>
-        /// An event sent whenever a response to a DeleteUserRole request was sent.
-        /// </summary>
-        public event OnDeleteUserRoleResponseSentDelegate?          OnDeleteUserRoleResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a DeleteUserRole request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?    OnDeleteUserRoleWSResponse;
+        public event OnDeleteUserRoleDelegate?                 OnDeleteUserRole;
 
         #endregion
 
-        /// <summary>
-        /// An event sent whenever a response to a DeleteUserRole request was sent.
-        /// </summary>
-        public event OnDeleteUserRoleResponseReceivedDelegate? OnDeleteUserRoleResponseReceived;
-
-
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_DeleteUserRole(DateTime              RequestTimestamp,
                                    IWebSocketConnection  WebSocketConnection,
@@ -89,186 +59,251 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    NetworkPath           NetworkPath,
                                    EventTracking_Id      EventTrackingId,
                                    Request_Id            RequestId,
-                                   JObject               RequestJSON,
+                                   JObject               JSONRequest,
                                    CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnDeleteUserRoleWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnDeleteUserRoleWSRequest?.Invoke(startTime,
-                                                  parentNetworkingNode,
-                                                  WebSocketConnection,
-                                                  DestinationId,
-                                                  NetworkPath,
-                                                  EventTrackingId,
-                                                  RequestTimestamp,
-                                                  RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteUserRoleWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage? OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (DeleteUserRoleRequest.TryParse(RequestJSON,
+                if (DeleteUserRoleRequest.TryParse(JSONRequest,
                                                    RequestId,
                                                    DestinationId,
                                                    NetworkPath,
                                                    out var request,
                                                    out var errorResponse,
-                                                   CustomDeleteUserRoleRequestParser)) {
+                                                   RequestTimestamp,
+                                                   parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                   EventTrackingId,
+                                                   parentNetworkingNode.OCPP.CustomDeleteUserRoleRequestParser)) {
 
-                    #region Send OnDeleteUserRoleRequestReceived event
+                    DeleteUserRoleResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomDeleteUserRoleRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnDeleteUserRoleRequestReceived?.Invoke(Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                WebSocketConnection,
-                                                                request);
+                        response = DeleteUserRoleResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteUserRoleRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnDeleteUserRoleRequestReceived event
+
+                    var logger = OnDeleteUserRoleRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnDeleteUserRoleRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnDeleteUserRoleRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    DeleteUserRoleResponse? response = null;
-
-                    var results = OnDeleteUserRole?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnDeleteUserRoleDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                parentNetworkingNode,
-                                                                                                                WebSocketConnection,
-                                                                                                                request,
-                                                                                                                CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnDeleteUserRole?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnDeleteUserRoleDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : DeleteUserRoleResponse.Failed(request, $"Undefined {nameof(OnDeleteUserRole)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = DeleteUserRoleResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnDeleteUserRole),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= DeleteUserRoleResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnDeleteUserRoleResponseSent event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnDeleteUserRoleResponseSent?.Invoke(Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             request,
-                                                             response,
-                                                             response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteUserRoleResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomDeleteUserRoleResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnDeleteUserRoleResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnDeleteUserRoleResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           parentNetworkingNode.OCPP.CustomDeleteUserRoleResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                           parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                           parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_DeleteUserRole)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_DeleteUserRole)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_DeleteUserRole)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnDeleteUserRoleWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnDeleteUserRoleWSResponse?.Invoke(endTime,
-                                                   parentNetworkingNode,
-                                                   WebSocketConnection,
-                                                   DestinationId,
-                                                   NetworkPath,
-                                                   EventTrackingId,
-                                                   RequestTimestamp,
-                                                   RequestJSON,
-                                                   OCPPResponse?.Payload,
-                                                   OCPPErrorResponse?.ToJSON(),
-                                                   endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_DeleteUserRole)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteUserRoleWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                            OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a DeleteUserRole request was sent.
+        /// An event sent whenever a response to a DeleteUserRole was sent.
         /// </summary>
-        public event OnDeleteUserRoleResponseSentDelegate? OnDeleteUserRoleResponseSent;
+        public event OnDeleteUserRoleResponseSentDelegate?  OnDeleteUserRoleResponseSent;
+
+        #endregion
+
+        #region Send OnDeleteUserRoleResponse event
+
+        public async Task SendOnDeleteUserRoleResponseSent(DateTime                Timestamp,
+                                                           IEventSender            Sender,
+                                                           IWebSocketConnection    Connection,
+                                                           DeleteUserRoleRequest   Request,
+                                                           DeleteUserRoleResponse  Response,
+                                                           TimeSpan                Runtime)
+        {
+
+            var logger = OnDeleteUserRoleResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnDeleteUserRoleResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnDeleteUserRoleResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

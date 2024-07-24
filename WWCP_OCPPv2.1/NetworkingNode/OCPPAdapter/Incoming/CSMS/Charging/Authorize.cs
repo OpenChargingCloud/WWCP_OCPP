@@ -38,12 +38,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event sent whenever a Authorize request was received.
+        /// An event sent whenever an Authorize request was received.
         /// </summary>
         public event OnAuthorizeRequestReceivedDelegate?  OnAuthorizeRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a Authorize request was received for processing.
+        /// An event sent whenever an Authorize request was received for processing.
         /// </summary>
         public event OnAuthorizeDelegate?                 OnAuthorize;
 
@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               NetworkPath,
                                               out var request,
                                               out var errorResponse,
+                                              RequestTimestamp,
+                                              parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                              EventTrackingId,
                                               parentNetworkingNode.OCPP.CustomAuthorizeRequestParser)) {
 
                     AuthorizeResponse? response = null;
@@ -265,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event sent whenever a response to a Authorize was sent.
+        /// An event sent whenever a response to an Authorize was sent.
         /// </summary>
         public event OnAuthorizeResponseSentDelegate?  OnAuthorizeResponseSent;
 

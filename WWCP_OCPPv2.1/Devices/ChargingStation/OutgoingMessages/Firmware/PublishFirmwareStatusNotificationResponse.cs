@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A publish firmware status notification response.
+    /// The PublishFirmwareStatusNotification response.
     /// </summary>
     public class PublishFirmwareStatusNotificationResponse : AResponse<CS.PublishFirmwareStatusNotificationRequest,
                                                                        PublishFirmwareStatusNotificationResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region PublishFirmwareStatusNotificationResponse(Request, ...)
 
         /// <summary>
-        /// Create a new publish firmware status notification response.
+        /// Create a new PublishFirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The publish firmware status notification request leading to this response.</param>
+        /// <param name="Request">The PublishFirmwareStatusNotification request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region PublishFirmwareStatusNotificationResponse(Request, Result)
 
         /// <summary>
-        /// Create a new publish firmware status notification response.
+        /// Create a new PublishFirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The publish firmware status notification request leading to this response.</param>
+        /// <param name="Request">The PublishFirmwareStatusNotification request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public PublishFirmwareStatusNotificationResponse(CS.PublishFirmwareStatusNotificationRequest  Request,
-                                                         Result                                       Result)
+                                                         Result                                       Result,
+                                                         DateTime?                                    ResponseTimestamp   = null,
+
+                                                         NetworkingNode_Id?                           DestinationId       = null,
+                                                         NetworkPath?                                 NetworkPath         = null,
+
+                                                         IEnumerable<KeyPair>?                        SignKeys            = null,
+                                                         IEnumerable<SignInfo>?                       SignInfos           = null,
+                                                         IEnumerable<Signature>?                      Signatures          = null,
+
+                                                         CustomData?                                  CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomPublishFirmwareStatusNotificationResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a publish firmware status notification response.
+        /// Parse the given JSON representation of a PublishFirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The publish firmware status notification request leading to this response.</param>
+        /// <param name="Request">The PublishFirmwareStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">A delegate to parse custom publish firmware status notification responses.</param>
+        /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">A delegate to parse custom PublishFirmwareStatusNotification responses.</param>
         public static PublishFirmwareStatusNotificationResponse Parse(CS.PublishFirmwareStatusNotificationRequest                              Request,
                                                                       JObject                                                                  JSON,
                                                                       CustomJObjectParserDelegate<PublishFirmwareStatusNotificationResponse>?  CustomPublishFirmwareStatusNotificationResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return publishFirmwareStatusNotificationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a publish firmware status notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a PublishFirmwareStatusNotification response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out PublishFirmwareStatusNotificationResponse, out ErrorResponse, CustomPublishFirmwareStatusNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a publish firmware status notification response.
+        /// Try to parse the given JSON representation of a PublishFirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The publish firmware status notification request leading to this response.</param>
+        /// <param name="Request">The PublishFirmwareStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="PublishFirmwareStatusNotificationResponse">The parsed publish firmware status notification response.</param>
+        /// <param name="PublishFirmwareStatusNotificationResponse">The parsed PublishFirmwareStatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">A delegate to parse custom publish firmware status notification responses.</param>
+        /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">A delegate to parse custom PublishFirmwareStatusNotification responses.</param>
         public static Boolean TryParse(CS.PublishFirmwareStatusNotificationRequest                              Request,
                                        JObject                                                                  JSON,
                                        [NotNullWhen(true)]  out PublishFirmwareStatusNotificationResponse?      PublishFirmwareStatusNotificationResponse,
@@ -252,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 PublishFirmwareStatusNotificationResponse  = null;
-                ErrorResponse                              = "The given JSON representation of a publish firmware status notification response is invalid: " + e.Message;
+                ErrorResponse                              = "The given JSON representation of a PublishFirmwareStatusNotification response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomPublishFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom publish firmware status notification responses.</param>
+        /// <param name="CustomPublishFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom PublishFirmwareStatusNotification responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<PublishFirmwareStatusNotificationResponse>?  CustomPublishFirmwareStatusNotificationResponseSerializer   = null,
@@ -298,12 +318,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The publish firmware status notification request failed.
+        /// The PublishFirmwareStatusNotification failed because of a request error.
         /// </summary>
-        public static PublishFirmwareStatusNotificationResponse Failed(CS.PublishFirmwareStatusNotificationRequest Request)
+        /// <param name="Request">The PublishFirmwareStatusNotification request.</param>
+        public static PublishFirmwareStatusNotificationResponse RequestError(CS.PublishFirmwareStatusNotificationRequest  Request,
+                                                                             EventTracking_Id                             EventTrackingId,
+                                                                             ResultCode                                   ErrorCode,
+                                                                             String?                                      ErrorDescription    = null,
+                                                                             JObject?                                     ErrorDetails        = null,
+                                                                             DateTime?                                    ResponseTimestamp   = null,
+
+                                                                             NetworkingNode_Id?                           DestinationId       = null,
+                                                                             NetworkPath?                                 NetworkPath         = null,
+
+                                                                             IEnumerable<KeyPair>?                        SignKeys            = null,
+                                                                             IEnumerable<SignInfo>?                       SignInfos           = null,
+                                                                             IEnumerable<Signature>?                      Signatures          = null,
+
+                                                                             CustomData?                                  CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The PublishFirmwareStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The PublishFirmwareStatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static PublishFirmwareStatusNotificationResponse SignatureError(CS.PublishFirmwareStatusNotificationRequest  Request,
+                                                                               String                                       ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The PublishFirmwareStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The PublishFirmwareStatusNotification request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static PublishFirmwareStatusNotificationResponse Failed(CS.PublishFirmwareStatusNotificationRequest  Request,
+                                                                       String?                                      Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The PublishFirmwareStatusNotification failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The PublishFirmwareStatusNotification request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static PublishFirmwareStatusNotificationResponse ExceptionOccured(CS.PublishFirmwareStatusNotificationRequest  Request,
+                                                                                 Exception                                    Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -313,10 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (PublishFirmwareStatusNotificationResponse1, PublishFirmwareStatusNotificationResponse2)
 
         /// <summary>
-        /// Compares two publish firmware status notification responses for equality.
+        /// Compares two PublishFirmwareStatusNotification responses for equality.
         /// </summary>
-        /// <param name="PublishFirmwareStatusNotificationResponse1">A publish firmware status notification response.</param>
-        /// <param name="PublishFirmwareStatusNotificationResponse2">Another publish firmware status notification response.</param>
+        /// <param name="PublishFirmwareStatusNotificationResponse1">A PublishFirmwareStatusNotification response.</param>
+        /// <param name="PublishFirmwareStatusNotificationResponse2">Another PublishFirmwareStatusNotification response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (PublishFirmwareStatusNotificationResponse? PublishFirmwareStatusNotificationResponse1,
                                            PublishFirmwareStatusNotificationResponse? PublishFirmwareStatusNotificationResponse2)
@@ -339,10 +430,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (PublishFirmwareStatusNotificationResponse1, PublishFirmwareStatusNotificationResponse2)
 
         /// <summary>
-        /// Compares two publish firmware status notification responses for inequality.
+        /// Compares two PublishFirmwareStatusNotification responses for inequality.
         /// </summary>
-        /// <param name="PublishFirmwareStatusNotificationResponse1">A publish firmware status notification response.</param>
-        /// <param name="PublishFirmwareStatusNotificationResponse2">Another publish firmware status notification response.</param>
+        /// <param name="PublishFirmwareStatusNotificationResponse1">A PublishFirmwareStatusNotification response.</param>
+        /// <param name="PublishFirmwareStatusNotificationResponse2">Another PublishFirmwareStatusNotification response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (PublishFirmwareStatusNotificationResponse? PublishFirmwareStatusNotificationResponse1,
                                            PublishFirmwareStatusNotificationResponse? PublishFirmwareStatusNotificationResponse2)
@@ -358,9 +449,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two publish firmware status notification responses for equality.
+        /// Compares two PublishFirmwareStatusNotification responses for equality.
         /// </summary>
-        /// <param name="Object">A publish firmware status notification response to compare with.</param>
+        /// <param name="Object">A PublishFirmwareStatusNotification response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is PublishFirmwareStatusNotificationResponse publishFirmwareStatusNotificationResponse &&
@@ -371,9 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(PublishFirmwareStatusNotificationResponse)
 
         /// <summary>
-        /// Compares two publish firmware status notification responses for equality.
+        /// Compares two PublishFirmwareStatusNotification responses for equality.
         /// </summary>
-        /// <param name="PublishFirmwareStatusNotificationResponse">A publish firmware status notification response to compare with.</param>
+        /// <param name="PublishFirmwareStatusNotificationResponse">A PublishFirmwareStatusNotification response to compare with.</param>
         public override Boolean Equals(PublishFirmwareStatusNotificationResponse? PublishFirmwareStatusNotificationResponse)
 
             => PublishFirmwareStatusNotificationResponse is not null &&

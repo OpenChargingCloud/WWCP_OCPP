@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A notify display messages response.
+    /// The NotifyDisplayMessages response.
     /// </summary>
     public class NotifyDisplayMessagesResponse : AResponse<CS.NotifyDisplayMessagesRequest,
                                                            NotifyDisplayMessagesResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyDisplayMessagesResponse(Request, ...)
 
         /// <summary>
-        /// Create a new notify display messages response.
+        /// Create a new NotifyDisplayMessages response.
         /// </summary>
-        /// <param name="Request">The notify display messages request leading to this response.</param>
+        /// <param name="Request">The NotifyDisplayMessages request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyDisplayMessagesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new notify display messages response.
+        /// Create a new NotifyDisplayMessages response.
         /// </summary>
-        /// <param name="Request">The notify display messages request leading to this response.</param>
+        /// <param name="Request">The NotifyDisplayMessages request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public NotifyDisplayMessagesResponse(CS.NotifyDisplayMessagesRequest  Request,
-                                             Result                           Result)
+                                             Result                           Result,
+                                             DateTime?                        ResponseTimestamp   = null,
+
+                                             NetworkingNode_Id?               DestinationId       = null,
+                                             NetworkPath?                     NetworkPath         = null,
+
+                                             IEnumerable<KeyPair>?            SignKeys            = null,
+                                             IEnumerable<SignInfo>?           SignInfos           = null,
+                                             IEnumerable<Signature>?          Signatures          = null,
+
+                                             CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomNotifyDisplayMessagesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify display messages response.
+        /// Parse the given JSON representation of a NotifyDisplayMessages response.
         /// </summary>
-        /// <param name="Request">The notify display messages request leading to this response.</param>
+        /// <param name="Request">The NotifyDisplayMessages request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyDisplayMessagesResponseParser">A delegate to parse custom notify display messages responses.</param>
+        /// <param name="CustomNotifyDisplayMessagesResponseParser">A delegate to parse custom NotifyDisplayMessages responses.</param>
         public static NotifyDisplayMessagesResponse Parse(CS.NotifyDisplayMessagesRequest                              Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<NotifyDisplayMessagesResponse>?  CustomNotifyDisplayMessagesResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return notifyDisplayMessagesResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify display messages response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyDisplayMessages response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out NotifyDisplayMessagesResponse, out ErrorResponse, CustomNotifyDisplayMessagesResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify display messages response.
+        /// Try to parse the given JSON representation of a NotifyDisplayMessages response.
         /// </summary>
-        /// <param name="Request">The notify display messages request leading to this response.</param>
+        /// <param name="Request">The NotifyDisplayMessages request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NotifyDisplayMessagesResponse">The parsed notify display messages response.</param>
+        /// <param name="NotifyDisplayMessagesResponse">The parsed NotifyDisplayMessages response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyDisplayMessagesResponseParser">A delegate to parse custom notify display messages responses.</param>
+        /// <param name="CustomNotifyDisplayMessagesResponseParser">A delegate to parse custom NotifyDisplayMessages responses.</param>
         public static Boolean TryParse(CS.NotifyDisplayMessagesRequest                              Request,
                                        JObject                                                      JSON,
                                        [NotNullWhen(true)]  out NotifyDisplayMessagesResponse?      NotifyDisplayMessagesResponse,
@@ -252,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 NotifyDisplayMessagesResponse  = null;
-                ErrorResponse                  = "The given JSON representation of a notify display messages response is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a NotifyDisplayMessages response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyDisplayMessagesResponseSerializer">A delegate to serialize custom notify display messages responses.</param>
+        /// <param name="CustomNotifyDisplayMessagesResponseSerializer">A delegate to serialize custom NotifyDisplayMessages responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyDisplayMessagesResponse>?  CustomNotifyDisplayMessagesResponseSerializer   = null,
@@ -298,12 +318,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The notify display messages request failed.
+        /// The NotifyDisplayMessages failed because of a request error.
         /// </summary>
-        public static NotifyDisplayMessagesResponse Failed(CS.NotifyDisplayMessagesRequest Request)
+        /// <param name="Request">The NotifyDisplayMessages request.</param>
+        public static NotifyDisplayMessagesResponse RequestError(CS.NotifyDisplayMessagesRequest  Request,
+                                                                 EventTracking_Id                 EventTrackingId,
+                                                                 ResultCode                       ErrorCode,
+                                                                 String?                          ErrorDescription    = null,
+                                                                 JObject?                         ErrorDetails        = null,
+                                                                 DateTime?                        ResponseTimestamp   = null,
+
+                                                                 NetworkingNode_Id?               DestinationId       = null,
+                                                                 NetworkPath?                     NetworkPath         = null,
+
+                                                                 IEnumerable<KeyPair>?            SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?           SignInfos           = null,
+                                                                 IEnumerable<Signature>?          Signatures          = null,
+
+                                                                 CustomData?                      CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifyDisplayMessages failed.
+        /// </summary>
+        /// <param name="Request">The NotifyDisplayMessages request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifyDisplayMessagesResponse SignatureError(CS.NotifyDisplayMessagesRequest  Request,
+                                                                   String                           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifyDisplayMessages failed.
+        /// </summary>
+        /// <param name="Request">The NotifyDisplayMessages request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifyDisplayMessagesResponse Failed(CS.NotifyDisplayMessagesRequest  Request,
+                                                           String?                          Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifyDisplayMessages failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifyDisplayMessages request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifyDisplayMessagesResponse ExceptionOccured(CS.NotifyDisplayMessagesRequest  Request,
+                                                                     Exception                        Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -313,10 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (NotifyDisplayMessagesResponse1, NotifyDisplayMessagesResponse2)
 
         /// <summary>
-        /// Compares two notify display messages responses for equality.
+        /// Compares two NotifyDisplayMessages responses for equality.
         /// </summary>
-        /// <param name="NotifyDisplayMessagesResponse1">A notify display messages response.</param>
-        /// <param name="NotifyDisplayMessagesResponse2">Another notify display messages response.</param>
+        /// <param name="NotifyDisplayMessagesResponse1">A NotifyDisplayMessages response.</param>
+        /// <param name="NotifyDisplayMessagesResponse2">Another NotifyDisplayMessages response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyDisplayMessagesResponse? NotifyDisplayMessagesResponse1,
                                            NotifyDisplayMessagesResponse? NotifyDisplayMessagesResponse2)
@@ -339,10 +430,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (NotifyDisplayMessagesResponse1, NotifyDisplayMessagesResponse2)
 
         /// <summary>
-        /// Compares two notify display messages responses for inequality.
+        /// Compares two NotifyDisplayMessages responses for inequality.
         /// </summary>
-        /// <param name="NotifyDisplayMessagesResponse1">A notify display messages response.</param>
-        /// <param name="NotifyDisplayMessagesResponse2">Another notify display messages response.</param>
+        /// <param name="NotifyDisplayMessagesResponse1">A NotifyDisplayMessages response.</param>
+        /// <param name="NotifyDisplayMessagesResponse2">Another NotifyDisplayMessages response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyDisplayMessagesResponse? NotifyDisplayMessagesResponse1,
                                            NotifyDisplayMessagesResponse? NotifyDisplayMessagesResponse2)
@@ -358,9 +449,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify display messages responses for equality.
+        /// Compares two NotifyDisplayMessages responses for equality.
         /// </summary>
-        /// <param name="Object">A notify display messages response to compare with.</param>
+        /// <param name="Object">A NotifyDisplayMessages response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyDisplayMessagesResponse notifyDisplayMessagesResponse &&
@@ -371,9 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(NotifyDisplayMessagesResponse)
 
         /// <summary>
-        /// Compares two notify display messages responses for equality.
+        /// Compares two NotifyDisplayMessages responses for equality.
         /// </summary>
-        /// <param name="NotifyDisplayMessagesResponse">A notify display messages response to compare with.</param>
+        /// <param name="NotifyDisplayMessagesResponse">A NotifyDisplayMessages response to compare with.</param>
         public override Boolean Equals(NotifyDisplayMessagesResponse? NotifyDisplayMessagesResponse)
 
             => NotifyDisplayMessagesResponse is not null &&

@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A notify charging limit request.
+    /// The NotifyChargingLimit request.
     /// </summary>
     public class NotifyChargingLimitRequest : ARequest<NotifyChargingLimitRequest>,
                                               IRequest
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a notify charging limit request.
+        /// Create a NotifyChargingLimit request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
@@ -158,17 +158,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyChargingLimitRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify charging limit request.
+        /// Parse the given JSON representation of a NotifyChargingLimit request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom notify charging limit requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom NotifyChargingLimit requests.</param>
         public static NotifyChargingLimitRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
                                                        NetworkingNode_Id                                         DestinationId,
                                                        NetworkPath                                               NetworkPath,
+                                                       DateTime?                                                 RequestTimestamp                         = null,
+                                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                                       EventTracking_Id?                                         EventTrackingId                          = null,
                                                        CustomJObjectParserDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestParser   = null)
         {
 
@@ -178,12 +184,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var notifyChargingLimitRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomNotifyChargingLimitRequestParser))
             {
                 return notifyChargingLimitRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify charging limit request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyChargingLimit request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -193,22 +202,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyChargingLimitRequest, out ErrorResponse, CustomNotifyChargingLimitRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify charging limit request.
+        /// Try to parse the given JSON representation of a NotifyChargingLimit request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="NotifyChargingLimitRequest">The parsed notify charging limit request.</param>
+        /// <param name="NotifyChargingLimitRequest">The parsed NotifyChargingLimit request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom notify charging limit requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom NotifyChargingLimit requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
                                        NetworkingNode_Id                                         DestinationId,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out NotifyChargingLimitRequest?      NotifyChargingLimitRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestParser)
+                                       DateTime?                                                 RequestTimestamp                         = null,
+                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                       EventTracking_Id?                                         EventTrackingId                          = null,
+                                       CustomJObjectParserDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestParser   = null)
         {
 
             try
@@ -301,9 +316,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                  CustomData,
 
                                                  RequestId,
-                                                 null,
-                                                 null,
-                                                 null,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
                                                  NetworkPath
 
                                              );
@@ -318,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 NotifyChargingLimitRequest  = null;
-                ErrorResponse               = "The given JSON representation of a notify charging limit request is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a NotifyChargingLimit request is invalid: " + e.Message;
                 return false;
             }
 
@@ -440,10 +455,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (NotifyChargingLimitRequest1, NotifyChargingLimitRequest2)
 
         /// <summary>
-        /// Compares two notify charging limit requests for equality.
+        /// Compares two NotifyChargingLimit requests for equality.
         /// </summary>
-        /// <param name="NotifyChargingLimitRequest1">A notify charging limit request.</param>
-        /// <param name="NotifyChargingLimitRequest2">Another notify charging limit request.</param>
+        /// <param name="NotifyChargingLimitRequest1">A NotifyChargingLimit request.</param>
+        /// <param name="NotifyChargingLimitRequest2">Another NotifyChargingLimit request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyChargingLimitRequest? NotifyChargingLimitRequest1,
                                            NotifyChargingLimitRequest? NotifyChargingLimitRequest2)
@@ -466,10 +481,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (NotifyChargingLimitRequest1, NotifyChargingLimitRequest2)
 
         /// <summary>
-        /// Compares two notify charging limit requests for inequality.
+        /// Compares two NotifyChargingLimit requests for inequality.
         /// </summary>
-        /// <param name="NotifyChargingLimitRequest1">A notify charging limit request.</param>
-        /// <param name="NotifyChargingLimitRequest2">Another notify charging limit request.</param>
+        /// <param name="NotifyChargingLimitRequest1">A NotifyChargingLimit request.</param>
+        /// <param name="NotifyChargingLimitRequest2">Another NotifyChargingLimit request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyChargingLimitRequest? NotifyChargingLimitRequest1,
                                            NotifyChargingLimitRequest? NotifyChargingLimitRequest2)
@@ -485,9 +500,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify charging limit requests for equality.
+        /// Compares two NotifyChargingLimit requests for equality.
         /// </summary>
-        /// <param name="Object">A notify charging limit request to compare with.</param>
+        /// <param name="Object">A NotifyChargingLimit request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyChargingLimitRequest notifyChargingLimitRequest &&
@@ -498,9 +513,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(NotifyChargingLimitRequest)
 
         /// <summary>
-        /// Compares two notify charging limit requests for equality.
+        /// Compares two NotifyChargingLimit requests for equality.
         /// </summary>
-        /// <param name="NotifyChargingLimitRequest">A notify charging limit request to compare with.</param>
+        /// <param name="NotifyChargingLimitRequest">A NotifyChargingLimit request to compare with.</param>
         public override Boolean Equals(NotifyChargingLimitRequest? NotifyChargingLimitRequest)
 
             => NotifyChargingLimitRequest is not null &&

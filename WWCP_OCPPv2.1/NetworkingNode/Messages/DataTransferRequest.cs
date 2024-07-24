@@ -230,11 +230,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom data transfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
                                                 NetworkingNode_Id                                  DestinationId,
                                                 NetworkPath                                        NetworkPath,
+                                                DateTime?                                          RequestTimestamp                  = null,
+                                                TimeSpan?                                          RequestTimeout                    = null,
+                                                EventTracking_Id?                                  EventTrackingId                   = null,
                                                 CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null)
         {
 
@@ -244,6 +250,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          NetworkPath,
                          out var dataTransferRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomDataTransferRequestParser))
             {
                 return dataTransferRequest;
@@ -267,6 +276,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
@@ -274,7 +286,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out DataTransferRequest?      DataTransferRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
-                                       CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser)
+                                       DateTime?                                          RequestTimestamp                  = null,
+                                       TimeSpan?                                          RequestTimeout                    = null,
+                                       EventTracking_Id?                                  EventTrackingId                   = null,
+                                       CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null)
         {
 
             try
@@ -358,9 +373,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           CustomData,
 
                                           RequestId,
-                                          null,
-                                          null,
-                                          null,
+                                          RequestTimestamp,
+                                          RequestTimeout,
+                                          EventTrackingId,
                                           NetworkPath
 
                                       );

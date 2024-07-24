@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A pull dynamic schedule update response.
+    /// The PullDynamicScheduleUpdate response.
     /// </summary>
     public class PullDynamicScheduleUpdateResponse : AResponse<CS.PullDynamicScheduleUpdateRequest,
                                                                   PullDynamicScheduleUpdateResponse>,
@@ -137,9 +137,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region PullDynamicScheduleUpdateResponse(Request, Limit, ...)
 
         /// <summary>
-        /// Create a pull dynamic schedule update response.
+        /// Create a PullDynamicScheduleUpdate response.
         /// </summary>
-        /// <param name="Request">The pull dynamic schedule update request leading to this response.</param>
+        /// <param name="Request">The PullDynamicScheduleUpdate request leading to this response.</param>
         /// 
         /// <param name="Limit">Optional charging rate limit in chargingRateUnit (&gt;= 0).</param>
         /// <param name="Limit_L2">Optional charging rate limit in chargingRateUnit on phase L2 (&gt;= 0).</param>
@@ -280,15 +280,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region PullDynamicScheduleUpdateResponse(Request, Result)
 
         /// <summary>
-        /// Create a pull dynamic schedule update response.
+        /// Create a PullDynamicScheduleUpdate response.
         /// </summary>
-        /// <param name="Request">The pull dynamic schedule update request leading to this response.</param>
+        /// <param name="Request">The PullDynamicScheduleUpdate request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public PullDynamicScheduleUpdateResponse(CS.PullDynamicScheduleUpdateRequest  Request,
-                                                 Result                               Result)
+                                                 Result                               Result,
+                                                 DateTime?                            ResponseTimestamp   = null,
+
+                                                 NetworkingNode_Id?                   DestinationId       = null,
+                                                 NetworkPath?                         NetworkPath         = null,
+
+                                                 IEnumerable<KeyPair>?                SignKeys            = null,
+                                                 IEnumerable<SignInfo>?               SignInfos           = null,
+                                                 IEnumerable<Signature>?              Signatures          = null,
+
+                                                 CustomData?                          CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -307,11 +327,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomPullDynamicScheduleUpdateRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a pull dynamic schedule update response.
+        /// Parse the given JSON representation of a PullDynamicScheduleUpdate response.
         /// </summary>
-        /// <param name="Request">The pull dynamic schedule update request leading to this response.</param>
+        /// <param name="Request">The PullDynamicScheduleUpdate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomPullDynamicScheduleUpdateResponseParser">A delegate to parse custom pull dynamic schedule update responses.</param>
+        /// <param name="CustomPullDynamicScheduleUpdateResponseParser">A delegate to parse custom PullDynamicScheduleUpdate responses.</param>
         public static PullDynamicScheduleUpdateResponse Parse(CS.PullDynamicScheduleUpdateRequest                              Request,
                                                               JObject                                                          JSON,
                                                               CustomJObjectParserDelegate<PullDynamicScheduleUpdateResponse>?  CustomPullDynamicScheduleUpdateResponseParser   = null)
@@ -327,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return pullDynamicScheduleUpdateResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a pull dynamic schedule update response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a PullDynamicScheduleUpdate response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -337,12 +357,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out PullDynamicScheduleUpdateResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a pull dynamic schedule update response.
+        /// Try to parse the given JSON representation of a PullDynamicScheduleUpdate response.
         /// </summary>
-        /// <param name="Request">The pull dynamic schedule update request leading to this response.</param>
+        /// <param name="Request">The PullDynamicScheduleUpdate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="PullDynamicScheduleUpdateResponse">The parsed pull dynamic schedule update response.</param>
-        /// <param name="CustomPullDynamicScheduleUpdateResponseParser">A delegate to parse custom pull dynamic schedule update responses.</param>
+        /// <param name="PullDynamicScheduleUpdateResponse">The parsed PullDynamicScheduleUpdate response.</param>
+        /// <param name="CustomPullDynamicScheduleUpdateResponseParser">A delegate to parse custom PullDynamicScheduleUpdate responses.</param>
         public static Boolean TryParse(CS.PullDynamicScheduleUpdateRequest                              Request,
                                        JObject                                                          JSON,
                                        [NotNullWhen(true)]  out PullDynamicScheduleUpdateResponse?      PullDynamicScheduleUpdateResponse,
@@ -584,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 PullDynamicScheduleUpdateResponse  = null;
-                ErrorResponse                      = "The given JSON representation of a pull dynamic schedule update response is invalid: " + e.Message;
+                ErrorResponse                      = "The given JSON representation of a PullDynamicScheduleUpdate response is invalid: " + e.Message;
                 return false;
             }
 
@@ -597,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomPullDynamicScheduleUpdateResponseSerializer">A delegate to serialize custom pull dynamic schedule update responses.</param>
+        /// <param name="CustomPullDynamicScheduleUpdateResponseSerializer">A delegate to serialize custom PullDynamicScheduleUpdate responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateResponse>?  CustomPullDynamicScheduleUpdateResponseSerializer   = null,
@@ -682,13 +702,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The pull dynamic schedule update request failed.
+        /// The PullDynamicScheduleUpdate failed because of a request error.
         /// </summary>
-        /// <param name="Request">The pull dynamic schedule update request leading to this response.</param>
-        public static PullDynamicScheduleUpdateResponse Failed(CS.PullDynamicScheduleUpdateRequest Request)
+        /// <param name="Request">The PullDynamicScheduleUpdate request.</param>
+        public static PullDynamicScheduleUpdateResponse RequestError(CS.PullDynamicScheduleUpdateRequest  Request,
+                                                                     EventTracking_Id                     EventTrackingId,
+                                                                     ResultCode                           ErrorCode,
+                                                                     String?                              ErrorDescription    = null,
+                                                                     JObject?                             ErrorDetails        = null,
+                                                                     DateTime?                            ResponseTimestamp   = null,
+
+                                                                     NetworkingNode_Id?                   DestinationId       = null,
+                                                                     NetworkPath?                         NetworkPath         = null,
+
+                                                                     IEnumerable<KeyPair>?                SignKeys            = null,
+                                                                     IEnumerable<SignInfo>?               SignInfos           = null,
+                                                                     IEnumerable<Signature>?              Signatures          = null,
+
+                                                                     CustomData?                          CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The PullDynamicScheduleUpdate failed.
+        /// </summary>
+        /// <param name="Request">The PullDynamicScheduleUpdate request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static PullDynamicScheduleUpdateResponse SignatureError(CS.PullDynamicScheduleUpdateRequest  Request,
+                                                                       String                               ErrorDescription)
 
             => new (Request,
-                    Result.GenericError());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The PullDynamicScheduleUpdate failed.
+        /// </summary>
+        /// <param name="Request">The PullDynamicScheduleUpdate request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static PullDynamicScheduleUpdateResponse Failed(CS.PullDynamicScheduleUpdateRequest  Request,
+                                                               String?                              Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The PullDynamicScheduleUpdate failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The PullDynamicScheduleUpdate request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static PullDynamicScheduleUpdateResponse ExceptionOccured(CS.PullDynamicScheduleUpdateRequest  Request,
+                                                                         Exception                            Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -698,10 +788,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (PullDynamicScheduleUpdateResponse1, PullDynamicScheduleUpdateResponse2)
 
         /// <summary>
-        /// Compares two pull dynamic schedule update responses for equality.
+        /// Compares two PullDynamicScheduleUpdate responses for equality.
         /// </summary>
-        /// <param name="PullDynamicScheduleUpdateResponse1">A pull dynamic schedule update response.</param>
-        /// <param name="PullDynamicScheduleUpdateResponse2">Another pull dynamic schedule update response.</param>
+        /// <param name="PullDynamicScheduleUpdateResponse1">A PullDynamicScheduleUpdate response.</param>
+        /// <param name="PullDynamicScheduleUpdateResponse2">Another PullDynamicScheduleUpdate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (PullDynamicScheduleUpdateResponse? PullDynamicScheduleUpdateResponse1,
                                            PullDynamicScheduleUpdateResponse? PullDynamicScheduleUpdateResponse2)
@@ -724,10 +814,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (PullDynamicScheduleUpdateResponse1, PullDynamicScheduleUpdateResponse2)
 
         /// <summary>
-        /// Compares two pull dynamic schedule update responses for inequality.
+        /// Compares two PullDynamicScheduleUpdate responses for inequality.
         /// </summary>
-        /// <param name="PullDynamicScheduleUpdateResponse1">A pull dynamic schedule update response.</param>
-        /// <param name="PullDynamicScheduleUpdateResponse2">Another pull dynamic schedule update response.</param>
+        /// <param name="PullDynamicScheduleUpdateResponse1">A PullDynamicScheduleUpdate response.</param>
+        /// <param name="PullDynamicScheduleUpdateResponse2">Another PullDynamicScheduleUpdate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (PullDynamicScheduleUpdateResponse? PullDynamicScheduleUpdateResponse1,
                                            PullDynamicScheduleUpdateResponse? PullDynamicScheduleUpdateResponse2)
@@ -743,9 +833,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two pull dynamic schedule update responses for equality.
+        /// Compares two PullDynamicScheduleUpdate responses for equality.
         /// </summary>
-        /// <param name="Object">A pull dynamic schedule update response to compare with.</param>
+        /// <param name="Object">A PullDynamicScheduleUpdate response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is PullDynamicScheduleUpdateResponse pullDynamicScheduleUpdateResponse &&
@@ -756,9 +846,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(PullDynamicScheduleUpdateResponse)
 
         /// <summary>
-        /// Compares two pull dynamic schedule update responses for equality.
+        /// Compares two PullDynamicScheduleUpdate responses for equality.
         /// </summary>
-        /// <param name="PullDynamicScheduleUpdateResponse">A pull dynamic schedule update response to compare with.</param>
+        /// <param name="PullDynamicScheduleUpdateResponse">A PullDynamicScheduleUpdate response to compare with.</param>
         public override Boolean Equals(PullDynamicScheduleUpdateResponse? PullDynamicScheduleUpdateResponse)
 
             => PullDynamicScheduleUpdateResponse is not null &&

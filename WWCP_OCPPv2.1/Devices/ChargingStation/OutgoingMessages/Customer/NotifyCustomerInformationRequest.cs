@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A notify customer information request.
+    /// The NotifyCustomerInformation request.
     /// </summary>
     public class NotifyCustomerInformationRequest : ARequest<NotifyCustomerInformationRequest>,
                                                     IRequest
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The unique identification of the notify customer information request.
+        /// The unique identification of the NotifyCustomerInformation request.
         /// </summary>
         [Mandatory]
         public Int64          NotifyCustomerInformationRequestId    { get; }
@@ -93,10 +93,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a notify customer information request.
+        /// Create a NotifyCustomerInformation request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
-        /// <param name="NotifyCustomerInformationRequestId">The unique identification of the notify customer information request.</param>
+        /// <param name="NotifyCustomerInformationRequestId">The unique identification of the NotifyCustomerInformation request.</param>
         /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
@@ -238,17 +238,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyCustomerInformationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify customer information request.
+        /// Parse the given JSON representation of a NotifyCustomerInformation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom notify customer information requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom NotifyCustomerInformation requests.</param>
         public static NotifyCustomerInformationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
                                                              NetworkingNode_Id                                               DestinationId,
                                                              NetworkPath                                                     NetworkPath,
+                                                             DateTime?                                                       RequestTimestamp                               = null,
+                                                             TimeSpan?                                                       RequestTimeout                                 = null,
+                                                             EventTracking_Id?                                               EventTrackingId                                = null,
                                                              CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?  CustomNotifyCustomerInformationRequestParser   = null)
         {
 
@@ -258,12 +264,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var notifyCustomerInformationRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomNotifyCustomerInformationRequestParser))
             {
                 return notifyCustomerInformationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify customer information request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyCustomerInformation request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -273,22 +282,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyCustomerInformationRequest, out ErrorResponse, CustomNotifyCustomerInformationRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify customer information request.
+        /// Try to parse the given JSON representation of a NotifyCustomerInformation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="NotifyCustomerInformationRequest">The parsed notify customer information request.</param>
+        /// <param name="NotifyCustomerInformationRequest">The parsed NotifyCustomerInformation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom notify customer information requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom NotifyCustomerInformation requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
                                        NetworkingNode_Id                                               DestinationId,
                                        NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out NotifyCustomerInformationRequest?      NotifyCustomerInformationRequest,
                                        [NotNullWhen(false)] out String?                                ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?  CustomNotifyCustomerInformationRequestParser)
+                                       DateTime?                                                       RequestTimestamp                               = null,
+                                       TimeSpan?                                                       RequestTimeout                                 = null,
+                                       EventTracking_Id?                                               EventTrackingId                                = null,
+                                       CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?  CustomNotifyCustomerInformationRequestParser   = null)
         {
 
             try
@@ -299,7 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region NotifyCustomerInformationRequestId    [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "notify customer information request identification",
+                                         "NotifyCustomerInformation request identification",
                                          out Int32 NotifyCustomerInformationRequestId,
                                          out ErrorResponse))
                 {
@@ -402,9 +417,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                        CustomData,
 
                                                        RequestId,
-                                                       null,
-                                                       null,
-                                                       null,
+                                                       RequestTimestamp,
+                                                       RequestTimeout,
+                                                       EventTrackingId,
                                                        NetworkPath
 
                                                    );
@@ -419,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 NotifyCustomerInformationRequest  = null;
-                ErrorResponse                     = "The given JSON representation of a notify customer information request is invalid: " + e.Message;
+                ErrorResponse                     = "The given JSON representation of a NotifyCustomerInformation request is invalid: " + e.Message;
                 return false;
             }
 
@@ -474,10 +489,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (NotifyCustomerInformationRequest1, NotifyCustomerInformationRequest2)
 
         /// <summary>
-        /// Compares two notify customer information requests for equality.
+        /// Compares two NotifyCustomerInformation requests for equality.
         /// </summary>
-        /// <param name="NotifyCustomerInformationRequest1">A notify customer information request.</param>
-        /// <param name="NotifyCustomerInformationRequest2">Another notify customer information request.</param>
+        /// <param name="NotifyCustomerInformationRequest1">A NotifyCustomerInformation request.</param>
+        /// <param name="NotifyCustomerInformationRequest2">Another NotifyCustomerInformation request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyCustomerInformationRequest? NotifyCustomerInformationRequest1,
                                            NotifyCustomerInformationRequest? NotifyCustomerInformationRequest2)
@@ -500,10 +515,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (NotifyCustomerInformationRequest1, NotifyCustomerInformationRequest2)
 
         /// <summary>
-        /// Compares two notify customer information requests for inequality.
+        /// Compares two NotifyCustomerInformation requests for inequality.
         /// </summary>
-        /// <param name="NotifyCustomerInformationRequest1">A notify customer information request.</param>
-        /// <param name="NotifyCustomerInformationRequest2">Another notify customer information request.</param>
+        /// <param name="NotifyCustomerInformationRequest1">A NotifyCustomerInformation request.</param>
+        /// <param name="NotifyCustomerInformationRequest2">Another NotifyCustomerInformation request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyCustomerInformationRequest? NotifyCustomerInformationRequest1,
                                            NotifyCustomerInformationRequest? NotifyCustomerInformationRequest2)
@@ -519,9 +534,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify customer information requests for equality.
+        /// Compares two NotifyCustomerInformation requests for equality.
         /// </summary>
-        /// <param name="Object">A notify customer information request to compare with.</param>
+        /// <param name="Object">A NotifyCustomerInformation request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyCustomerInformationRequest notifyCustomerInformationRequest &&
@@ -532,9 +547,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(NotifyCustomerInformationRequest)
 
         /// <summary>
-        /// Compares two notify customer information requests for equality.
+        /// Compares two NotifyCustomerInformation requests for equality.
         /// </summary>
-        /// <param name="NotifyCustomerInformationRequest">A notify customer information request to compare with.</param>
+        /// <param name="NotifyCustomerInformationRequest">A NotifyCustomerInformation request to compare with.</param>
         public override Boolean Equals(NotifyCustomerInformationRequest? NotifyCustomerInformationRequest)
 
             => NotifyCustomerInformationRequest is not null &&

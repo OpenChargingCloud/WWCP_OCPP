@@ -19,6 +19,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Newtonsoft.Json.Linq;
+
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
@@ -34,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A binary data transfer response.
+    /// The SecureDataTransfer response.
     /// </summary>
     public class SecureDataTransferResponse : AResponse<SecureDataTransferRequest,
                                                         SecureDataTransferResponse>,
@@ -59,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure status of the binary data transfer.
+        /// The success or failure status of the SecureDataTransfer.
         /// </summary>
         [Mandatory]
         public SecureDataTransferStatus  Status                  { get; }
@@ -107,10 +109,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SecureDataTransferResponse(Request, Status, AdditionalStatusInfo = null, SecureData = null, ...)
 
         /// <summary>
-        /// Create a new binary data transfer response.
+        /// Create a new SecureDataTransfer response.
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
-        /// <param name="Status">The success or failure status of the binary data transfer.</param>
+        /// <param name="Status">The success or failure status of the SecureDataTransfer.</param>
         /// <param name="AdditionalStatusInfo">Optional detailed status information.</param>
         /// <param name="Parameter">Optional encryption parameters.</param>
         /// <param name="KeyId">The optional unique identification of the encryption key.</param>
@@ -181,15 +183,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SecureDataTransferResponse(Request, Result)
 
         /// <summary>
-        /// Create a new binary data transfer response.
+        /// Create a new SecureDataTransfer response.
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SecureDataTransferResponse(SecureDataTransferRequest  Request,
-                                          Result                     Result)
+                                          Result                     Result,
+                                          DateTime?                  ResponseTimestamp   = null,
+
+                                          NetworkingNode_Id?         DestinationId       = null,
+                                          NetworkPath?               NetworkPath         = null,
+
+                                          IEnumerable<KeyPair>?      SignKeys            = null,
+                                          IEnumerable<SignInfo>?     SignInfos           = null,
+                                          IEnumerable<Signature>?    Signatures          = null,
+
+                                          CustomData?                CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -320,7 +342,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-
         #region Documentation
 
         // tba.
@@ -330,11 +351,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (Request, SecureData, CustomSecureDataTransferResponseSerializer = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a binary data transfer response.
+        /// Parse the given JSON representation of a SecureDataTransfer response.
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
         /// <param name="SecureData">The binary to be parsed.</param>
-        /// <param name="CustomSecureDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>
+        /// <param name="CustomSecureDataTransferResponseParser">An optional delegate to parse custom SecureDataTransfer responses.</param>
         public static SecureDataTransferResponse Parse(SecureDataTransferRequest                                Request,
                                                        Byte[]                                                   SecureData,
                                                        NetworkingNode_Id                                        DestinationId,
@@ -355,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return secureDataTransferResponse;
             }
 
-            throw new ArgumentException("The given binary representation of a binary data transfer response is invalid: " + errorResponse,
+            throw new ArgumentException("The given binary representation of a SecureDataTransfer response is invalid: " + errorResponse,
                                         nameof(SecureData));
 
         }
@@ -365,13 +386,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) TryParse(Request, SecureData, out SecureDataTransferResponse, out ErrorResponse, CustomSecureDataTransferResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a binary data transfer response.
+        /// Try to parse the given JSON representation of a SecureDataTransfer response.
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
         /// <param name="SecureData">The binary to be parsed.</param>
-        /// <param name="SecureDataTransferResponse">The parsed binary data transfer response.</param>
+        /// <param name="SecureDataTransferResponse">The parsed SecureDataTransfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSecureDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>
+        /// <param name="CustomSecureDataTransferResponseParser">An optional delegate to parse custom SecureDataTransfer responses.</param>
         public static Boolean TryParse(SecureDataTransferRequest                                Request,
                                        Byte[]                                                   SecureData,
                                        NetworkingNode_Id                                        DestinationId,
@@ -460,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 SecureDataTransferResponse  = null;
-                ErrorResponse               = "The given binary representation of a binary data transfer response is invalid: " + e.Message;
+                ErrorResponse               = "The given binary representation of a SecureDataTransfer response is invalid: " + e.Message;
                 return false;
             }
 
@@ -473,7 +494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
-        /// <param name="CustomSecureDataTransferResponseSerializer">A delegate to serialize custom binary data transfer responses.</param>
+        /// <param name="CustomSecureDataTransferResponseSerializer">A delegate to serialize custom SecureDataTransfer responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseSerializer   = null,
@@ -529,6 +550,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Static methods
 
         /// <summary>
+        /// The SecureDataTransfer failed because of a request error.
+        /// </summary>
+        /// <param name="Request">The SecureDataTransfer request.</param>
+        public static SecureDataTransferResponse RequestError(SecureDataTransferRequest  Request,
+                                                              EventTracking_Id           EventTrackingId,
+                                                              ResultCode                 ErrorCode,
+                                                              String?                    ErrorDescription    = null,
+                                                              JObject?                   ErrorDetails        = null,
+                                                              DateTime?                  ResponseTimestamp   = null,
+
+                                                              NetworkingNode_Id?         DestinationId       = null,
+                                                              NetworkPath?               NetworkPath         = null,
+
+                                                              IEnumerable<KeyPair>?      SignKeys            = null,
+                                                              IEnumerable<SignInfo>?     SignInfos           = null,
+                                                              IEnumerable<Signature>?    Signatures          = null,
+
+                                                              CustomData?                CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SecureDataTransfer failed.
+        /// </summary>
+        /// <param name="Request">The SecureDataTransfer request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SecureDataTransferResponse SignatureError(SecureDataTransferRequest  Request,
+                                                                String                     ErrorDescription)
+
+            => new (Request,
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
         /// The SecureDataTransfer failed.
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request.</param>
@@ -538,17 +615,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     Result.Server(Description));
-
-
-        /// <summary>
-        /// The SecureDataTransfer failed because of an exception.
-        /// </summary>
-        /// <param name="Request">The SecureDataTransfer request.</param>
-        /// <param name="Exception">The exception.</param>
-        public static SecureDataTransferResponse ExceptionOccured(Exception  Exception)
-
-            => new (null,
-                    Result.FromException(Exception));
 
 
         /// <summary>
@@ -570,10 +636,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Operator == (SecureDataTransferResponse1, SecureDataTransferResponse2)
 
         /// <summary>
-        /// Compares two binary data transfer responses for equality.
+        /// Compares two SecureDataTransfer responses for equality.
         /// </summary>
-        /// <param name="SecureDataTransferResponse1">A binary data transfer response.</param>
-        /// <param name="SecureDataTransferResponse2">Another binary data transfer response.</param>
+        /// <param name="SecureDataTransferResponse1">A SecureDataTransfer response.</param>
+        /// <param name="SecureDataTransferResponse2">Another SecureDataTransfer response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SecureDataTransferResponse? SecureDataTransferResponse1,
                                            SecureDataTransferResponse? SecureDataTransferResponse2)
@@ -596,10 +662,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Operator != (SecureDataTransferResponse1, SecureDataTransferResponse2)
 
         /// <summary>
-        /// Compares two binary data transfer responses for inequality.
+        /// Compares two SecureDataTransfer responses for inequality.
         /// </summary>
-        /// <param name="SecureDataTransferResponse1">A binary data transfer response.</param>
-        /// <param name="SecureDataTransferResponse2">Another binary data transfer response.</param>
+        /// <param name="SecureDataTransferResponse1">A SecureDataTransfer response.</param>
+        /// <param name="SecureDataTransferResponse2">Another SecureDataTransfer response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SecureDataTransferResponse? SecureDataTransferResponse1,
                                            SecureDataTransferResponse? SecureDataTransferResponse2)
@@ -615,9 +681,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two binary data transfer responses for equality.
+        /// Compares two SecureDataTransfer responses for equality.
         /// </summary>
-        /// <param name="Object">A binary data transfer response to compare with.</param>
+        /// <param name="Object">A SecureDataTransfer response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SecureDataTransferResponse secureDataTransferResponse &&
@@ -628,9 +694,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(SecureDataTransferResponse)
 
         /// <summary>
-        /// Compares two binary data transfer responses for equality.
+        /// Compares two SecureDataTransfer responses for equality.
         /// </summary>
-        /// <param name="SecureDataTransferResponse">A binary data transfer response to compare with.</param>
+        /// <param name="SecureDataTransferResponse">A SecureDataTransfer response to compare with.</param>
         public override Boolean Equals(SecureDataTransferResponse? SecureDataTransferResponse)
 
             => SecureDataTransferResponse is not null &&

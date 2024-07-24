@@ -32,14 +32,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
-        #region Custom JSON serializer delegates
-
-        public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?  CustomUpdateUserRoleRequestSerializer    { get; set; }
-
-        public CustomJObjectParserDelegate<UpdateUserRoleResponse>?     CustomUpdateUserRoleResponseParser       { get; set; }
-
-        #endregion
-
         #region Events
 
         /// <summary>
@@ -47,13 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnUpdateUserRoleRequestSentDelegate?         OnUpdateUserRoleRequestSent;
 
-        /// <summary>
-        /// An event sent whenever a response to a UpdateUserRole request was sent.
-        /// </summary>
-        public event OnUpdateUserRoleResponseReceivedDelegate?    OnUpdateUserRoleResponseReceived;
-
         #endregion
-
 
         #region UpdateUserRole(Request)
 
@@ -89,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  OCPP_JSONRequestMessage.FromRequest(
                                                      Request,
                                                      Request.ToJSON(
-                                                         CustomUpdateUserRoleRequestSerializer
+                                                         parentNetworkingNode.OCPP.CustomUpdateUserRoleRequestSerializer
                                                          //CustomMessageInfoSerializer,
                                                          //CustomMessageContentSerializer,
                                                          //CustomComponentSerializer,
@@ -108,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         sendRequestState.JSONResponse.Payload,
                                                         out var setDisplayMessageResponse,
                                                         out var errorResponse,
-                                                        CustomUpdateUserRoleResponseParser) &&
+                                                        parentNetworkingNode.OCPP.CustomUpdateUserRoleResponseParser) &&
                         setDisplayMessageResponse is not null)
                     {
                         response = setDisplayMessageResponse;
@@ -140,22 +126,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnUpdateUserRoleResponseReceived event
 
-            var endTime = Timestamp.Now;
+            //var endTime = Timestamp.Now;
 
-            try
-            {
+            //try
+            //{
 
-                OnUpdateUserRoleResponseReceived?.Invoke(endTime,
-                                                         parentNetworkingNode,
-                                                         Request,
-                                                         response,
-                                                         endTime - startTime);
+            //    OnUpdateUserRoleResponseReceived?.Invoke(endTime,
+            //                                             parentNetworkingNode,
+            //                                             Request,
+            //                                             response,
+            //                                             endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateUserRoleResponseReceived));
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateUserRoleResponseReceived));
+            //}
 
             #endregion
 
@@ -165,6 +151,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        #region Events
+
+        /// <summary>
+        /// An event sent whenever a response to a UpdateUserRole request was sent.
+        /// </summary>
+        public event OnUpdateUserRoleResponseReceivedDelegate? OnUpdateUserRoleResponseReceived;
+
+        #endregion
 
     }
 

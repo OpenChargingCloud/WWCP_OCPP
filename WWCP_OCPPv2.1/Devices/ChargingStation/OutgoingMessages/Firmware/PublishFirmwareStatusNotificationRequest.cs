@@ -232,11 +232,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">A delegate to parse custom publish firmware status notification requests.</param>
         public static PublishFirmwareStatusNotificationRequest Parse(JObject                                                                 JSON,
                                                                      Request_Id                                                              RequestId,
                                                                      NetworkingNode_Id                                                       DestinationId,
                                                                      NetworkPath                                                             NetworkPath,
+                                                                     DateTime?                                                               RequestTimestamp                                       = null,
+                                                                     TimeSpan?                                                               RequestTimeout                                         = null,
+                                                                     EventTracking_Id?                                                       EventTrackingId                                        = null,
                                                                      CustomJObjectParserDelegate<PublishFirmwareStatusNotificationRequest>?  CustomPublishFirmwareStatusNotificationRequestParser   = null)
         {
 
@@ -246,6 +252,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var publishFirmwareStatusNotificationRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomPublishFirmwareStatusNotificationRequestParser))
             {
                 return publishFirmwareStatusNotificationRequest;
@@ -269,6 +278,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="PublishFirmwareStatusNotificationRequest">The parsed publish firmware status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">A delegate to parse custom publish firmware status notification requests.</param>
         public static Boolean TryParse(JObject                                                                 JSON,
                                        Request_Id                                                              RequestId,
@@ -276,7 +288,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                             NetworkPath,
                                        [NotNullWhen(true)]  out PublishFirmwareStatusNotificationRequest?      PublishFirmwareStatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                                        ErrorResponse,
-                                       CustomJObjectParserDelegate<PublishFirmwareStatusNotificationRequest>?  CustomPublishFirmwareStatusNotificationRequestParser)
+                                       DateTime?                                                               RequestTimestamp                                       = null,
+                                       TimeSpan?                                                               RequestTimeout                                         = null,
+                                       EventTracking_Id?                                                       EventTrackingId                                        = null,
+                                       CustomJObjectParserDelegate<PublishFirmwareStatusNotificationRequest>?  CustomPublishFirmwareStatusNotificationRequestParser   = null)
         {
 
             try
@@ -367,9 +382,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                CustomData,
 
                                                                RequestId,
-                                                               null,
-                                                               null,
-                                                               null,
+                                                               RequestTimestamp,
+                                                               RequestTimeout,
+                                                               EventTrackingId,
                                                                NetworkPath
 
                                                            );

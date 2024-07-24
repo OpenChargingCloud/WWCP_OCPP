@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A cleared charging limit response.
+    /// The ClearedChargingLimitt response.
     /// </summary>
     public class ClearedChargingLimitResponse : AResponse<CS.ClearedChargingLimitRequest,
                                                           ClearedChargingLimitResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region ClearedChargingLimitResponse(Request, ...)
 
         /// <summary>
-        /// Create a new cleared charging limit response.
+        /// Create a new ClearedChargingLimitt response.
         /// </summary>
-        /// <param name="Request">The cleared charging limit request leading to this response.</param>
+        /// <param name="Request">The ClearedChargingLimitt request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region ClearedChargingLimitResponse(Request, Result)
 
         /// <summary>
-        /// Create a new cleared charging limit response.
+        /// Create a new ClearedChargingLimitt response.
         /// </summary>
-        /// <param name="Request">The cleared charging limit request leading to this response.</param>
+        /// <param name="Request">The ClearedChargingLimitt request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ClearedChargingLimitResponse(CS.ClearedChargingLimitRequest  Request,
-                                          Result                        Result)
+                                            Result                          Result,
+                                            DateTime?                       ResponseTimestamp   = null,
+
+                                            NetworkingNode_Id?              DestinationId       = null,
+                                            NetworkPath?                    NetworkPath         = null,
+
+                                            IEnumerable<KeyPair>?           SignKeys            = null,
+                                            IEnumerable<SignInfo>?          SignInfos           = null,
+                                            IEnumerable<Signature>?         Signatures          = null,
+
+                                            CustomData?                     CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomClearedChargingLimitResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a cleared charging limit response.
+        /// Parse the given JSON representation of a ClearedChargingLimitt response.
         /// </summary>
-        /// <param name="Request">The cleared charging limit request leading to this response.</param>
+        /// <param name="Request">The ClearedChargingLimitt request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearedChargingLimitResponseParser">A delegate to parse custom cleared charging limit responses.</param>
+        /// <param name="CustomClearedChargingLimitResponseParser">A delegate to parse custom ClearedChargingLimitt responses.</param>
         public static ClearedChargingLimitResponse Parse(CS.ClearedChargingLimitRequest                              Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<ClearedChargingLimitResponse>?  CustomClearedChargingLimitResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return clearedChargingLimitResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a cleared charging limit response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ClearedChargingLimitt response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out ClearedChargingLimitResponse, out ErrorResponse, CustomClearedChargingLimitResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a cleared charging limit response.
+        /// Try to parse the given JSON representation of a ClearedChargingLimitt response.
         /// </summary>
-        /// <param name="Request">The cleared charging limit request leading to this response.</param>
+        /// <param name="Request">The ClearedChargingLimitt request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ClearedChargingLimitResponse">The parsed cleared charging limit response.</param>
+        /// <param name="ClearedChargingLimitResponse">The parsed ClearedChargingLimitt response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearedChargingLimitResponseParser">A delegate to parse custom cleared charging limit responses.</param>
+        /// <param name="CustomClearedChargingLimitResponseParser">A delegate to parse custom ClearedChargingLimitt responses.</param>
         public static Boolean TryParse(CS.ClearedChargingLimitRequest                              Request,
                                        JObject                                                     JSON,
                                        [NotNullWhen(true)]  out ClearedChargingLimitResponse?      ClearedChargingLimitResponse,
@@ -250,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 ClearedChargingLimitResponse  = null;
-                ErrorResponse                 = "The given JSON representation of a cleared charging limit response is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a ClearedChargingLimitt response is invalid: " + e.Message;
                 return false;
             }
 
@@ -263,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearedChargingLimitResponseSerializer">A delegate to serialize custom cleared charging limit responses.</param>
+        /// <param name="CustomClearedChargingLimitResponseSerializer">A delegate to serialize custom ClearedChargingLimitt responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearedChargingLimitResponse>?  CustomClearedChargingLimitResponseSerializer   = null,
@@ -296,12 +316,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The cleared charging limit failed.
+        /// The ClearedChargingLimit failed because of a request error.
         /// </summary>
-        public static ClearedChargingLimitResponse Failed(CS.ClearedChargingLimitRequest Request)
+        /// <param name="Request">The ClearedChargingLimit request.</param>
+        public static ClearedChargingLimitResponse RequestError(CS.ClearedChargingLimitRequest  Request,
+                                                                EventTracking_Id                EventTrackingId,
+                                                                ResultCode                      ErrorCode,
+                                                                String?                         ErrorDescription    = null,
+                                                                JObject?                        ErrorDetails        = null,
+                                                                DateTime?                       ResponseTimestamp   = null,
+
+                                                                NetworkingNode_Id?              DestinationId       = null,
+                                                                NetworkPath?                    NetworkPath         = null,
+
+                                                                IEnumerable<KeyPair>?           SignKeys            = null,
+                                                                IEnumerable<SignInfo>?          SignInfos           = null,
+                                                                IEnumerable<Signature>?         Signatures          = null,
+
+                                                                CustomData?                     CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ClearedChargingLimit failed.
+        /// </summary>
+        /// <param name="Request">The ClearedChargingLimit request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ClearedChargingLimitResponse SignatureError(CS.ClearedChargingLimitRequest  Request,
+                                                                  String                          ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ClearedChargingLimit failed.
+        /// </summary>
+        /// <param name="Request">The ClearedChargingLimit request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ClearedChargingLimitResponse Failed(CS.ClearedChargingLimitRequest  Request,
+                                                          String?                         Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ClearedChargingLimit failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ClearedChargingLimit request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ClearedChargingLimitResponse ExceptionOccured(CS.ClearedChargingLimitRequest  Request,
+                                                                    Exception                       Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -311,10 +402,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (ClearedChargingLimitResponse1, ClearedChargingLimitResponse2)
 
         /// <summary>
-        /// Compares two cleared charging limit responses for equality.
+        /// Compares two ClearedChargingLimitt responses for equality.
         /// </summary>
-        /// <param name="ClearedChargingLimitResponse1">A cleared charging limit response.</param>
-        /// <param name="ClearedChargingLimitResponse2">Another cleared charging limit response.</param>
+        /// <param name="ClearedChargingLimitResponse1">A ClearedChargingLimitt response.</param>
+        /// <param name="ClearedChargingLimitResponse2">Another ClearedChargingLimitt response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ClearedChargingLimitResponse? ClearedChargingLimitResponse1,
                                            ClearedChargingLimitResponse? ClearedChargingLimitResponse2)
@@ -337,10 +428,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (ClearedChargingLimitResponse1, ClearedChargingLimitResponse2)
 
         /// <summary>
-        /// Compares two cleared charging limit responses for inequality.
+        /// Compares two ClearedChargingLimitt responses for inequality.
         /// </summary>
-        /// <param name="ClearedChargingLimitResponse1">A cleared charging limit response.</param>
-        /// <param name="ClearedChargingLimitResponse2">Another cleared charging limit response.</param>
+        /// <param name="ClearedChargingLimitResponse1">A ClearedChargingLimitt response.</param>
+        /// <param name="ClearedChargingLimitResponse2">Another ClearedChargingLimitt response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ClearedChargingLimitResponse? ClearedChargingLimitResponse1,
                                            ClearedChargingLimitResponse? ClearedChargingLimitResponse2)
@@ -356,9 +447,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two cleared charging limit responses for equality.
+        /// Compares two ClearedChargingLimitt responses for equality.
         /// </summary>
-        /// <param name="Object">A cleared charging limit response to compare with.</param>
+        /// <param name="Object">A ClearedChargingLimitt response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ClearedChargingLimitResponse clearedChargingLimitResponse &&
@@ -369,9 +460,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(ClearedChargingLimitResponse)
 
         /// <summary>
-        /// Compares two cleared charging limit responses for equality.
+        /// Compares two ClearedChargingLimitt responses for equality.
         /// </summary>
-        /// <param name="ClearedChargingLimitResponse">A cleared charging limit response to compare with.</param>
+        /// <param name="ClearedChargingLimitResponse">A ClearedChargingLimitt response to compare with.</param>
         public override Boolean Equals(ClearedChargingLimitResponse? ClearedChargingLimitResponse)
 
             => ClearedChargingLimitResponse is not null &&

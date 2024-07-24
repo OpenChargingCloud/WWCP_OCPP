@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A notify charging limit response.
+    /// The NotifyChargingLimit response.
     /// </summary>
     public class NotifyChargingLimitResponse : AResponse<CS.NotifyChargingLimitRequest,
                                                          NotifyChargingLimitResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyChargingLimitResponse(Request, ...)
 
         /// <summary>
-        /// Create a new notify charging limit response.
+        /// Create a new NotifyChargingLimit response.
         /// </summary>
-        /// <param name="Request">The notify charging limit request leading to this response.</param>
+        /// <param name="Request">The NotifyChargingLimit request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyChargingLimitResponse(Request, Result)
 
         /// <summary>
-        /// Create a new notify charging limit response.
+        /// Create a new NotifyChargingLimit response.
         /// </summary>
-        /// <param name="Request">The notify charging limit request leading to this response.</param>
+        /// <param name="Request">The NotifyChargingLimit request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public NotifyChargingLimitResponse(CS.NotifyChargingLimitRequest  Request,
-                                           Result                         Result)
+                                           Result                         Result,
+                                           DateTime?                      ResponseTimestamp   = null,
+
+                                           NetworkingNode_Id?             DestinationId       = null,
+                                           NetworkPath?                   NetworkPath         = null,
+
+                                           IEnumerable<KeyPair>?          SignKeys            = null,
+                                           IEnumerable<SignInfo>?         SignInfos           = null,
+                                           IEnumerable<Signature>?        Signatures          = null,
+
+                                           CustomData?                    CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomNotifyChargingLimitResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify charging limit response.
+        /// Parse the given JSON representation of a NotifyChargingLimit response.
         /// </summary>
-        /// <param name="Request">The notify charging limit request leading to this response.</param>
+        /// <param name="Request">The NotifyChargingLimit request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyChargingLimitResponseParser">A delegate to parse custom notify charging limit responses.</param>
+        /// <param name="CustomNotifyChargingLimitResponseParser">A delegate to parse custom NotifyChargingLimit responses.</param>
         public static NotifyChargingLimitResponse Parse(CS.NotifyChargingLimitRequest                              Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<NotifyChargingLimitResponse>?  CustomNotifyChargingLimitResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return notifyChargingLimitResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify charging limit response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyChargingLimit response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out NotifyChargingLimitResponse, out ErrorResponse, CustomNotifyChargingLimitResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify charging limit response.
+        /// Try to parse the given JSON representation of a NotifyChargingLimit response.
         /// </summary>
-        /// <param name="Request">The notify charging limit request leading to this response.</param>
+        /// <param name="Request">The NotifyChargingLimit request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NotifyChargingLimitResponse">The parsed notify charging limit response.</param>
+        /// <param name="NotifyChargingLimitResponse">The parsed NotifyChargingLimit response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyChargingLimitResponseParser">A delegate to parse custom notify charging limit responses.</param>
+        /// <param name="CustomNotifyChargingLimitResponseParser">A delegate to parse custom NotifyChargingLimit responses.</param>
         public static Boolean TryParse(CS.NotifyChargingLimitRequest                              Request,
                                        JObject                                                    JSON,
                                        [NotNullWhen(true)]  out NotifyChargingLimitResponse?      NotifyChargingLimitResponse,
@@ -252,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 NotifyChargingLimitResponse  = null;
-                ErrorResponse                = "The given JSON representation of a notify charging limit response is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a NotifyChargingLimit response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyChargingLimitResponseSerializer">A delegate to serialize custom notify charging limit responses.</param>
+        /// <param name="CustomNotifyChargingLimitResponseSerializer">A delegate to serialize custom NotifyChargingLimit responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyChargingLimitResponse>?  CustomNotifyChargingLimitResponseSerializer   = null,
@@ -298,12 +318,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The notify charging limit request failed.
+        /// The NotifyChargingLimit failed because of a request error.
         /// </summary>
-        public static NotifyChargingLimitResponse Failed(CS.NotifyChargingLimitRequest Request)
+        /// <param name="Request">The NotifyChargingLimit request.</param>
+        public static NotifyChargingLimitResponse RequestError(CS.NotifyChargingLimitRequest  Request,
+                                                               EventTracking_Id               EventTrackingId,
+                                                               ResultCode                     ErrorCode,
+                                                               String?                        ErrorDescription    = null,
+                                                               JObject?                       ErrorDetails        = null,
+                                                               DateTime?                      ResponseTimestamp   = null,
+
+                                                               NetworkingNode_Id?             DestinationId       = null,
+                                                               NetworkPath?                   NetworkPath         = null,
+
+                                                               IEnumerable<KeyPair>?          SignKeys            = null,
+                                                               IEnumerable<SignInfo>?         SignInfos           = null,
+                                                               IEnumerable<Signature>?        Signatures          = null,
+
+                                                               CustomData?                    CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifyChargingLimit failed.
+        /// </summary>
+        /// <param name="Request">The NotifyChargingLimit request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifyChargingLimitResponse SignatureError(CS.NotifyChargingLimitRequest  Request,
+                                                                 String                         ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifyChargingLimit failed.
+        /// </summary>
+        /// <param name="Request">The NotifyChargingLimit request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifyChargingLimitResponse Failed(CS.NotifyChargingLimitRequest  Request,
+                                                         String?                        Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifyChargingLimit failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifyChargingLimit request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifyChargingLimitResponse ExceptionOccured(CS.NotifyChargingLimitRequest  Request,
+                                                                   Exception                      Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -313,10 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (NotifyChargingLimitResponse1, NotifyChargingLimitResponse2)
 
         /// <summary>
-        /// Compares two notify charging limit responses for equality.
+        /// Compares two NotifyChargingLimit responses for equality.
         /// </summary>
-        /// <param name="NotifyChargingLimitResponse1">A notify charging limit response.</param>
-        /// <param name="NotifyChargingLimitResponse2">Another notify charging limit response.</param>
+        /// <param name="NotifyChargingLimitResponse1">A NotifyChargingLimit response.</param>
+        /// <param name="NotifyChargingLimitResponse2">Another NotifyChargingLimit response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyChargingLimitResponse? NotifyChargingLimitResponse1,
                                            NotifyChargingLimitResponse? NotifyChargingLimitResponse2)
@@ -339,10 +430,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (NotifyChargingLimitResponse1, NotifyChargingLimitResponse2)
 
         /// <summary>
-        /// Compares two notify charging limit responses for inequality.
+        /// Compares two NotifyChargingLimit responses for inequality.
         /// </summary>
-        /// <param name="NotifyChargingLimitResponse1">A notify charging limit response.</param>
-        /// <param name="NotifyChargingLimitResponse2">Another notify charging limit response.</param>
+        /// <param name="NotifyChargingLimitResponse1">A NotifyChargingLimit response.</param>
+        /// <param name="NotifyChargingLimitResponse2">Another NotifyChargingLimit response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyChargingLimitResponse? NotifyChargingLimitResponse1,
                                            NotifyChargingLimitResponse? NotifyChargingLimitResponse2)
@@ -358,9 +449,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify charging limit responses for equality.
+        /// Compares two NotifyChargingLimit responses for equality.
         /// </summary>
-        /// <param name="Object">A notify charging limit response to compare with.</param>
+        /// <param name="Object">A NotifyChargingLimit response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyChargingLimitResponse notifyChargingLimitResponse &&
@@ -371,9 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(NotifyChargingLimitResponse)
 
         /// <summary>
-        /// Compares two notify charging limit responses for equality.
+        /// Compares two NotifyChargingLimit responses for equality.
         /// </summary>
-        /// <param name="NotifyChargingLimitResponse">A notify charging limit response to compare with.</param>
+        /// <param name="NotifyChargingLimitResponse">A NotifyChargingLimit response to compare with.</param>
         public override Boolean Equals(NotifyChargingLimitResponse? NotifyChargingLimitResponse)
 
             => NotifyChargingLimitResponse is not null &&

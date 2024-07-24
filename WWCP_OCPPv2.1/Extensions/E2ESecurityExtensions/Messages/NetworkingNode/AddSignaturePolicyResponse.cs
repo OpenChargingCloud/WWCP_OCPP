@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// An add signature policy response.
+    /// The AddSignaturePolicy response.
     /// </summary>
     public class AddSignaturePolicyResponse : AResponse<AddSignaturePolicyRequest,
                                                         AddSignaturePolicyResponse>,
@@ -72,9 +72,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region AddSignaturePolicyResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new add signature policy response.
+        /// Create a new AddSignaturePolicy response.
         /// </summary>
-        /// <param name="Request">The add signature policy request leading to this response.</param>
+        /// <param name="Request">The AddSignaturePolicy request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -123,15 +123,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region AddSignaturePolicyResponse(Request, Result)
 
         /// <summary>
-        /// Create a new add signature policy response.
+        /// Create a new AddSignaturePolicy response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public AddSignaturePolicyResponse(AddSignaturePolicyRequest       Request,
-                                          Result                          Result)
+        public AddSignaturePolicyResponse(AddSignaturePolicyRequest  Request,
+                                          Result                     Result,
+                                          DateTime?                  ResponseTimestamp   = null,
+
+                                          NetworkingNode_Id?         DestinationId       = null,
+                                          NetworkPath?               NetworkPath         = null,
+
+                                          IEnumerable<KeyPair>?      SignKeys            = null,
+                                          IEnumerable<SignInfo>?     SignInfos           = null,
+                                          IEnumerable<Signature>?    Signatures          = null,
+
+                                          CustomData?                CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -153,11 +173,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) Parse   (Request, JSON, CustomAddSignaturePolicyResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an add signature policy response.
+        /// Parse the given JSON representation of an AddSignaturePolicy response.
         /// </summary>
-        /// <param name="Request">The add signature policy request leading to this response.</param>
+        /// <param name="Request">The AddSignaturePolicy request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAddSignaturePolicyResponseParser">An optional delegate to parse custom add signature policy responses.</param>
+        /// <param name="CustomAddSignaturePolicyResponseParser">An optional delegate to parse custom AddSignaturePolicy responses.</param>
         public static AddSignaturePolicyResponse Parse(AddSignaturePolicyRequest                                 Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<AddSignaturePolicyResponse>?  CustomAddSignaturePolicyResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return addSignaturePolicyResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of an add signature policy response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an AddSignaturePolicy response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(Request, JSON, out AddSignaturePolicyResponse, out ErrorResponse, CustomAddSignaturePolicyResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an add signature policy response.
+        /// Try to parse the given JSON representation of an AddSignaturePolicy response.
         /// </summary>
-        /// <param name="Request">The add signature policy request leading to this response.</param>
+        /// <param name="Request">The AddSignaturePolicy request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="AddSignaturePolicyResponse">The parsed add signature policy response.</param>
+        /// <param name="AddSignaturePolicyResponse">The parsed AddSignaturePolicy response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAddSignaturePolicyResponseParser">An optional delegate to parse custom add signature policy responses.</param>
+        /// <param name="CustomAddSignaturePolicyResponseParser">An optional delegate to parse custom AddSignaturePolicy responses.</param>
         public static Boolean TryParse(AddSignaturePolicyRequest                                 Request,
                                        JObject                                                   JSON,
                                        [NotNullWhen(true)]  out AddSignaturePolicyResponse?      AddSignaturePolicyResponse,
@@ -292,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 AddSignaturePolicyResponse  = null;
-                ErrorResponse               = "The given JSON representation of an add signature policy response is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of an AddSignaturePolicy response is invalid: " + e.Message;
                 return false;
             }
 
@@ -305,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomAddSignaturePolicyResponseSerializer">A delegate to serialize custom add signature policy responses.</param>
+        /// <param name="CustomAddSignaturePolicyResponseSerializer">A delegate to serialize custom AddSignaturePolicy responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -347,12 +367,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Static methods
 
         /// <summary>
-        /// The add signature policy failed.
+        /// The AddSignaturePolicy failed because of a request error.
         /// </summary>
-        public static AddSignaturePolicyResponse Failed(AddSignaturePolicyRequest Request)
+        /// <param name="Request">The AddSignaturePolicy request.</param>
+        public static AddSignaturePolicyResponse RequestError(AddSignaturePolicyRequest  Request,
+                                                              EventTracking_Id           EventTrackingId,
+                                                              ResultCode                 ErrorCode,
+                                                              String?                    ErrorDescription    = null,
+                                                              JObject?                   ErrorDetails        = null,
+                                                              DateTime?                  ResponseTimestamp   = null,
+
+                                                              NetworkingNode_Id?         DestinationId       = null,
+                                                              NetworkPath?               NetworkPath         = null,
+
+                                                              IEnumerable<KeyPair>?      SignKeys            = null,
+                                                              IEnumerable<SignInfo>?     SignInfos           = null,
+                                                              IEnumerable<Signature>?    Signatures          = null,
+
+                                                              CustomData?                CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The AddSignaturePolicy failed.
+        /// </summary>
+        /// <param name="Request">The AddSignaturePolicy request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static AddSignaturePolicyResponse SignatureError(AddSignaturePolicyRequest  Request,
+                                                                String                     ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The AddSignaturePolicy failed.
+        /// </summary>
+        /// <param name="Request">The AddSignaturePolicy request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static AddSignaturePolicyResponse Failed(AddSignaturePolicyRequest  Request,
+                                                        String?                    Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The AddSignaturePolicy failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The AddSignaturePolicy request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static AddSignaturePolicyResponse ExceptionOccured(AddSignaturePolicyRequest  Request,
+                                                                  Exception                  Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -362,10 +453,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (AddSignaturePolicyResponse1, AddSignaturePolicyResponse2)
 
         /// <summary>
-        /// Compares two add signature policy responses for equality.
+        /// Compares two AddSignaturePolicy responses for equality.
         /// </summary>
-        /// <param name="AddSignaturePolicyResponse1">An add signature policy response.</param>
-        /// <param name="AddSignaturePolicyResponse2">Another add signature policy response.</param>
+        /// <param name="AddSignaturePolicyResponse1">An AddSignaturePolicy response.</param>
+        /// <param name="AddSignaturePolicyResponse2">Another AddSignaturePolicy response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AddSignaturePolicyResponse? AddSignaturePolicyResponse1,
                                            AddSignaturePolicyResponse? AddSignaturePolicyResponse2)
@@ -388,10 +479,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (AddSignaturePolicyResponse1, AddSignaturePolicyResponse2)
 
         /// <summary>
-        /// Compares two add signature policy responses for inequality.
+        /// Compares two AddSignaturePolicy responses for inequality.
         /// </summary>
-        /// <param name="AddSignaturePolicyResponse1">An add signature policy response.</param>
-        /// <param name="AddSignaturePolicyResponse2">Another add signature policy response.</param>
+        /// <param name="AddSignaturePolicyResponse1">An AddSignaturePolicy response.</param>
+        /// <param name="AddSignaturePolicyResponse2">Another AddSignaturePolicy response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AddSignaturePolicyResponse? AddSignaturePolicyResponse1,
                                            AddSignaturePolicyResponse? AddSignaturePolicyResponse2)
@@ -407,9 +498,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two add signature policy responses for equality.
+        /// Compares two AddSignaturePolicy responses for equality.
         /// </summary>
-        /// <param name="Object">An add signature policy response to compare with.</param>
+        /// <param name="Object">An AddSignaturePolicy response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is AddSignaturePolicyResponse addSignaturePolicyResponse &&
@@ -420,9 +511,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(AddSignaturePolicyResponse)
 
         /// <summary>
-        /// Compares two add signature policy responses for equality.
+        /// Compares two AddSignaturePolicy responses for equality.
         /// </summary>
-        /// <param name="AddSignaturePolicyResponse">An add signature policy response to compare with.</param>
+        /// <param name="AddSignaturePolicyResponse">An AddSignaturePolicy response to compare with.</param>
         public override Boolean Equals(AddSignaturePolicyResponse? AddSignaturePolicyResponse)
 
             => AddSignaturePolicyResponse is not null &&

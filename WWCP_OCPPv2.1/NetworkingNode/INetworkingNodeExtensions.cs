@@ -512,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 return Task.FromResult(
-                           SecureDataTransferResponse.ExceptionOccured(e)
+                           SecureDataTransferResponse.ExceptionOccured(null, e)
                        );
             }
 

@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A boot notification response.
+    /// The AddUserRole response.
     /// </summary>
     public class AddUserRoleResponse : AResponse<AddUserRoleRequest,
                                                  AddUserRoleResponse>,
@@ -88,9 +88,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region AddUserRoleResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new AddUserRole response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The AddUserRole request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -141,15 +141,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region AddUserRoleResponse(Request, Result)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new AddUserRole response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public AddUserRoleResponse(AddUserRoleRequest  Request,
-                                   Result              Result)
+        public AddUserRoleResponse(AddUserRoleRequest       Request,
+                                   Result                   Result,
+                                   DateTime?                ResponseTimestamp   = null,
+
+                                   NetworkingNode_Id?       DestinationId       = null,
+                                   NetworkPath?             NetworkPath         = null,
+
+                                   IEnumerable<KeyPair>?    SignKeys            = null,
+                                   IEnumerable<SignInfo>?   SignInfos           = null,
+                                   IEnumerable<Signature>?  Signatures          = null,
+
+                                   CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -255,11 +275,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) Parse   (Request, JSON, CustomAddUserRoleResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification response.
+        /// Parse the given JSON representation of a AddUserRole response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The AddUserRole request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAddUserRoleResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomAddUserRoleResponseParser">An optional delegate to parse custom AddUserRole responses.</param>
         public static AddUserRoleResponse Parse(AddUserRoleRequest                                 Request,
                                                 JObject                                            JSON,
                                                 CustomJObjectParserDelegate<AddUserRoleResponse>?  CustomAddUserRoleResponseParser   = null)
@@ -275,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return addUserRoleResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a AddUserRole response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -285,13 +305,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(Request, JSON, out AddUserRoleResponse, out ErrorResponse, CustomAddUserRoleResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification response.
+        /// Try to parse the given JSON representation of a AddUserRole response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The AddUserRole request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="AddUserRoleResponse">The parsed boot notification response.</param>
+        /// <param name="AddUserRoleResponse">The parsed AddUserRole response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAddUserRoleResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomAddUserRoleResponseParser">An optional delegate to parse custom AddUserRole responses.</param>
         public static Boolean TryParse(AddUserRoleRequest                                 Request,
                                        JObject                                            JSON,
                                        [NotNullWhen(true)]  out AddUserRoleResponse?      AddUserRoleResponse,
@@ -418,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 AddUserRoleResponse  = null;
-                ErrorResponse        = "The given JSON representation of a boot notification response is invalid: " + e.Message;
+                ErrorResponse        = "The given JSON representation of a AddUserRole response is invalid: " + e.Message;
                 return false;
             }
 
@@ -431,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomAddUserRoleResponseSerializer">A delegate to serialize custom boot notification responses.</param>
+        /// <param name="CustomAddUserRoleResponseSerializer">A delegate to serialize custom AddUserRole responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -475,12 +495,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Static methods
 
         /// <summary>
-        /// The boot notification failed.
+        /// The AddUserRole failed because of a request error.
         /// </summary>
-        public static AddUserRoleResponse Failed(AddUserRoleRequest      Request)
+        /// <param name="Request">The AddUserRole request.</param>
+        public static AddUserRoleResponse RequestError(AddUserRoleRequest       Request,
+                                                       EventTracking_Id         EventTrackingId,
+                                                       ResultCode               ErrorCode,
+                                                       String?                  ErrorDescription    = null,
+                                                       JObject?                 ErrorDetails        = null,
+                                                       DateTime?                ResponseTimestamp   = null,
+
+                                                       NetworkingNode_Id?       DestinationId       = null,
+                                                       NetworkPath?             NetworkPath         = null,
+
+                                                       IEnumerable<KeyPair>?    SignKeys            = null,
+                                                       IEnumerable<SignInfo>?   SignInfos           = null,
+                                                       IEnumerable<Signature>?  Signatures          = null,
+
+                                                       CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The AddUserRole failed.
+        /// </summary>
+        /// <param name="Request">The AddUserRole request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static AddUserRoleResponse SignatureError(AddUserRoleRequest  Request,
+                                                         String              ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The AddUserRole failed.
+        /// </summary>
+        /// <param name="Request">The AddUserRole request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static AddUserRoleResponse Failed(AddUserRoleRequest  Request,
+                                                 String?             Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The AddUserRole failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The AddUserRole request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static AddUserRoleResponse ExceptionOccured(AddUserRoleRequest  Request,
+                                                           Exception           Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -490,10 +581,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (AddUserRoleResponse1, AddUserRoleResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two AddUserRole responses for equality.
         /// </summary>
-        /// <param name="AddUserRoleResponse1">A boot notification response.</param>
-        /// <param name="AddUserRoleResponse2">Another boot notification response.</param>
+        /// <param name="AddUserRoleResponse1">A AddUserRole response.</param>
+        /// <param name="AddUserRoleResponse2">Another AddUserRole response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AddUserRoleResponse? AddUserRoleResponse1,
                                            AddUserRoleResponse? AddUserRoleResponse2)
@@ -516,10 +607,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (AddUserRoleResponse1, AddUserRoleResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for inequality.
+        /// Compares two AddUserRole responses for inequality.
         /// </summary>
-        /// <param name="AddUserRoleResponse1">A boot notification response.</param>
-        /// <param name="AddUserRoleResponse2">Another boot notification response.</param>
+        /// <param name="AddUserRoleResponse1">A AddUserRole response.</param>
+        /// <param name="AddUserRoleResponse2">Another AddUserRole response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AddUserRoleResponse? AddUserRoleResponse1,
                                            AddUserRoleResponse? AddUserRoleResponse2)
@@ -535,9 +626,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two AddUserRole responses for equality.
         /// </summary>
-        /// <param name="Object">A boot notification response to compare with.</param>
+        /// <param name="Object">A AddUserRole response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is AddUserRoleResponse addUserRoleResponse &&
@@ -548,9 +639,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(AddUserRoleResponse)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two AddUserRole responses for equality.
         /// </summary>
-        /// <param name="AddUserRoleResponse">A boot notification response to compare with.</param>
+        /// <param name="AddUserRoleResponse">A AddUserRole response to compare with.</param>
         public override Boolean Equals(AddUserRoleResponse? AddUserRoleResponse)
 
             => AddUserRoleResponse is not null &&

@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// An add signature policy request.
+    /// The AddSignaturePolicy request.
     /// </summary>
     public class AddSignaturePolicyRequest : ARequest<AddSignaturePolicyRequest>,
                                              IRequest
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new add signature policy request.
+        /// Create a new AddSignaturePolicy request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="SignaturePolicy">A signature policy.</param>
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AddSignaturePolicyRequest(NetworkingNode_Id        NetworkingNodeId,
+        public AddSignaturePolicyRequest(NetworkingNode_Id        DestinationId,
                                          SignaturePolicy          SignaturePolicy,
 
                                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          NetworkPath?             NetworkPath         = null,
                                          CancellationToken        CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationId,
                    nameof(AddSignaturePolicyRequest)[..^7],
 
                    SignKeys,
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomAddSignaturePolicyRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomAddSignaturePolicyRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an AddSignaturePolicy request.
@@ -139,21 +139,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomAddSignaturePolicyRequestParser">An optional delegate to parse custom AddSignaturePolicy requests.</param>
         public static AddSignaturePolicyRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      NetworkingNode_Id                                        NetworkingNodeId,
+                                                      NetworkingNode_Id                                        DestinationId,
                                                       NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      TimeSpan?                                                RequestTimeout                          = null,
+                                                      EventTracking_Id?                                        EventTrackingId                         = null,
                                                       CustomJObjectParserDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         DestinationId,
                          NetworkPath,
                          out var addSignaturePolicyRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomAddSignaturePolicyRequestParser))
             {
                 return addSignaturePolicyRequest;
@@ -166,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out AddSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out AddSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a AddSignaturePolicy request.
@@ -177,14 +186,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AddSignaturePolicyRequest">The parsed AddSignaturePolicy request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomAddSignaturePolicyRequestParser">An optional delegate to parse custom AddSignaturePolicy requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       NetworkingNode_Id                                        NetworkingNodeId,
+                                       NetworkingNode_Id                                        DestinationId,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out AddSignaturePolicyRequest?      AddSignaturePolicyRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       CustomJObjectParserDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestParser)
+                                       DateTime?                                                RequestTimestamp                        = null,
+                                       TimeSpan?                                                RequestTimeout                          = null,
+                                       EventTracking_Id?                                        EventTrackingId                         = null,
+                                       CustomJObjectParserDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestParser   = null)
         {
 
             try
@@ -237,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 AddSignaturePolicyRequest = new AddSignaturePolicyRequest(
 
-                                                NetworkingNodeId,
+                                                DestinationId,
                                                 SignaturePolicy,
 
                                                 null,
@@ -247,9 +262,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 CustomData,
 
                                                 RequestId,
-                                                null,
-                                                null,
-                                                null,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
                                                 NetworkPath
 
                                             );

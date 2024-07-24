@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A firmware status notification response.
+    /// The FirmwareStatusNotification response.
     /// </summary>
     public class FirmwareStatusNotificationResponse : AResponse<CS.FirmwareStatusNotificationRequest,
                                                                 FirmwareStatusNotificationResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region FirmwareStatusNotificationResponse(Request, ...)
 
         /// <summary>
-        /// Create a new firmware status notification response.
+        /// Create a new FirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
+        /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region FirmwareStatusNotificationResponse(Result)
 
         /// <summary>
-        /// Create a new firmware status notification response.
+        /// Create a new FirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
+        /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public FirmwareStatusNotificationResponse(CS.FirmwareStatusNotificationRequest  Request,
-                                                  Result                                Result)
+                                                  Result                                Result,
+                                                  DateTime?                             ResponseTimestamp   = null,
+
+                                                  NetworkingNode_Id?                    DestinationId       = null,
+                                                  NetworkPath?                          NetworkPath         = null,
+
+                                                  IEnumerable<KeyPair>?                 SignKeys            = null,
+                                                  IEnumerable<SignInfo>?                SignInfos           = null,
+                                                  IEnumerable<Signature>?               Signatures          = null,
+
+                                                  CustomData?                           CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomFirmwareStatusNotificationResponseResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a firmware status notification response.
+        /// Parse the given JSON representation of a FirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
+        /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom firmware status notification responses.</param>
+        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom FirmwareStatusNotification responses.</param>
         public static FirmwareStatusNotificationResponse Parse(CS.FirmwareStatusNotificationRequest                              Request,
                                                                JObject                                                           JSON,
                                                                CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseResponseParser   = null)
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out FirmwareStatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a firmware status notification response.
+        /// Try to parse the given JSON representation of a FirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
+        /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="FirmwareStatusNotificationResponse">The parsed firmware status notification response.</param>
+        /// <param name="FirmwareStatusNotificationResponse">The parsed FirmwareStatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom firmware status notification responses.</param>
+        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom FirmwareStatusNotification responses.</param>
         public static Boolean TryParse(CS.FirmwareStatusNotificationRequest                              Request,
                                        JObject                                                           JSON,
                                        [NotNullWhen(true)]  out FirmwareStatusNotificationResponse?      FirmwareStatusNotificationResponse,
@@ -251,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 FirmwareStatusNotificationResponse  = null;
-                ErrorResponse                       = "The given JSON representation of a firmware status notification response is invalid: " + e.Message;
+                ErrorResponse                       = "The given JSON representation of a FirmwareStatusNotification response is invalid: " + e.Message;
                 return false;
             }
 
@@ -264,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom firmware status notification responses.</param>
+        /// <param name="CustomFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom FirmwareStatusNotification responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseSerializer   = null,
@@ -297,13 +317,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The firmware status notification request failed.
+        /// The FirmwareStatusNotification failed because of a request error.
         /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
-        public static FirmwareStatusNotificationResponse Failed(CS.FirmwareStatusNotificationRequest Request)
+        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        public static FirmwareStatusNotificationResponse RequestError(CS.FirmwareStatusNotificationRequest  Request,
+                                                                      EventTracking_Id                      EventTrackingId,
+                                                                      ResultCode                            ErrorCode,
+                                                                      String?                               ErrorDescription    = null,
+                                                                      JObject?                              ErrorDetails        = null,
+                                                                      DateTime?                             ResponseTimestamp   = null,
+
+                                                                      NetworkingNode_Id?                    DestinationId       = null,
+                                                                      NetworkPath?                          NetworkPath         = null,
+
+                                                                      IEnumerable<KeyPair>?                 SignKeys            = null,
+                                                                      IEnumerable<SignInfo>?                SignInfos           = null,
+                                                                      IEnumerable<Signature>?               Signatures          = null,
+
+                                                                      CustomData?                           CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The FirmwareStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static FirmwareStatusNotificationResponse SignatureError(CS.FirmwareStatusNotificationRequest  Request,
+                                                                        String                                ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The FirmwareStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static FirmwareStatusNotificationResponse Failed(CS.FirmwareStatusNotificationRequest  Request,
+                                                                String?                               Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The FirmwareStatusNotification failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static FirmwareStatusNotificationResponse ExceptionOccured(CS.FirmwareStatusNotificationRequest  Request,
+                                                                          Exception                             Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -313,10 +403,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (FirmwareStatusNotificationResponse1, FirmwareStatusNotificationResponse2)
 
         /// <summary>
-        /// Compares two firmware status notification responses for equality.
+        /// Compares two FirmwareStatusNotification responses for equality.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationResponse1">A firmware status notification response.</param>
-        /// <param name="FirmwareStatusNotificationResponse2">Another firmware status notification response.</param>
+        /// <param name="FirmwareStatusNotificationResponse1">A FirmwareStatusNotification response.</param>
+        /// <param name="FirmwareStatusNotificationResponse2">Another FirmwareStatusNotification response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (FirmwareStatusNotificationResponse? FirmwareStatusNotificationResponse1,
                                            FirmwareStatusNotificationResponse? FirmwareStatusNotificationResponse2)
@@ -339,10 +429,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (FirmwareStatusNotificationResponse1, FirmwareStatusNotificationResponse2)
 
         /// <summary>
-        /// Compares two firmware status notification responses for inequality.
+        /// Compares two FirmwareStatusNotification responses for inequality.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationResponse1">A firmware status notification response.</param>
-        /// <param name="FirmwareStatusNotificationResponse2">Another firmware status notification response.</param>
+        /// <param name="FirmwareStatusNotificationResponse1">A FirmwareStatusNotification response.</param>
+        /// <param name="FirmwareStatusNotificationResponse2">Another FirmwareStatusNotification response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (FirmwareStatusNotificationResponse? FirmwareStatusNotificationResponse1,
                                            FirmwareStatusNotificationResponse? FirmwareStatusNotificationResponse2)
@@ -358,9 +448,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two firmware status notification responses for equality.
+        /// Compares two FirmwareStatusNotification responses for equality.
         /// </summary>
-        /// <param name="Object">A firmware status notification response to compare with.</param>
+        /// <param name="Object">A FirmwareStatusNotification response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is FirmwareStatusNotificationResponse firmwareStatusNotificationResponse &&
@@ -371,9 +461,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(FirmwareStatusNotificationResponse)
 
         /// <summary>
-        /// Compares two firmware status notification responses for equality.
+        /// Compares two FirmwareStatusNotification responses for equality.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationResponse">A firmware status notification response to compare with.</param>
+        /// <param name="FirmwareStatusNotificationResponse">A FirmwareStatusNotification response to compare with.</param>
         public override Boolean Equals(FirmwareStatusNotificationResponse? FirmwareStatusNotificationResponse)
 
             => FirmwareStatusNotificationResponse is not null &&

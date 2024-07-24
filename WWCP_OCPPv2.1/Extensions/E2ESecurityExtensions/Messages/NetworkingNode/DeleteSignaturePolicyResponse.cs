@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A boot notification response.
+    /// The DeleteSignaturePolicy response.
     /// </summary>
     public class DeleteSignaturePolicyResponse : AResponse<DeleteSignaturePolicyRequest,
                                                            DeleteSignaturePolicyResponse>,
@@ -88,9 +88,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region DeleteSignaturePolicyResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new DeleteSignaturePolicy response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The DeleteSignaturePolicy request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -141,15 +141,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region DeleteSignaturePolicyResponse(Request, Result)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new DeleteSignaturePolicy response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
         public DeleteSignaturePolicyResponse(DeleteSignaturePolicyRequest  Request,
-                                             Result                        Result)
+                                             Result                        Result,
+                                             DateTime?                     ResponseTimestamp   = null,
+
+                                             NetworkingNode_Id?            DestinationId       = null,
+                                             NetworkPath?                  NetworkPath         = null,
+
+                                             IEnumerable<KeyPair>?         SignKeys            = null,
+                                             IEnumerable<SignInfo>?        SignInfos           = null,
+                                             IEnumerable<Signature>?       Signatures          = null,
+
+                                             CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -255,11 +275,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) Parse   (Request, JSON, CustomDeleteSignaturePolicyResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification response.
+        /// Parse the given JSON representation of a DeleteSignaturePolicy response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The DeleteSignaturePolicy request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDeleteSignaturePolicyResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomDeleteSignaturePolicyResponseParser">An optional delegate to parse custom DeleteSignaturePolicy responses.</param>
         public static DeleteSignaturePolicyResponse Parse(DeleteSignaturePolicyRequest                                 Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?  CustomDeleteSignaturePolicyResponseParser   = null)
@@ -275,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return deleteSignaturePolicyResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DeleteSignaturePolicy response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -285,13 +305,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(Request, JSON, out DeleteSignaturePolicyResponse, out ErrorResponse, CustomDeleteSignaturePolicyResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification response.
+        /// Try to parse the given JSON representation of a DeleteSignaturePolicy response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The DeleteSignaturePolicy request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="DeleteSignaturePolicyResponse">The parsed boot notification response.</param>
+        /// <param name="DeleteSignaturePolicyResponse">The parsed DeleteSignaturePolicy response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteSignaturePolicyResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomDeleteSignaturePolicyResponseParser">An optional delegate to parse custom DeleteSignaturePolicy responses.</param>
         public static Boolean TryParse(DeleteSignaturePolicyRequest                                 Request,
                                        JObject                                                      JSON,
                                        [NotNullWhen(true)]  out DeleteSignaturePolicyResponse?      DeleteSignaturePolicyResponse,
@@ -418,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 DeleteSignaturePolicyResponse  = null;
-                ErrorResponse             = "The given JSON representation of a boot notification response is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a DeleteSignaturePolicy response is invalid: " + e.Message;
                 return false;
             }
 
@@ -431,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDeleteSignaturePolicyResponseSerializer">A delegate to serialize custom boot notification responses.</param>
+        /// <param name="CustomDeleteSignaturePolicyResponseSerializer">A delegate to serialize custom DeleteSignaturePolicy responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -475,12 +495,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Static methods
 
         /// <summary>
-        /// The boot notification failed.
+        /// The DeleteSignaturePolicy failed because of a request error.
         /// </summary>
-        public static DeleteSignaturePolicyResponse Failed(DeleteSignaturePolicyRequest Request)
+        /// <param name="Request">The DeleteSignaturePolicy request.</param>
+        public static DeleteSignaturePolicyResponse RequestError(DeleteSignaturePolicyRequest  Request,
+                                                                 EventTracking_Id              EventTrackingId,
+                                                                 ResultCode                    ErrorCode,
+                                                                 String?                       ErrorDescription    = null,
+                                                                 JObject?                      ErrorDetails        = null,
+                                                                 DateTime?                     ResponseTimestamp   = null,
+
+                                                                 NetworkingNode_Id?            DestinationId       = null,
+                                                                 NetworkPath?                  NetworkPath         = null,
+
+                                                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                 IEnumerable<Signature>?       Signatures          = null,
+
+                                                                 CustomData?                   CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The DeleteSignaturePolicy failed.
+        /// </summary>
+        /// <param name="Request">The DeleteSignaturePolicy request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static DeleteSignaturePolicyResponse SignatureError(DeleteSignaturePolicyRequest  Request,
+                                                                   String                        ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The DeleteSignaturePolicy failed.
+        /// </summary>
+        /// <param name="Request">The DeleteSignaturePolicy request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static DeleteSignaturePolicyResponse Failed(DeleteSignaturePolicyRequest  Request,
+                                                           String?                       Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The DeleteSignaturePolicy failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The DeleteSignaturePolicy request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static DeleteSignaturePolicyResponse ExceptionOccured(DeleteSignaturePolicyRequest  Request,
+                                                                     Exception                     Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -490,10 +581,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (DeleteSignaturePolicyResponse1, DeleteSignaturePolicyResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two DeleteSignaturePolicy responses for equality.
         /// </summary>
-        /// <param name="DeleteSignaturePolicyResponse1">A boot notification response.</param>
-        /// <param name="DeleteSignaturePolicyResponse2">Another boot notification response.</param>
+        /// <param name="DeleteSignaturePolicyResponse1">A DeleteSignaturePolicy response.</param>
+        /// <param name="DeleteSignaturePolicyResponse2">Another DeleteSignaturePolicy response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (DeleteSignaturePolicyResponse? DeleteSignaturePolicyResponse1,
                                            DeleteSignaturePolicyResponse? DeleteSignaturePolicyResponse2)
@@ -516,10 +607,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (DeleteSignaturePolicyResponse1, DeleteSignaturePolicyResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for inequality.
+        /// Compares two DeleteSignaturePolicy responses for inequality.
         /// </summary>
-        /// <param name="DeleteSignaturePolicyResponse1">A boot notification response.</param>
-        /// <param name="DeleteSignaturePolicyResponse2">Another boot notification response.</param>
+        /// <param name="DeleteSignaturePolicyResponse1">A DeleteSignaturePolicy response.</param>
+        /// <param name="DeleteSignaturePolicyResponse2">Another DeleteSignaturePolicy response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (DeleteSignaturePolicyResponse? DeleteSignaturePolicyResponse1,
                                            DeleteSignaturePolicyResponse? DeleteSignaturePolicyResponse2)
@@ -535,9 +626,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two DeleteSignaturePolicy responses for equality.
         /// </summary>
-        /// <param name="Object">A boot notification response to compare with.</param>
+        /// <param name="Object">A DeleteSignaturePolicy response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DeleteSignaturePolicyResponse deleteSignaturePolicyResponse &&
@@ -548,9 +639,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(DeleteSignaturePolicyResponse)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two DeleteSignaturePolicy responses for equality.
         /// </summary>
-        /// <param name="DeleteSignaturePolicyResponse">A boot notification response to compare with.</param>
+        /// <param name="DeleteSignaturePolicyResponse">A DeleteSignaturePolicy response to compare with.</param>
         public override Boolean Equals(DeleteSignaturePolicyResponse? DeleteSignaturePolicyResponse)
 
             => DeleteSignaturePolicyResponse is not null &&

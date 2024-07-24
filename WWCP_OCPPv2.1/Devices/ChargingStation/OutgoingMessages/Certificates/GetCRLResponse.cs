@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get certificate revocation list response.
+    /// The GetCRL response.
     /// </summary>
     public class GetCRLResponse : AResponse<CS.GetCRLRequest,
                                                GetCRLResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The get certificate revocation list request identification.
+        /// The GetCRL request identification.
         /// </summary>
         [Mandatory]
         public UInt32         GetCRLRequestId    { get; }
@@ -80,10 +80,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region GetCRLResponse(Request, GetCRLRequestId, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new get certificate revocation list response.
+        /// Create a new GetCRL response.
         /// </summary>
-        /// <param name="Request">The get certificate revocation list request leading to this response.</param>
-        /// <param name="GetCRLRequestId">The get certificate revocation list request identification.</param>
+        /// <param name="Request">The GetCRL request leading to this response.</param>
+        /// <param name="GetCRLRequestId">The GetCRL request identification.</param>
         /// <param name="Status">The success or failure of the EXI message processing.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -131,15 +131,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region GetCRLResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get certificate revocation list response.
+        /// Create a new GetCRL response.
         /// </summary>
-        /// <param name="Request">The get certificate revocation list request leading to this response.</param>
+        /// <param name="Request">The GetCRL request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public GetCRLResponse(CS.GetCRLRequest  Request,
-                              Result            Result)
+        public GetCRLResponse(CS.GetCRLRequest         Request,
+                              Result                   Result,
+                              DateTime?                ResponseTimestamp   = null,
+
+                              NetworkingNode_Id?       DestinationId       = null,
+                              NetworkPath?             NetworkPath         = null,
+
+                              IEnumerable<KeyPair>?    SignKeys            = null,
+                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              IEnumerable<Signature>?  Signatures          = null,
+
+                              CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -158,11 +178,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomGetCRLResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get certificate revocation list response.
+        /// Parse the given JSON representation of a GetCRL response.
         /// </summary>
-        /// <param name="Request">The get certificate revocation list request leading to this response.</param>
+        /// <param name="Request">The GetCRL request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetCRLResponseParser">A delegate to parse custom get certificate revocation list responses.</param>
+        /// <param name="CustomGetCRLResponseParser">A delegate to parse custom GetCRL responses.</param>
         public static GetCRLResponse Parse(CS.GetCRLRequest                              Request,
                                            JObject                                       JSON,
                                            CustomJObjectParserDelegate<GetCRLResponse>?  CustomGetCRLResponseParser   = null)
@@ -177,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return getCRLResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get certificate revocation list response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetCRL response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -187,13 +207,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out GetCRLResponse, out ErrorResponse, CustomGetCRLResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get certificate revocation list response.
+        /// Try to parse the given JSON representation of a GetCRL response.
         /// </summary>
-        /// <param name="Request">The get certificate revocation list request leading to this response.</param>
+        /// <param name="Request">The GetCRL request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetCRLResponse">The parsed get certificate revocation list response.</param>
+        /// <param name="GetCRLResponse">The parsed GetCRL response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetCRLResponseParser">A delegate to parse custom get certificate revocation list responses.</param>
+        /// <param name="CustomGetCRLResponseParser">A delegate to parse custom GetCRL responses.</param>
         public static Boolean TryParse(CS.GetCRLRequest                              Request,
                                        JObject                                       JSON,
                                        [NotNullWhen(true)]  out GetCRLResponse?      GetCRLResponse,
@@ -209,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region GetCRLRequestId    [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "get certificate revocation list request identification",
+                                         "GetCRL request identification",
                                          out UInt32 GetCRLRequestId,
                                          out ErrorResponse))
                 {
@@ -296,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetCRLResponse  = null;
-                ErrorResponse   = "The given JSON representation of a get certificate revocation list response is invalid: " + e.Message;
+                ErrorResponse   = "The given JSON representation of a GetCRL response is invalid: " + e.Message;
                 return false;
             }
 
@@ -309,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetCRLResponseSerializer">A delegate to serialize custom get certificate revocation list responses.</param>
+        /// <param name="CustomGetCRLResponseSerializer">A delegate to serialize custom GetCRL responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -352,13 +372,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The get certificate revocation list failed.
+        /// The GetCRL failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get certificate revocation list request leading to this response.</param>
-        public static GetCRLResponse Failed(CS.GetCRLRequest Request)
+        /// <param name="Request">The GetCRL request.</param>
+        public static GetCRLResponse RequestError(CS.GetCRLRequest         Request,
+                                                  EventTracking_Id         EventTrackingId,
+                                                  ResultCode               ErrorCode,
+                                                  String?                  ErrorDescription    = null,
+                                                  JObject?                 ErrorDetails        = null,
+                                                  DateTime?                ResponseTimestamp   = null,
+
+                                                  NetworkingNode_Id?       DestinationId       = null,
+                                                  NetworkPath?             NetworkPath         = null,
+
+                                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                                  IEnumerable<Signature>?  Signatures          = null,
+
+                                                  CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetCRL failed.
+        /// </summary>
+        /// <param name="Request">The GetCRL request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetCRLResponse SignatureError(CS.GetCRLRequest  Request,
+                                                    String            ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetCRL failed.
+        /// </summary>
+        /// <param name="Request">The GetCRL request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetCRLResponse Failed(CS.GetCRLRequest  Request,
+                                            String?           Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetCRL failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetCRL request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetCRLResponse ExceptionOccured(CS.GetCRLRequest  Request,
+                                                      Exception         Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -368,10 +458,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetCRLResponse1, GetCRLResponse2)
 
         /// <summary>
-        /// Compares two get certificate revocation list responses for equality.
+        /// Compares two GetCRL responses for equality.
         /// </summary>
-        /// <param name="GetCRLResponse1">A get certificate revocation list response.</param>
-        /// <param name="GetCRLResponse2">Another get certificate revocation list response.</param>
+        /// <param name="GetCRLResponse1">A GetCRL response.</param>
+        /// <param name="GetCRLResponse2">Another GetCRL response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetCRLResponse? GetCRLResponse1,
                                            GetCRLResponse? GetCRLResponse2)
@@ -394,10 +484,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetCRLResponse1, GetCRLResponse2)
 
         /// <summary>
-        /// Compares two get certificate revocation list responses for inequality.
+        /// Compares two GetCRL responses for inequality.
         /// </summary>
-        /// <param name="GetCRLResponse1">A get certificate revocation list response.</param>
-        /// <param name="GetCRLResponse2">Another get certificate revocation list response.</param>
+        /// <param name="GetCRLResponse1">A GetCRL response.</param>
+        /// <param name="GetCRLResponse2">Another GetCRL response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetCRLResponse? GetCRLResponse1,
                                            GetCRLResponse? GetCRLResponse2)
@@ -413,9 +503,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get certificate revocation list responses for equality.
+        /// Compares two GetCRL responses for equality.
         /// </summary>
-        /// <param name="Object">A get certificate revocation list response to compare with.</param>
+        /// <param name="Object">A GetCRL response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetCRLResponse getCRLResponse &&
@@ -426,9 +516,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetCRLResponse)
 
         /// <summary>
-        /// Compares two get certificate revocation list responses for equality.
+        /// Compares two GetCRL responses for equality.
         /// </summary>
-        /// <param name="GetCRLResponse">A get certificate revocation list response to compare with.</param>
+        /// <param name="GetCRLResponse">A GetCRL response to compare with.</param>
         public override Boolean Equals(GetCRLResponse? GetCRLResponse)
 
             => GetCRLResponse is not null &&

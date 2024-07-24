@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,93 +32,39 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<PullDynamicScheduleUpdateRequest>?       CustomPullDynamicScheduleUpdateRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateResponse>?  CustomPullDynamicScheduleUpdateResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a PullDynamicScheduleUpdate WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                               OnPullDynamicScheduleUpdateWSRequest;
-
-        /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateRequestReceivedDelegate?     OnPullDynamicScheduleUpdateRequestReceived;
+        public event OnPullDynamicScheduleUpdateRequestReceivedDelegate?  OnPullDynamicScheduleUpdateRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a PullDynamicScheduleUpdate was received.
+        /// An event sent whenever a PullDynamicScheduleUpdate request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateDelegate?            OnPullDynamicScheduleUpdate;
-
-        /// <summary>
-        /// An event sent whenever a response to a PullDynamicScheduleUpdate was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateResponseSentDelegate?    OnPullDynamicScheduleUpdateResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a PullDynamicScheduleUpdate was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?                   OnPullDynamicScheduleUpdateWSResponse;
+        public event OnPullDynamicScheduleUpdateDelegate?                 OnPullDynamicScheduleUpdate;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_PullDynamicScheduleUpdate(DateTime                   RequestTimestamp,
+            Receive_PullDynamicScheduleUpdate(DateTime              RequestTimestamp,
                                               IWebSocketConnection  WebSocketConnection,
-                                              NetworkPath                NetworkPath,
-                                              NetworkingNode_Id          DestinationId,
-                                              EventTracking_Id           EventTrackingId,
-                                              Request_Id                 RequestId,
-                                              JObject                    JSONRequest,
-                                              CancellationToken          CancellationToken)
+                                              NetworkingNode_Id     DestinationId,
+                                              NetworkPath           NetworkPath,
+                                              EventTracking_Id      EventTrackingId,
+                                              Request_Id            RequestId,
+                                              JObject               JSONRequest,
+                                              CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnPullDynamicScheduleUpdateWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnPullDynamicScheduleUpdateWSRequest?.Invoke(startTime,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             DestinationId,
-                                                             NetworkPath,
-                                                             EventTrackingId,
-                                                             RequestTimestamp,
-                                                             JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPullDynamicScheduleUpdateWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,149 +75,233 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                               NetworkPath,
                                                               out var request,
                                                               out var errorResponse,
-                                                              CustomPullDynamicScheduleUpdateRequestParser)) {
+                                                              RequestTimestamp,
+                                                              parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                              EventTrackingId,
+                                                              parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateRequestParser)) {
 
-                    #region Send OnPullDynamicScheduleUpdateRequest event
+                    PullDynamicScheduleUpdateResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnPullDynamicScheduleUpdateRequestReceived?.Invoke(Timestamp.Now,
-                                                                   parentNetworkingNode,
-                                                                   WebSocketConnection,
-                                                                   request);
+                        response = PullDynamicScheduleUpdateResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPullDynamicScheduleUpdateRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnPullDynamicScheduleUpdateRequestReceived event
+
+                    var logger = OnPullDynamicScheduleUpdateRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnPullDynamicScheduleUpdateRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnPullDynamicScheduleUpdateRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    PullDynamicScheduleUpdateResponse? response = null;
-
-                    var responseTasks = OnPullDynamicScheduleUpdate?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnPullDynamicScheduleUpdateDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                 parentNetworkingNode,
-                                                                                                                                 WebSocketConnection,
-                                                                                                                                 request,
-                                                                                                                                 CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnPullDynamicScheduleUpdate?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnPullDynamicScheduleUpdateDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : PullDynamicScheduleUpdateResponse.Failed(request, $"Undefined {nameof(OnPullDynamicScheduleUpdate)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = PullDynamicScheduleUpdateResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnPullDynamicScheduleUpdate),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= PullDynamicScheduleUpdateResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnPullDynamicScheduleUpdateResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnPullDynamicScheduleUpdateResponseSent?.Invoke(Timestamp.Now,
-                                                                    parentNetworkingNode,
-                                                                    WebSocketConnection,
-                                                                    request,
-                                                                    response,
-                                                                    response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPullDynamicScheduleUpdateResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnPullDynamicScheduleUpdateResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnPullDynamicScheduleUpdateResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomPullDynamicScheduleUpdateResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_PullDynamicScheduleUpdate)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_PullDynamicScheduleUpdate)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_PullDynamicScheduleUpdate)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_PullDynamicScheduleUpdate)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnPullDynamicScheduleUpdateWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnPullDynamicScheduleUpdateWSResponse?.Invoke(endTime,
-                                                              parentNetworkingNode,
-                                                              WebSocketConnection,
-                                                              DestinationId,
-                                                              NetworkPath,
-                                                              EventTrackingId,
-                                                              RequestTimestamp,
-                                                              JSONRequest,
-                                                              OCPPResponse?.Payload,
-                                                              OCPPErrorResponse?.ToJSON(),
-                                                              endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPullDynamicScheduleUpdateWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
         /// An event sent whenever a response to a PullDynamicScheduleUpdate was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateResponseSentDelegate? OnPullDynamicScheduleUpdateResponseSent;
+        public event OnPullDynamicScheduleUpdateResponseSentDelegate?  OnPullDynamicScheduleUpdateResponseSent;
+
+        #endregion
+
+        #region Send OnPullDynamicScheduleUpdateResponse event
+
+        public async Task SendOnPullDynamicScheduleUpdateResponseSent(DateTime                           Timestamp,
+                                                                      IEventSender                       Sender,
+                                                                      IWebSocketConnection               Connection,
+                                                                      PullDynamicScheduleUpdateRequest   Request,
+                                                                      PullDynamicScheduleUpdateResponse  Response,
+                                                                      TimeSpan                           Runtime)
+        {
+
+            var logger = OnPullDynamicScheduleUpdateResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnPullDynamicScheduleUpdateResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnPullDynamicScheduleUpdateResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

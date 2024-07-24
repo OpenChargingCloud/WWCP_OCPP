@@ -765,11 +765,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomTransactionEventRequestParser">A delegate to parse custom transaction event requests.</param>
         public static TransactionEventRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
                                                     NetworkingNode_Id                                      DestinationId,
                                                     NetworkPath                                            NetworkPath,
+                                                    DateTime?                                              RequestTimestamp                      = null,
+                                                    TimeSpan?                                              RequestTimeout                        = null,
+                                                    EventTracking_Id?                                      EventTrackingId                       = null,
                                                     CustomJObjectParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser   = null)
         {
 
@@ -779,6 +785,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var transactionEventRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomTransactionEventRequestParser))
             {
                 return transactionEventRequest;
@@ -802,6 +811,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="TransactionEventRequest">The parsed transaction event request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomTransactionEventRequestParser">A delegate to parse custom transaction event requests.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
@@ -809,7 +821,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out TransactionEventRequest?      TransactionEventRequest,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
-                                       CustomJObjectParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser)
+                                       DateTime?                                              RequestTimestamp                      = null,
+                                       TimeSpan?                                              RequestTimeout                        = null,
+                                       EventTracking_Id?                                      EventTrackingId                       = null,
+                                       CustomJObjectParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser   = null)
         {
 
             try
@@ -1050,9 +1065,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               CustomData,
 
                                               RequestId,
-                                              null,
-                                              null,
-                                              null,
+                                              RequestTimestamp,
+                                              RequestTimeout,
+                                              EventTrackingId,
                                               NetworkPath
 
                                           );

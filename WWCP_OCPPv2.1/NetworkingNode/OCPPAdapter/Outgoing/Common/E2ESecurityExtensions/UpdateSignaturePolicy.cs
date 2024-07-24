@@ -32,14 +32,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
-        #region Custom JSON serializer delegates
-
-        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestSerializer    { get; set; }
-
-        public CustomJObjectParserDelegate<UpdateSignaturePolicyResponse>?     CustomUpdateSignaturePolicyResponseParser       { get; set; }
-
-        #endregion
-
         #region Events
 
         /// <summary>
@@ -47,13 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnUpdateSignaturePolicyRequestSentDelegate?         OnUpdateSignaturePolicyRequestSent;
 
-        /// <summary>
-        /// An event sent whenever a response to a UpdateSignaturePolicy request was sent.
-        /// </summary>
-        public event OnUpdateSignaturePolicyResponseReceivedDelegate?    OnUpdateSignaturePolicyResponseReceived;
-
         #endregion
-
 
         #region UpdateSignaturePolicy(Request)
 
@@ -89,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  OCPP_JSONRequestMessage.FromRequest(
                                                      Request,
                                                      Request.ToJSON(
-                                                         CustomUpdateSignaturePolicyRequestSerializer
+                                                         parentNetworkingNode.OCPP.CustomUpdateSignaturePolicyRequestSerializer
                                                          //CustomMessageInfoSerializer,
                                                          //CustomMessageContentSerializer,
                                                          //CustomComponentSerializer,
@@ -108,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                sendRequestState.JSONResponse.Payload,
                                                                out var setDisplayMessageResponse,
                                                                out var errorResponse,
-                                                               CustomUpdateSignaturePolicyResponseParser) &&
+                                                               parentNetworkingNode.OCPP.CustomUpdateSignaturePolicyResponseParser) &&
                         setDisplayMessageResponse is not null)
                     {
                         response = setDisplayMessageResponse;
@@ -140,22 +126,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnUpdateSignaturePolicyResponseReceived event
 
-            var endTime = Timestamp.Now;
+            //var endTime = Timestamp.Now;
 
-            try
-            {
+            //try
+            //{
 
-                OnUpdateSignaturePolicyResponseReceived?.Invoke(endTime,
-                                                                parentNetworkingNode,
-                                                                Request,
-                                                                response,
-                                                                endTime - startTime);
+            //    OnUpdateSignaturePolicyResponseReceived?.Invoke(endTime,
+            //                                                    parentNetworkingNode,
+            //                                                    Request,
+            //                                                    response,
+            //                                                    endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateSignaturePolicyResponseReceived));
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateSignaturePolicyResponseReceived));
+            //}
 
             #endregion
 
@@ -165,6 +151,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        #region Events
+
+        /// <summary>
+        /// An event sent whenever a response to a UpdateSignaturePolicy request was sent.
+        /// </summary>
+        public event OnUpdateSignaturePolicyResponseReceivedDelegate? OnUpdateSignaturePolicyResponseReceived;
+
+        #endregion
 
     }
 

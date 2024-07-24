@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,93 +32,39 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<ReportChargingProfilesRequest>?       CustomReportChargingProfilesRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<ReportChargingProfilesResponse>?  CustomReportChargingProfilesResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a ReportChargingProfiles WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                            OnReportChargingProfilesWSRequest;
-
-        /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReportChargingProfilesRequestReceivedDelegate?     OnReportChargingProfilesRequestReceived;
+        public event OnReportChargingProfilesRequestReceivedDelegate?  OnReportChargingProfilesRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a ReportChargingProfiles was received.
+        /// An event sent whenever a ReportChargingProfiles request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReportChargingProfilesDelegate?            OnReportChargingProfiles;
-
-        /// <summary>
-        /// An event sent whenever a response to a ReportChargingProfiles was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseSentDelegate?    OnReportChargingProfilesResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a ReportChargingProfiles was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?                OnReportChargingProfilesWSResponse;
+        public event OnReportChargingProfilesDelegate?                 OnReportChargingProfiles;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_ReportChargingProfiles(DateTime                   RequestTimestamp,
+            Receive_ReportChargingProfiles(DateTime              RequestTimestamp,
                                            IWebSocketConnection  WebSocketConnection,
-                                           NetworkingNode_Id          DestinationId,
-                                           NetworkPath                NetworkPath,
-                                           EventTracking_Id           EventTrackingId,
-                                           Request_Id                 RequestId,
-                                           JObject                    JSONRequest,
-                                           CancellationToken          CancellationToken)
+                                           NetworkingNode_Id     DestinationId,
+                                           NetworkPath           NetworkPath,
+                                           EventTracking_Id      EventTrackingId,
+                                           Request_Id            RequestId,
+                                           JObject               JSONRequest,
+                                           CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnReportChargingProfilesWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnReportChargingProfilesWSRequest?.Invoke(startTime,
-                                                          parentNetworkingNode,
-                                                          WebSocketConnection,
-                                                          DestinationId,
-                                                          NetworkPath,
-                                                          EventTrackingId,
-                                                          RequestTimestamp,
-                                                          JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReportChargingProfilesWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,149 +75,258 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            NetworkPath,
                                                            out var request,
                                                            out var errorResponse,
-                                                           CustomReportChargingProfilesRequestParser)) {
+                                                           RequestTimestamp,
+                                                           parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                           EventTrackingId,
+                                                           parentNetworkingNode.OCPP.CustomReportChargingProfilesRequestParser)) {
 
-                    #region Send OnReportChargingProfilesRequest event
+                    ReportChargingProfilesResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+
+                            parentNetworkingNode.OCPP.CustomReportChargingProfilesRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingProfileSerializer,
+                            parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
+                            parentNetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
+                            parentNetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
+                            parentNetworkingNode.OCPP.CustomSalesTariffSerializer,
+                            parentNetworkingNode.OCPP.CustomSalesTariffEntrySerializer,
+                            parentNetworkingNode.OCPP.CustomRelativeTimeIntervalSerializer,
+                            parentNetworkingNode.OCPP.CustomConsumptionCostSerializer,
+                            parentNetworkingNode.OCPP.CustomCostSerializer,
+
+                            parentNetworkingNode.OCPP.CustomAbsolutePriceScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceRuleStackSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceRuleSerializer,
+                            parentNetworkingNode.OCPP.CustomTaxRuleSerializer,
+                            parentNetworkingNode.OCPP.CustomOverstayRuleListSerializer,
+                            parentNetworkingNode.OCPP.CustomOverstayRuleSerializer,
+                            parentNetworkingNode.OCPP.CustomAdditionalServiceSerializer,
+
+                            parentNetworkingNode.OCPP.CustomPriceLevelScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceLevelScheduleEntrySerializer,
+
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+
+                        ),
+                        out errorResponse))
                     {
 
-                        OnReportChargingProfilesRequestReceived?.Invoke(Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                WebSocketConnection,
-                                                                request);
+                        response = ReportChargingProfilesResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReportChargingProfilesRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnReportChargingProfilesRequestReceived event
+
+                    var logger = OnReportChargingProfilesRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnReportChargingProfilesRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnReportChargingProfilesRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    ReportChargingProfilesResponse? response = null;
-
-                    var responseTasks = OnReportChargingProfiles?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnReportChargingProfilesDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                              parentNetworkingNode,
-                                                                                                                              WebSocketConnection,
-                                                                                                                              request,
-                                                                                                                              CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnReportChargingProfiles?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnReportChargingProfilesDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : ReportChargingProfilesResponse.Failed(request, $"Undefined {nameof(OnReportChargingProfiles)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = ReportChargingProfilesResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnReportChargingProfiles),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= ReportChargingProfilesResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnReportChargingProfilesResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnReportChargingProfilesResponseSent?.Invoke(Timestamp.Now,
-                                                                 parentNetworkingNode,
-                                                                 WebSocketConnection,
-                                                                 request,
-                                                                 response,
-                                                                 response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReportChargingProfilesResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomReportChargingProfilesResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnReportChargingProfilesResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnReportChargingProfilesResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomReportChargingProfilesResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomReportChargingProfilesResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_ReportChargingProfiles)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_ReportChargingProfiles)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_ReportChargingProfiles)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_ReportChargingProfiles)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnReportChargingProfilesWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnReportChargingProfilesWSResponse?.Invoke(endTime,
-                                                           parentNetworkingNode,
-                                                           WebSocketConnection,
-                                                           DestinationId,
-                                                           NetworkPath,
-                                                           EventTrackingId,
-                                                           RequestTimestamp,
-                                                           JSONRequest,
-                                                           OCPPResponse?.Payload,
-                                                           OCPPErrorResponse?.ToJSON(),
-                                                           endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReportChargingProfilesWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
         /// An event sent whenever a response to a ReportChargingProfiles was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseSentDelegate? OnReportChargingProfilesResponseSent;
+        public event OnReportChargingProfilesResponseSentDelegate?  OnReportChargingProfilesResponseSent;
+
+        #endregion
+
+        #region Send OnReportChargingProfilesResponse event
+
+        public async Task SendOnReportChargingProfilesResponseSent(DateTime                        Timestamp,
+                                                                   IEventSender                    Sender,
+                                                                   IWebSocketConnection            Connection,
+                                                                   ReportChargingProfilesRequest   Request,
+                                                                   ReportChargingProfilesResponse  Response,
+                                                                   TimeSpan                        Runtime)
+        {
+
+            var logger = OnReportChargingProfilesResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnReportChargingProfilesResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnReportChargingProfilesResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A boot notification response.
+    /// The UpdateUserRole response.
     /// </summary>
     public class UpdateUserRoleResponse : AResponse<UpdateUserRoleRequest,
                                                     UpdateUserRoleResponse>,
@@ -88,9 +88,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region UpdateUserRoleResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new UpdateUserRole response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The UpdateUserRole request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -141,15 +141,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region UpdateUserRoleResponse(Request, Result)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new UpdateUserRole response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public UpdateUserRoleResponse(UpdateUserRoleRequest  Request,
-                                      Result                 Result)
+        public UpdateUserRoleResponse(UpdateUserRoleRequest    Request,
+                                      Result                   Result,
+                                      DateTime?                ResponseTimestamp   = null,
+
+                                      NetworkingNode_Id?       DestinationId       = null,
+                                      NetworkPath?             NetworkPath         = null,
+
+                                      IEnumerable<KeyPair>?    SignKeys            = null,
+                                      IEnumerable<SignInfo>?   SignInfos           = null,
+                                      IEnumerable<Signature>?  Signatures          = null,
+
+                                      CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -255,11 +275,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) Parse   (Request, JSON, CustomUpdateUserRoleResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification response.
+        /// Parse the given JSON representation of a UpdateUserRole response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The UpdateUserRole request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUpdateUserRoleResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomUpdateUserRoleResponseParser">An optional delegate to parse custom UpdateUserRole responses.</param>
         public static UpdateUserRoleResponse Parse(UpdateUserRoleRequest                                 Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<UpdateUserRoleResponse>?  CustomUpdateUserRoleResponseParser   = null)
@@ -275,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return updateUserRoleResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a UpdateUserRole response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -285,13 +305,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(Request, JSON, out UpdateUserRoleResponse, out ErrorResponse, CustomUpdateUserRoleResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification response.
+        /// Try to parse the given JSON representation of a UpdateUserRole response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The UpdateUserRole request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="UpdateUserRoleResponse">The parsed boot notification response.</param>
+        /// <param name="UpdateUserRoleResponse">The parsed UpdateUserRole response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUpdateUserRoleResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomUpdateUserRoleResponseParser">An optional delegate to parse custom UpdateUserRole responses.</param>
         public static Boolean TryParse(UpdateUserRoleRequest                                 Request,
                                        JObject                                               JSON,
                                        [NotNullWhen(true)]  out UpdateUserRoleResponse?      UpdateUserRoleResponse,
@@ -418,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 UpdateUserRoleResponse  = null;
-                ErrorResponse           = "The given JSON representation of a boot notification response is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a UpdateUserRole response is invalid: " + e.Message;
                 return false;
             }
 
@@ -431,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUpdateUserRoleResponseSerializer">A delegate to serialize custom boot notification responses.</param>
+        /// <param name="CustomUpdateUserRoleResponseSerializer">A delegate to serialize custom UpdateUserRole responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -475,12 +495,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Static methods
 
         /// <summary>
-        /// The boot notification failed.
+        /// The UpdateUserRole failed because of a request error.
         /// </summary>
-        public static UpdateUserRoleResponse Failed(UpdateUserRoleRequest Request)
+        /// <param name="Request">The UpdateUserRole request.</param>
+        public static UpdateUserRoleResponse RequestError(UpdateUserRoleRequest    Request,
+                                                          EventTracking_Id         EventTrackingId,
+                                                          ResultCode               ErrorCode,
+                                                          String?                  ErrorDescription    = null,
+                                                          JObject?                 ErrorDetails        = null,
+                                                          DateTime?                ResponseTimestamp   = null,
+
+                                                          NetworkingNode_Id?       DestinationId       = null,
+                                                          NetworkPath?             NetworkPath         = null,
+
+                                                          IEnumerable<KeyPair>?    SignKeys            = null,
+                                                          IEnumerable<SignInfo>?   SignInfos           = null,
+                                                          IEnumerable<Signature>?  Signatures          = null,
+
+                                                          CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The UpdateUserRole failed.
+        /// </summary>
+        /// <param name="Request">The UpdateUserRole request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static UpdateUserRoleResponse SignatureError(UpdateUserRoleRequest  Request,
+                                                            String                 ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The UpdateUserRole failed.
+        /// </summary>
+        /// <param name="Request">The UpdateUserRole request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static UpdateUserRoleResponse Failed(UpdateUserRoleRequest  Request,
+                                                    String?                Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The UpdateUserRole failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The UpdateUserRole request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static UpdateUserRoleResponse ExceptionOccured(UpdateUserRoleRequest  Request,
+                                                              Exception              Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -490,10 +581,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (UpdateUserRoleResponse1, UpdateUserRoleResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two UpdateUserRole responses for equality.
         /// </summary>
-        /// <param name="UpdateUserRoleResponse1">A boot notification response.</param>
-        /// <param name="UpdateUserRoleResponse2">Another boot notification response.</param>
+        /// <param name="UpdateUserRoleResponse1">A UpdateUserRole response.</param>
+        /// <param name="UpdateUserRoleResponse2">Another UpdateUserRole response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UpdateUserRoleResponse? UpdateUserRoleResponse1,
                                            UpdateUserRoleResponse? UpdateUserRoleResponse2)
@@ -516,10 +607,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (UpdateUserRoleResponse1, UpdateUserRoleResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for inequality.
+        /// Compares two UpdateUserRole responses for inequality.
         /// </summary>
-        /// <param name="UpdateUserRoleResponse1">A boot notification response.</param>
-        /// <param name="UpdateUserRoleResponse2">Another boot notification response.</param>
+        /// <param name="UpdateUserRoleResponse1">A UpdateUserRole response.</param>
+        /// <param name="UpdateUserRoleResponse2">Another UpdateUserRole response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UpdateUserRoleResponse? UpdateUserRoleResponse1,
                                            UpdateUserRoleResponse? UpdateUserRoleResponse2)
@@ -535,9 +626,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two UpdateUserRole responses for equality.
         /// </summary>
-        /// <param name="Object">A boot notification response to compare with.</param>
+        /// <param name="Object">A UpdateUserRole response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UpdateUserRoleResponse updateUserRoleResponse &&
@@ -548,9 +639,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(UpdateUserRoleResponse)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two UpdateUserRole responses for equality.
         /// </summary>
-        /// <param name="UpdateUserRoleResponse">A boot notification response to compare with.</param>
+        /// <param name="UpdateUserRoleResponse">A UpdateUserRole response to compare with.</param>
         public override Boolean Equals(UpdateUserRoleResponse? UpdateUserRoleResponse)
 
             => UpdateUserRoleResponse is not null &&

@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
     /// <summary>
     /// The common interface of all energy meter nodes.
     /// </summary>
-    public interface IEnergyMeterNode : INetworkingNode
+    public interface IEnergyMeterNode : INetworkingNodeButNotCSMS
     {
 
         String   VendorName               { get; }

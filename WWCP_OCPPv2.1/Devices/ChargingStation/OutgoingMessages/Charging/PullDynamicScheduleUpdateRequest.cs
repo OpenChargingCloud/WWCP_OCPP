@@ -142,11 +142,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomPullDynamicScheduleUpdateRequestParser">A delegate to parse custom pull dynamic schedule update requests.</param>
         public static PullDynamicScheduleUpdateRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
                                                              NetworkingNode_Id                                               DestinationId,
                                                              NetworkPath                                                     NetworkPath,
+                                                             DateTime?                                                       RequestTimestamp                               = null,
+                                                             TimeSpan?                                                       RequestTimeout                                 = null,
+                                                             EventTracking_Id?                                               EventTrackingId                                = null,
                                                              CustomJObjectParserDelegate<PullDynamicScheduleUpdateRequest>?  CustomPullDynamicScheduleUpdateRequestParser   = null)
         {
 
@@ -156,6 +162,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var pullDynamicScheduleUpdateRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomPullDynamicScheduleUpdateRequestParser))
             {
                 return pullDynamicScheduleUpdateRequest;
@@ -179,6 +188,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="PullDynamicScheduleUpdateRequest">The parsed pull dynamic schedule update request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomPullDynamicScheduleUpdateRequestParser">A delegate to parse custom pull dynamic schedule update requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
@@ -186,7 +198,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out PullDynamicScheduleUpdateRequest?      PullDynamicScheduleUpdateRequest,
                                        [NotNullWhen(false)] out String?                                ErrorResponse,
-                                       CustomJObjectParserDelegate<PullDynamicScheduleUpdateRequest>?  CustomPullDynamicScheduleUpdateRequestParser)
+                                       DateTime?                                                       RequestTimestamp                               = null,
+                                       TimeSpan?                                                       RequestTimeout                                 = null,
+                                       EventTracking_Id?                                               EventTrackingId                                = null,
+                                       CustomJObjectParserDelegate<PullDynamicScheduleUpdateRequest>?  CustomPullDynamicScheduleUpdateRequestParser   = null)
         {
 
             try
@@ -248,9 +263,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                        CustomData,
 
                                                        RequestId,
-                                                       null,
-                                                       null,
-                                                       null,
+                                                       RequestTimestamp,
+                                                       RequestTimeout,
+                                                       EventTrackingId,
                                                        NetworkPath
 
                                                    );

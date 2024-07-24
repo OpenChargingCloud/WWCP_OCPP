@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A reservation status update response.
+    /// The ReservationStatusUpdate response.
     /// </summary>
     public class ReservationStatusUpdateResponse : AResponse<CS.ReservationStatusUpdateRequest,
                                                              ReservationStatusUpdateResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region ReservationStatusUpdateResponse(Request, ...)
 
         /// <summary>
-        /// Create a new reservation status update response.
+        /// Create a new ReservationStatusUpdate response.
         /// </summary>
-        /// <param name="Request">The reservation status update request leading to this response.</param>
+        /// <param name="Request">The ReservationStatusUpdate request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region ReservationStatusUpdateResponse(Request, Result)
 
         /// <summary>
-        /// Create a new reservation status update response.
+        /// Create a new ReservationStatusUpdate response.
         /// </summary>
-        /// <param name="Request">The reservation status update request leading to this response.</param>
+        /// <param name="Request">The ReservationStatusUpdate request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ReservationStatusUpdateResponse(CS.ReservationStatusUpdateRequest  Request,
-                                               Result                             Result)
+                                               Result                             Result,
+                                               DateTime?                          ResponseTimestamp   = null,
+
+                                               NetworkingNode_Id?                 DestinationId       = null,
+                                               NetworkPath?                       NetworkPath         = null,
+
+                                               IEnumerable<KeyPair>?              SignKeys            = null,
+                                               IEnumerable<SignInfo>?             SignInfos           = null,
+                                               IEnumerable<Signature>?            Signatures          = null,
+
+                                               CustomData?                        CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomReservationStatusUpdateResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a reservation status update response.
+        /// Parse the given JSON representation of a ReservationStatusUpdate response.
         /// </summary>
-        /// <param name="Request">The reservation status update request leading to this response.</param>
+        /// <param name="Request">The ReservationStatusUpdate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomReservationStatusUpdateResponseParser">A delegate to parse custom reservation status update responses.</param>
+        /// <param name="CustomReservationStatusUpdateResponseParser">A delegate to parse custom ReservationStatusUpdate responses.</param>
         public static ReservationStatusUpdateResponse Parse(CS.ReservationStatusUpdateRequest                              Request,
                                                             JObject                                                        JSON,
                                                             CustomJObjectParserDelegate<ReservationStatusUpdateResponse>?  CustomReservationStatusUpdateResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return reservationStatusUpdateResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a reservation status update response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ReservationStatusUpdate response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out ReservationStatusUpdateResponse, out ErrorResponse, CustomReservationStatusUpdateResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a reservation status update response.
+        /// Try to parse the given JSON representation of a ReservationStatusUpdate response.
         /// </summary>
-        /// <param name="Request">The reservation status update request leading to this response.</param>
+        /// <param name="Request">The ReservationStatusUpdate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ReservationStatusUpdateResponse">The parsed reservation status update response.</param>
+        /// <param name="ReservationStatusUpdateResponse">The parsed ReservationStatusUpdate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReservationStatusUpdateResponseParser">A delegate to parse custom reservation status update responses.</param>
+        /// <param name="CustomReservationStatusUpdateResponseParser">A delegate to parse custom ReservationStatusUpdate responses.</param>
         public static Boolean TryParse(CS.ReservationStatusUpdateRequest                              Request,
                                        JObject                                                        JSON,
                                        [NotNullWhen(true)]  out ReservationStatusUpdateResponse?      ReservationStatusUpdateResponse,
@@ -252,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 ReservationStatusUpdateResponse  = null;
-                ErrorResponse                    = "The given JSON representation of a reservation status update response is invalid: " + e.Message;
+                ErrorResponse                    = "The given JSON representation of a ReservationStatusUpdate response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomReservationStatusUpdateResponseSerializer">A delegate to serialize custom reservation status update responses.</param>
+        /// <param name="CustomReservationStatusUpdateResponseSerializer">A delegate to serialize custom ReservationStatusUpdate responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ReservationStatusUpdateResponse>?  CustomReservationStatusUpdateResponseSerializer   = null,
@@ -298,12 +318,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The reservation status update request failed.
+        /// The ReservationStatusUpdate failed because of a request error.
         /// </summary>
-        public static ReservationStatusUpdateResponse Failed(CS.ReservationStatusUpdateRequest Request)
+        /// <param name="Request">The ReservationStatusUpdate request.</param>
+        public static ReservationStatusUpdateResponse RequestError(CS.ReservationStatusUpdateRequest  Request,
+                                                                   EventTracking_Id                   EventTrackingId,
+                                                                   ResultCode                         ErrorCode,
+                                                                   String?                            ErrorDescription    = null,
+                                                                   JObject?                           ErrorDetails        = null,
+                                                                   DateTime?                          ResponseTimestamp   = null,
+
+                                                                   NetworkingNode_Id?                 DestinationId       = null,
+                                                                   NetworkPath?                       NetworkPath         = null,
+
+                                                                   IEnumerable<KeyPair>?              SignKeys            = null,
+                                                                   IEnumerable<SignInfo>?             SignInfos           = null,
+                                                                   IEnumerable<Signature>?            Signatures          = null,
+
+                                                                   CustomData?                        CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ReservationStatusUpdate failed.
+        /// </summary>
+        /// <param name="Request">The ReservationStatusUpdate request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ReservationStatusUpdateResponse SignatureError(CS.ReservationStatusUpdateRequest  Request,
+                                                                     String                             ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ReservationStatusUpdate failed.
+        /// </summary>
+        /// <param name="Request">The ReservationStatusUpdate request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ReservationStatusUpdateResponse Failed(CS.ReservationStatusUpdateRequest  Request,
+                                                             String?                            Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ReservationStatusUpdate failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ReservationStatusUpdate request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ReservationStatusUpdateResponse ExceptionOccured(CS.ReservationStatusUpdateRequest  Request,
+                                                                       Exception                          Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -313,10 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (ReservationStatusUpdateResponse1, ReservationStatusUpdateResponse2)
 
         /// <summary>
-        /// Compares two reservation status update responses for equality.
+        /// Compares two ReservationStatusUpdate responses for equality.
         /// </summary>
-        /// <param name="ReservationStatusUpdateResponse1">A reservation status update response.</param>
-        /// <param name="ReservationStatusUpdateResponse2">Another reservation status update response.</param>
+        /// <param name="ReservationStatusUpdateResponse1">A ReservationStatusUpdate response.</param>
+        /// <param name="ReservationStatusUpdateResponse2">Another ReservationStatusUpdate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ReservationStatusUpdateResponse? ReservationStatusUpdateResponse1,
                                            ReservationStatusUpdateResponse? ReservationStatusUpdateResponse2)
@@ -339,10 +430,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (ReservationStatusUpdateResponse1, ReservationStatusUpdateResponse2)
 
         /// <summary>
-        /// Compares two reservation status update responses for inequality.
+        /// Compares two ReservationStatusUpdate responses for inequality.
         /// </summary>
-        /// <param name="ReservationStatusUpdateResponse1">A reservation status update response.</param>
-        /// <param name="ReservationStatusUpdateResponse2">Another reservation status update response.</param>
+        /// <param name="ReservationStatusUpdateResponse1">A ReservationStatusUpdate response.</param>
+        /// <param name="ReservationStatusUpdateResponse2">Another ReservationStatusUpdate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ReservationStatusUpdateResponse? ReservationStatusUpdateResponse1,
                                            ReservationStatusUpdateResponse? ReservationStatusUpdateResponse2)
@@ -358,9 +449,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two reservation status update responses for equality.
+        /// Compares two ReservationStatusUpdate responses for equality.
         /// </summary>
-        /// <param name="Object">A reservation status update response to compare with.</param>
+        /// <param name="Object">A ReservationStatusUpdate response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ReservationStatusUpdateResponse reservationStatusUpdateResponse &&
@@ -371,9 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(ReservationStatusUpdateResponse)
 
         /// <summary>
-        /// Compares two reservation status update responses for equality.
+        /// Compares two ReservationStatusUpdate responses for equality.
         /// </summary>
-        /// <param name="ReservationStatusUpdateResponse">A reservation status update response to compare with.</param>
+        /// <param name="ReservationStatusUpdateResponse">A ReservationStatusUpdate response to compare with.</param>
         public override Boolean Equals(ReservationStatusUpdateResponse? ReservationStatusUpdateResponse)
 
             => ReservationStatusUpdateResponse is not null &&

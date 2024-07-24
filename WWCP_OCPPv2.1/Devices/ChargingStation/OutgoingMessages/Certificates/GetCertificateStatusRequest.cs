@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// The get certificate status request.
+    /// The GetCertificateStatus request.
     /// </summary>
     public class GetCertificateStatusRequest : ARequest<GetCertificateStatusRequest>,
                                                IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get certificate status request.
+        /// Create a new GetCertificateStatus request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="OCSPRequestData">The certificate of which the status is requested.</param>
@@ -219,17 +219,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetCertificateStatusRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get certificate status request.
+        /// Parse the given JSON representation of a GetCertificateStatus request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetCertificateStatusRequestParser">A delegate to parse custom get certificate status requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetCertificateStatusRequestParser">A delegate to parse custom GetCertificateStatus requests.</param>
         public static GetCertificateStatusRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
                                                         NetworkingNode_Id                                          DestinationId,
                                                         NetworkPath                                                NetworkPath,
+                                                        DateTime?                                                  RequestTimestamp            = null,
+                                                        TimeSpan?                                                  RequestTimeout              = null,
+                                                        EventTracking_Id?                                          EventTrackingId             = null,
                                                         CustomJObjectParserDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusRequestParser   = null)
         {
 
@@ -239,12 +245,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var getCertificateStatusRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetCertificateStatusRequestParser))
             {
                 return getCertificateStatusRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get certificate status request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetCertificateStatus request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -254,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetCertificateStatusRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get certificate status request.
+        /// Try to parse the given JSON representation of a GetCertificateStatus request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -262,6 +271,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetCertificateStatusRequest">The parsed GetCertificateStatus request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomGetCertificateStatusRequestParser">A delegate to parse custom GetCertificateStatus requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
@@ -269,7 +281,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out GetCertificateStatusRequest?      GetCertificateStatusRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
-                                       CustomJObjectParserDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusRequestParser)
+                                       DateTime?                                                  RequestTimestamp                          = null,
+                                       TimeSpan?                                                  RequestTimeout                            = null,
+                                       EventTracking_Id?                                          EventTrackingId                           = null,
+                                       CustomJObjectParserDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusRequestParser   = null)
         {
 
             try
@@ -332,9 +347,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                   CustomData,
 
                                                   RequestId,
-                                                  null,
-                                                  null,
-                                                  null,
+                                                  RequestTimestamp,
+                                                  RequestTimeout,
+                                                  EventTrackingId,
                                                   NetworkPath
 
                                               );
@@ -349,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 GetCertificateStatusRequest  = null;
-                ErrorResponse                = "The given JSON representation of a get certificate status request is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a GetCertificateStatus request is invalid: " + e.Message;
                 return false;
             }
 
@@ -447,9 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get certificate status requests for equality.
+        /// Compares two GetCertificateStatus requests for equality.
         /// </summary>
-        /// <param name="Object">A get certificate status request to compare with.</param>
+        /// <param name="Object">A GetCertificateStatus request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetCertificateStatusRequest getCertificateStatusRequest &&
@@ -460,9 +475,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(GetCertificateStatusRequest)
 
         /// <summary>
-        /// Compares two get certificate status requests for equality.
+        /// Compares two GetCertificateStatus requests for equality.
         /// </summary>
-        /// <param name="GetCertificateStatusRequest">A get certificate status request to compare with.</param>
+        /// <param name="GetCertificateStatusRequest">A GetCertificateStatus request to compare with.</param>
         public override Boolean Equals(GetCertificateStatusRequest? GetCertificateStatusRequest)
 
             => GetCertificateStatusRequest is not null &&

@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A security event notification response.
+    /// The SecurityEventNotification response.
     /// </summary>
     public class SecurityEventNotificationResponse : AResponse<CS.SecurityEventNotificationRequest,
                                                                SecurityEventNotificationResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region SecurityEventNotificationResponse(Request, ...)
 
         /// <summary>
-        /// Create a new security event notification response.
+        /// Create a new SecurityEventNotification response.
         /// </summary>
-        /// <param name="Request">The security event notification request leading to this response.</param>
+        /// <param name="Request">The SecurityEventNotification request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region SecurityEventNotificationResponse(Request, Result)
 
         /// <summary>
-        /// Create a new security event notification response.
+        /// Create a new SecurityEventNotification response.
         /// </summary>
-        /// <param name="Request">The security event notification request leading to this response.</param>
+        /// <param name="Request">The SecurityEventNotification request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SecurityEventNotificationResponse(CS.SecurityEventNotificationRequest  Request,
-                                                 Result                               Result)
+                                                 Result                               Result,
+                                                 DateTime?                            ResponseTimestamp   = null,
+
+                                                 NetworkingNode_Id?                   DestinationId       = null,
+                                                 NetworkPath?                         NetworkPath         = null,
+
+                                                 IEnumerable<KeyPair>?                SignKeys            = null,
+                                                 IEnumerable<SignInfo>?               SignInfos           = null,
+                                                 IEnumerable<Signature>?              Signatures          = null,
+
+                                                 CustomData?                          CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, SecurityEventNotificationResponseJSON, CustomSecurityEventNotificationResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a security event notification response.
+        /// Parse the given JSON representation of a SecurityEventNotification response.
         /// </summary>
-        /// <param name="Request">The security event notification request leading to this response.</param>
+        /// <param name="Request">The SecurityEventNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom security event notification responses.</param>
+        /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom SecurityEventNotification responses.</param>
         public static SecurityEventNotificationResponse Parse(CS.SecurityEventNotificationRequest                              Request,
                                                               JObject                                                          JSON,
                                                               CustomJObjectParserDelegate<SecurityEventNotificationResponse>?  CustomSecurityEventNotificationResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return securityEventNotificationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a security event notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SecurityEventNotification response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out SecurityEventNotificationResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a security event notification response.
+        /// Try to parse the given JSON representation of a SecurityEventNotification response.
         /// </summary
-        /// <param name="Request">The security event notification request leading to this response.</param>
+        /// <param name="Request">The SecurityEventNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SecurityEventNotificationResponse">The parsed security event notification response.</param>
+        /// <param name="SecurityEventNotificationResponse">The parsed SecurityEventNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom security event notification responses.</param>
+        /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom SecurityEventNotification responses.</param>
         public static Boolean TryParse(CS.SecurityEventNotificationRequest                              Request,
                                        JObject                                                          JSON,
                                        [NotNullWhen(true)]  out SecurityEventNotificationResponse?      SecurityEventNotificationResponse,
@@ -250,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 SecurityEventNotificationResponse  = null;
-                ErrorResponse                      = "The given JSON representation of a security event notification response is invalid: " + e.Message;
+                ErrorResponse                      = "The given JSON representation of a SecurityEventNotification response is invalid: " + e.Message;
                 return false;
             }
 
@@ -263,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSecurityEventNotificationResponseSerializer">A delegate to serialize custom security event notification responses.</param>
+        /// <param name="CustomSecurityEventNotificationResponseSerializer">A delegate to serialize custom SecurityEventNotification responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SecurityEventNotificationResponse>?  CustomSecurityEventNotificationResponseSerializer   = null,
@@ -296,13 +316,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The security event notification failed.
+        /// The SecurityEventNotification failed because of a request error.
         /// </summary>
-        /// <param name="Request">The security event notification request leading to this response.</param>
-        public static SecurityEventNotificationResponse Failed(CS.SecurityEventNotificationRequest Request)
+        /// <param name="Request">The SecurityEventNotification request.</param>
+        public static SecurityEventNotificationResponse RequestError(CS.SecurityEventNotificationRequest  Request,
+                                                                     EventTracking_Id                     EventTrackingId,
+                                                                     ResultCode                           ErrorCode,
+                                                                     String?                              ErrorDescription    = null,
+                                                                     JObject?                             ErrorDetails        = null,
+                                                                     DateTime?                            ResponseTimestamp   = null,
+
+                                                                     NetworkingNode_Id?                   DestinationId       = null,
+                                                                     NetworkPath?                         NetworkPath         = null,
+
+                                                                     IEnumerable<KeyPair>?                SignKeys            = null,
+                                                                     IEnumerable<SignInfo>?               SignInfos           = null,
+                                                                     IEnumerable<Signature>?              Signatures          = null,
+
+                                                                     CustomData?                          CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SecurityEventNotification failed.
+        /// </summary>
+        /// <param name="Request">The SecurityEventNotification request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SecurityEventNotificationResponse SignatureError(CS.SecurityEventNotificationRequest  Request,
+                                                                       String                               ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SecurityEventNotification failed.
+        /// </summary>
+        /// <param name="Request">The SecurityEventNotification request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SecurityEventNotificationResponse Failed(CS.SecurityEventNotificationRequest  Request,
+                                                               String?                              Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SecurityEventNotification failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SecurityEventNotification request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SecurityEventNotificationResponse ExceptionOccured(CS.SecurityEventNotificationRequest  Request,
+                                                                         Exception                            Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -312,10 +402,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SecurityEventNotificationResponse1, SecurityEventNotificationResponse2)
 
         /// <summary>
-        /// Compares two security event notification responses for equality.
+        /// Compares two SecurityEventNotification responses for equality.
         /// </summary>
-        /// <param name="SecurityEventNotificationResponse1">A security event notification response.</param>
-        /// <param name="SecurityEventNotificationResponse2">Another security event notification response.</param>
+        /// <param name="SecurityEventNotificationResponse1">A SecurityEventNotification response.</param>
+        /// <param name="SecurityEventNotificationResponse2">Another SecurityEventNotification response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SecurityEventNotificationResponse? SecurityEventNotificationResponse1,
                                            SecurityEventNotificationResponse? SecurityEventNotificationResponse2)
@@ -338,10 +428,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SecurityEventNotificationResponse1, SecurityEventNotificationResponse2)
 
         /// <summary>
-        /// Compares two security event notification responses for inequality.
+        /// Compares two SecurityEventNotification responses for inequality.
         /// </summary>
-        /// <param name="SecurityEventNotificationResponse1">A security event notification response.</param>
-        /// <param name="SecurityEventNotificationResponse2">Another security event notification response.</param>
+        /// <param name="SecurityEventNotificationResponse1">A SecurityEventNotification response.</param>
+        /// <param name="SecurityEventNotificationResponse2">Another SecurityEventNotification response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SecurityEventNotificationResponse? SecurityEventNotificationResponse1,
                                            SecurityEventNotificationResponse? SecurityEventNotificationResponse2)
@@ -357,9 +447,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two security event notification responses for equality.
+        /// Compares two SecurityEventNotification responses for equality.
         /// </summary>
-        /// <param name="Object">A security event notification response to compare with.</param>
+        /// <param name="Object">A SecurityEventNotification response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SecurityEventNotificationResponse securityEventNotificationResponse &&
@@ -370,9 +460,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(SecurityEventNotificationResponse)
 
         /// <summary>
-        /// Compares two security event notification responses for equality.
+        /// Compares two SecurityEventNotification responses for equality.
         /// </summary>
-        /// <param name="SecurityEventNotificationResponse">A security event notification response to compare with.</param>
+        /// <param name="SecurityEventNotificationResponse">A SecurityEventNotification response to compare with.</param>
         public override Boolean Equals(SecurityEventNotificationResponse? SecurityEventNotificationResponse)
 
             => SecurityEventNotificationResponse is not null &&

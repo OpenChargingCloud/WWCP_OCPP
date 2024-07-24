@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A heartbeat request.
+    /// The Heartbeat request.
     /// </summary>
     public class HeartbeatRequest : ARequest<HeartbeatRequest>,
                                     IRequest
@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/heartbeatRequest");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/HeartbeatRequest");
 
         #endregion
 
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a heartbeat request.
+        /// Create a Heartbeat request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// 
@@ -151,17 +151,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomHeartbeatRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a heartbeat request.
+        /// Parse the given JSON representation of a Heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom heartbeat requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom Heartbeat requests.</param>
         public static HeartbeatRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
                                              NetworkingNode_Id                               DestinationId,
                                              NetworkPath                                     NetworkPath,
+                                             DateTime?                                       RequestTimestamp               = null,
+                                             TimeSpan?                                       RequestTimeout                 = null,
+                                             EventTracking_Id?                               EventTrackingId                = null,
                                              CustomJObjectParserDelegate<HeartbeatRequest>?  CustomHeartbeatRequestParser   = null)
         {
 
@@ -169,14 +175,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          RequestId,
                          DestinationId,
                          NetworkPath,
-                         out var heartbeatRequest,
+                         out var HeartbeatRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomHeartbeatRequestParser))
             {
-                return heartbeatRequest;
+                return HeartbeatRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a heartbeat request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a Heartbeat request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -186,22 +195,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out HeartbeatRequest, out ErrorResponse, CustomHeartbeatRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a heartbeat request.
+        /// Try to parse the given JSON representation of a Heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
+        /// <param name="HeartbeatRequest">The parsed Heartbeat request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom heartbeat requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom Heartbeat requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
                                        NetworkingNode_Id                               DestinationId,
                                        NetworkPath                                     NetworkPath,
                                        [NotNullWhen(true)]  out HeartbeatRequest?      HeartbeatRequest,
                                        [NotNullWhen(false)] out String?                ErrorResponse,
-                                       CustomJObjectParserDelegate<HeartbeatRequest>?  CustomHeartbeatRequestParser)
+                                       DateTime?                                       RequestTimestamp               = null,
+                                       TimeSpan?                                       RequestTimeout                 = null,
+                                       EventTracking_Id?                               EventTrackingId                = null,
+                                       CustomJObjectParserDelegate<HeartbeatRequest>?  CustomHeartbeatRequestParser   = null)
         {
 
             try
@@ -249,9 +264,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        CustomData,
 
                                        RequestId,
-                                       null,
-                                       null,
-                                       null,
+                                       RequestTimestamp,
+                                       RequestTimeout,
+                                       EventTrackingId,
                                        NetworkPath
 
                                    );
@@ -266,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 HeartbeatRequest  = null;
-                ErrorResponse     = "The given JSON representation of a heartbeat request is invalid: " + e.Message;
+                ErrorResponse     = "The given JSON representation of a Heartbeat request is invalid: " + e.Message;
                 return false;
             }
 
@@ -279,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomHeartbeatRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
+        /// <param name="CustomHeartbeatRequestSerializer">A delegate to serialize custom Heartbeat requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest>?  CustomHeartbeatRequestSerializer   = null,
@@ -314,10 +329,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (HeartbeatRequest1, HeartbeatRequest2)
 
         /// <summary>
-        /// Compares two heartbeat requests for equality.
+        /// Compares two Heartbeat requests for equality.
         /// </summary>
-        /// <param name="HeartbeatRequest1">A heartbeat request.</param>
-        /// <param name="HeartbeatRequest2">Another heartbeat request.</param>
+        /// <param name="HeartbeatRequest1">A Heartbeat request.</param>
+        /// <param name="HeartbeatRequest2">Another Heartbeat request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (HeartbeatRequest? HeartbeatRequest1,
                                            HeartbeatRequest? HeartbeatRequest2)
@@ -340,10 +355,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (HeartbeatRequest1, HeartbeatRequest2)
 
         /// <summary>
-        /// Compares two heartbeat requests for inequality.
+        /// Compares two Heartbeat requests for inequality.
         /// </summary>
-        /// <param name="HeartbeatRequest1">A heartbeat request.</param>
-        /// <param name="HeartbeatRequest2">Another heartbeat request.</param>
+        /// <param name="HeartbeatRequest1">A Heartbeat request.</param>
+        /// <param name="HeartbeatRequest2">Another Heartbeat request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (HeartbeatRequest? HeartbeatRequest1,
                                            HeartbeatRequest? HeartbeatRequest2)
@@ -359,22 +374,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two heartbeat requests for equality.
+        /// Compares two Heartbeat requests for equality.
         /// </summary>
-        /// <param name="Object">A heartbeat request to compare with.</param>
+        /// <param name="Object">A Heartbeat request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is HeartbeatRequest heartbeatRequest &&
-                   Equals(heartbeatRequest);
+            => Object is HeartbeatRequest HeartbeatRequest &&
+                   Equals(HeartbeatRequest);
 
         #endregion
 
         #region Equals(HeartbeatRequest)
 
         /// <summary>
-        /// Compares two heartbeat requests for equality.
+        /// Compares two Heartbeat requests for equality.
         /// </summary>
-        /// <param name="HeartbeatRequest">A heartbeat request to compare with.</param>
+        /// <param name="HeartbeatRequest">A Heartbeat request to compare with.</param>
         public override Boolean Equals(HeartbeatRequest? HeartbeatRequest)
 
             => HeartbeatRequest is not null &&

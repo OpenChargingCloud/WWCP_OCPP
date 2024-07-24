@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,54 +32,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?       CustomNotifyCustomerInformationRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<NotifyCustomerInformationResponse>?  CustomNotifyCustomerInformationResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a NotifyCustomerInformation WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                               OnNotifyCustomerInformationWSRequest;
-
-        /// <summary>
         /// An event sent whenever a NotifyCustomerInformation request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyCustomerInformationRequestReceivedDelegate?     OnNotifyCustomerInformationRequestReceived;
+        public event OnNotifyCustomerInformationRequestReceivedDelegate?  OnNotifyCustomerInformationRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a NotifyCustomerInformation was received.
+        /// An event sent whenever a NotifyCustomerInformation request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyCustomerInformationDelegate?            OnNotifyCustomerInformation;
-
-        /// <summary>
-        /// An event sent whenever a response to a NotifyCustomerInformation was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyCustomerInformationResponseSentDelegate?    OnNotifyCustomerInformationResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a NotifyCustomerInformation was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?                   OnNotifyCustomerInformationWSResponse;
+        public event OnNotifyCustomerInformationDelegate?                 OnNotifyCustomerInformation;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_NotifyCustomerInformation(DateTime              RequestTimestamp,
                                               IWebSocketConnection  WebSocketConnection,
@@ -91,33 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            #region Send OnNotifyCustomerInformationWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyCustomerInformationWSRequest?.Invoke(startTime,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             DestinationId,
-                                                             NetworkPath,
-                                                             EventTrackingId,
-                                                             RequestTimestamp,
-                                                             JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyCustomerInformationWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,149 +75,233 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                               NetworkPath,
                                                               out var request,
                                                               out var errorResponse,
-                                                              CustomNotifyCustomerInformationRequestParser)) {
+                                                              RequestTimestamp,
+                                                              parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                              EventTrackingId,
+                                                              parentNetworkingNode.OCPP.CustomNotifyCustomerInformationRequestParser)) {
 
-                    #region Send OnNotifyCustomerInformationRequest event
+                    NotifyCustomerInformationResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomNotifyCustomerInformationRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnNotifyCustomerInformationRequestReceived?.Invoke(Timestamp.Now,
-                                                                   parentNetworkingNode,
-                                                                   WebSocketConnection,
-                                                                   request);
+                        response = NotifyCustomerInformationResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyCustomerInformationRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnNotifyCustomerInformationRequestReceived event
+
+                    var logger = OnNotifyCustomerInformationRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnNotifyCustomerInformationRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnNotifyCustomerInformationRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    NotifyCustomerInformationResponse? response = null;
-
-                    var responseTasks = OnNotifyCustomerInformation?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnNotifyCustomerInformationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                 parentNetworkingNode,
-                                                                                                                                 WebSocketConnection,
-                                                                                                                                 request,
-                                                                                                                                 CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnNotifyCustomerInformation?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnNotifyCustomerInformationDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : NotifyCustomerInformationResponse.Failed(request, $"Undefined {nameof(OnNotifyCustomerInformation)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = NotifyCustomerInformationResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnNotifyCustomerInformation),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= NotifyCustomerInformationResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnNotifyCustomerInformationResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnNotifyCustomerInformationResponseSent?.Invoke(Timestamp.Now,
-                                                                    parentNetworkingNode,
-                                                                    WebSocketConnection,
-                                                                    request,
-                                                                    response,
-                                                                    response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyCustomerInformationResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomNotifyCustomerInformationResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnNotifyCustomerInformationResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnNotifyCustomerInformationResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomNotifyCustomerInformationResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomNotifyCustomerInformationResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_NotifyCustomerInformation)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_NotifyCustomerInformation)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_NotifyCustomerInformation)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_NotifyCustomerInformation)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnNotifyCustomerInformationWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnNotifyCustomerInformationWSResponse?.Invoke(endTime,
-                                                              parentNetworkingNode,
-                                                              WebSocketConnection,
-                                                              DestinationId,
-                                                              NetworkPath,
-                                                              EventTrackingId,
-                                                              RequestTimestamp,
-                                                              JSONRequest,
-                                                              OCPPResponse?.Payload,
-                                                              OCPPErrorResponse?.ToJSON(),
-                                                              endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyCustomerInformationWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
         /// An event sent whenever a response to a NotifyCustomerInformation was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyCustomerInformationResponseSentDelegate? OnNotifyCustomerInformationResponseSent;
+        public event OnNotifyCustomerInformationResponseSentDelegate?  OnNotifyCustomerInformationResponseSent;
+
+        #endregion
+
+        #region Send OnNotifyCustomerInformationResponse event
+
+        public async Task SendOnNotifyCustomerInformationResponseSent(DateTime                           Timestamp,
+                                                                      IEventSender                       Sender,
+                                                                      IWebSocketConnection               Connection,
+                                                                      NotifyCustomerInformationRequest   Request,
+                                                                      NotifyCustomerInformationResponse  Response,
+                                                                      TimeSpan                           Runtime)
+        {
+
+            var logger = OnNotifyCustomerInformationResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnNotifyCustomerInformationResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnNotifyCustomerInformationResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,93 +32,39 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<ClearedChargingLimitRequest>?       CustomClearedChargingLimitRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearedChargingLimitResponse>?  CustomClearedChargingLimitResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a ClearedChargingLimit WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                          OnClearedChargingLimitWSRequest;
-
-        /// <summary>
         /// An event sent whenever a ClearedChargingLimit request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearedChargingLimitRequestReceivedDelegate?     OnClearedChargingLimitRequestReceived;
+        public event OnClearedChargingLimitRequestReceivedDelegate?  OnClearedChargingLimitRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a ClearedChargingLimit was received.
+        /// An event sent whenever a ClearedChargingLimit request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearedChargingLimitDelegate?            OnClearedChargingLimit;
-
-        /// <summary>
-        /// An event sent whenever a response to a ClearedChargingLimit was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnClearedChargingLimitResponseSentDelegate?    OnClearedChargingLimitResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a ClearedChargingLimit was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?              OnClearedChargingLimitWSResponse;
+        public event OnClearedChargingLimitDelegate?                 OnClearedChargingLimit;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_ClearedChargingLimit(DateTime                   RequestTimestamp,
+            Receive_ClearedChargingLimit(DateTime              RequestTimestamp,
                                          IWebSocketConnection  WebSocketConnection,
-                                         NetworkingNode_Id          DestinationId,
-                                         NetworkPath                NetworkPath,
-                                         EventTracking_Id           EventTrackingId,
-                                         Request_Id                 RequestId,
-                                         JObject                    JSONRequest,
-                                         CancellationToken          CancellationToken)
+                                         NetworkingNode_Id     DestinationId,
+                                         NetworkPath           NetworkPath,
+                                         EventTracking_Id      EventTrackingId,
+                                         Request_Id            RequestId,
+                                         JObject               JSONRequest,
+                                         CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnClearedChargingLimitWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearedChargingLimitWSRequest?.Invoke(startTime,
-                                                        parentNetworkingNode,
-                                                        WebSocketConnection,
-                                                        DestinationId,
-                                                        NetworkPath,
-                                                        EventTrackingId,
-                                                        RequestTimestamp,
-                                                        JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearedChargingLimitWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,149 +75,233 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          NetworkPath,
                                                          out var request,
                                                          out var errorResponse,
-                                                         CustomClearedChargingLimitRequestParser)) {
+                                                         RequestTimestamp,
+                                                         parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                         EventTrackingId,
+                                                         parentNetworkingNode.OCPP.CustomClearedChargingLimitRequestParser)) {
 
-                    #region Send OnClearedChargingLimitRequest event
+                    ClearedChargingLimitResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomClearedChargingLimitRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnClearedChargingLimitRequestReceived?.Invoke(Timestamp.Now,
-                                                              parentNetworkingNode,
-                                                              WebSocketConnection,
-                                                              request);
+                        response = ClearedChargingLimitResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearedChargingLimitRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnClearedChargingLimitRequestReceived event
+
+                    var logger = OnClearedChargingLimitRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnClearedChargingLimitRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnClearedChargingLimitRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    ClearedChargingLimitResponse? response = null;
-
-                    var responseTasks = OnClearedChargingLimit?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnClearedChargingLimitDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                            parentNetworkingNode,
-                                                                                                                            WebSocketConnection,
-                                                                                                                            request,
-                                                                                                                            CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnClearedChargingLimit?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnClearedChargingLimitDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : ClearedChargingLimitResponse.Failed(request, $"Undefined {nameof(OnClearedChargingLimit)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = ClearedChargingLimitResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnClearedChargingLimit),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= ClearedChargingLimitResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnClearedChargingLimitResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnClearedChargingLimitResponseSent?.Invoke(Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               WebSocketConnection,
-                                                               request,
-                                                               response,
-                                                               response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearedChargingLimitResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomClearedChargingLimitResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnClearedChargingLimitResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnClearedChargingLimitResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomClearedChargingLimitResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomClearedChargingLimitResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_ClearedChargingLimit)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_ClearedChargingLimit)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_ClearedChargingLimit)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_ClearedChargingLimit)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnClearedChargingLimitWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnClearedChargingLimitWSResponse?.Invoke(endTime,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         DestinationId,
-                                                         NetworkPath,
-                                                         EventTrackingId,
-                                                         RequestTimestamp,
-                                                         JSONRequest,
-                                                         OCPPResponse?.Payload,
-                                                         OCPPErrorResponse?.ToJSON(),
-                                                         endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearedChargingLimitWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
         /// An event sent whenever a response to a ClearedChargingLimit was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearedChargingLimitResponseSentDelegate? OnClearedChargingLimitResponseSent;
+        public event OnClearedChargingLimitResponseSentDelegate?  OnClearedChargingLimitResponseSent;
+
+        #endregion
+
+        #region Send OnClearedChargingLimitResponse event
+
+        public async Task SendOnClearedChargingLimitResponseSent(DateTime                      Timestamp,
+                                                                 IEventSender                  Sender,
+                                                                 IWebSocketConnection          Connection,
+                                                                 ClearedChargingLimitRequest   Request,
+                                                                 ClearedChargingLimitResponse  Response,
+                                                                 TimeSpan                      Runtime)
+        {
+
+            var logger = OnClearedChargingLimitResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnClearedChargingLimitResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnClearedChargingLimitResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

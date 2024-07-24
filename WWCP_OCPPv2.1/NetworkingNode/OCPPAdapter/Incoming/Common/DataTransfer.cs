@@ -23,7 +23,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -74,6 +73,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  NetworkPath,
                                                  out var request,
                                                  out var errorResponse,
+                                                 RequestTimestamp,
+                                                 parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                 EventTrackingId,
                                                  parentNetworkingNode.OCPP.CustomDataTransferRequestParser)) {
 
                     DataTransferResponse? response = null;

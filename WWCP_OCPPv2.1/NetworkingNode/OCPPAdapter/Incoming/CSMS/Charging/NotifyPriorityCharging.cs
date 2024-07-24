@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,93 +32,39 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<NotifyPriorityChargingRequest>?       CustomNotifyPriorityChargingRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<NotifyPriorityChargingResponse>?  CustomNotifyPriorityChargingResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a NotifyPriorityCharging WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                            OnNotifyPriorityChargingWSRequest;
-
-        /// <summary>
         /// An event sent whenever a NotifyPriorityCharging request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyPriorityChargingRequestReceivedDelegate?     OnNotifyPriorityChargingRequestReceived;
+        public event OnNotifyPriorityChargingRequestReceivedDelegate?  OnNotifyPriorityChargingRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a NotifyPriorityCharging was received.
+        /// An event sent whenever a NotifyPriorityCharging request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyPriorityChargingDelegate?            OnNotifyPriorityCharging;
-
-        /// <summary>
-        /// An event sent whenever a response to a NotifyPriorityCharging was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyPriorityChargingResponseSentDelegate?    OnNotifyPriorityChargingResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a NotifyPriorityCharging was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?                OnNotifyPriorityChargingWSResponse;
+        public event OnNotifyPriorityChargingDelegate?                 OnNotifyPriorityCharging;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_NotifyPriorityCharging(DateTime                   RequestTimestamp,
+            Receive_NotifyPriorityCharging(DateTime              RequestTimestamp,
                                            IWebSocketConnection  WebSocketConnection,
-                                           NetworkingNode_Id          DestinationId,
-                                           NetworkPath                NetworkPath,
-                                           EventTracking_Id           EventTrackingId,
-                                           Request_Id                 RequestId,
-                                           JObject                    JSONRequest,
-                                           CancellationToken          CancellationToken)
+                                           NetworkingNode_Id     DestinationId,
+                                           NetworkPath           NetworkPath,
+                                           EventTracking_Id      EventTrackingId,
+                                           Request_Id            RequestId,
+                                           JObject               JSONRequest,
+                                           CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnNotifyPriorityChargingWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyPriorityChargingWSRequest?.Invoke(startTime,
-                                                          parentNetworkingNode,
-                                                          WebSocketConnection,
-                                                          DestinationId,
-                                                          NetworkPath,
-                                                          EventTrackingId,
-                                                          RequestTimestamp,
-                                                          JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyPriorityChargingWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,149 +75,233 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            NetworkPath,
                                                            out var request,
                                                            out var errorResponse,
-                                                           CustomNotifyPriorityChargingRequestParser)) {
+                                                           RequestTimestamp,
+                                                           parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                           EventTrackingId,
+                                                           parentNetworkingNode.OCPP.CustomNotifyPriorityChargingRequestParser)) {
 
-                    #region Send OnNotifyPriorityChargingRequest event
+                    NotifyPriorityChargingResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomNotifyPriorityChargingRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnNotifyPriorityChargingRequestReceived?.Invoke(Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                WebSocketConnection,
-                                                                request);
+                        response = NotifyPriorityChargingResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyPriorityChargingRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnNotifyPriorityChargingRequestReceived event
+
+                    var logger = OnNotifyPriorityChargingRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnNotifyPriorityChargingRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnNotifyPriorityChargingRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    NotifyPriorityChargingResponse? response = null;
-
-                    var responseTasks = OnNotifyPriorityCharging?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnNotifyPriorityChargingDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                              parentNetworkingNode,
-                                                                                                                              WebSocketConnection,
-                                                                                                                              request,
-                                                                                                                              CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnNotifyPriorityCharging?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnNotifyPriorityChargingDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : NotifyPriorityChargingResponse.Failed(request, $"Undefined {nameof(OnNotifyPriorityCharging)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = NotifyPriorityChargingResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnNotifyPriorityCharging),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= NotifyPriorityChargingResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnNotifyPriorityChargingResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnNotifyPriorityChargingResponseSent?.Invoke(Timestamp.Now,
-                                                                 parentNetworkingNode,
-                                                                 WebSocketConnection,
-                                                                 request,
-                                                                 response,
-                                                                 response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyPriorityChargingResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomNotifyPriorityChargingResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnNotifyPriorityChargingResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnNotifyPriorityChargingResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomNotifyPriorityChargingResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomNotifyPriorityChargingResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_NotifyPriorityCharging)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_NotifyPriorityCharging)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_NotifyPriorityCharging)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_NotifyPriorityCharging)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnNotifyPriorityChargingWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnNotifyPriorityChargingWSResponse?.Invoke(endTime,
-                                                           parentNetworkingNode,
-                                                           WebSocketConnection,
-                                                           DestinationId,
-                                                           NetworkPath,
-                                                           EventTrackingId,
-                                                           RequestTimestamp,
-                                                           JSONRequest,
-                                                           OCPPResponse?.Payload,
-                                                           OCPPErrorResponse?.ToJSON(),
-                                                           endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyPriorityChargingWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
         /// An event sent whenever a response to a NotifyPriorityCharging was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyPriorityChargingResponseSentDelegate? OnNotifyPriorityChargingResponseSent;
+        public event OnNotifyPriorityChargingResponseSentDelegate?  OnNotifyPriorityChargingResponseSent;
+
+        #endregion
+
+        #region Send OnNotifyPriorityChargingResponse event
+
+        public async Task SendOnNotifyPriorityChargingResponseSent(DateTime                        Timestamp,
+                                                                   IEventSender                    Sender,
+                                                                   IWebSocketConnection            Connection,
+                                                                   NotifyPriorityChargingRequest   Request,
+                                                                   NotifyPriorityChargingResponse  Response,
+                                                                   TimeSpan                        Runtime)
+        {
+
+            var logger = OnNotifyPriorityChargingResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnNotifyPriorityChargingResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnNotifyPriorityChargingResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

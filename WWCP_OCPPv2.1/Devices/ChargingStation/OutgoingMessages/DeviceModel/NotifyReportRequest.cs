@@ -472,11 +472,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomNotifyReportRequestParser">A delegate to parse custom notify report requests.</param>
         public static NotifyReportRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
                                                 NetworkingNode_Id                                  DestinationId,
                                                 NetworkPath                                        NetworkPath,
+                                                DateTime?                                          RequestTimestamp                  = null,
+                                                TimeSpan?                                          RequestTimeout                    = null,
+                                                EventTracking_Id?                                  EventTrackingId                   = null,
                                                 CustomJObjectParserDelegate<NotifyReportRequest>?  CustomNotifyReportRequestParser   = null)
         {
 
@@ -486,6 +492,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var notifyReportRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomNotifyReportRequestParser))
             {
                 return notifyReportRequest;
@@ -509,6 +518,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyReportRequest">The parsed notify report request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomNotifyReportRequestParser">A delegate to parse custom notify report requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
@@ -516,7 +528,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out NotifyReportRequest?      NotifyReportRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyReportRequest>?  CustomNotifyReportRequestParser)
+                                       DateTime?                                          RequestTimestamp                  = null,
+                                       TimeSpan?                                          RequestTimeout                    = null,
+                                       EventTracking_Id?                                  EventTrackingId                   = null,
+                                       CustomJObjectParserDelegate<NotifyReportRequest>?  CustomNotifyReportRequestParser   = null)
         {
 
             try
@@ -631,9 +646,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                           CustomData,
 
                                           RequestId,
-                                          null,
-                                          null,
-                                          null,
+                                          RequestTimestamp,
+                                          RequestTimeout,
+                                          EventTrackingId,
                                           NetworkPath
 
                                       );

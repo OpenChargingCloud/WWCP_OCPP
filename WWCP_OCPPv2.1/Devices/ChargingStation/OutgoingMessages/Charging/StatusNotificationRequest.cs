@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A status notification request.
+    /// The StatusNotification request.
     /// </summary>
     public class StatusNotificationRequest : ARequest<StatusNotificationRequest>,
                                              IRequest
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a status notification request.
+        /// Create a StatusNotification request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="Timestamp">The time for which the status is reported.</param>
@@ -230,17 +230,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a status notification request.
+        /// Parse the given JSON representation of a StatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom StatusNotification requests.</param>
         public static StatusNotificationRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
                                                       NetworkingNode_Id                                        DestinationId,
                                                       NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      TimeSpan?                                                RequestTimeout                          = null,
+                                                      EventTracking_Id?                                        EventTrackingId                         = null,
                                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null)
         {
 
@@ -250,12 +256,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var statusNotificationRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomStatusNotificationRequestParser))
             {
                 return statusNotificationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a status notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a StatusNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -265,22 +274,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out StatusNotificationRequest, out ErrorResponse, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a status notification request.
+        /// Try to parse the given JSON representation of a StatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
+        /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom StatusNotification requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
                                        NetworkingNode_Id                                        DestinationId,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out StatusNotificationRequest?      StatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser)
+                                       DateTime?                                                RequestTimestamp                        = null,
+                                       TimeSpan?                                                RequestTimeout                          = null,
+                                       EventTracking_Id?                                        EventTrackingId                         = null,
+                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null)
         {
 
             try
@@ -385,9 +400,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 CustomData,
 
                                                 RequestId,
-                                                null,
-                                                null,
-                                                null,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
                                                 NetworkPath
 
                                             );
@@ -402,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 StatusNotificationRequest  = null;
-                ErrorResponse              = "The given JSON representation of a status notification request is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a StatusNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -453,10 +468,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (StatusNotificationRequest1, StatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two status notification requests for equality.
+        /// Compares two StatusNotification requests for equality.
         /// </summary>
-        /// <param name="StatusNotificationRequest1">A status notification request.</param>
-        /// <param name="StatusNotificationRequest2">Another status notification request.</param>
+        /// <param name="StatusNotificationRequest1">A StatusNotification request.</param>
+        /// <param name="StatusNotificationRequest2">Another StatusNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (StatusNotificationRequest? StatusNotificationRequest1,
                                            StatusNotificationRequest? StatusNotificationRequest2)
@@ -479,10 +494,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (StatusNotificationRequest1, StatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two status notification requests for inequality.
+        /// Compares two StatusNotification requests for inequality.
         /// </summary>
-        /// <param name="StatusNotificationRequest1">A status notification request.</param>
-        /// <param name="StatusNotificationRequest2">Another status notification request.</param>
+        /// <param name="StatusNotificationRequest1">A StatusNotification request.</param>
+        /// <param name="StatusNotificationRequest2">Another StatusNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (StatusNotificationRequest? StatusNotificationRequest1,
                                            StatusNotificationRequest? StatusNotificationRequest2)
@@ -498,9 +513,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two status notification requests for equality.
+        /// Compares two StatusNotification requests for equality.
         /// </summary>
-        /// <param name="Object">A status notification request to compare with.</param>
+        /// <param name="Object">A StatusNotification request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is StatusNotificationRequest statusNotificationRequest &&
@@ -511,9 +526,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(StatusNotificationRequest)
 
         /// <summary>
-        /// Compares two status notification requests for equality.
+        /// Compares two StatusNotification requests for equality.
         /// </summary>
-        /// <param name="StatusNotificationRequest">A status notification request to compare with.</param>
+        /// <param name="StatusNotificationRequest">A StatusNotification request to compare with.</param>
         public override Boolean Equals(StatusNotificationRequest? StatusNotificationRequest)
 
             => StatusNotificationRequest is not null &&

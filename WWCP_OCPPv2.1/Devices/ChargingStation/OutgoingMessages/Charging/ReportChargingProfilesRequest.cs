@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A report charging profiles request.
+    /// The ReportChargingProfiles request.
     /// </summary>
     public class ReportChargingProfilesRequest : ARequest<ReportChargingProfilesRequest>,
                                                  IRequest
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a report charging profiles request.
+        /// Create a ReportChargingProfiles request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
@@ -591,17 +591,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomReportChargingProfilesRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a report charging profiles request.
+        /// Parse the given JSON representation of a ReportChargingProfiles request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomReportChargingProfilesRequestParser">A delegate to parse custom report charging profiles requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomReportChargingProfilesRequestParser">A delegate to parse custom ReportChargingProfiles requests.</param>
         public static ReportChargingProfilesRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
                                                           NetworkingNode_Id                                            DestinationId,
                                                           NetworkPath                                                  NetworkPath,
+                                                          DateTime?                                                    RequestTimestamp                            = null,
+                                                          TimeSpan?                                                    RequestTimeout                              = null,
+                                                          EventTracking_Id?                                            EventTrackingId                             = null,
                                                           CustomJObjectParserDelegate<ReportChargingProfilesRequest>?  CustomReportChargingProfilesRequestParser   = null)
         {
 
@@ -611,12 +617,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var reportChargingProfilesRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomReportChargingProfilesRequestParser))
             {
                 return reportChargingProfilesRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a report charging profiles request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ReportChargingProfiles request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -626,21 +635,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ReportChargingProfilesRequest, out ErrorResponse, CustomReportChargingProfilesRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a report charging profiles request.
+        /// Try to parse the given JSON representation of a ReportChargingProfiles request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkPath">The network path of the message.</param>
-        /// <param name="ReportChargingProfilesRequest">The parsed report charging profiles request.</param>
+        /// <param name="ReportChargingProfilesRequest">The parsed ReportChargingProfiles request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReportChargingProfilesRequestParser">A delegate to parse custom report charging profiles requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomReportChargingProfilesRequestParser">A delegate to parse custom ReportChargingProfiles requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
                                        NetworkingNode_Id                                            DestinationId,
                                        NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out ReportChargingProfilesRequest?      ReportChargingProfilesRequest,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
-                                       CustomJObjectParserDelegate<ReportChargingProfilesRequest>?  CustomReportChargingProfilesRequestParser)
+                                       DateTime?                                                    RequestTimestamp                            = null,
+                                       TimeSpan?                                                    RequestTimeout                              = null,
+                                       EventTracking_Id?                                            EventTrackingId                             = null,
+                                       CustomJObjectParserDelegate<ReportChargingProfilesRequest>?  CustomReportChargingProfilesRequestParser   = null)
         {
 
             try
@@ -651,7 +666,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region ReportChargingProfilesRequestId    [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "report charging profiles request identification",
+                                         "ReportChargingProfiles request identification",
                                          out Int32 ReportChargingProfilesRequestId,
                                          out ErrorResponse))
                 {
@@ -757,9 +772,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     CustomData,
 
                                                     RequestId,
-                                                    null,
-                                                    null,
-                                                    null,
+                                                    RequestTimestamp,
+                                                    RequestTimeout,
+                                                    EventTrackingId,
                                                     NetworkPath
 
                                                 );
@@ -774,7 +789,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 ReportChargingProfilesRequest  = null;
-                ErrorResponse                  = "The given JSON representation of a report charging profiles request is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a ReportChargingProfiles request is invalid: " + e.Message;
                 return false;
             }
 
@@ -899,10 +914,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (ReportChargingProfilesRequest1, ReportChargingProfilesRequest2)
 
         /// <summary>
-        /// Compares two report charging profiles requests for equality.
+        /// Compares two ReportChargingProfiles requests for equality.
         /// </summary>
-        /// <param name="ReportChargingProfilesRequest1">A report charging profiles request.</param>
-        /// <param name="ReportChargingProfilesRequest2">Another report charging profiles request.</param>
+        /// <param name="ReportChargingProfilesRequest1">A ReportChargingProfiles request.</param>
+        /// <param name="ReportChargingProfilesRequest2">Another ReportChargingProfiles request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ReportChargingProfilesRequest? ReportChargingProfilesRequest1,
                                            ReportChargingProfilesRequest? ReportChargingProfilesRequest2)
@@ -925,10 +940,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (ReportChargingProfilesRequest1, ReportChargingProfilesRequest2)
 
         /// <summary>
-        /// Compares two report charging profiles requests for inequality.
+        /// Compares two ReportChargingProfiles requests for inequality.
         /// </summary>
-        /// <param name="ReportChargingProfilesRequest1">A report charging profiles request.</param>
-        /// <param name="ReportChargingProfilesRequest2">Another report charging profiles request.</param>
+        /// <param name="ReportChargingProfilesRequest1">A ReportChargingProfiles request.</param>
+        /// <param name="ReportChargingProfilesRequest2">Another ReportChargingProfiles request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ReportChargingProfilesRequest? ReportChargingProfilesRequest1,
                                            ReportChargingProfilesRequest? ReportChargingProfilesRequest2)
@@ -944,9 +959,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two report charging profiles requests for equality.
+        /// Compares two ReportChargingProfiles requests for equality.
         /// </summary>
-        /// <param name="Object">A report charging profiles request to compare with.</param>
+        /// <param name="Object">A ReportChargingProfiles request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ReportChargingProfilesRequest reportChargingProfilesRequest &&
@@ -957,9 +972,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(ReportChargingProfilesRequest)
 
         /// <summary>
-        /// Compares two report charging profiles requests for equality.
+        /// Compares two ReportChargingProfiles requests for equality.
         /// </summary>
-        /// <param name="ReportChargingProfilesRequest">A report charging profiles request to compare with.</param>
+        /// <param name="ReportChargingProfilesRequest">A ReportChargingProfiles request to compare with.</param>
         public override Boolean Equals(ReportChargingProfilesRequest? ReportChargingProfilesRequest)
 
             => ReportChargingProfilesRequest is not null &&

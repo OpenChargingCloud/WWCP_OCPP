@@ -21,10 +21,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -68,10 +67,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     #endregion
 
-
-    /// <summary>
-    /// The OCPP adapter for forwarding messages.
-    /// </summary>
     public partial class OCPPWebSocketAdapterFORWARD
     {
 
@@ -101,6 +96,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        JSONRequestMessage.NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
+                                                       JSONRequestMessage.RequestTimestamp,
+                                                       JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                                       JSONRequestMessage.EventTrackingId,
                                                        parentNetworkingNode.OCPP.CustomGet15118EVCertificateRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);

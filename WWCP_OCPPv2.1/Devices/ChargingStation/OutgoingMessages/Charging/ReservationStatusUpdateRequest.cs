@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A reservation status update request.
+    /// The ReservationStatusUpdate request.
     /// </summary>
     public class ReservationStatusUpdateRequest : ARequest<ReservationStatusUpdateRequest>,
                                                   IRequest
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a reservation status update request.
+        /// Create a ReservationStatusUpdate request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="ReservationId">The unique identification of the transaction to update.</param>
@@ -195,17 +195,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomReservationStatusUpdateRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a reservation status update request.
+        /// Parse the given JSON representation of a ReservationStatusUpdate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom reservation status update requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom ReservationStatusUpdate requests.</param>
         public static ReservationStatusUpdateRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
                                                            NetworkingNode_Id                                             DestinationId,
                                                            NetworkPath                                                   NetworkPath,
+                                                           DateTime?                                                     RequestTimestamp                             = null,
+                                                           TimeSpan?                                                     RequestTimeout                               = null,
+                                                           EventTracking_Id?                                             EventTrackingId                              = null,
                                                            CustomJObjectParserDelegate<ReservationStatusUpdateRequest>?  CustomReservationStatusUpdateRequestParser   = null)
         {
 
@@ -215,12 +221,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var reservationStatusUpdateRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomReservationStatusUpdateRequestParser))
             {
                 return reservationStatusUpdateRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a reservation status update request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ReservationStatusUpdate request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -230,22 +239,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ReservationStatusUpdateRequest, out ErrorResponse, CustomReservationStatusUpdateRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a reservation status update request.
+        /// Try to parse the given JSON representation of a ReservationStatusUpdate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ReservationStatusUpdateRequest">The parsed reservation status update request.</param>
+        /// <param name="ReservationStatusUpdateRequest">The parsed ReservationStatusUpdate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom reservation status update requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom ReservationStatusUpdate requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
                                        NetworkingNode_Id                                             DestinationId,
                                        NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out ReservationStatusUpdateRequest?      ReservationStatusUpdateRequest,
                                        [NotNullWhen(false)] out String?                              ErrorResponse,
-                                       CustomJObjectParserDelegate<ReservationStatusUpdateRequest>?  CustomReservationStatusUpdateRequestParser)
+                                       DateTime?                                                     RequestTimestamp                             = null,
+                                       TimeSpan?                                                     RequestTimeout                               = null,
+                                       EventTracking_Id?                                             EventTrackingId                              = null,
+                                       CustomJObjectParserDelegate<ReservationStatusUpdateRequest>?  CustomReservationStatusUpdateRequestParser   = null)
         {
 
             try
@@ -321,9 +336,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                      CustomData,
 
                                                      RequestId,
-                                                     null,
-                                                     null,
-                                                     null,
+                                                     RequestTimestamp,
+                                                     RequestTimeout,
+                                                     EventTrackingId,
                                                      NetworkPath
 
                                                  );
@@ -338,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 ReservationStatusUpdateRequest  = null;
-                ErrorResponse                   = "The given JSON representation of a reservation status update request is invalid: " + e.Message;
+                ErrorResponse                   = "The given JSON representation of a ReservationStatusUpdate request is invalid: " + e.Message;
                 return false;
             }
 
@@ -387,10 +402,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (ReservationStatusUpdateRequest1, ReservationStatusUpdateRequest2)
 
         /// <summary>
-        /// Compares two reservation status update requests for equality.
+        /// Compares two ReservationStatusUpdate requests for equality.
         /// </summary>
-        /// <param name="ReservationStatusUpdateRequest1">A reservation status update request.</param>
-        /// <param name="ReservationStatusUpdateRequest2">Another reservation status update request.</param>
+        /// <param name="ReservationStatusUpdateRequest1">A ReservationStatusUpdate request.</param>
+        /// <param name="ReservationStatusUpdateRequest2">Another ReservationStatusUpdate request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ReservationStatusUpdateRequest? ReservationStatusUpdateRequest1,
                                            ReservationStatusUpdateRequest? ReservationStatusUpdateRequest2)
@@ -413,10 +428,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (ReservationStatusUpdateRequest1, ReservationStatusUpdateRequest2)
 
         /// <summary>
-        /// Compares two reservation status update requests for inequality.
+        /// Compares two ReservationStatusUpdate requests for inequality.
         /// </summary>
-        /// <param name="ReservationStatusUpdateRequest1">A reservation status update request.</param>
-        /// <param name="ReservationStatusUpdateRequest2">Another reservation status update request.</param>
+        /// <param name="ReservationStatusUpdateRequest1">A ReservationStatusUpdate request.</param>
+        /// <param name="ReservationStatusUpdateRequest2">Another ReservationStatusUpdate request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ReservationStatusUpdateRequest? ReservationStatusUpdateRequest1,
                                            ReservationStatusUpdateRequest? ReservationStatusUpdateRequest2)
@@ -432,9 +447,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two reservation status update requests for equality.
+        /// Compares two ReservationStatusUpdate requests for equality.
         /// </summary>
-        /// <param name="Object">A reservation status update request to compare with.</param>
+        /// <param name="Object">A ReservationStatusUpdate request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ReservationStatusUpdateRequest reservationStatusUpdateRequest &&
@@ -445,9 +460,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(ReservationStatusUpdateRequest)
 
         /// <summary>
-        /// Compares two reservation status update requests for equality.
+        /// Compares two ReservationStatusUpdate requests for equality.
         /// </summary>
-        /// <param name="ReservationStatusUpdateRequest">A reservation status update request to compare with.</param>
+        /// <param name="ReservationStatusUpdateRequest">A ReservationStatusUpdate request to compare with.</param>
         public override Boolean Equals(ReservationStatusUpdateRequest? ReservationStatusUpdateRequest)
 
             => ReservationStatusUpdateRequest is not null &&

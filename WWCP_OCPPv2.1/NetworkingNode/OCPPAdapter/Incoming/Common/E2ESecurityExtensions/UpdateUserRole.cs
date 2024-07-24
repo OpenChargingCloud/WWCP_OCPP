@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
@@ -29,59 +30,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<UpdateUserRoleRequest>?  CustomUpdateUserRoleRequestParser    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever an UpdateUserRole websocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                OnUpdateUserRoleWSRequest;
-
-        /// <summary>
         /// An event sent whenever an UpdateUserRole request was received.
         /// </summary>
-        public event OnUpdateUserRoleRequestReceivedDelegate?       OnUpdateUserRoleRequestReceived;
+        public event OnUpdateUserRoleRequestReceivedDelegate?  OnUpdateUserRoleRequestReceived;
 
         /// <summary>
-        /// An event sent whenever an UpdateUserRole request was received.
+        /// An event sent whenever an UpdateUserRole request was received for processing.
         /// </summary>
-        public event OnUpdateUserRoleDelegate?                      OnUpdateUserRole;
-
-        /// <summary>
-        /// An event sent whenever a response to an UpdateUserRole request was sent.
-        /// </summary>
-        public event OnUpdateUserRoleResponseSentDelegate?          OnUpdateUserRoleResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to an UpdateUserRole request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?    OnUpdateUserRoleWSResponse;
+        public event OnUpdateUserRoleDelegate?                 OnUpdateUserRole;
 
         #endregion
 
-        /// <summary>
-        /// An event sent whenever a response to a UpdateUserRole request was sent.
-        /// </summary>
-        public event OnUpdateUserRoleResponseReceivedDelegate? OnUpdateUserRoleResponseReceived;
-
-
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_UpdateUserRole(DateTime              RequestTimestamp,
                                    IWebSocketConnection  WebSocketConnection,
@@ -89,186 +57,251 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    NetworkPath           NetworkPath,
                                    EventTracking_Id      EventTrackingId,
                                    Request_Id            RequestId,
-                                   JObject               RequestJSON,
+                                   JObject               JSONRequest,
                                    CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnUpdateUserRoleWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnUpdateUserRoleWSRequest?.Invoke(startTime,
-                                                  parentNetworkingNode,
-                                                  WebSocketConnection,
-                                                  DestinationId,
-                                                  NetworkPath,
-                                                  EventTrackingId,
-                                                  RequestTimestamp,
-                                                  RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateUserRoleWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage? OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (UpdateUserRoleRequest.TryParse(RequestJSON,
+                if (UpdateUserRoleRequest.TryParse(JSONRequest,
                                                    RequestId,
                                                    DestinationId,
                                                    NetworkPath,
                                                    out var request,
                                                    out var errorResponse,
-                                                   CustomUpdateUserRoleRequestParser)) {
+                                                   RequestTimestamp,
+                                                   parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                   EventTrackingId,
+                                                   parentNetworkingNode.OCPP.CustomUpdateUserRoleRequestParser)) {
 
-                    #region Send OnUpdateUserRoleRequestReceived event
+                    UpdateUserRoleResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomUpdateUserRoleRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnUpdateUserRoleRequestReceived?.Invoke(Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                WebSocketConnection,
-                                                                request);
+                        response = UpdateUserRoleResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateUserRoleRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnUpdateUserRoleRequestReceived event
+
+                    var logger = OnUpdateUserRoleRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnUpdateUserRoleRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnUpdateUserRoleRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    UpdateUserRoleResponse? response = null;
-
-                    var results = OnUpdateUserRole?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnUpdateUserRoleDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                parentNetworkingNode,
-                                                                                                                WebSocketConnection,
-                                                                                                                request,
-                                                                                                                CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnUpdateUserRole?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnUpdateUserRoleDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : UpdateUserRoleResponse.Failed(request, $"Undefined {nameof(OnUpdateUserRole)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = UpdateUserRoleResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnUpdateUserRole),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= UpdateUserRoleResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnUpdateUserRoleResponseSent event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnUpdateUserRoleResponseSent?.Invoke(Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             request,
-                                                             response,
-                                                             response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateUserRoleResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomUpdateUserRoleResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnUpdateUserRoleResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnUpdateUserRoleResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           parentNetworkingNode.OCPP.CustomUpdateUserRoleResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                           parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                           parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_UpdateUserRole)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_UpdateUserRole)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_UpdateUserRole)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnUpdateUserRoleWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnUpdateUserRoleWSResponse?.Invoke(endTime,
-                                                   parentNetworkingNode,
-                                                   WebSocketConnection,
-                                                   DestinationId,
-                                                   NetworkPath,
-                                                   EventTrackingId,
-                                                   RequestTimestamp,
-                                                   RequestJSON,
-                                                   OCPPResponse?.Payload,
-                                                   OCPPErrorResponse?.ToJSON(),
-                                                   endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_UpdateUserRole)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateUserRoleWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                            OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to an UpdateUserRole request was sent.
+        /// An event sent whenever a response to an UpdateUserRole was sent.
         /// </summary>
-        public event OnUpdateUserRoleResponseSentDelegate? OnUpdateUserRoleResponseSent;
+        public event OnUpdateUserRoleResponseSentDelegate?  OnUpdateUserRoleResponseSent;
+
+        #endregion
+
+        #region Send OnUpdateUserRoleResponse event
+
+        public async Task SendOnUpdateUserRoleResponseSent(DateTime                Timestamp,
+                                                           IEventSender            Sender,
+                                                           IWebSocketConnection    Connection,
+                                                           UpdateUserRoleRequest   Request,
+                                                           UpdateUserRoleResponse  Response,
+                                                           TimeSpan                Runtime)
+        {
+
+            var logger = OnUpdateUserRoleResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnUpdateUserRoleResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnUpdateUserRoleResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

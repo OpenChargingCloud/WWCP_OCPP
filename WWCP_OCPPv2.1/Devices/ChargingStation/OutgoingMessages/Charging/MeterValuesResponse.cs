@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A meter values response.
+    /// The MeterValues response.
     /// </summary>
     public class MeterValuesResponse : AResponse<CS.MeterValuesRequest,
                                                  MeterValuesResponse>,
@@ -60,9 +60,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new meter values response.
+        /// Create a new MeterValues response.
         /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public MeterValuesResponse(CS.MeterValuesRequest    Request,
                                    Result?                  Result              = null,
@@ -131,14 +131,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomMeterValuesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a meter values response.
+        /// Parse the given JSON representation of a MeterValues response.
         /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom meter values responses.</param>
+        /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom MeterValues responses.</param>
         public static MeterValuesResponse Parse(CS.MeterValuesRequest                              Request,
                                                 JObject                                            JSON,
                                                 NetworkingNode_Id                                  DestinationId,
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return meterValuesResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a meter values response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a MeterValues response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -169,16 +169,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out MeterValuesResponse, out ErrorResponse, CustomMeterValuesResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a meter values response.
+        /// Try to parse the given JSON representation of a MeterValues response.
         /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="MeterValuesResponse">The parsed meter values response.</param>
+        /// <param name="MeterValuesResponse">The parsed MeterValues response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom meter values responses.</param>
+        /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom MeterValues responses.</param>
         public static Boolean TryParse(CS.MeterValuesRequest                              Request,
                                        JObject                                            JSON,
                                        NetworkingNode_Id                                  DestinationId,
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 MeterValuesResponse  = null;
-                ErrorResponse        = "The given JSON representation of a meter values response is invalid: " + e.Message;
+                ErrorResponse        = "The given JSON representation of a MeterValues response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomMeterValuesResponseSerializer">A delegate to serialize custom meter values responses.</param>
+        /// <param name="CustomMeterValuesResponseSerializer">A delegate to serialize custom MeterValues responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesResponse>?  CustomMeterValuesResponseSerializer   = null,
@@ -384,10 +384,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (MeterValuesResponse1, MeterValuesResponse2)
 
         /// <summary>
-        /// Compares two meter values responses for equality.
+        /// Compares two MeterValues responses for equality.
         /// </summary>
-        /// <param name="MeterValuesResponse1">A meter values response.</param>
-        /// <param name="MeterValuesResponse2">Another meter values response.</param>
+        /// <param name="MeterValuesResponse1">A MeterValues response.</param>
+        /// <param name="MeterValuesResponse2">Another MeterValues response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (MeterValuesResponse? MeterValuesResponse1,
                                            MeterValuesResponse? MeterValuesResponse2)
@@ -410,10 +410,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (MeterValuesResponse1, MeterValuesResponse2)
 
         /// <summary>
-        /// Compares two meter values responses for inequality.
+        /// Compares two MeterValues responses for inequality.
         /// </summary>
-        /// <param name="MeterValuesResponse1">A meter values response.</param>
-        /// <param name="MeterValuesResponse2">Another meter values response.</param>
+        /// <param name="MeterValuesResponse1">A MeterValues response.</param>
+        /// <param name="MeterValuesResponse2">Another MeterValues response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (MeterValuesResponse? MeterValuesResponse1,
                                            MeterValuesResponse? MeterValuesResponse2)
@@ -429,9 +429,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two meter values responses for equality.
+        /// Compares two MeterValues responses for equality.
         /// </summary>
-        /// <param name="Object">A meter values response to compare with.</param>
+        /// <param name="Object">A MeterValues response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is MeterValuesResponse meterValuesResponse &&
@@ -442,9 +442,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(MeterValuesResponse)
 
         /// <summary>
-        /// Compares two meter values responses for equality.
+        /// Compares two MeterValues responses for equality.
         /// </summary>
-        /// <param name="MeterValuesResponse">A meter values response to compare with.</param>
+        /// <param name="MeterValuesResponse">A MeterValues response to compare with.</param>
         public override Boolean Equals(MeterValuesResponse? MeterValuesResponse)
 
             => MeterValuesResponse is not null &&

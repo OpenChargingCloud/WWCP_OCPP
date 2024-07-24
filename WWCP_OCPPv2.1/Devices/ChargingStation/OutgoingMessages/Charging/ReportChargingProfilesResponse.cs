@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A report charging profiles response.
+    /// The ReportChargingProfiles response.
     /// </summary>
     public class ReportChargingProfilesResponse : AResponse<CS.ReportChargingProfilesRequest,
                                                             ReportChargingProfilesResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region ReportChargingProfilesResponse(Request, ...)
 
         /// <summary>
-        /// Create a new report charging profiles response.
+        /// Create a new ReportChargingProfiles response.
         /// </summary>
-        /// <param name="Request">The report charging profiles request leading to this response.</param>
+        /// <param name="Request">The ReportChargingProfiles request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region ReportChargingProfilesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new report charging profiles response.
+        /// Create a new ReportChargingProfiles response.
         /// </summary>
-        /// <param name="Request">The report charging profiles request leading to this response.</param>
+        /// <param name="Request">The ReportChargingProfiles request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ReportChargingProfilesResponse(CS.ReportChargingProfilesRequest  Request,
-                                              Result                            Result)
+                                              Result                            Result,
+                                              DateTime?                         ResponseTimestamp   = null,
+
+                                              NetworkingNode_Id?                DestinationId       = null,
+                                              NetworkPath?                      NetworkPath         = null,
+
+                                              IEnumerable<KeyPair>?             SignKeys            = null,
+                                              IEnumerable<SignInfo>?            SignInfos           = null,
+                                              IEnumerable<Signature>?           Signatures          = null,
+
+                                              CustomData?                       CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomReportChargingProfilesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a report charging profiles response.
+        /// Parse the given JSON representation of a ReportChargingProfiles response.
         /// </summary>
-        /// <param name="Request">The report charging profiles request leading to this response.</param>
+        /// <param name="Request">The ReportChargingProfiles request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomReportChargingProfilesResponseParser">A delegate to parse custom report charging profiles responses.</param>
+        /// <param name="CustomReportChargingProfilesResponseParser">A delegate to parse custom ReportChargingProfiles responses.</param>
         public static ReportChargingProfilesResponse Parse(CS.ReportChargingProfilesRequest                              Request,
                                                            JObject                                                       JSON,
                                                            CustomJObjectParserDelegate<ReportChargingProfilesResponse>?  CustomReportChargingProfilesResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return reportChargingProfilesResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a report charging profiles response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ReportChargingProfiles response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out ReportChargingProfilesResponse, out ErrorResponse, CustomReportChargingProfilesResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a report charging profiles response.
+        /// Try to parse the given JSON representation of a ReportChargingProfiles response.
         /// </summary>
-        /// <param name="Request">The report charging profiles request leading to this response.</param>
+        /// <param name="Request">The ReportChargingProfiles request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ReportChargingProfilesResponse">The parsed report charging profiles response.</param>
+        /// <param name="ReportChargingProfilesResponse">The parsed ReportChargingProfiles response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReportChargingProfilesResponseParser">A delegate to parse custom report charging profiles responses.</param>
+        /// <param name="CustomReportChargingProfilesResponseParser">A delegate to parse custom ReportChargingProfiles responses.</param>
         public static Boolean TryParse(CS.ReportChargingProfilesRequest                              Request,
                                        JObject                                                       JSON,
                                        [NotNullWhen(true)]  out ReportChargingProfilesResponse?      ReportChargingProfilesResponse,
@@ -252,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 ReportChargingProfilesResponse  = null;
-                ErrorResponse                   = "The given JSON representation of a report charging profiles response is invalid: " + e.Message;
+                ErrorResponse                   = "The given JSON representation of a ReportChargingProfiles response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomReportChargingProfilesResponseSerializer">A delegate to serialize custom report charging profiles responses.</param>
+        /// <param name="CustomReportChargingProfilesResponseSerializer">A delegate to serialize custom ReportChargingProfiles responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ReportChargingProfilesResponse>?  CustomReportChargingProfilesResponseSerializer   = null,
@@ -298,12 +318,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The report charging profiles request failed.
+        /// The ReportChargingProfiles failed because of a request error.
         /// </summary>
-        public static ReportChargingProfilesResponse Failed(CS.ReportChargingProfilesRequest Request)
+        /// <param name="Request">The ReportChargingProfiles request.</param>
+        public static ReportChargingProfilesResponse RequestError(CS.ReportChargingProfilesRequest  Request,
+                                                                  EventTracking_Id                  EventTrackingId,
+                                                                  ResultCode                        ErrorCode,
+                                                                  String?                           ErrorDescription    = null,
+                                                                  JObject?                          ErrorDetails        = null,
+                                                                  DateTime?                         ResponseTimestamp   = null,
+
+                                                                  NetworkingNode_Id?                DestinationId       = null,
+                                                                  NetworkPath?                      NetworkPath         = null,
+
+                                                                  IEnumerable<KeyPair>?             SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?            SignInfos           = null,
+                                                                  IEnumerable<Signature>?           Signatures          = null,
+
+                                                                  CustomData?                       CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ReportChargingProfiles failed.
+        /// </summary>
+        /// <param name="Request">The ReportChargingProfiles request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ReportChargingProfilesResponse SignatureError(CS.ReportChargingProfilesRequest  Request,
+                                                                    String                            ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ReportChargingProfiles failed.
+        /// </summary>
+        /// <param name="Request">The ReportChargingProfiles request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ReportChargingProfilesResponse Failed(CS.ReportChargingProfilesRequest  Request,
+                                                            String?                           Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ReportChargingProfiles failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ReportChargingProfiles request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ReportChargingProfilesResponse ExceptionOccured(CS.ReportChargingProfilesRequest  Request,
+                                                                      Exception                         Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -313,10 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (ReportChargingProfilesResponse1, ReportChargingProfilesResponse2)
 
         /// <summary>
-        /// Compares two report charging profiles responses for equality.
+        /// Compares two ReportChargingProfiles responses for equality.
         /// </summary>
-        /// <param name="ReportChargingProfilesResponse1">A report charging profiles response.</param>
-        /// <param name="ReportChargingProfilesResponse2">Another report charging profiles response.</param>
+        /// <param name="ReportChargingProfilesResponse1">A ReportChargingProfiles response.</param>
+        /// <param name="ReportChargingProfilesResponse2">Another ReportChargingProfiles response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ReportChargingProfilesResponse? ReportChargingProfilesResponse1,
                                            ReportChargingProfilesResponse? ReportChargingProfilesResponse2)
@@ -339,10 +430,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (ReportChargingProfilesResponse1, ReportChargingProfilesResponse2)
 
         /// <summary>
-        /// Compares two report charging profiles responses for inequality.
+        /// Compares two ReportChargingProfiles responses for inequality.
         /// </summary>
-        /// <param name="ReportChargingProfilesResponse1">A report charging profiles response.</param>
-        /// <param name="ReportChargingProfilesResponse2">Another report charging profiles response.</param>
+        /// <param name="ReportChargingProfilesResponse1">A ReportChargingProfiles response.</param>
+        /// <param name="ReportChargingProfilesResponse2">Another ReportChargingProfiles response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ReportChargingProfilesResponse? ReportChargingProfilesResponse1,
                                            ReportChargingProfilesResponse? ReportChargingProfilesResponse2)
@@ -358,9 +449,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two report charging profiles responses for equality.
+        /// Compares two ReportChargingProfiles responses for equality.
         /// </summary>
-        /// <param name="Object">A report charging profiles response to compare with.</param>
+        /// <param name="Object">A ReportChargingProfiles response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ReportChargingProfilesResponse reportChargingProfilesResponse &&
@@ -371,9 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(ReportChargingProfilesResponse)
 
         /// <summary>
-        /// Compares two report charging profiles responses for equality.
+        /// Compares two ReportChargingProfiles responses for equality.
         /// </summary>
-        /// <param name="ReportChargingProfilesResponse">A report charging profiles response to compare with.</param>
+        /// <param name="ReportChargingProfilesResponse">A ReportChargingProfiles response to compare with.</param>
         public override Boolean Equals(ReportChargingProfilesResponse? ReportChargingProfilesResponse)
 
             => ReportChargingProfilesResponse is not null &&

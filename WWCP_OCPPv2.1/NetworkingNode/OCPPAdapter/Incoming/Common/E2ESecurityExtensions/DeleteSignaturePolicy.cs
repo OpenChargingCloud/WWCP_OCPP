@@ -20,8 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -29,58 +32,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<DeleteSignaturePolicyRequest>?  CustomDeleteSignaturePolicyRequestParser    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a DeleteSignaturePolicy websocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                    OnDeleteSignaturePolicyWSRequest;
-
-        /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy request was received.
         /// </summary>
-        public event OnDeleteSignaturePolicyRequestReceivedDelegate?    OnDeleteSignaturePolicyRequestReceived;
+        public event OnDeleteSignaturePolicyRequestReceivedDelegate?  OnDeleteSignaturePolicyRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a DeleteSignaturePolicy request was received.
+        /// An event sent whenever a DeleteSignaturePolicy request was received for processing.
         /// </summary>
-        public event OnDeleteSignaturePolicyDelegate?                   OnDeleteSignaturePolicy;
-
-        /// <summary>
-        /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
-        /// </summary>
-        public event OnDeleteSignaturePolicyResponseSentDelegate?       OnDeleteSignaturePolicyResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a DeleteSignaturePolicy request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?        OnDeleteSignaturePolicyWSResponse;
+        public event OnDeleteSignaturePolicyDelegate?                 OnDeleteSignaturePolicy;
 
         #endregion
 
-        /// <summary>
-        /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
-        /// </summary>
-        public event OnDeleteSignaturePolicyResponseReceivedDelegate? OnDeleteSignaturePolicyResponseReceived;
-
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_DeleteSignaturePolicy(DateTime              RequestTimestamp,
                                           IWebSocketConnection  WebSocketConnection,
@@ -88,186 +59,251 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           NetworkPath           NetworkPath,
                                           EventTracking_Id      EventTrackingId,
                                           Request_Id            RequestId,
-                                          JObject               RequestJSON,
+                                          JObject               JSONRequest,
                                           CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnDeleteSignaturePolicyWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnDeleteSignaturePolicyWSRequest?.Invoke(startTime,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         DestinationId,
-                                                         NetworkPath,
-                                                         EventTrackingId,
-                                                         RequestTimestamp,
-                                                         RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteSignaturePolicyWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage? OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (DeleteSignaturePolicyRequest.TryParse(RequestJSON,
+                if (DeleteSignaturePolicyRequest.TryParse(JSONRequest,
                                                           RequestId,
                                                           DestinationId,
                                                           NetworkPath,
                                                           out var request,
                                                           out var errorResponse,
-                                                          CustomDeleteSignaturePolicyRequestParser)) {
+                                                          RequestTimestamp,
+                                                          parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                          EventTrackingId,
+                                                          parentNetworkingNode.OCPP.CustomDeleteSignaturePolicyRequestParser)) {
 
-                    #region Send OnDeleteSignaturePolicyRequestReceived event
+                    DeleteSignaturePolicyResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomDeleteSignaturePolicyRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnDeleteSignaturePolicyRequestReceived?.Invoke(Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       WebSocketConnection,
-                                                                       request);
+                        response = DeleteSignaturePolicyResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteSignaturePolicyRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnDeleteSignaturePolicyRequestReceived event
+
+                    var logger = OnDeleteSignaturePolicyRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnDeleteSignaturePolicyRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnDeleteSignaturePolicyRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    DeleteSignaturePolicyResponse? response = null;
-
-                    var results = OnDeleteSignaturePolicy?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnDeleteSignaturePolicyDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                       parentNetworkingNode,
-                                                                                                                       WebSocketConnection,
-                                                                                                                       request,
-                                                                                                                       CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnDeleteSignaturePolicy?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnDeleteSignaturePolicyDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : DeleteSignaturePolicyResponse.Failed(request, $"Undefined {nameof(OnDeleteSignaturePolicy)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = DeleteSignaturePolicyResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnDeleteSignaturePolicy),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= DeleteSignaturePolicyResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnDeleteSignaturePolicyResponseSent event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnDeleteSignaturePolicyResponseSent?.Invoke(Timestamp.Now,
-                                                                    parentNetworkingNode,
-                                                                    WebSocketConnection,
-                                                                    request,
-                                                                    response,
-                                                                    response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteSignaturePolicyResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomDeleteSignaturePolicyResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnDeleteSignaturePolicyResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnDeleteSignaturePolicyResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           parentNetworkingNode.OCPP.CustomDeleteSignaturePolicyResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                           parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                           parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_DeleteSignaturePolicy)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_DeleteSignaturePolicy)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_DeleteSignaturePolicy)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnDeleteSignaturePolicyWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnDeleteSignaturePolicyWSResponse?.Invoke(endTime,
-                                                          parentNetworkingNode,
-                                                          WebSocketConnection,
-                                                          DestinationId,
-                                                          NetworkPath,
-                                                          EventTrackingId,
-                                                          RequestTimestamp,
-                                                          RequestJSON,
-                                                          OCPPResponse?.Payload,
-                                                          OCPPErrorResponse?.ToJSON(),
-                                                          endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_DeleteSignaturePolicy)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteSignaturePolicyWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                            OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
+        /// An event sent whenever a response to a DeleteSignaturePolicy was sent.
         /// </summary>
-        public event OnDeleteSignaturePolicyResponseSentDelegate? OnDeleteSignaturePolicyResponseSent;
+        public event OnDeleteSignaturePolicyResponseSentDelegate?  OnDeleteSignaturePolicyResponseSent;
+
+        #endregion
+
+        #region Send OnDeleteSignaturePolicyResponse event
+
+        public async Task SendOnDeleteSignaturePolicyResponseSent(DateTime              Timestamp,
+                                                      IEventSender          Sender,
+                                                      IWebSocketConnection  Connection,
+                                                      DeleteSignaturePolicyRequest      Request,
+                                                      DeleteSignaturePolicyResponse     Response,
+                                                      TimeSpan              Runtime)
+        {
+
+            var logger = OnDeleteSignaturePolicyResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnDeleteSignaturePolicyResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnDeleteSignaturePolicyResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

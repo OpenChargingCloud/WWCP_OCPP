@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A notify customer information response.
+    /// The NotifyCustomerInformation response.
     /// </summary>
     public class NotifyCustomerInformationResponse : AResponse<CS.NotifyCustomerInformationRequest,
                                                                NotifyCustomerInformationResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyCustomerInformationResponse(Request, ...)
 
         /// <summary>
-        /// Create a new notify customer information response.
+        /// Create a new NotifyCustomerInformation response.
         /// </summary>
-        /// <param name="Request">The notify customer information request leading to this response.</param>
+        /// <param name="Request">The NotifyCustomerInformation request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyCustomerInformationResponse(Request, Result)
 
         /// <summary>
-        /// Create a new notify customer information response.
+        /// Create a new NotifyCustomerInformation response.
         /// </summary>
-        /// <param name="Request">The notify customer information request leading to this response.</param>
+        /// <param name="Request">The NotifyCustomerInformation request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public NotifyCustomerInformationResponse(CS.NotifyCustomerInformationRequest  Request,
-                                                 Result                               Result)
+                                                 Result                               Result,
+                                                 DateTime?                            ResponseTimestamp   = null,
+
+                                                 NetworkingNode_Id?                   DestinationId       = null,
+                                                 NetworkPath?                         NetworkPath         = null,
+
+                                                 IEnumerable<KeyPair>?                SignKeys            = null,
+                                                 IEnumerable<SignInfo>?               SignInfos           = null,
+                                                 IEnumerable<Signature>?              Signatures          = null,
+
+                                                 CustomData?                          CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomNotifyCustomerInformationResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify customer information response.
+        /// Parse the given JSON representation of a NotifyCustomerInformation response.
         /// </summary>
-        /// <param name="Request">The notify customer information request leading to this response.</param>
+        /// <param name="Request">The NotifyCustomerInformation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyCustomerInformationResponseParser">A delegate to parse custom notify customer information responses.</param>
+        /// <param name="CustomNotifyCustomerInformationResponseParser">A delegate to parse custom NotifyCustomerInformation responses.</param>
         public static NotifyCustomerInformationResponse Parse(CS.NotifyCustomerInformationRequest                              Request,
                                                               JObject                                                          JSON,
                                                               CustomJObjectParserDelegate<NotifyCustomerInformationResponse>?  CustomNotifyCustomerInformationResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return notifyCustomerInformationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify customer information response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyCustomerInformation response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out NotifyCustomerInformationResponse, out ErrorResponse, CustomNotifyCustomerInformationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify customer information response.
+        /// Try to parse the given JSON representation of a NotifyCustomerInformation response.
         /// </summary>
-        /// <param name="Request">The notify customer information request leading to this response.</param>
+        /// <param name="Request">The NotifyCustomerInformation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NotifyCustomerInformationResponse">The parsed notify customer information response.</param>
+        /// <param name="NotifyCustomerInformationResponse">The parsed NotifyCustomerInformation response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyCustomerInformationResponseParser">A delegate to parse custom notify customer information responses.</param>
+        /// <param name="CustomNotifyCustomerInformationResponseParser">A delegate to parse custom NotifyCustomerInformation responses.</param>
         public static Boolean TryParse(CS.NotifyCustomerInformationRequest                              Request,
                                        JObject                                                          JSON,
                                        [NotNullWhen(true)]  out NotifyCustomerInformationResponse?      NotifyCustomerInformationResponse,
@@ -252,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 NotifyCustomerInformationResponse  = null;
-                ErrorResponse                      = "The given JSON representation of a notify customer information response is invalid: " + e.Message;
+                ErrorResponse                      = "The given JSON representation of a NotifyCustomerInformation response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyCustomerInformationResponseSerializer">A delegate to serialize custom notify customer information responses.</param>
+        /// <param name="CustomNotifyCustomerInformationResponseSerializer">A delegate to serialize custom NotifyCustomerInformation responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyCustomerInformationResponse>?  CustomNotifyCustomerInformationResponseSerializer   = null,
@@ -298,12 +318,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The notify customer information request failed.
+        /// The NotifyCustomerInformation failed because of a request error.
         /// </summary>
-        public static NotifyCustomerInformationResponse Failed(CS.NotifyCustomerInformationRequest Request)
+        /// <param name="Request">The NotifyCustomerInformation request.</param>
+        public static NotifyCustomerInformationResponse RequestError(CS.NotifyCustomerInformationRequest  Request,
+                                                                     EventTracking_Id                     EventTrackingId,
+                                                                     ResultCode                           ErrorCode,
+                                                                     String?                              ErrorDescription    = null,
+                                                                     JObject?                             ErrorDetails        = null,
+                                                                     DateTime?                            ResponseTimestamp   = null,
+
+                                                                     NetworkingNode_Id?                   DestinationId       = null,
+                                                                     NetworkPath?                         NetworkPath         = null,
+
+                                                                     IEnumerable<KeyPair>?                SignKeys            = null,
+                                                                     IEnumerable<SignInfo>?               SignInfos           = null,
+                                                                     IEnumerable<Signature>?              Signatures          = null,
+
+                                                                     CustomData?                          CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifyCustomerInformation failed.
+        /// </summary>
+        /// <param name="Request">The NotifyCustomerInformation request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifyCustomerInformationResponse SignatureError(CS.NotifyCustomerInformationRequest  Request,
+                                                                       String                               ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifyCustomerInformation failed.
+        /// </summary>
+        /// <param name="Request">The NotifyCustomerInformation request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifyCustomerInformationResponse Failed(CS.NotifyCustomerInformationRequest  Request,
+                                                               String?                              Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifyCustomerInformation failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifyCustomerInformation request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifyCustomerInformationResponse ExceptionOccured(CS.NotifyCustomerInformationRequest  Request,
+                                                                         Exception                            Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -313,10 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (NotifyCustomerInformationResponse1, NotifyCustomerInformationResponse2)
 
         /// <summary>
-        /// Compares two notify customer information responses for equality.
+        /// Compares two NotifyCustomerInformation responses for equality.
         /// </summary>
-        /// <param name="NotifyCustomerInformationResponse1">A notify customer information response.</param>
-        /// <param name="NotifyCustomerInformationResponse2">Another notify customer information response.</param>
+        /// <param name="NotifyCustomerInformationResponse1">A NotifyCustomerInformation response.</param>
+        /// <param name="NotifyCustomerInformationResponse2">Another NotifyCustomerInformation response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyCustomerInformationResponse? NotifyCustomerInformationResponse1,
                                            NotifyCustomerInformationResponse? NotifyCustomerInformationResponse2)
@@ -339,10 +430,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (NotifyCustomerInformationResponse1, NotifyCustomerInformationResponse2)
 
         /// <summary>
-        /// Compares two notify customer information responses for inequality.
+        /// Compares two NotifyCustomerInformation responses for inequality.
         /// </summary>
-        /// <param name="NotifyCustomerInformationResponse1">A notify customer information response.</param>
-        /// <param name="NotifyCustomerInformationResponse2">Another notify customer information response.</param>
+        /// <param name="NotifyCustomerInformationResponse1">A NotifyCustomerInformation response.</param>
+        /// <param name="NotifyCustomerInformationResponse2">Another NotifyCustomerInformation response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyCustomerInformationResponse? NotifyCustomerInformationResponse1,
                                            NotifyCustomerInformationResponse? NotifyCustomerInformationResponse2)
@@ -358,9 +449,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify customer information responses for equality.
+        /// Compares two NotifyCustomerInformation responses for equality.
         /// </summary>
-        /// <param name="Object">A notify customer information response to compare with.</param>
+        /// <param name="Object">A NotifyCustomerInformation response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyCustomerInformationResponse notifyCustomerInformationResponse &&
@@ -371,9 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(NotifyCustomerInformationResponse)
 
         /// <summary>
-        /// Compares two notify customer information responses for equality.
+        /// Compares two NotifyCustomerInformation responses for equality.
         /// </summary>
-        /// <param name="NotifyCustomerInformationResponse">A notify customer information response to compare with.</param>
+        /// <param name="NotifyCustomerInformationResponse">A NotifyCustomerInformation response to compare with.</param>
         public override Boolean Equals(NotifyCustomerInformationResponse? NotifyCustomerInformationResponse)
 
             => NotifyCustomerInformationResponse is not null &&

@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,93 +32,39 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<GetCRLRequest>?       CustomGetCRLRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetCRLResponse>?  CustomGetCRLResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a GetCRL WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?               OnGetCRLWSRequest;
-
-        /// <summary>
         /// An event sent whenever a GetCRL request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCRLRequestReceivedDelegate?        OnGetCRLRequestReceived;
+        public event OnGetCRLRequestReceivedDelegate?  OnGetCRLRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a GetCRL was received.
+        /// An event sent whenever a GetCRL request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCRLDelegate?               OnGetCRL;
-
-        /// <summary>
-        /// An event sent whenever a response to a GetCRL was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCRLResponseSentDelegate?       OnGetCRLResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a GetCRL was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?   OnGetCRLWSResponse;
+        public event OnGetCRLDelegate?                 OnGetCRL;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_GetCRL(DateTime                   RequestTimestamp,
+            Receive_GetCRL(DateTime              RequestTimestamp,
                            IWebSocketConnection  WebSocketConnection,
-                           NetworkingNode_Id          DestinationId,
-                           NetworkPath                NetworkPath,
-                           EventTracking_Id           EventTrackingId,
-                           Request_Id                 RequestId,
-                           JObject                    JSONRequest,
-                           CancellationToken          CancellationToken)
+                           NetworkingNode_Id     DestinationId,
+                           NetworkPath           NetworkPath,
+                           EventTracking_Id      EventTrackingId,
+                           Request_Id            RequestId,
+                           JObject               JSONRequest,
+                           CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnGetCRLWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetCRLWSRequest?.Invoke(startTime,
-                                          parentNetworkingNode,
-                                          WebSocketConnection,
-                                          DestinationId,
-                                          NetworkPath,
-                                          EventTrackingId,
-                                          RequestTimestamp,
-                                          JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetCRLWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,150 +75,236 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            NetworkPath,
                                            out var request,
                                            out var errorResponse,
-                                           CustomGetCRLRequestParser)) {
+                                           RequestTimestamp,
+                                           parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                           EventTrackingId,
+                                           parentNetworkingNode.OCPP.CustomGetCRLRequestParser)) {
 
-                    #region Send OnGetCRLRequest event
+                    GetCRLResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetCRLRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnGetCRLRequestReceived?.Invoke(Timestamp.Now,
-                                                parentNetworkingNode,
-                                                WebSocketConnection,
-                                                request);
+                        response = GetCRLResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetCRLRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnGetCRLRequestReceived event
+
+                    var logger = OnGetCRLRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnGetCRLRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetCRLRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    GetCRLResponse? response = null;
-
-                    var responseTasks = OnGetCRL?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnGetCRLDelegate)?.Invoke(Timestamp.Now,
-                                                                                                              parentNetworkingNode,
-                                                                                                              WebSocketConnection,
-                                                                                                              request,
-                                                                                                              CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnGetCRL?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnGetCRLDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : GetCRLResponse.Failed(request, $"Undefined {nameof(OnGetCRL)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = GetCRLResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetCRL),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= GetCRLResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnGetCRLResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnGetCRLResponseSent?.Invoke(Timestamp.Now,
-                                                 parentNetworkingNode,
-                                                 WebSocketConnection,
-                                                 request,
-                                                 response,
-                                                 response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetCRLResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetCRLResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnGetCRLResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnGetCRLResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomGetCRLResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomGetCRLResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_GetCRL)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_GetCRL)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_GetCRL)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_GetCRL)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnGetCRLWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnGetCRLWSResponse?.Invoke(endTime,
-                                           parentNetworkingNode,
-                                           WebSocketConnection,
-                                           DestinationId,
-                                           NetworkPath,
-                                           EventTrackingId,
-                                           RequestTimestamp,
-                                           JSONRequest,
-                                           OCPPResponse?.Payload,
-                                           OCPPErrorResponse?.ToJSON(),
-                                           endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetCRLWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
         /// An event sent whenever a response to a GetCRL was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCRLResponseSentDelegate? OnGetCRLResponseSent;
+        public event OnGetCRLResponseSentDelegate?  OnGetCRLResponseSent;
+
+        #endregion
+
+        #region Send OnGetCRLResponse event
+
+        public async Task SendOnGetCRLResponseSent(DateTime              Timestamp,
+                                                   IEventSender          Sender,
+                                                   IWebSocketConnection  Connection,
+                                                   GetCRLRequest         Request,
+                                                   GetCRLResponse        Response,
+                                                   TimeSpan              Runtime)
+        {
+
+            var logger = OnGetCRLResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnGetCRLResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnGetCRLResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A notify EV charging needs response.
+    /// The NotifyEVChargingNeeds response.
     /// </summary>
     public class NotifyEVChargingNeedsResponse : AResponse<CS.NotifyEVChargingNeedsRequest,
                                                            NotifyEVChargingNeedsResponse>,
@@ -75,9 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyEVChargingNeedsResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new notify EV charging needs response.
+        /// Create a new NotifyEVChargingNeeds response.
         /// </summary>
-        /// <param name="Request">The notify EV charging needs request leading to this response.</param>
+        /// <param name="Request">The NotifyEVChargingNeeds request leading to this response.</param>
         /// <param name="Status">Whether the CSMS has been able to process the message successfully. It does not imply that the EV charging needs can be met with the current charging profile.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -123,15 +123,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyEVChargingNeedsResponse(Request, Result)
 
         /// <summary>
-        /// Create a new notify EV charging needs response.
+        /// Create a new NotifyEVChargingNeeds response.
         /// </summary>
-        /// <param name="Request">The notify EV charging needs request leading to this response.</param>
+        /// <param name="Request">The NotifyEVChargingNeeds request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public NotifyEVChargingNeedsResponse(CS.NotifyEVChargingNeedsRequest  Request,
-                                             Result                           Result)
+                                             Result                           Result,
+                                             DateTime?                        ResponseTimestamp   = null,
+
+                                             NetworkingNode_Id?               DestinationId       = null,
+                                             NetworkPath?                     NetworkPath         = null,
+
+                                             IEnumerable<KeyPair>?            SignKeys            = null,
+                                             IEnumerable<SignInfo>?           SignInfos           = null,
+                                             IEnumerable<Signature>?          Signatures          = null,
+
+                                             CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -150,11 +170,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomNotifyEVChargingNeedsResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify EV charging needs response.
+        /// Parse the given JSON representation of a NotifyEVChargingNeeds response.
         /// </summary>
-        /// <param name="Request">The notify EV charging needs request leading to this response.</param>
+        /// <param name="Request">The NotifyEVChargingNeeds request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyEVChargingNeedsResponseParser">A delegate to parse custom notify EV charging needs responses.</param>
+        /// <param name="CustomNotifyEVChargingNeedsResponseParser">A delegate to parse custom NotifyEVChargingNeeds responses.</param>
         public static NotifyEVChargingNeedsResponse Parse(CS.NotifyEVChargingNeedsRequest                              Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<NotifyEVChargingNeedsResponse>?  CustomNotifyEVChargingNeedsResponseParser   = null)
@@ -169,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return notifyEVChargingNeedsResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify EV charging needs response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyEVChargingNeeds response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -179,13 +199,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out NotifyEVChargingNeedsResponse, out ErrorResponse, CustomNotifyEVChargingNeedsResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify EV charging needs response.
+        /// Try to parse the given JSON representation of a NotifyEVChargingNeeds response.
         /// </summary>
-        /// <param name="Request">The notify EV charging needs request leading to this response.</param>
+        /// <param name="Request">The NotifyEVChargingNeeds request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NotifyEVChargingNeedsResponse">The parsed notify EV charging needs response.</param>
+        /// <param name="NotifyEVChargingNeedsResponse">The parsed NotifyEVChargingNeeds response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyEVChargingNeedsResponseParser">A delegate to parse custom notify EV charging needs responses.</param>
+        /// <param name="CustomNotifyEVChargingNeedsResponseParser">A delegate to parse custom NotifyEVChargingNeeds responses.</param>
         public static Boolean TryParse(CS.NotifyEVChargingNeedsRequest                              Request,
                                        JObject                                                      JSON,
                                        [NotNullWhen(true)]  out NotifyEVChargingNeedsResponse?      NotifyEVChargingNeedsResponse,
@@ -201,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "notify EV charging needs status",
+                                         "NotifyEVChargingNeeds status",
                                          NotifyEVChargingNeedsStatusExtensions.TryParse,
                                          out NotifyEVChargingNeedsStatus Status,
                                          out ErrorResponse))
@@ -275,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 NotifyEVChargingNeedsResponse  = null;
-                ErrorResponse                  = "The given JSON representation of a notify EV charging needs response is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a NotifyEVChargingNeeds response is invalid: " + e.Message;
                 return false;
             }
 
@@ -288,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyEVChargingNeedsResponseSerializer">A delegate to serialize custom notify EV charging needs responses.</param>
+        /// <param name="CustomNotifyEVChargingNeedsResponseSerializer">A delegate to serialize custom NotifyEVChargingNeeds responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -330,13 +350,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The notify EV charging needs response failed.
+        /// The NotifyEVChargingNeeds failed because of a request error.
         /// </summary>
-        /// <param name="Request">The notify EV charging needs request leading to this response.</param>
-        public static NotifyEVChargingNeedsResponse Failed(CS.NotifyEVChargingNeedsRequest Request)
+        /// <param name="Request">The NotifyEVChargingNeeds request.</param>
+        public static NotifyEVChargingNeedsResponse RequestError(CS.NotifyEVChargingNeedsRequest  Request,
+                                                                 EventTracking_Id                 EventTrackingId,
+                                                                 ResultCode                       ErrorCode,
+                                                                 String?                          ErrorDescription    = null,
+                                                                 JObject?                         ErrorDetails        = null,
+                                                                 DateTime?                        ResponseTimestamp   = null,
+
+                                                                 NetworkingNode_Id?               DestinationId       = null,
+                                                                 NetworkPath?                     NetworkPath         = null,
+
+                                                                 IEnumerable<KeyPair>?            SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?           SignInfos           = null,
+                                                                 IEnumerable<Signature>?          Signatures          = null,
+
+                                                                 CustomData?                      CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifyEVChargingNeeds failed.
+        /// </summary>
+        /// <param name="Request">The NotifyEVChargingNeeds request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifyEVChargingNeedsResponse SignatureError(CS.NotifyEVChargingNeedsRequest  Request,
+                                                                   String                           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifyEVChargingNeeds failed.
+        /// </summary>
+        /// <param name="Request">The NotifyEVChargingNeeds request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifyEVChargingNeedsResponse Failed(CS.NotifyEVChargingNeedsRequest  Request,
+                                                           String?                          Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifyEVChargingNeeds failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifyEVChargingNeeds request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifyEVChargingNeedsResponse ExceptionOccured(CS.NotifyEVChargingNeedsRequest  Request,
+                                                                     Exception                        Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -346,10 +436,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (NotifyEVChargingNeedsResponse1, NotifyEVChargingNeedsResponse2)
 
         /// <summary>
-        /// Compares two notify EV charging needs responses for equality.
+        /// Compares two NotifyEVChargingNeeds responses for equality.
         /// </summary>
-        /// <param name="NotifyEVChargingNeedsResponse1">A notify EV charging needs response.</param>
-        /// <param name="NotifyEVChargingNeedsResponse2">Another notify EV charging needs response.</param>
+        /// <param name="NotifyEVChargingNeedsResponse1">A NotifyEVChargingNeeds response.</param>
+        /// <param name="NotifyEVChargingNeedsResponse2">Another NotifyEVChargingNeeds response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyEVChargingNeedsResponse? NotifyEVChargingNeedsResponse1,
                                            NotifyEVChargingNeedsResponse? NotifyEVChargingNeedsResponse2)
@@ -372,10 +462,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (NotifyEVChargingNeedsResponse1, NotifyEVChargingNeedsResponse2)
 
         /// <summary>
-        /// Compares two notify EV charging needs responses for inequality.
+        /// Compares two NotifyEVChargingNeeds responses for inequality.
         /// </summary>
-        /// <param name="NotifyEVChargingNeedsResponse1">A notify EV charging needs response.</param>
-        /// <param name="NotifyEVChargingNeedsResponse2">Another notify EV charging needs response.</param>
+        /// <param name="NotifyEVChargingNeedsResponse1">A NotifyEVChargingNeeds response.</param>
+        /// <param name="NotifyEVChargingNeedsResponse2">Another NotifyEVChargingNeeds response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyEVChargingNeedsResponse? NotifyEVChargingNeedsResponse1,
                                            NotifyEVChargingNeedsResponse? NotifyEVChargingNeedsResponse2)
@@ -391,9 +481,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify EV charging needs responses for equality.
+        /// Compares two NotifyEVChargingNeeds responses for equality.
         /// </summary>
-        /// <param name="Object">A notify EV charging needs response to compare with.</param>
+        /// <param name="Object">A NotifyEVChargingNeeds response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyEVChargingNeedsResponse notifyEVChargingNeedsResponse &&
@@ -404,9 +494,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(NotifyEVChargingNeedsResponse)
 
         /// <summary>
-        /// Compares two notify EV charging needs responses for equality.
+        /// Compares two NotifyEVChargingNeeds responses for equality.
         /// </summary>
-        /// <param name="NotifyEVChargingNeedsResponse">A notify EV charging needs response to compare with.</param>
+        /// <param name="NotifyEVChargingNeedsResponse">A NotifyEVChargingNeeds response to compare with.</param>
         public override Boolean Equals(NotifyEVChargingNeedsResponse? NotifyEVChargingNeedsResponse)
 
             => NotifyEVChargingNeedsResponse is not null &&

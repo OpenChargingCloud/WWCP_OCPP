@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// The get 15118 EV certificate request.
+    /// The Get15118EVCertificate request.
     /// </summary>
     public class Get15118EVCertificateRequest : ARequest<Get15118EVCertificateRequest>,
                                                 IRequest
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get 15118 EV certificate request.
+        /// Create a new Get15118EVCertificate request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
@@ -238,17 +238,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGet15118EVCertificateRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get 15118 EV certificate request.
+        /// Parse the given JSON representation of a Get15118EVCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom get 15118 EV certificate requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom Get15118EVCertificate requests.</param>
         public static Get15118EVCertificateRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
                                                          NetworkingNode_Id                                           DestinationId,
                                                          NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   RequestTimestamp                           = null,
+                                                         TimeSpan?                                                   RequestTimeout                             = null,
+                                                         EventTracking_Id?                                           EventTrackingId                            = null,
                                                          CustomJObjectParserDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestParser   = null)
         {
 
@@ -258,12 +264,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var get15118EVCertificateRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGet15118EVCertificateRequestParser))
             {
                 return get15118EVCertificateRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get 15118 EV certificate request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a Get15118EVCertificate request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -273,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out Get15118EVCertificateRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get 15118 EV certificate request.
+        /// Try to parse the given JSON representation of a Get15118EVCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -281,6 +290,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="Get15118EVCertificateRequest">The parsed Get15118EVCertificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom Get15118EVCertificate requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
@@ -288,7 +300,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out Get15118EVCertificateRequest?      Get15118EVCertificateRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestParser)
+                                       DateTime?                                                   RequestTimestamp                           = null,
+                                       TimeSpan?                                                   RequestTimeout                             = null,
+                                       EventTracking_Id?                                           EventTrackingId                            = null,
+                                       CustomJObjectParserDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestParser   = null)
         {
 
             try
@@ -407,9 +422,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    CustomData,
 
                                                    RequestId,
-                                                   null,
-                                                   null,
-                                                   null,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
                                                    NetworkPath
 
                                                );
@@ -424,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 Get15118EVCertificateRequest  = null;
-                ErrorResponse                 = "The given JSON representation of a get 15118 EV certificate request is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a Get15118EVCertificate request is invalid: " + e.Message;
                 return false;
             }
 
@@ -529,9 +544,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get 15118 EV certificate requests for equality.
+        /// Compares two Get15118EVCertificate requests for equality.
         /// </summary>
-        /// <param name="Object">A get 15118 EV certificate request to compare with.</param>
+        /// <param name="Object">A Get15118EVCertificate request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is Get15118EVCertificateRequest get15118EVCertificateRequest &&
@@ -542,9 +557,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Get15118EVCertificateRequest)
 
         /// <summary>
-        /// Compares two get 15118 EV certificate requests for equality.
+        /// Compares two Get15118EVCertificate requests for equality.
         /// </summary>
-        /// <param name="Get15118EVCertificateRequest">A get 15118 EV certificate request to compare with.</param>
+        /// <param name="Get15118EVCertificateRequest">A Get15118EVCertificate request to compare with.</param>
         public override Boolean Equals(Get15118EVCertificateRequest? Get15118EVCertificateRequest)
 
             => Get15118EVCertificateRequest is not null &&

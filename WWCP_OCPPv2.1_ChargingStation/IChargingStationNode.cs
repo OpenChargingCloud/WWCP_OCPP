@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The common interface of all charging station node.
     /// </summary>
-    public interface IChargingStationNode : INetworkingNode
+    public interface IChargingStationNode : INetworkingNodeButNotCSMS
     {
 
         String    VendorName               { get; }

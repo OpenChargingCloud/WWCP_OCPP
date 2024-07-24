@@ -17,21 +17,19 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The OCPP HTTP Web Socket Adapter for incoming requests.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
@@ -75,8 +73,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
-                                                       null, // RequestTimestamp
-                                                       null, // RequestTimeout
+                                                       RequestTimestamp,
+                                                       parentNetworkingNode.OCPP.DefaultRequestTimeout,
                                                        EventTrackingId,
                                                        parentNetworkingNode.OCPP.CustomSecureDataTransferRequestParser)) {
 
@@ -94,35 +92,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         out errorResponse))
                     {
 
-                        response = new SecureDataTransferResponse(
-                                       Request:  request,
-                                       Result:   Result.SignatureError(
-                                                     $"Invalid signature(s): {errorResponse}"
-                                                 )
+                        response = SecureDataTransferResponse.SignatureError(
+                                       request,
+                                       errorResponse
                                    );
 
                     }
 
                     #endregion
 
-                    #region Send OnSecureDataTransferRequest event
+                    #region Send OnSecureDataTransferRequestReceived event
 
-                    try
+                    var logger = OnSecureDataTransferRequestReceived;
+                    if (logger is not null)
                     {
+                        try
+                        {
 
-                        OnSecureDataTransferRequestReceived?.Invoke(Timestamp.Now,
-                                                                    parentNetworkingNode,
-                                                                    WebSocketConnection,
-                                                                    request);
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnSecureDataTransferRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
 
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(OCPPWebSocketAdapterIN),
-                                  nameof(OnSecureDataTransferRequestReceived),
-                                  e
-                              );
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnSecureDataTransferRequestReceived),
+                                      e
+                                  );
+                        }
                     }
 
                     #endregion
@@ -137,11 +142,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             var responseTasks = OnSecureDataTransfer?.
                                                     GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnSecureDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                  parentNetworkingNode,
-                                                                                                                                  WebSocketConnection,
-                                                                                                                                  request,
-                                                                                                                                  CancellationToken)).
+                                                    SafeSelect(subscriber => (subscriber as OnSecureDataTransferDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
                                                     ToArray();
 
                             response = responseTasks?.Length > 0
@@ -173,9 +180,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         response,
                         response.ToBinary(
                             parentNetworkingNode.OCPP.CustomSecureDataTransferResponseSerializer,
-                            //parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
-                            IncludeSignatures: true
+                            IncludeSignatures: false
                         ),
                         out var errorResponse2);
 
@@ -184,12 +190,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSecureDataTransferResponse event
 
-                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnSecureDataTransferResponseSent(Timestamp.Now,
-                                                                                                                          parentNetworkingNode,
-                                                                                                                          WebSocketConnection,
-                                                                                                                          request,
-                                                                                                                          response,
-                                                                                                                          response.Runtime);
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnSecureDataTransferResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
 
                     #endregion
 
@@ -200,7 +208,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        RequestId,
                                        response.ToBinary(
                                            parentNetworkingNode.OCPP.CustomSecureDataTransferResponseSerializer,
-                                           //parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                                            IncludeSignatures: true
                                        ),
@@ -221,6 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
+
                 ocppResponse = OCPP_Response.FormationViolation(
                                    EventTrackingId,
                                    RequestId,
@@ -228,6 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    BinaryRequest,
                                    e
                                );
+
             }
 
             return ocppResponse;
@@ -238,10 +247,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
-
-    /// <summary>
-    /// The OCPP HTTP Web Socket Adapter for outgoing requests.
-    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
@@ -271,13 +276,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                              OfType <OnSecureDataTransferResponseSentDelegate>().
-                                              Select (filterDelegate => filterDelegate.Invoke(Timestamp,
-                                                                                              Sender,
-                                                                                              Connection,
-                                                                                              Request,
-                                                                                              Response,
-                                                                                              Runtime)).
+                                              OfType<OnSecureDataTransferResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
                                               ToArray());
 
                 }

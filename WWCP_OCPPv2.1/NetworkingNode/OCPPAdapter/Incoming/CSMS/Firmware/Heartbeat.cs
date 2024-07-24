@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,54 +32,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<HeartbeatRequest>?       CustomHeartbeatRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<HeartbeatResponse>?  CustomHeartbeatResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a Heartbeat WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?               OnHeartbeatWSRequest;
-
-        /// <summary>
         /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnHeartbeatRequestReceivedDelegate?     OnHeartbeatRequestReceived;
+        public event OnHeartbeatRequestReceivedDelegate?  OnHeartbeatRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a Heartbeat was received.
+        /// An event sent whenever a Heartbeat request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnHeartbeatDelegate?            OnHeartbeat;
-
-        /// <summary>
-        /// An event sent whenever a response to a Heartbeat was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnHeartbeatResponseSentDelegate?    OnHeartbeatResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a Heartbeat was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?   OnHeartbeatWSResponse;
+        public event OnHeartbeatDelegate?                 OnHeartbeat;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_Heartbeat(DateTime              RequestTimestamp,
                               IWebSocketConnection  WebSocketConnection,
@@ -91,33 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            #region Send OnHeartbeatWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnHeartbeatWSRequest?.Invoke(startTime,
-                                             parentNetworkingNode,
-                                             WebSocketConnection,
-                                             DestinationId,
-                                             NetworkPath,
-                                             EventTrackingId,
-                                             RequestTimestamp,
-                                             JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnHeartbeatWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,148 +75,233 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               NetworkPath,
                                               out var request,
                                               out var errorResponse,
-                                              CustomHeartbeatRequestParser)) {
+                                              RequestTimestamp,
+                                              parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                              EventTrackingId,
+                                              parentNetworkingNode.OCPP.CustomHeartbeatRequestParser)) {
 
-                    #region Send OnHeartbeatRequest event
+                    HeartbeatResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomHeartbeatRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnHeartbeatRequestReceived?.Invoke(Timestamp.Now,
-                                                   parentNetworkingNode,
-                                                   WebSocketConnection,
-                                                   request);
+                        response = HeartbeatResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnHeartbeatRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnHeartbeatRequestReceived event
+
+                    var logger = OnHeartbeatRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnHeartbeatRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnHeartbeatRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    HeartbeatResponse? response = null;
-
-                    var responseTasks = OnHeartbeat?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                 parentNetworkingNode,
-                                                                                                                 WebSocketConnection,
-                                                                                                                 request,
-                                                                                                                 CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnHeartbeat?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : HeartbeatResponse.Failed(request, $"Undefined {nameof(OnHeartbeat)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = HeartbeatResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnHeartbeat),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= HeartbeatResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnHeartbeatResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnHeartbeatResponseSent?.Invoke(Timestamp.Now,
-                                                    parentNetworkingNode,
-                                                    WebSocketConnection,
-                                                    request,
-                                                    response,
-                                                    response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnHeartbeatResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomHeartbeatResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnHeartbeatResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnHeartbeatResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomHeartbeatResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomHeartbeatResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_Heartbeat)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_Heartbeat)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_Heartbeat)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_Heartbeat)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnHeartbeatWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnHeartbeatWSResponse?.Invoke(endTime,
-                                              parentNetworkingNode,
-                                              WebSocketConnection,
-                                              DestinationId,
-                                              NetworkPath,
-                                              EventTrackingId,
-                                              RequestTimestamp,
-                                              JSONRequest,
-                                              OCPPResponse?.Payload,
-                                              OCPPErrorResponse?.ToJSON(),
-                                              endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnHeartbeatWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
 
-
     }
+
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
+
+        #region Events
 
         /// <summary>
         /// An event sent whenever a response to a Heartbeat was sent.
         /// </summary>
-        public event OnHeartbeatResponseSentDelegate? OnHeartbeatResponseSent;
+        public event OnHeartbeatResponseSentDelegate?  OnHeartbeatResponseSent;
+
+        #endregion
+
+        #region Send OnHeartbeatResponse event
+
+        public async Task SendOnHeartbeatResponseSent(DateTime              Timestamp,
+                                                      IEventSender          Sender,
+                                                      IWebSocketConnection  Connection,
+                                                      HeartbeatRequest      Request,
+                                                      HeartbeatResponse     Response,
+                                                      TimeSpan              Runtime)
+        {
+
+            var logger = OnHeartbeatResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnHeartbeatResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnHeartbeatResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

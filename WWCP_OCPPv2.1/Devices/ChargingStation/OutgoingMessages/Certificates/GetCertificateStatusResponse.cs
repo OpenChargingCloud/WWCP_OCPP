@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get certificate status response.
+    /// The GetCertificateStatus response.
     /// </summary>
     public class GetCertificateStatusResponse : AResponse<CS.GetCertificateStatusRequest,
                                                           GetCertificateStatusResponse>,
@@ -81,9 +81,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region GetCertificateStatusResponse(Request, Status, EXIResponse, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new get certificate status response.
+        /// Create a new GetCertificateStatus response.
         /// </summary>
-        /// <param name="Request">The get certificate status request leading to this response.</param>
+        /// <param name="Request">The GetCertificateStatus request leading to this response.</param>
         /// <param name="Status">Whether the central system was able to retrieve the OCSP certificate status.</param>
         /// <param name="OCSPResult">The optional DER encoded and then base64 OCSP response as defined in IETF RFC 6960. MAY only be omitted when status was not "Accepted".</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
@@ -132,15 +132,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region GetCertificateStatusResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get certificate status response.
+        /// Create a new GetCertificateStatus response.
         /// </summary>
-        /// <param name="Request">The get certificate status request leading to this response.</param>
+        /// <param name="Request">The GetCertificateStatus request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetCertificateStatusResponse(CS.GetCertificateStatusRequest  Request,
-                                            Result                          Result)
+                                            Result                          Result,
+                                            DateTime?                       ResponseTimestamp   = null,
+
+                                            NetworkingNode_Id?              DestinationId       = null,
+                                            NetworkPath?                    NetworkPath         = null,
+
+                                            IEnumerable<KeyPair>?           SignKeys            = null,
+                                            IEnumerable<SignInfo>?          SignInfos           = null,
+                                            IEnumerable<Signature>?         Signatures          = null,
+
+                                            CustomData?                     CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -233,11 +253,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomGetCertificateStatusResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get certificate status response.
+        /// Parse the given JSON representation of a GetCertificateStatus response.
         /// </summary>
-        /// <param name="Request">The get certificate status request leading to this response.</param>
+        /// <param name="Request">The GetCertificateStatus request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetCertificateStatusResponseParser">A delegate to parse custom get certificate status responses.</param>
+        /// <param name="CustomGetCertificateStatusResponseParser">A delegate to parse custom GetCertificateStatus responses.</param>
         public static GetCertificateStatusResponse Parse(CS.GetCertificateStatusRequest                              Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<GetCertificateStatusResponse>?  CustomGetCertificateStatusResponseParser   = null)
@@ -252,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return getCertificateStatusResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get certificate status response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetCertificateStatus response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -262,13 +282,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out GetCertificateStatusResponse, out ErrorResponse, CustomGetCertificateStatusResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get certificate status response.
+        /// Try to parse the given JSON representation of a GetCertificateStatus response.
         /// </summary>
-        /// <param name="Request">The get certificate status request leading to this response.</param>
+        /// <param name="Request">The GetCertificateStatus request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetCertificateStatusResponse">The parsed get certificate status response.</param>
+        /// <param name="GetCertificateStatusResponse">The parsed GetCertificateStatus response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetCertificateStatusResponseParser">A delegate to parse custom get certificate status responses.</param>
+        /// <param name="CustomGetCertificateStatusResponseParser">A delegate to parse custom GetCertificateStatus responses.</param>
         public static Boolean TryParse(CS.GetCertificateStatusRequest                              Request,
                                        JObject                                                     JSON,
                                        [NotNullWhen(true)]  out GetCertificateStatusResponse?      GetCertificateStatusResponse,
@@ -284,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "get certificate status",
+                                         "GetCertificateStatus",
                                          GetCertificateStatusExtensions.TryParse,
                                          out GetCertificateStatus Status,
                                          out ErrorResponse))
@@ -372,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetCertificateStatusResponse  = null;
-                ErrorResponse                 = "The given JSON representation of a get certificate status response is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a GetCertificateStatus response is invalid: " + e.Message;
                 return false;
             }
 
@@ -385,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetCertificateStatusResponseSerializer">A delegate to serialize custom get certificate status responses.</param>
+        /// <param name="CustomGetCertificateStatusResponseSerializer">A delegate to serialize custom GetCertificateStatus responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -428,13 +448,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The get certificate status failed.
+        /// The GetCertificateStatus failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get certificate status request leading to this response.</param>
-        public static GetCertificateStatusResponse Failed(CS.GetCertificateStatusRequest Request)
+        /// <param name="Request">The GetCertificateStatus request.</param>
+        public static GetCertificateStatusResponse RequestError(CS.GetCertificateStatusRequest  Request,
+                                                                EventTracking_Id                EventTrackingId,
+                                                                ResultCode                      ErrorCode,
+                                                                String?                         ErrorDescription    = null,
+                                                                JObject?                        ErrorDetails        = null,
+                                                                DateTime?                       ResponseTimestamp   = null,
+
+                                                                NetworkingNode_Id?              DestinationId       = null,
+                                                                NetworkPath?                    NetworkPath         = null,
+
+                                                                IEnumerable<KeyPair>?           SignKeys            = null,
+                                                                IEnumerable<SignInfo>?          SignInfos           = null,
+                                                                IEnumerable<Signature>?         Signatures          = null,
+
+                                                                CustomData?                     CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetCertificateStatus failed.
+        /// </summary>
+        /// <param name="Request">The GetCertificateStatus request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetCertificateStatusResponse SignatureError(CS.GetCertificateStatusRequest  Request,
+                                                                  String                          ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetCertificateStatus failed.
+        /// </summary>
+        /// <param name="Request">The GetCertificateStatus request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetCertificateStatusResponse Failed(CS.GetCertificateStatusRequest  Request,
+                                                          String?                         Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetCertificateStatus failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetCertificateStatus request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetCertificateStatusResponse ExceptionOccured(CS.GetCertificateStatusRequest  Request,
+                                                                    Exception                       Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -444,10 +534,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetCertificateStatusResponse1, GetCertificateStatusResponse2)
 
         /// <summary>
-        /// Compares two get certificate status responses for equality.
+        /// Compares two GetCertificateStatus responses for equality.
         /// </summary>
-        /// <param name="GetCertificateStatusResponse1">A get certificate status response.</param>
-        /// <param name="GetCertificateStatusResponse2">Another get certificate status response.</param>
+        /// <param name="GetCertificateStatusResponse1">A GetCertificateStatus response.</param>
+        /// <param name="GetCertificateStatusResponse2">Another GetCertificateStatus response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetCertificateStatusResponse? GetCertificateStatusResponse1,
                                            GetCertificateStatusResponse? GetCertificateStatusResponse2)
@@ -470,10 +560,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetCertificateStatusResponse1, GetCertificateStatusResponse2)
 
         /// <summary>
-        /// Compares two get certificate status responses for inequality.
+        /// Compares two GetCertificateStatus responses for inequality.
         /// </summary>
-        /// <param name="GetCertificateStatusResponse1">A get certificate status response.</param>
-        /// <param name="GetCertificateStatusResponse2">Another get certificate status response.</param>
+        /// <param name="GetCertificateStatusResponse1">A GetCertificateStatus response.</param>
+        /// <param name="GetCertificateStatusResponse2">Another GetCertificateStatus response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetCertificateStatusResponse? GetCertificateStatusResponse1,
                                            GetCertificateStatusResponse? GetCertificateStatusResponse2)
@@ -489,9 +579,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get certificate status responses for equality.
+        /// Compares two GetCertificateStatus responses for equality.
         /// </summary>
-        /// <param name="Object">A get certificate status response to compare with.</param>
+        /// <param name="Object">A GetCertificateStatus response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetCertificateStatusResponse getCertificateStatusResponse &&
@@ -502,9 +592,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetCertificateStatusResponse)
 
         /// <summary>
-        /// Compares two get certificate status responses for equality.
+        /// Compares two GetCertificateStatus responses for equality.
         /// </summary>
-        /// <param name="GetCertificateStatusResponse">A get certificate status response to compare with.</param>
+        /// <param name="GetCertificateStatusResponse">A GetCertificateStatus response to compare with.</param>
         public override Boolean Equals(GetCertificateStatusResponse? GetCertificateStatusResponse)
 
             => GetCertificateStatusResponse is not null &&

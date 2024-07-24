@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A notify priority charging request.
+    /// The NotifyPriorityCharging request.
     /// </summary>
     public class NotifyPriorityChargingRequest : ARequest<NotifyPriorityChargingRequest>,
                                                  IRequest
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a notify priority charging request.
+        /// Create a NotifyPriorityCharging request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
@@ -147,17 +147,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyPriorityChargingRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify priority charging request.
+        /// Parse the given JSON representation of a NotifyPriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom notify priority charging requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom NotifyPriorityCharging requests.</param>
         public static NotifyPriorityChargingRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
                                                           NetworkingNode_Id                                            DestinationId,
                                                           NetworkPath                                                  NetworkPath,
+                                                          DateTime?                                                    RequestTimestamp                            = null,
+                                                          TimeSpan?                                                    RequestTimeout                              = null,
+                                                          EventTracking_Id?                                            EventTrackingId                             = null,
                                                           CustomJObjectParserDelegate<NotifyPriorityChargingRequest>?  CustomNotifyPriorityChargingRequestParser   = null)
         {
 
@@ -167,12 +173,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var notifyPriorityChargingRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomNotifyPriorityChargingRequestParser))
             {
                 return notifyPriorityChargingRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify priority charging request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyPriorityCharging request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -182,22 +191,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyPriorityChargingRequest, out ErrorResponse, CustomNotifyPriorityChargingRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify priority charging request.
+        /// Try to parse the given JSON representation of a NotifyPriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="NotifyPriorityChargingRequest">The parsed notify priority charging request.</param>
+        /// <param name="NotifyPriorityChargingRequest">The parsed NotifyPriorityCharging request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom notify priority charging requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom NotifyPriorityCharging requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
                                        NetworkingNode_Id                                            DestinationId,
                                        NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out NotifyPriorityChargingRequest?      NotifyPriorityChargingRequest,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyPriorityChargingRequest>?  CustomNotifyPriorityChargingRequestParser)
+                                       DateTime?                                                    RequestTimestamp                            = null,
+                                       TimeSpan?                                                    RequestTimeout                              = null,
+                                       EventTracking_Id?                                            EventTrackingId                             = null,
+                                       CustomJObjectParserDelegate<NotifyPriorityChargingRequest>?  CustomNotifyPriorityChargingRequestParser   = null)
         {
 
             try
@@ -272,9 +287,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     CustomData,
 
                                                     RequestId,
-                                                    null,
-                                                    null,
-                                                    null,
+                                                    RequestTimestamp,
+                                                    RequestTimeout,
+                                                    EventTrackingId,
                                                     NetworkPath
 
                                                 );
@@ -289,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 NotifyPriorityChargingRequest  = null;
-                ErrorResponse                  = "The given JSON representation of a notify priority charging request is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a NotifyPriorityCharging request is invalid: " + e.Message;
                 return false;
             }
 
@@ -338,10 +353,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (NotifyPriorityChargingRequest1, NotifyPriorityChargingRequest2)
 
         /// <summary>
-        /// Compares two notify priority charging requests for equality.
+        /// Compares two NotifyPriorityCharging requests for equality.
         /// </summary>
-        /// <param name="NotifyPriorityChargingRequest1">A notify priority charging request.</param>
-        /// <param name="NotifyPriorityChargingRequest2">Another notify priority charging request.</param>
+        /// <param name="NotifyPriorityChargingRequest1">A NotifyPriorityCharging request.</param>
+        /// <param name="NotifyPriorityChargingRequest2">Another NotifyPriorityCharging request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyPriorityChargingRequest? NotifyPriorityChargingRequest1,
                                            NotifyPriorityChargingRequest? NotifyPriorityChargingRequest2)
@@ -364,10 +379,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (NotifyPriorityChargingRequest1, NotifyPriorityChargingRequest2)
 
         /// <summary>
-        /// Compares two notify priority charging requests for inequality.
+        /// Compares two NotifyPriorityCharging requests for inequality.
         /// </summary>
-        /// <param name="NotifyPriorityChargingRequest1">A notify priority charging request.</param>
-        /// <param name="NotifyPriorityChargingRequest2">Another notify priority charging request.</param>
+        /// <param name="NotifyPriorityChargingRequest1">A NotifyPriorityCharging request.</param>
+        /// <param name="NotifyPriorityChargingRequest2">Another NotifyPriorityCharging request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyPriorityChargingRequest? NotifyPriorityChargingRequest1,
                                            NotifyPriorityChargingRequest? NotifyPriorityChargingRequest2)
@@ -383,9 +398,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify priority charging requests for equality.
+        /// Compares two NotifyPriorityCharging requests for equality.
         /// </summary>
-        /// <param name="Object">A notify priority charging request to compare with.</param>
+        /// <param name="Object">A NotifyPriorityCharging request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyPriorityChargingRequest notifyPriorityChargingRequest &&
@@ -396,9 +411,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(NotifyPriorityChargingRequest)
 
         /// <summary>
-        /// Compares two notify priority charging requests for equality.
+        /// Compares two NotifyPriorityCharging requests for equality.
         /// </summary>
-        /// <param name="NotifyPriorityChargingRequest">A notify priority charging request to compare with.</param>
+        /// <param name="NotifyPriorityChargingRequest">A NotifyPriorityCharging request to compare with.</param>
         public override Boolean Equals(NotifyPriorityChargingRequest? NotifyPriorityChargingRequest)
 
             => NotifyPriorityChargingRequest is not null &&

@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A transaction event response.
+    /// The TransactionEvent response.
     /// </summary>
     public class TransactionEventResponse : AResponse<CS.TransactionEventRequest,
                                                       TransactionEventResponse>,
@@ -97,9 +97,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region TransactionEventResponse(Request, TotalCost = null, ChargingPriority = null, IdTokenInfo = null, UpdatedPersonalMessage = null, ...)
 
         /// <summary>
-        /// Create a transaction event response.
+        /// Create a TransactionEvent response.
         /// </summary>
-        /// <param name="Request">The transaction event request leading to this response.</param>
+        /// <param name="Request">The TransactionEvent request leading to this response.</param>
         /// <param name="TotalCost">The optional final total cost of the charging transaction, including taxes.</param>
         /// <param name="ChargingPriority">The optional charging priority from a business point of view.</param>
         /// <param name="IdTokenInfo">The optional information about the authorization status, expiry and group id.</param>
@@ -151,15 +151,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region TransactionEventResponse(Request, Result)
 
         /// <summary>
-        /// Create a transaction event response.
+        /// Create a TransactionEvent response.
         /// </summary>
-        /// <param name="Request">The transaction event request leading to this response.</param>
+        /// <param name="Request">The TransactionEvent request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public TransactionEventResponse(CS.TransactionEventRequest  Request,
-                                        Result                      Result)
+                                        Result                      Result,
+                                        DateTime?                   ResponseTimestamp   = null,
+
+                                        NetworkingNode_Id?          DestinationId       = null,
+                                        NetworkPath?                NetworkPath         = null,
+
+                                        IEnumerable<KeyPair>?       SignKeys            = null,
+                                        IEnumerable<SignInfo>?      SignInfos           = null,
+                                        IEnumerable<Signature>?     Signatures          = null,
+
+                                        CustomData?                 CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -399,11 +419,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomTransactionEventRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a transaction event response.
+        /// Parse the given JSON representation of a TransactionEvent response.
         /// </summary>
-        /// <param name="Request">The transaction event request leading to this response.</param>
+        /// <param name="Request">The TransactionEvent request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom transaction event responses.</param>
+        /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom TransactionEvent responses.</param>
         public static TransactionEventResponse Parse(CS.TransactionEventRequest                              Request,
                                                      JObject                                                 JSON,
                                                      CustomJObjectParserDelegate<TransactionEventResponse>?  CustomTransactionEventResponseParser   = null)
@@ -419,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return transactionEventResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a transaction event response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a TransactionEvent response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -429,12 +449,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out TransactionEventResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a transaction event response.
+        /// Try to parse the given JSON representation of a TransactionEvent response.
         /// </summary>
-        /// <param name="Request">The transaction event request leading to this response.</param>
+        /// <param name="Request">The TransactionEvent request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="TransactionEventResponse">The parsed transaction event response.</param>
-        /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom transaction event responses.</param>
+        /// <param name="TransactionEventResponse">The parsed TransactionEvent response.</param>
+        /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom TransactionEvent responses.</param>
         public static Boolean TryParse(CS.TransactionEventRequest                              Request,
                                        JObject                                                 JSON,
                                        [NotNullWhen(true)]  out TransactionEventResponse?      TransactionEventResponse,
@@ -553,7 +573,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 TransactionEventResponse  = null;
-                ErrorResponse             = "The given JSON representation of a transaction event response is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a TransactionEvent response is invalid: " + e.Message;
                 return false;
             }
 
@@ -566,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomTransactionEventResponseSerializer">A delegate to serialize custom transaction event responses.</param>
+        /// <param name="CustomTransactionEventResponseSerializer">A delegate to serialize custom TransactionEvent responses.</param>
         /// <param name="CustomIdTokenInfoSerializer">A delegate to serialize custom identification tokens infos.</param>
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional infos.</param>
@@ -628,12 +648,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The transaction event failed.
+        /// The TransactionEvent failed because of a request error.
         /// </summary>
-        public static TransactionEventResponse Failed(CS.TransactionEventRequest Request)
+        /// <param name="Request">The TransactionEvent request.</param>
+        public static TransactionEventResponse RequestError(CS.TransactionEventRequest  Request,
+                                                            EventTracking_Id            EventTrackingId,
+                                                            ResultCode                  ErrorCode,
+                                                            String?                     ErrorDescription    = null,
+                                                            JObject?                    ErrorDetails        = null,
+                                                            DateTime?                   ResponseTimestamp   = null,
+
+                                                            NetworkingNode_Id?          DestinationId       = null,
+                                                            NetworkPath?                NetworkPath         = null,
+
+                                                            IEnumerable<KeyPair>?       SignKeys            = null,
+                                                            IEnumerable<SignInfo>?      SignInfos           = null,
+                                                            IEnumerable<Signature>?     Signatures          = null,
+
+                                                            CustomData?                 CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The TransactionEvent failed.
+        /// </summary>
+        /// <param name="Request">The TransactionEvent request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static TransactionEventResponse SignatureError(CS.TransactionEventRequest  Request,
+                                                              String                      ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The TransactionEvent failed.
+        /// </summary>
+        /// <param name="Request">The TransactionEvent request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static TransactionEventResponse Failed(CS.TransactionEventRequest  Request,
+                                                      String?                     Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The TransactionEvent failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The TransactionEvent request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static TransactionEventResponse ExceptionOccured(CS.TransactionEventRequest  Request,
+                                                                Exception                   Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -643,10 +734,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (TransactionEventResponse1, TransactionEventResponse2)
 
         /// <summary>
-        /// Compares two transaction event responses for equality.
+        /// Compares two TransactionEvent responses for equality.
         /// </summary>
-        /// <param name="TransactionEventResponse1">A transaction event response.</param>
-        /// <param name="TransactionEventResponse2">Another transaction event response.</param>
+        /// <param name="TransactionEventResponse1">A TransactionEvent response.</param>
+        /// <param name="TransactionEventResponse2">Another TransactionEvent response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (TransactionEventResponse? TransactionEventResponse1,
                                            TransactionEventResponse? TransactionEventResponse2)
@@ -669,10 +760,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (TransactionEventResponse1, TransactionEventResponse2)
 
         /// <summary>
-        /// Compares two transaction event responses for inequality.
+        /// Compares two TransactionEvent responses for inequality.
         /// </summary>
-        /// <param name="TransactionEventResponse1">A transaction event response.</param>
-        /// <param name="TransactionEventResponse2">Another transaction event response.</param>
+        /// <param name="TransactionEventResponse1">A TransactionEvent response.</param>
+        /// <param name="TransactionEventResponse2">Another TransactionEvent response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (TransactionEventResponse? TransactionEventResponse1,
                                            TransactionEventResponse? TransactionEventResponse2)
@@ -688,9 +779,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two transaction event responses for equality.
+        /// Compares two TransactionEvent responses for equality.
         /// </summary>
-        /// <param name="Object">A transaction event response to compare with.</param>
+        /// <param name="Object">A TransactionEvent response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is TransactionEventResponse transactionEventResponse &&
@@ -701,9 +792,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(TransactionEventResponse)
 
         /// <summary>
-        /// Compares two transaction event responses for equality.
+        /// Compares two TransactionEvent responses for equality.
         /// </summary>
-        /// <param name="TransactionEventResponse">A transaction event response to compare with.</param>
+        /// <param name="TransactionEventResponse">A TransactionEvent response to compare with.</param>
         public override Boolean Equals(TransactionEventResponse? TransactionEventResponse)
 
             => TransactionEventResponse is not null &&

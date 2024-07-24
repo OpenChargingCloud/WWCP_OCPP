@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A notify priority charging response.
+    /// The NotifyPriorityCharging response.
     /// </summary>
     public class NotifyPriorityChargingResponse : AResponse<CS.NotifyPriorityChargingRequest,
                                                             NotifyPriorityChargingResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyPriorityChargingResponse(Request, ...)
 
         /// <summary>
-        /// Create a new notify priority charging response.
+        /// Create a new NotifyPriorityCharging response.
         /// </summary>
-        /// <param name="Request">The notify priority charging request leading to this response.</param>
+        /// <param name="Request">The NotifyPriorityCharging request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyPriorityChargingResponse(Request, Result)
 
         /// <summary>
-        /// Create a new notify priority charging response.
+        /// Create a new NotifyPriorityCharging response.
         /// </summary>
-        /// <param name="Request">The notify priority charging request leading to this response.</param>
+        /// <param name="Request">The NotifyPriorityCharging request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public NotifyPriorityChargingResponse(CS.NotifyPriorityChargingRequest  Request,
-                                              Result                            Result)
+                                              Result                            Result,
+                                              DateTime?                         ResponseTimestamp   = null,
+
+                                              NetworkingNode_Id?                DestinationId       = null,
+                                              NetworkPath?                      NetworkPath         = null,
+
+                                              IEnumerable<KeyPair>?             SignKeys            = null,
+                                              IEnumerable<SignInfo>?            SignInfos           = null,
+                                              IEnumerable<Signature>?           Signatures          = null,
+
+                                              CustomData?                       CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -128,11 +148,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomNotifyPriorityChargingResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify priority charging response.
+        /// Parse the given JSON representation of a NotifyPriorityCharging response.
         /// </summary>
-        /// <param name="Request">The notify priority charging request leading to this response.</param>
+        /// <param name="Request">The NotifyPriorityCharging request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyPriorityChargingResponseParser">A delegate to parse custom notify priority charging responses.</param>
+        /// <param name="CustomNotifyPriorityChargingResponseParser">A delegate to parse custom NotifyPriorityCharging responses.</param>
         public static NotifyPriorityChargingResponse Parse(CS.NotifyPriorityChargingRequest                              Request,
                                                            JObject                                                       JSON,
                                                            CustomJObjectParserDelegate<NotifyPriorityChargingResponse>?  CustomNotifyPriorityChargingResponseParser   = null)
@@ -147,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return notifyPriorityChargingResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify priority charging response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyPriorityCharging response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -157,13 +177,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out NotifyPriorityChargingResponse, out ErrorResponse, CustomNotifyPriorityChargingResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify priority charging response.
+        /// Try to parse the given JSON representation of a NotifyPriorityCharging response.
         /// </summary>
-        /// <param name="Request">The notify priority charging request leading to this response.</param>
+        /// <param name="Request">The NotifyPriorityCharging request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NotifyPriorityChargingResponse">The parsed notify priority charging response.</param>
+        /// <param name="NotifyPriorityChargingResponse">The parsed NotifyPriorityCharging response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyPriorityChargingResponseParser">A delegate to parse custom notify priority charging responses.</param>
+        /// <param name="CustomNotifyPriorityChargingResponseParser">A delegate to parse custom NotifyPriorityCharging responses.</param>
         public static Boolean TryParse(CS.NotifyPriorityChargingRequest                              Request,
                                        JObject                                                       JSON,
                                        [NotNullWhen(true)]  out NotifyPriorityChargingResponse?      NotifyPriorityChargingResponse,
@@ -226,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 NotifyPriorityChargingResponse  = null;
-                ErrorResponse                   = "The given JSON representation of a notify priority charging response is invalid: " + e.Message;
+                ErrorResponse                   = "The given JSON representation of a NotifyPriorityCharging response is invalid: " + e.Message;
                 return false;
             }
 
@@ -239,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyPriorityChargingResponseSerializer">A delegate to serialize custom notify priority charging responses.</param>
+        /// <param name="CustomNotifyPriorityChargingResponseSerializer">A delegate to serialize custom NotifyPriorityCharging responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyPriorityChargingResponse>?  CustomNotifyPriorityChargingResponseSerializer   = null,
@@ -272,12 +292,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The notify priority charging request failed.
+        /// The NotifyPriorityCharging failed because of a request error.
         /// </summary>
-        public static NotifyPriorityChargingResponse Failed(CS.NotifyPriorityChargingRequest Request)
+        /// <param name="Request">The NotifyPriorityCharging request.</param>
+        public static NotifyPriorityChargingResponse RequestError(CS.NotifyPriorityChargingRequest  Request,
+                                                                  EventTracking_Id                  EventTrackingId,
+                                                                  ResultCode                        ErrorCode,
+                                                                  String?                           ErrorDescription    = null,
+                                                                  JObject?                          ErrorDetails        = null,
+                                                                  DateTime?                         ResponseTimestamp   = null,
+
+                                                                  NetworkingNode_Id?                DestinationId       = null,
+                                                                  NetworkPath?                      NetworkPath         = null,
+
+                                                                  IEnumerable<KeyPair>?             SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?            SignInfos           = null,
+                                                                  IEnumerable<Signature>?           Signatures          = null,
+
+                                                                  CustomData?                       CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifyPriorityCharging failed.
+        /// </summary>
+        /// <param name="Request">The NotifyPriorityCharging request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifyPriorityChargingResponse SignatureError(CS.NotifyPriorityChargingRequest  Request,
+                                                                    String                            ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifyPriorityCharging failed.
+        /// </summary>
+        /// <param name="Request">The NotifyPriorityCharging request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifyPriorityChargingResponse Failed(CS.NotifyPriorityChargingRequest  Request,
+                                                            String?                           Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifyPriorityCharging failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifyPriorityCharging request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifyPriorityChargingResponse ExceptionOccured(CS.NotifyPriorityChargingRequest  Request,
+                                                                      Exception                         Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -287,10 +378,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (NotifyPriorityChargingResponse1, NotifyPriorityChargingResponse2)
 
         /// <summary>
-        /// Compares two notify priority charging responses for equality.
+        /// Compares two NotifyPriorityCharging responses for equality.
         /// </summary>
-        /// <param name="NotifyPriorityChargingResponse1">A notify priority charging response.</param>
-        /// <param name="NotifyPriorityChargingResponse2">Another notify priority charging response.</param>
+        /// <param name="NotifyPriorityChargingResponse1">A NotifyPriorityCharging response.</param>
+        /// <param name="NotifyPriorityChargingResponse2">Another NotifyPriorityCharging response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyPriorityChargingResponse? NotifyPriorityChargingResponse1,
                                            NotifyPriorityChargingResponse? NotifyPriorityChargingResponse2)
@@ -313,10 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (NotifyPriorityChargingResponse1, NotifyPriorityChargingResponse2)
 
         /// <summary>
-        /// Compares two notify priority charging responses for inequality.
+        /// Compares two NotifyPriorityCharging responses for inequality.
         /// </summary>
-        /// <param name="NotifyPriorityChargingResponse1">A notify priority charging response.</param>
-        /// <param name="NotifyPriorityChargingResponse2">Another notify priority charging response.</param>
+        /// <param name="NotifyPriorityChargingResponse1">A NotifyPriorityCharging response.</param>
+        /// <param name="NotifyPriorityChargingResponse2">Another NotifyPriorityCharging response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyPriorityChargingResponse? NotifyPriorityChargingResponse1,
                                            NotifyPriorityChargingResponse? NotifyPriorityChargingResponse2)
@@ -332,9 +423,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify priority charging responses for equality.
+        /// Compares two NotifyPriorityCharging responses for equality.
         /// </summary>
-        /// <param name="Object">A notify priority charging response to compare with.</param>
+        /// <param name="Object">A NotifyPriorityCharging response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyPriorityChargingResponse notifyPriorityChargingResponse &&
@@ -345,9 +436,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(NotifyPriorityChargingResponse)
 
         /// <summary>
-        /// Compares two notify priority charging responses for equality.
+        /// Compares two NotifyPriorityCharging responses for equality.
         /// </summary>
-        /// <param name="NotifyPriorityChargingResponse">A notify priority charging response to compare with.</param>
+        /// <param name="NotifyPriorityChargingResponse">A NotifyPriorityCharging response to compare with.</param>
         public override Boolean Equals(NotifyPriorityChargingResponse? NotifyPriorityChargingResponse)
 
             => NotifyPriorityChargingResponse is not null &&

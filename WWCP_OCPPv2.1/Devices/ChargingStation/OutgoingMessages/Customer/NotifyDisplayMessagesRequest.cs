@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A notify display messages request.
+    /// The NotifyDisplayMessages request.
     /// </summary>
     public class NotifyDisplayMessagesRequest : ARequest<NotifyDisplayMessagesRequest>,
                                                 IRequest
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The unique identification of the notify display messages request.
+        /// The unique identification of the NotifyDisplayMessages request.
         /// </summary>
         [Mandatory]
         public Int32                     NotifyDisplayMessagesRequestId    { get; }
@@ -79,10 +79,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a notify display messages request.
+        /// Create a NotifyDisplayMessages request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
-        /// <param name="NotifyDisplayMessagesRequestId">The unique identification of the notify display messages request.</param>
+        /// <param name="NotifyDisplayMessagesRequestId">The unique identification of the NotifyDisplayMessages request.</param>
         /// <param name="MessageInfos">The requested display messages as configured in the charging station.</param>
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.</param>
         /// 
@@ -370,17 +370,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyDisplayMessagesRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify display messages request.
+        /// Parse the given JSON representation of a NotifyDisplayMessages request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomNotifyDisplayMessagesRequestParser">A delegate to parse custom notify display messages requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyDisplayMessagesRequestParser">A delegate to parse custom NotifyDisplayMessages requests.</param>
         public static NotifyDisplayMessagesRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
                                                          NetworkingNode_Id                                           DestinationId,
                                                          NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   RequestTimestamp                           = null,
+                                                         TimeSpan?                                                   RequestTimeout                             = null,
+                                                         EventTracking_Id?                                           EventTrackingId                            = null,
                                                          CustomJObjectParserDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestParser   = null)
         {
 
@@ -390,12 +396,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var notifyDisplayMessagesRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomNotifyDisplayMessagesRequestParser))
             {
                 return notifyDisplayMessagesRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify display messages request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyDisplayMessages request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -405,22 +414,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyDisplayMessagesRequest, out ErrorResponse, CustomNotifyDisplayMessagesRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify display messages request.
+        /// Try to parse the given JSON representation of a NotifyDisplayMessages request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="NotifyDisplayMessagesRequest">The parsed notify display messages request.</param>
+        /// <param name="NotifyDisplayMessagesRequest">The parsed NotifyDisplayMessages request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyDisplayMessagesRequestParser">A delegate to parse custom notify display messages requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyDisplayMessagesRequestParser">A delegate to parse custom NotifyDisplayMessages requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
                                        NetworkingNode_Id                                           DestinationId,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out NotifyDisplayMessagesRequest?      NotifyDisplayMessagesRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestParser)
+                                       DateTime?                                                   RequestTimestamp                           = null,
+                                       TimeSpan?                                                   RequestTimeout                             = null,
+                                       EventTracking_Id?                                           EventTrackingId                            = null,
+                                       CustomJObjectParserDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestParser   = null)
         {
 
             try
@@ -431,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region NotifyDisplayMessagesRequestId    [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "notify display messages request identification",
+                                         "NotifyDisplayMessages request identification",
                                          out Int32 NotifyDisplayMessagesRequestId,
                                          out ErrorResponse))
                 {
@@ -509,9 +524,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    CustomData,
 
                                                    RequestId,
-                                                   null,
-                                                   null,
-                                                   null,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
                                                    NetworkPath
 
                                                );
@@ -526,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 NotifyDisplayMessagesRequest  = null;
-                ErrorResponse                 = "The given JSON representation of a notify display messages request is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a NotifyDisplayMessages request is invalid: " + e.Message;
                 return false;
             }
 
@@ -591,10 +606,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (NotifyDisplayMessagesRequest1, NotifyDisplayMessagesRequest2)
 
         /// <summary>
-        /// Compares two notify display messages requests for equality.
+        /// Compares two NotifyDisplayMessages requests for equality.
         /// </summary>
-        /// <param name="NotifyDisplayMessagesRequest1">A notify display messages request.</param>
-        /// <param name="NotifyDisplayMessagesRequest2">Another notify display messages request.</param>
+        /// <param name="NotifyDisplayMessagesRequest1">A NotifyDisplayMessages request.</param>
+        /// <param name="NotifyDisplayMessagesRequest2">Another NotifyDisplayMessages request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyDisplayMessagesRequest? NotifyDisplayMessagesRequest1,
                                            NotifyDisplayMessagesRequest? NotifyDisplayMessagesRequest2)
@@ -617,10 +632,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (NotifyDisplayMessagesRequest1, NotifyDisplayMessagesRequest2)
 
         /// <summary>
-        /// Compares two notify display messages requests for inequality.
+        /// Compares two NotifyDisplayMessages requests for inequality.
         /// </summary>
-        /// <param name="NotifyDisplayMessagesRequest1">A notify display messages request.</param>
-        /// <param name="NotifyDisplayMessagesRequest2">Another notify display messages request.</param>
+        /// <param name="NotifyDisplayMessagesRequest1">A NotifyDisplayMessages request.</param>
+        /// <param name="NotifyDisplayMessagesRequest2">Another NotifyDisplayMessages request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyDisplayMessagesRequest? NotifyDisplayMessagesRequest1,
                                            NotifyDisplayMessagesRequest? NotifyDisplayMessagesRequest2)
@@ -636,9 +651,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify display messages requests for equality.
+        /// Compares two NotifyDisplayMessages requests for equality.
         /// </summary>
-        /// <param name="Object">A notify display messages request to compare with.</param>
+        /// <param name="Object">A NotifyDisplayMessages request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyDisplayMessagesRequest notifyDisplayMessagesRequest &&
@@ -649,9 +664,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(NotifyDisplayMessagesRequest)
 
         /// <summary>
-        /// Compares two notify display messages requests for equality.
+        /// Compares two NotifyDisplayMessages requests for equality.
         /// </summary>
-        /// <param name="NotifyDisplayMessagesRequest">A notify display messages request to compare with.</param>
+        /// <param name="NotifyDisplayMessagesRequest">A NotifyDisplayMessages request to compare with.</param>
         public override Boolean Equals(NotifyDisplayMessagesRequest? NotifyDisplayMessagesRequest)
 
             => NotifyDisplayMessagesRequest is not null &&

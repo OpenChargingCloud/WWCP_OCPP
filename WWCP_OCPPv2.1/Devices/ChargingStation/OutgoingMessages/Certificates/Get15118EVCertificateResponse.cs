@@ -23,13 +23,15 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get 15118 EV certificate response.
+    /// The Get15118EVCertificate response.
     /// </summary>
     public class Get15118EVCertificateResponse : AResponse<CS.Get15118EVCertificateRequest,
                                                            Get15118EVCertificateResponse>,
@@ -85,9 +87,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Get15118EVCertificateResponse(Request, Status, EXIResponse, RemainingContracts = null, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new get 15118 EV certificate response.
+        /// Create a new Get15118EVCertificate response.
         /// </summary>
-        /// <param name="Request">The get 15118 EV certificate request leading to this response.</param>
+        /// <param name="Request">The Get15118EVCertificate request leading to this response.</param>
         /// <param name="Status">The success or failure of the EXI message processing.</param>
         /// <param name="EXIResponse">Base64 encoded certificate installation response to the electric vehicle.</param>
         /// <param name="RemainingContracts">The number of contracts that can be retrieved with additional requests.</param>
@@ -139,15 +141,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Get15118EVCertificateResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get 15118 EV certificate response.
+        /// Create a new Get15118EVCertificate response.
         /// </summary>
-        /// <param name="Request">The get 15118 EV certificate request leading to this response.</param>
+        /// <param name="Request">The Get15118EVCertificate request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public Get15118EVCertificateResponse(CS.Get15118EVCertificateRequest  Request,
-                                             Result                           Result)
+                                             Result                           Result,
+                                             DateTime?                        ResponseTimestamp   = null,
+
+                                             NetworkingNode_Id?               DestinationId       = null,
+                                             NetworkPath?                     NetworkPath         = null,
+
+                                             IEnumerable<KeyPair>?            SignKeys            = null,
+                                             IEnumerable<SignInfo>?           SignInfos           = null,
+                                             IEnumerable<Signature>?          Signatures          = null,
+
+                                             CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -243,11 +265,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomGet15118EVCertificateResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get 15118 EV certificate response.
+        /// Parse the given JSON representation of a Get15118EVCertificate response.
         /// </summary>
-        /// <param name="Request">The get 15118 EV certificate request leading to this response.</param>
+        /// <param name="Request">The Get15118EVCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom get 15118 EV certificate responses.</param>
+        /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom Get15118EVCertificate responses.</param>
         public static Get15118EVCertificateResponse Parse(CS.Get15118EVCertificateRequest                              Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser   = null)
@@ -262,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return get15118EVCertificateResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get 15118 EV certificate response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a Get15118EVCertificate response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -272,13 +294,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out Get15118EVCertificateResponse, out ErrorResponse, CustomGet15118EVCertificateResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get 15118 EV certificate response.
+        /// Try to parse the given JSON representation of a Get15118EVCertificate response.
         /// </summary>
-        /// <param name="Request">The get 15118 EV certificate request leading to this response.</param>
+        /// <param name="Request">The Get15118EVCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Get15118EVCertificateResponse">The parsed get 15118 EV certificate response.</param>
+        /// <param name="Get15118EVCertificateResponse">The parsed Get15118EVCertificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom get 15118 EV certificate responses.</param>
+        /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom Get15118EVCertificate responses.</param>
         public static Boolean TryParse(CS.Get15118EVCertificateRequest                              Request,
                                        JObject                                                      JSON,
                                        [NotNullWhen(true)]  out Get15118EVCertificateResponse?      Get15118EVCertificateResponse,
@@ -396,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 Get15118EVCertificateResponse  = null;
-                ErrorResponse                  = "The given JSON representation of a get 15118 EV certificate response is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a Get15118EVCertificate response is invalid: " + e.Message;
                 return false;
             }
 
@@ -409,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGet15118EVCertificateResponseSerializer">A delegate to serialize custom get 15118 EV certificate responses.</param>
+        /// <param name="CustomGet15118EVCertificateResponseSerializer">A delegate to serialize custom Get15118EVCertificate responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -456,13 +478,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The get 15118 EV certificate failed.
+        /// The Get15118EVCertificate failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get 15118 EV certificate request leading to this response.</param>
-        public static Get15118EVCertificateResponse Failed(CS.Get15118EVCertificateRequest Request)
+        /// <param name="Request">The Get15118EVCertificate request.</param>
+        public static Get15118EVCertificateResponse RequestError(CS.Get15118EVCertificateRequest  Request,
+                                                                 EventTracking_Id                 EventTrackingId,
+                                                                 ResultCode                       ErrorCode,
+                                                                 String?                          ErrorDescription    = null,
+                                                                 JObject?                         ErrorDetails        = null,
+                                                                 DateTime?                        ResponseTimestamp   = null,
+
+                                                                 NetworkingNode_Id?               DestinationId       = null,
+                                                                 NetworkPath?                     NetworkPath         = null,
+
+                                                                 IEnumerable<KeyPair>?            SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?           SignInfos           = null,
+                                                                 IEnumerable<Signature>?          Signatures          = null,
+
+                                                                 CustomData?                      CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The Get15118EVCertificate failed.
+        /// </summary>
+        /// <param name="Request">The Get15118EVCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static Get15118EVCertificateResponse SignatureError(CS.Get15118EVCertificateRequest  Request,
+                                                                   String                           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The Get15118EVCertificate failed.
+        /// </summary>
+        /// <param name="Request">The Get15118EVCertificate request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static Get15118EVCertificateResponse Failed(CS.Get15118EVCertificateRequest  Request,
+                                                           String?                          Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The Get15118EVCertificate failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The Get15118EVCertificate request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static Get15118EVCertificateResponse ExceptionOccured(CS.Get15118EVCertificateRequest  Request,
+                                                                     Exception                        Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -472,10 +564,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (Get15118EVCertificateResponse1, Get15118EVCertificateResponse2)
 
         /// <summary>
-        /// Compares two get 15118 EV certificate responses for equality.
+        /// Compares two Get15118EVCertificate responses for equality.
         /// </summary>
-        /// <param name="Get15118EVCertificateResponse1">A get 15118 EV certificate response.</param>
-        /// <param name="Get15118EVCertificateResponse2">Another get 15118 EV certificate response.</param>
+        /// <param name="Get15118EVCertificateResponse1">A Get15118EVCertificate response.</param>
+        /// <param name="Get15118EVCertificateResponse2">Another Get15118EVCertificate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Get15118EVCertificateResponse? Get15118EVCertificateResponse1,
                                            Get15118EVCertificateResponse? Get15118EVCertificateResponse2)
@@ -498,10 +590,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (Get15118EVCertificateResponse1, Get15118EVCertificateResponse2)
 
         /// <summary>
-        /// Compares two get 15118 EV certificate responses for inequality.
+        /// Compares two Get15118EVCertificate responses for inequality.
         /// </summary>
-        /// <param name="Get15118EVCertificateResponse1">A get 15118 EV certificate response.</param>
-        /// <param name="Get15118EVCertificateResponse2">Another get 15118 EV certificate response.</param>
+        /// <param name="Get15118EVCertificateResponse1">A Get15118EVCertificate response.</param>
+        /// <param name="Get15118EVCertificateResponse2">Another Get15118EVCertificate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Get15118EVCertificateResponse? Get15118EVCertificateResponse1,
                                            Get15118EVCertificateResponse? Get15118EVCertificateResponse2)
@@ -517,9 +609,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get 15118 EV certificate responses for equality.
+        /// Compares two Get15118EVCertificate responses for equality.
         /// </summary>
-        /// <param name="Object">A get 15118 EV certificate response to compare with.</param>
+        /// <param name="Object">A Get15118EVCertificate response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is Get15118EVCertificateResponse get15118EVCertificateResponse &&
@@ -530,9 +622,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Get15118EVCertificateResponse)
 
         /// <summary>
-        /// Compares two get 15118 EV certificate responses for equality.
+        /// Compares two Get15118EVCertificate responses for equality.
         /// </summary>
-        /// <param name="Get15118EVCertificateResponse">A get 15118 EV certificate response to compare with.</param>
+        /// <param name="Get15118EVCertificateResponse">A Get15118EVCertificate response to compare with.</param>
         public override Boolean Equals(Get15118EVCertificateResponse? Get15118EVCertificateResponse)
 
             => Get15118EVCertificateResponse is not null &&

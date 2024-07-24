@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,93 +32,39 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<ReservationStatusUpdateRequest>?       CustomReservationStatusUpdateRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<ReservationStatusUpdateResponse>?  CustomReservationStatusUpdateResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a ReservationStatusUpdate WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                             OnReservationStatusUpdateWSRequest;
-
-        /// <summary>
         /// An event sent whenever a ReservationStatusUpdate request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReservationStatusUpdateRequestReceivedDelegate?     OnReservationStatusUpdateRequestReceived;
+        public event OnReservationStatusUpdateRequestReceivedDelegate?  OnReservationStatusUpdateRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a ReservationStatusUpdate was received.
+        /// An event sent whenever a ReservationStatusUpdate request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReservationStatusUpdateDelegate?            OnReservationStatusUpdate;
-
-        /// <summary>
-        /// An event sent whenever a response to a ReservationStatusUpdate was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnReservationStatusUpdateResponseSentDelegate?    OnReservationStatusUpdateResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a ReservationStatusUpdate was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?                 OnReservationStatusUpdateWSResponse;
+        public event OnReservationStatusUpdateDelegate?                 OnReservationStatusUpdate;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_ReservationStatusUpdate(DateTime                   RequestTimestamp,
+            Receive_ReservationStatusUpdate(DateTime              RequestTimestamp,
                                             IWebSocketConnection  WebSocketConnection,
-                                            NetworkingNode_Id          DestinationId,
-                                            NetworkPath                NetworkPath,
-                                            EventTracking_Id           EventTrackingId,
-                                            Request_Id                 RequestId,
-                                            JObject                    JSONRequest,
-                                            CancellationToken          CancellationToken)
+                                            NetworkingNode_Id     DestinationId,
+                                            NetworkPath           NetworkPath,
+                                            EventTracking_Id      EventTrackingId,
+                                            Request_Id            RequestId,
+                                            JObject               JSONRequest,
+                                            CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnReservationStatusUpdateWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnReservationStatusUpdateWSRequest?.Invoke(startTime,
-                                                           parentNetworkingNode,
-                                                           WebSocketConnection,
-                                                           DestinationId,
-                                                           NetworkPath,
-                                                           EventTrackingId,
-                                                           RequestTimestamp,
-                                                           JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReservationStatusUpdateWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,149 +75,233 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                             NetworkPath,
                                                             out var request,
                                                             out var errorResponse,
-                                                            CustomReservationStatusUpdateRequestParser)) {
+                                                            RequestTimestamp,
+                                                            parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                            EventTrackingId,
+                                                            parentNetworkingNode.OCPP.CustomReservationStatusUpdateRequestParser)) {
 
-                    #region Send OnReservationStatusUpdateRequest event
+                    ReservationStatusUpdateResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomReservationStatusUpdateRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnReservationStatusUpdateRequestReceived?.Invoke(Timestamp.Now,
-                                                                 parentNetworkingNode,
-                                                                 WebSocketConnection,
-                                                                 request);
+                        response = ReservationStatusUpdateResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReservationStatusUpdateRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnReservationStatusUpdateRequestReceived event
+
+                    var logger = OnReservationStatusUpdateRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnReservationStatusUpdateRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnReservationStatusUpdateRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    ReservationStatusUpdateResponse? response = null;
-
-                    var responseTasks = OnReservationStatusUpdate?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnReservationStatusUpdateDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                               parentNetworkingNode,
-                                                                                                                               WebSocketConnection,
-                                                                                                                               request,
-                                                                                                                               CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnReservationStatusUpdate?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnReservationStatusUpdateDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : ReservationStatusUpdateResponse.Failed(request, $"Undefined {nameof(OnReservationStatusUpdate)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = ReservationStatusUpdateResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnReservationStatusUpdate),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= ReservationStatusUpdateResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnReservationStatusUpdateResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnReservationStatusUpdateResponseSent?.Invoke(Timestamp.Now,
-                                                                  parentNetworkingNode,
-                                                                  WebSocketConnection,
-                                                                  request,
-                                                                  response,
-                                                                  response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReservationStatusUpdateResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomReservationStatusUpdateResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnReservationStatusUpdateResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnReservationStatusUpdateResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomReservationStatusUpdateResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomReservationStatusUpdateResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_ReservationStatusUpdate)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_ReservationStatusUpdate)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_ReservationStatusUpdate)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_ReservationStatusUpdate)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnReservationStatusUpdateWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnReservationStatusUpdateWSResponse?.Invoke(endTime,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            DestinationId,
-                                                            NetworkPath,
-                                                            EventTrackingId,
-                                                            RequestTimestamp,
-                                                            JSONRequest,
-                                                            OCPPResponse?.Payload,
-                                                            OCPPErrorResponse?.ToJSON(),
-                                                            endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReservationStatusUpdateWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
         /// An event sent whenever a response to a ReservationStatusUpdate was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReservationStatusUpdateResponseSentDelegate? OnReservationStatusUpdateResponseSent;
+        public event OnReservationStatusUpdateResponseSentDelegate?  OnReservationStatusUpdateResponseSent;
+
+        #endregion
+
+        #region Send OnReservationStatusUpdateResponse event
+
+        public async Task SendOnReservationStatusUpdateResponseSent(DateTime                         Timestamp,
+                                                                    IEventSender                     Sender,
+                                                                    IWebSocketConnection             Connection,
+                                                                    ReservationStatusUpdateRequest   Request,
+                                                                    ReservationStatusUpdateResponse  Response,
+                                                                    TimeSpan                         Runtime)
+        {
+
+            var logger = OnReservationStatusUpdateResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnReservationStatusUpdateResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnReservationStatusUpdateResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

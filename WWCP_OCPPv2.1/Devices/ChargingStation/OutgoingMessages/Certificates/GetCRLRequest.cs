@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// Get a certificate revocation list from CSMS for the specified certificate.
+    /// The GetCRL request fetches a certificate revocation list for the specified certificate.
     /// </summary>
     public class GetCRLRequest : ARequest<GetCRLRequest>,
                                  IRequest
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get certificate revocation list request.
+        /// Create a new GetCRL request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="GetCRLRequestId">The identification of this request.</param>
@@ -148,17 +148,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetCRLRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get certificate revocation list request.
+        /// Parse the given JSON representation of a GetCRL request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetCRLRequestParser">A delegate to parse custom get certificate revocation list requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetCRLRequestParser">A delegate to parse custom GetCRL requests.</param>
         public static GetCRLRequest Parse(JObject                                      JSON,
                                           Request_Id                                   RequestId,
                                           NetworkingNode_Id                            DestinationId,
                                           NetworkPath                                  NetworkPath,
+                                          DateTime?                                    RequestTimestamp            = null,
+                                          TimeSpan?                                    RequestTimeout              = null,
+                                          EventTracking_Id?                            EventTrackingId             = null,
                                           CustomJObjectParserDelegate<GetCRLRequest>?  CustomGetCRLRequestParser   = null)
         {
 
@@ -168,12 +174,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var get15118EVCertificateRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetCRLRequestParser))
             {
                 return get15118EVCertificateRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get certificate revocation list request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetCRL request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetCRLRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get certificate revocation list request.
+        /// Try to parse the given JSON representation of a GetCRL request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -191,6 +200,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetCRLRequest">The parsed GetCRL request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomGetCRLRequestParser">A delegate to parse custom GetCRL requests.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        Request_Id                                   RequestId,
@@ -198,7 +210,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                  NetworkPath,
                                        [NotNullWhen(true)]  out GetCRLRequest?      GetCRLRequest,
                                        [NotNullWhen(false)] out String?             ErrorResponse,
-                                       CustomJObjectParserDelegate<GetCRLRequest>?  CustomGetCRLRequestParser)
+                                       DateTime?                                    RequestTimestamp            = null,
+                                       TimeSpan?                                    RequestTimeout              = null,
+                                       EventTracking_Id?                            EventTrackingId             = null,
+                                       CustomJObjectParserDelegate<GetCRLRequest>?  CustomGetCRLRequestParser   = null)
         {
 
             try
@@ -209,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region GetCRLRequestId        [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "get certificate revocation list request identification",
+                                         "GetCRL request identification",
                                          out UInt32 GetCRLRequestId,
                                          out ErrorResponse))
                 {
@@ -274,9 +289,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     CustomData,
 
                                     RequestId,
-                                    null,
-                                    null,
-                                    null,
+                                    RequestTimestamp,
+                                    RequestTimeout,
+                                    EventTrackingId,
                                     NetworkPath
 
                                 );
@@ -291,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 GetCRLRequest  = null;
-                ErrorResponse  = "The given JSON representation of a get certificate revocation list request is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a GetCRL request is invalid: " + e.Message;
                 return false;
             }
 
@@ -390,9 +405,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get certificate revocation list requests for equality.
+        /// Compares two GetCRL requests for equality.
         /// </summary>
-        /// <param name="Object">A get certificate revocation list request to compare with.</param>
+        /// <param name="Object">A GetCRL request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetCRLRequest get15118EVCertificateRequest &&
@@ -403,9 +418,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(GetCRLRequest)
 
         /// <summary>
-        /// Compares two get certificate revocation list requests for equality.
+        /// Compares two GetCRL requests for equality.
         /// </summary>
-        /// <param name="GetCRLRequest">A get certificate revocation list request to compare with.</param>
+        /// <param name="GetCRLRequest">A GetCRL request to compare with.</param>
         public override Boolean Equals(GetCRLRequest? GetCRLRequest)
 
             => GetCRLRequest is not null &&

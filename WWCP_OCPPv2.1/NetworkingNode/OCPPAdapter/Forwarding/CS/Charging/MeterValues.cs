@@ -67,10 +67,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     #endregion
 
-
-    /// <summary>
-    /// The OCPP adapter for forwarding messages.
-    /// </summary>
     public partial class OCPPWebSocketAdapterFORWARD
     {
 
@@ -100,6 +96,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              JSONRequestMessage.NetworkPath,
                                              out var request,
                                              out var errorResponse,
+                                             JSONRequestMessage.RequestTimestamp,
+                                             JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                             JSONRequestMessage.EventTrackingId,
                                              parentNetworkingNode.OCPP.CustomMeterValuesRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);

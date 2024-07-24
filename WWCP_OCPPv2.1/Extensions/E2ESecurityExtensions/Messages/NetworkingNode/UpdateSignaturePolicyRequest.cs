@@ -28,12 +28,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    // After start-up, every charging station SHALL send a request to the
-    // central system with information about its configuration
-    // (e.g.version, vendor, etc.).
-
     /// <summary>
-    /// A boot notification request.
+    /// The UpdateSignaturePolicy request.
     /// </summary>
     public class UpdateSignaturePolicyRequest : ARequest<UpdateSignaturePolicyRequest>,
                                                 IRequest
@@ -61,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new boot notification request.
+        /// Create a new UpdateSignaturePolicy request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// 
@@ -74,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateSignaturePolicyRequest(NetworkingNode_Id        NetworkingNodeId,
+        public UpdateSignaturePolicyRequest(NetworkingNode_Id        DestinationId,
 
                                             IEnumerable<KeyPair>?    SignKeys            = null,
                                             IEnumerable<SignInfo>?   SignInfos           = null,
@@ -89,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             NetworkPath?             NetworkPath         = null,
                                             CancellationToken        CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationId,
                    nameof(UpdateSignaturePolicyRequest)[..^7],
 
                    SignKeys,
@@ -238,61 +234,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomUpdateSignaturePolicyRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomUpdateSignaturePolicyRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification request.
+        /// Parse the given JSON representation of a UpdateSignaturePolicy request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomUpdateSignaturePolicyRequestParser">An optional delegate to parse custom boot notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUpdateSignaturePolicyRequestParser">An optional delegate to parse custom UpdateSignaturePolicy requests.</param>
         public static UpdateSignaturePolicyRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         NetworkingNode_Id                                           NetworkingNodeId,
+                                                         NetworkingNode_Id                                           DestinationId,
                                                          NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   RequestTimestamp                           = null,
+                                                         TimeSpan?                                                   RequestTimeout                             = null,
+                                                         EventTracking_Id?                                           EventTrackingId                            = null,
                                                          CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         DestinationId,
                          NetworkPath,
                          out var updateSignaturePolicyRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomUpdateSignaturePolicyRequestParser))
             {
                 return updateSignaturePolicyRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a UpdateSignaturePolicy request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out UpdateSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out UpdateSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
+        /// Try to parse the given JSON representation of a UpdateSignaturePolicy request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="UpdateSignaturePolicyRequest">The parsed boot notification request.</param>
+        /// <param name="UpdateSignaturePolicyRequest">The parsed UpdateSignaturePolicy request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUpdateSignaturePolicyRequestParser">An optional delegate to parse custom boot notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUpdateSignaturePolicyRequestParser">An optional delegate to parse custom UpdateSignaturePolicy requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       NetworkingNode_Id                                           NetworkingNodeId,
+                                       NetworkingNode_Id                                           DestinationId,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out UpdateSignaturePolicyRequest?      UpdateSignaturePolicyRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestParser)
+                                       DateTime?                                                   RequestTimestamp                           = null,
+                                       TimeSpan?                                                   RequestTimeout                             = null,
+                                       EventTracking_Id?                                           EventTrackingId                            = null,
+                                       CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestParser   = null)
         {
 
             try
@@ -332,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 UpdateSignaturePolicyRequest = new UpdateSignaturePolicyRequest(
 
-                                                   NetworkingNodeId,
+                                                   DestinationId,
 
                                                    null,
                                                    null,
@@ -341,9 +352,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    CustomData,
 
                                                    RequestId,
-                                                   null,
-                                                   null,
-                                                   null,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
                                                    NetworkPath
 
                                                );
@@ -358,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 UpdateSignaturePolicyRequest  = null;
-                ErrorResponse                 = "The given JSON representation of a boot notification request is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a UpdateSignaturePolicy request is invalid: " + e.Message;
                 return false;
             }
 
@@ -371,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUpdateSignaturePolicyRequestSerializer">A delegate to serialize custom boot notification requests.</param>
+        /// <param name="CustomUpdateSignaturePolicyRequestSerializer">A delegate to serialize custom UpdateSignaturePolicy requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestSerializer   = null,
@@ -406,10 +417,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (UpdateSignaturePolicyRequest1, UpdateSignaturePolicyRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two UpdateSignaturePolicy requests for equality.
         /// </summary>
-        /// <param name="UpdateSignaturePolicyRequest1">A boot notification request.</param>
-        /// <param name="UpdateSignaturePolicyRequest2">Another boot notification request.</param>
+        /// <param name="UpdateSignaturePolicyRequest1">A UpdateSignaturePolicy request.</param>
+        /// <param name="UpdateSignaturePolicyRequest2">Another UpdateSignaturePolicy request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UpdateSignaturePolicyRequest? UpdateSignaturePolicyRequest1,
                                            UpdateSignaturePolicyRequest? UpdateSignaturePolicyRequest2)
@@ -432,10 +443,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (UpdateSignaturePolicyRequest1, UpdateSignaturePolicyRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for inequality.
+        /// Compares two UpdateSignaturePolicy requests for inequality.
         /// </summary>
-        /// <param name="UpdateSignaturePolicyRequest1">A boot notification request.</param>
-        /// <param name="UpdateSignaturePolicyRequest2">Another boot notification request.</param>
+        /// <param name="UpdateSignaturePolicyRequest1">A UpdateSignaturePolicy request.</param>
+        /// <param name="UpdateSignaturePolicyRequest2">Another UpdateSignaturePolicy request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UpdateSignaturePolicyRequest? UpdateSignaturePolicyRequest1,
                                            UpdateSignaturePolicyRequest? UpdateSignaturePolicyRequest2)
@@ -451,9 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two UpdateSignaturePolicy requests for equality.
         /// </summary>
-        /// <param name="Object">A boot notification request to compare with.</param>
+        /// <param name="Object">A UpdateSignaturePolicy request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UpdateSignaturePolicyRequest updateSignaturePolicyRequest &&
@@ -464,9 +475,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(UpdateSignaturePolicyRequest)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two UpdateSignaturePolicy requests for equality.
         /// </summary>
-        /// <param name="UpdateSignaturePolicyRequest">A boot notification request to compare with.</param>
+        /// <param name="UpdateSignaturePolicyRequest">A UpdateSignaturePolicy request to compare with.</param>
         public override Boolean Equals(UpdateSignaturePolicyRequest? UpdateSignaturePolicyRequest)
 
             => UpdateSignaturePolicyRequest is not null &&

@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,93 +32,39 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?       CustomNotifyEVChargingScheduleRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<NotifyEVChargingScheduleResponse>?  CustomNotifyEVChargingScheduleResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a NotifyEVChargingSchedule WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                              OnNotifyEVChargingScheduleWSRequest;
-
-        /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleRequestReceivedDelegate?     OnNotifyEVChargingScheduleRequestReceived;
+        public event OnNotifyEVChargingScheduleRequestReceivedDelegate?  OnNotifyEVChargingScheduleRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a NotifyEVChargingSchedule was received.
+        /// An event sent whenever a NotifyEVChargingSchedule request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleDelegate?            OnNotifyEVChargingSchedule;
-
-        /// <summary>
-        /// An event sent whenever a response to a NotifyEVChargingSchedule was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleResponseSentDelegate?    OnNotifyEVChargingScheduleResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a NotifyEVChargingSchedule was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?                  OnNotifyEVChargingScheduleWSResponse;
+        public event OnNotifyEVChargingScheduleDelegate?                 OnNotifyEVChargingSchedule;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_NotifyEVChargingSchedule(DateTime                   RequestTimestamp,
+            Receive_NotifyEVChargingSchedule(DateTime              RequestTimestamp,
                                              IWebSocketConnection  WebSocketConnection,
-                                             NetworkingNode_Id          DestinationId,
-                                             NetworkPath                NetworkPath,
-                                             EventTracking_Id           EventTrackingId,
-                                             Request_Id                 RequestId,
-                                             JObject                    JSONRequest,
-                                             CancellationToken          CancellationToken)
+                                             NetworkingNode_Id     DestinationId,
+                                             NetworkPath           NetworkPath,
+                                             EventTracking_Id      EventTrackingId,
+                                             Request_Id            RequestId,
+                                             JObject               JSONRequest,
+                                             CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnNotifyEVChargingScheduleWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyEVChargingScheduleWSRequest?.Invoke(startTime,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            DestinationId,
-                                                            NetworkPath,
-                                                            EventTrackingId,
-                                                            RequestTimestamp,
-                                                            JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyEVChargingScheduleWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,150 +75,259 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              NetworkPath,
                                                              out var request,
                                                              out var errorResponse,
-                                                             CustomNotifyEVChargingScheduleRequestParser)) {
+                                                             RequestTimestamp,
+                                                             parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                             EventTrackingId,
+                                                             parentNetworkingNode.OCPP.CustomNotifyEVChargingScheduleRequestParser)) {
 
-                    #region Send OnNotifyEVChargingScheduleRequest event
+                    NotifyEVChargingScheduleResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+
+                            parentNetworkingNode.OCPP.CustomNotifyEVChargingScheduleRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
+                            parentNetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
+                            parentNetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
+                            parentNetworkingNode.OCPP.CustomSalesTariffSerializer,
+                            parentNetworkingNode.OCPP.CustomSalesTariffEntrySerializer,
+                            parentNetworkingNode.OCPP.CustomRelativeTimeIntervalSerializer,
+                            parentNetworkingNode.OCPP.CustomConsumptionCostSerializer,
+                            parentNetworkingNode.OCPP.CustomCostSerializer,
+
+                            parentNetworkingNode.OCPP.CustomAbsolutePriceScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceRuleStackSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceRuleSerializer,
+                            parentNetworkingNode.OCPP.CustomTaxRuleSerializer,
+                            parentNetworkingNode.OCPP.CustomOverstayRuleListSerializer,
+                            parentNetworkingNode.OCPP.CustomOverstayRuleSerializer,
+                            parentNetworkingNode.OCPP.CustomAdditionalServiceSerializer,
+
+                            parentNetworkingNode.OCPP.CustomPriceLevelScheduleSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceLevelScheduleEntrySerializer,
+
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+
+                        ),
+                        out errorResponse))
                     {
 
-                        OnNotifyEVChargingScheduleRequestReceived?.Invoke(Timestamp.Now,
-                                                                  parentNetworkingNode,
-                                                                  WebSocketConnection,
-                                                                  request);
+                        response = NotifyEVChargingScheduleResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyEVChargingScheduleRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnNotifyEVChargingScheduleRequestReceived event
+
+                    var logger = OnNotifyEVChargingScheduleRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnNotifyEVChargingScheduleRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnNotifyEVChargingScheduleRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    NotifyEVChargingScheduleResponse? response = null;
-
-                    var responseTasks = OnNotifyEVChargingSchedule?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnNotifyEVChargingScheduleDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                parentNetworkingNode,
-                                                                                                                                WebSocketConnection,
-                                                                                                                                request,
-                                                                                                                                CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnNotifyEVChargingSchedule?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnNotifyEVChargingScheduleDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : NotifyEVChargingScheduleResponse.Failed(request, $"Undefined {nameof(OnNotifyEVChargingSchedule)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = NotifyEVChargingScheduleResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnNotifyEVChargingSchedule),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= NotifyEVChargingScheduleResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnNotifyEVChargingScheduleResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnNotifyEVChargingScheduleResponseSent?.Invoke(Timestamp.Now,
-                                                                   parentNetworkingNode,
-                                                                   WebSocketConnection,
-                                                                   request,
-                                                                   response,
-                                                                   response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyEVChargingScheduleResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomNotifyEVChargingScheduleResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnNotifyEVChargingScheduleResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnNotifyEVChargingScheduleResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomNotifyEVChargingScheduleResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomNotifyEVChargingScheduleResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_NotifyEVChargingSchedule)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_NotifyEVChargingSchedule)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_NotifyEVChargingSchedule)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_NotifyEVChargingSchedule)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnNotifyEVChargingScheduleWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnNotifyEVChargingScheduleWSResponse?.Invoke(endTime,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             DestinationId,
-                                                             NetworkPath,
-                                                             EventTrackingId,
-                                                             RequestTimestamp,
-                                                             JSONRequest,
-                                                             OCPPResponse?.Payload,
-                                                             OCPPErrorResponse?.ToJSON(),
-                                                             endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyEVChargingScheduleWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
         /// An event sent whenever a response to a NotifyEVChargingSchedule was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleResponseSentDelegate? OnNotifyEVChargingScheduleResponseSent;
+        public event OnNotifyEVChargingScheduleResponseSentDelegate?  OnNotifyEVChargingScheduleResponseSent;
+
+        #endregion
+
+        #region Send OnNotifyEVChargingScheduleResponse event
+
+        public async Task SendOnNotifyEVChargingScheduleResponseSent(DateTime                 Timestamp,
+                                                            IEventSender             Sender,
+                                                            IWebSocketConnection     Connection,
+                                                            NotifyEVChargingScheduleRequest   Request,
+                                                            NotifyEVChargingScheduleResponse  Response,
+                                                            TimeSpan                 Runtime)
+        {
+
+            var logger = OnNotifyEVChargingScheduleResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnNotifyEVChargingScheduleResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnNotifyEVChargingScheduleResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

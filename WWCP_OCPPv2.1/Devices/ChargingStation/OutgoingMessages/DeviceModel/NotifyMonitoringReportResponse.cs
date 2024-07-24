@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A notify monitoring report response.
+    /// The NotifyMonitoringReport response.
     /// </summary>
     public class NotifyMonitoringReportResponse : AResponse<CS.NotifyMonitoringReportRequest,
                                                             NotifyMonitoringReportResponse>,
@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyMonitoringReportResponse(Request, ...)
 
         /// <summary>
-        /// Create a new notify monitoring report response.
+        /// Create a new NotifyMonitoringReport response.
         /// </summary>
-        /// <param name="Request">The notify monitoring report request leading to this response.</param>
+        /// <param name="Request">The NotifyMonitoringReport request leading to this response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -101,15 +101,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region NotifyMonitoringReportResponse(Request, Result)
 
         /// <summary>
-        /// Create a new notify monitoring report response.
+        /// Create a new NotifyMonitoringReport response.
         /// </summary>
-        /// <param name="Request">The notify monitoring report request leading to this response.</param>
+        /// <param name="Request">The NotifyMonitoringReport request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public NotifyMonitoringReportResponse(CS.NotifyMonitoringReportRequest  Request,
-                                              Result                            Result)
+                                              Result                            Result,
+                                              DateTime?                         ResponseTimestamp   = null,
+
+                                              NetworkingNode_Id?                DestinationId       = null,
+                                              NetworkPath?                      NetworkPath         = null,
+
+                                              IEnumerable<KeyPair>?             SignKeys            = null,
+                                              IEnumerable<SignInfo>?            SignInfos           = null,
+                                              IEnumerable<Signature>?           Signatures          = null,
+
+                                              CustomData?                       CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -154,11 +174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (Request, JSON, CustomNotifyMonitoringReportResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify monitoring report response.
+        /// Parse the given JSON representation of a NotifyMonitoringReport response.
         /// </summary>
-        /// <param name="Request">The notify monitoring report request leading to this response.</param>
+        /// <param name="Request">The NotifyMonitoringReport request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyMonitoringReportResponseParser">A delegate to parse custom notify monitoring report responses.</param>
+        /// <param name="CustomNotifyMonitoringReportResponseParser">A delegate to parse custom NotifyMonitoringReport responses.</param>
         public static NotifyMonitoringReportResponse Parse(CS.NotifyMonitoringReportRequest                              Request,
                                                            JObject                                                       JSON,
                                                            CustomJObjectParserDelegate<NotifyMonitoringReportResponse>?  CustomNotifyMonitoringReportResponseParser   = null)
@@ -173,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return notifyMonitoringReportResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify monitoring report response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyMonitoringReport response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(Request, JSON, out NotifyMonitoringReportResponse, out ErrorResponse, CustomNotifyMonitoringReportResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify monitoring report response.
+        /// Try to parse the given JSON representation of a NotifyMonitoringReport response.
         /// </summary>
-        /// <param name="Request">The notify monitoring report request leading to this response.</param>
+        /// <param name="Request">The NotifyMonitoringReport request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NotifyMonitoringReportResponse">The parsed notify monitoring report response.</param>
+        /// <param name="NotifyMonitoringReportResponse">The parsed NotifyMonitoringReport response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyMonitoringReportResponseParser">A delegate to parse custom notify monitoring report responses.</param>
+        /// <param name="CustomNotifyMonitoringReportResponseParser">A delegate to parse custom NotifyMonitoringReport responses.</param>
         public static Boolean TryParse(CS.NotifyMonitoringReportRequest                              Request,
                                        JObject                                                       JSON,
                                        [NotNullWhen(true)]  out NotifyMonitoringReportResponse?      NotifyMonitoringReportResponse,
@@ -252,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 NotifyMonitoringReportResponse  = null;
-                ErrorResponse                   = "The given JSON representation of a notify monitoring report response is invalid: " + e.Message;
+                ErrorResponse                   = "The given JSON representation of a NotifyMonitoringReport response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyMonitoringReportResponseSerializer">A delegate to serialize custom notify monitoring report responses.</param>
+        /// <param name="CustomNotifyMonitoringReportResponseSerializer">A delegate to serialize custom NotifyMonitoringReport responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyMonitoringReportResponse>?  CustomNotifyMonitoringReportResponseSerializer   = null,
@@ -298,12 +318,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The notify monitoring report request failed.
+        /// The NotifyMonitoringReport failed because of a request error.
         /// </summary>
-        public static NotifyMonitoringReportResponse Failed(CS.NotifyMonitoringReportRequest Request)
+        /// <param name="Request">The NotifyMonitoringReport request.</param>
+        public static NotifyMonitoringReportResponse RequestError(CS.NotifyMonitoringReportRequest  Request,
+                                                                  EventTracking_Id                  EventTrackingId,
+                                                                  ResultCode                        ErrorCode,
+                                                                  String?                           ErrorDescription    = null,
+                                                                  JObject?                          ErrorDetails        = null,
+                                                                  DateTime?                         ResponseTimestamp   = null,
+
+                                                                  NetworkingNode_Id?                DestinationId       = null,
+                                                                  NetworkPath?                      NetworkPath         = null,
+
+                                                                  IEnumerable<KeyPair>?             SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?            SignInfos           = null,
+                                                                  IEnumerable<Signature>?           Signatures          = null,
+
+                                                                  CustomData?                       CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifyMonitoringReport failed.
+        /// </summary>
+        /// <param name="Request">The NotifyMonitoringReport request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifyMonitoringReportResponse SignatureError(CS.NotifyMonitoringReportRequest  Request,
+                                                                    String                            ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifyMonitoringReport failed.
+        /// </summary>
+        /// <param name="Request">The NotifyMonitoringReport request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifyMonitoringReportResponse Failed(CS.NotifyMonitoringReportRequest  Request,
+                                                            String?                           Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifyMonitoringReport failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifyMonitoringReport request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifyMonitoringReportResponse ExceptionOccured(CS.NotifyMonitoringReportRequest  Request,
+                                                                      Exception                         Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -313,10 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (NotifyMonitoringReportResponse1, NotifyMonitoringReportResponse2)
 
         /// <summary>
-        /// Compares two notify monitoring report responses for equality.
+        /// Compares two NotifyMonitoringReport responses for equality.
         /// </summary>
-        /// <param name="NotifyMonitoringReportResponse1">A notify monitoring report response.</param>
-        /// <param name="NotifyMonitoringReportResponse2">Another notify monitoring report response.</param>
+        /// <param name="NotifyMonitoringReportResponse1">A NotifyMonitoringReport response.</param>
+        /// <param name="NotifyMonitoringReportResponse2">Another NotifyMonitoringReport response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyMonitoringReportResponse? NotifyMonitoringReportResponse1,
                                            NotifyMonitoringReportResponse? NotifyMonitoringReportResponse2)
@@ -339,10 +430,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (NotifyMonitoringReportResponse1, NotifyMonitoringReportResponse2)
 
         /// <summary>
-        /// Compares two notify monitoring report responses for inequality.
+        /// Compares two NotifyMonitoringReport responses for inequality.
         /// </summary>
-        /// <param name="NotifyMonitoringReportResponse1">A notify monitoring report response.</param>
-        /// <param name="NotifyMonitoringReportResponse2">Another notify monitoring report response.</param>
+        /// <param name="NotifyMonitoringReportResponse1">A NotifyMonitoringReport response.</param>
+        /// <param name="NotifyMonitoringReportResponse2">Another NotifyMonitoringReport response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyMonitoringReportResponse? NotifyMonitoringReportResponse1,
                                            NotifyMonitoringReportResponse? NotifyMonitoringReportResponse2)
@@ -358,9 +449,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify monitoring report responses for equality.
+        /// Compares two NotifyMonitoringReport responses for equality.
         /// </summary>
-        /// <param name="Object">A notify monitoring report response to compare with.</param>
+        /// <param name="Object">A NotifyMonitoringReport response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyMonitoringReportResponse notifyMonitoringReportResponse &&
@@ -371,9 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(NotifyMonitoringReportResponse)
 
         /// <summary>
-        /// Compares two notify monitoring report responses for equality.
+        /// Compares two NotifyMonitoringReport responses for equality.
         /// </summary>
-        /// <param name="NotifyMonitoringReportResponse">A notify monitoring report response to compare with.</param>
+        /// <param name="NotifyMonitoringReportResponse">A NotifyMonitoringReport response to compare with.</param>
         public override Boolean Equals(NotifyMonitoringReportResponse? NotifyMonitoringReportResponse)
 
             => NotifyMonitoringReportResponse is not null &&

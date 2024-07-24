@@ -28,12 +28,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    // After start-up, every charging station SHALL send a request to the
-    // central system with information about its configuration
-    // (e.g.version, vendor, etc.).
-
     /// <summary>
-    /// A boot notification request.
+    /// The DeleteUserRole request.
     /// </summary>
     public class DeleteUserRoleRequest : ARequest<DeleteUserRoleRequest>,
                                          IRequest
@@ -61,11 +57,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new boot notification request.
+        /// Create a new DeleteUserRole request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
-        /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
+        /// <param name="Reason">The the reason for sending this DeleteUserRole to the CSMS.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -76,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DeleteUserRoleRequest(NetworkingNode_Id        NetworkingNodeId,
+        public DeleteUserRoleRequest(NetworkingNode_Id        DestinationId,
 
 
                                      IEnumerable<KeyPair>?    SignKeys            = null,
@@ -92,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      NetworkPath?             NetworkPath         = null,
                                      CancellationToken        CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationId,
                    nameof(DeleteUserRoleRequest)[..^7],
 
                    SignKeys,
@@ -242,61 +238,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomDeleteUserRoleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomDeleteUserRoleRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification request.
+        /// Parse the given JSON representation of a DeleteUserRole request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDeleteUserRoleRequestParser">An optional delegate to parse custom boot notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDeleteUserRoleRequestParser">An optional delegate to parse custom DeleteUserRole requests.</param>
         public static DeleteUserRoleRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  NetworkingNode_Id                                    NetworkingNodeId,
+                                                  NetworkingNode_Id                                    DestinationId,
                                                   NetworkPath                                          NetworkPath,
+                                                  DateTime?                                            RequestTimestamp                    = null,
+                                                  TimeSpan?                                            RequestTimeout                      = null,
+                                                  EventTracking_Id?                                    EventTrackingId                     = null,
                                                   CustomJObjectParserDelegate<DeleteUserRoleRequest>?  CustomDeleteUserRoleRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         DestinationId,
                          NetworkPath,
                          out var deleteUserRoleRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomDeleteUserRoleRequestParser))
             {
                 return deleteUserRoleRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DeleteUserRole request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out DeleteUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out DeleteUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
+        /// Try to parse the given JSON representation of a DeleteUserRole request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DeleteUserRoleRequest">The parsed boot notification request.</param>
+        /// <param name="DeleteUserRoleRequest">The parsed DeleteUserRole request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteUserRoleRequestParser">An optional delegate to parse custom boot notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDeleteUserRoleRequestParser">An optional delegate to parse custom DeleteUserRole requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       NetworkingNode_Id                                    NetworkingNodeId,
+                                       NetworkingNode_Id                                    DestinationId,
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out DeleteUserRoleRequest?      DeleteUserRoleRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       CustomJObjectParserDelegate<DeleteUserRoleRequest>?  CustomDeleteUserRoleRequestParser)
+                                       DateTime?                                            RequestTimestamp                    = null,
+                                       TimeSpan?                                            RequestTimeout                      = null,
+                                       EventTracking_Id?                                    EventTrackingId                     = null,
+                                       CustomJObjectParserDelegate<DeleteUserRoleRequest>?  CustomDeleteUserRoleRequestParser   = null)
         {
 
             try
@@ -335,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 DeleteUserRoleRequest = new DeleteUserRoleRequest(
 
-                                            NetworkingNodeId,
+                                            DestinationId,
 
                                             null,
                                             null,
@@ -344,9 +355,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             CustomData,
 
                                             RequestId,
-                                            null,
-                                            null,
-                                            null,
+                                            RequestTimestamp,
+                                            RequestTimeout,
+                                            EventTrackingId,
                                             NetworkPath
 
                                         );
@@ -361,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 DeleteUserRoleRequest  = null;
-                ErrorResponse          = "The given JSON representation of a boot notification request is invalid: " + e.Message;
+                ErrorResponse          = "The given JSON representation of a DeleteUserRole request is invalid: " + e.Message;
                 return false;
             }
 
@@ -374,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDeleteUserRoleRequestSerializer">A delegate to serialize custom boot notification requests.</param>
+        /// <param name="CustomDeleteUserRoleRequestSerializer">A delegate to serialize custom DeleteUserRole requests.</param>
         /// <param name="CustomChargingStationSerializer">A delegate to serialize custom ChargingStations.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -410,10 +421,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (DeleteUserRoleRequest1, DeleteUserRoleRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two DeleteUserRole requests for equality.
         /// </summary>
-        /// <param name="DeleteUserRoleRequest1">A boot notification request.</param>
-        /// <param name="DeleteUserRoleRequest2">Another boot notification request.</param>
+        /// <param name="DeleteUserRoleRequest1">A DeleteUserRole request.</param>
+        /// <param name="DeleteUserRoleRequest2">Another DeleteUserRole request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (DeleteUserRoleRequest? DeleteUserRoleRequest1,
                                            DeleteUserRoleRequest? DeleteUserRoleRequest2)
@@ -436,10 +447,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (DeleteUserRoleRequest1, DeleteUserRoleRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for inequality.
+        /// Compares two DeleteUserRole requests for inequality.
         /// </summary>
-        /// <param name="DeleteUserRoleRequest1">A boot notification request.</param>
-        /// <param name="DeleteUserRoleRequest2">Another boot notification request.</param>
+        /// <param name="DeleteUserRoleRequest1">A DeleteUserRole request.</param>
+        /// <param name="DeleteUserRoleRequest2">Another DeleteUserRole request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (DeleteUserRoleRequest? DeleteUserRoleRequest1,
                                            DeleteUserRoleRequest? DeleteUserRoleRequest2)
@@ -455,9 +466,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two DeleteUserRole requests for equality.
         /// </summary>
-        /// <param name="Object">A boot notification request to compare with.</param>
+        /// <param name="Object">A DeleteUserRole request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DeleteUserRoleRequest deleteUserRoleRequest &&
@@ -468,9 +479,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(DeleteUserRoleRequest)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two DeleteUserRole requests for equality.
         /// </summary>
-        /// <param name="DeleteUserRoleRequest">A boot notification request to compare with.</param>
+        /// <param name="DeleteUserRoleRequest">A DeleteUserRole request to compare with.</param>
         public override Boolean Equals(DeleteUserRoleRequest? DeleteUserRoleRequest)
 
             => DeleteUserRoleRequest is not null &&

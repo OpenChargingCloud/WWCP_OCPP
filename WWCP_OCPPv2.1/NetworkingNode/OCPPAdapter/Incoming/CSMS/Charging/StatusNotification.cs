@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,93 +32,39 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<StatusNotificationRequest>?       CustomStatusNotificationRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a StatusNotification WebSocket request was received.
-        /// </summary>
-        public event WebSocketJSONRequestLogHandler?                        OnStatusNotificationWSRequest;
-
-        /// <summary>
         /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnStatusNotificationRequestReceivedDelegate?     OnStatusNotificationRequestReceived;
+        public event OnStatusNotificationRequestReceivedDelegate?  OnStatusNotificationRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a StatusNotification request was received.
+        /// An event sent whenever a StatusNotification request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnStatusNotificationDelegate?            OnStatusNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a StatusNotification request was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnStatusNotificationResponseSentDelegate?    OnStatusNotificationResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a StatusNotification request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?            OnStatusNotificationWSResponse;
+        public event OnStatusNotificationDelegate?                 OnStatusNotification;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_StatusNotification(DateTime                   RequestTimestamp,
+            Receive_StatusNotification(DateTime              RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
-                                       NetworkingNode_Id          DestinationId,
-                                       NetworkPath                NetworkPath,
-                                       EventTracking_Id           EventTrackingId,
-                                       Request_Id                 RequestId,
-                                       JObject                    JSONRequest,
-                                       CancellationToken          CancellationToken)
+                                       NetworkingNode_Id     DestinationId,
+                                       NetworkPath           NetworkPath,
+                                       EventTracking_Id      EventTrackingId,
+                                       Request_Id            RequestId,
+                                       JObject               JSONRequest,
+                                       CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnStatusNotificationWSRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnStatusNotificationWSRequest?.Invoke(startTime,
-                                                      parentNetworkingNode,
-                                                      WebSocketConnection,
-                                                      DestinationId,
-                                                      NetworkPath,
-                                                      EventTrackingId,
-                                                      RequestTimestamp,
-                                                      JSONRequest);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnStatusNotificationWSRequest));
-            }
-
-            #endregion
-
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
@@ -128,149 +75,233 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
-                                                       CustomStatusNotificationRequestParser)) {
+                                                       RequestTimestamp,
+                                                       parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                       EventTrackingId,
+                                                       parentNetworkingNode.OCPP.CustomStatusNotificationRequestParser)) {
 
-                    #region Send OnStatusNotificationRequest event
+                    StatusNotificationResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomStatusNotificationRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnStatusNotificationRequestReceived?.Invoke(Timestamp.Now,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            request);
+                        response = StatusNotificationResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnStatusNotificationRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnStatusNotificationRequestReceived event
+
+                    var logger = OnStatusNotificationRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnStatusNotificationRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnStatusNotificationRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    StatusNotificationResponse? response = null;
-
-                    var responseTasks = OnStatusNotification?.
-                                            GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                          parentNetworkingNode,
-                                                                                                                          WebSocketConnection,
-                                                                                                                          request,
-                                                                                                                          CancellationToken)).
-                                            ToArray();
-
-                    if (responseTasks?.Length > 0)
+                    if (response is null)
                     {
-                        await Task.WhenAll(responseTasks!);
-                        response = responseTasks.FirstOrDefault()?.Result;
+                        try
+                        {
+
+                            var responseTasks = OnStatusNotification?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : StatusNotificationResponse.Failed(request, $"Undefined {nameof(OnStatusNotification)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = StatusNotificationResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnStatusNotification),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= StatusNotificationResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnStatusNotificationResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnStatusNotificationResponseSent?.Invoke(Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             request,
-                                                             response,
-                                                             response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnStatusNotificationResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomStatusNotificationResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnStatusNotificationResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnStatusNotificationResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomStatusNotificationResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomStatusNotificationResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_StatusNotification)[8..],
-                                            JSONRequest,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_StatusNotification)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_StatusNotification)[8..],
-                                        JSONRequest,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_StatusNotification)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
 
-
-            #region Send OnStatusNotificationWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnStatusNotificationWSResponse?.Invoke(endTime,
-                                                       parentNetworkingNode,
-                                                       WebSocketConnection,
-                                                       DestinationId,
-                                                       NetworkPath,
-                                                       EventTrackingId,
-                                                       RequestTimestamp,
-                                                       JSONRequest,
-                                                       OCPPResponse?.Payload,
-                                                       OCPPErrorResponse?.ToJSON(),
-                                                       endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnStatusNotificationWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a StatusNotification request was sent.
+        /// An event sent whenever a response to a StatusNotification was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnStatusNotificationResponseSentDelegate? OnStatusNotificationResponseSent;
+        public event OnStatusNotificationResponseSentDelegate?  OnStatusNotificationResponseSent;
+
+        #endregion
+
+        #region Send OnStatusNotificationResponse event
+
+        public async Task SendOnStatusNotificationResponseSent(DateTime                    Timestamp,
+                                                               IEventSender                Sender,
+                                                               IWebSocketConnection        Connection,
+                                                               StatusNotificationRequest   Request,
+                                                               StatusNotificationResponse  Response,
+                                                               TimeSpan                    Runtime)
+        {
+
+            var logger = OnStatusNotificationResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnStatusNotificationResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnStatusNotificationResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

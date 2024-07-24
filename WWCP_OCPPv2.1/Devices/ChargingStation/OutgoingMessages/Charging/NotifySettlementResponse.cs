@@ -24,7 +24,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A NotifySettlement response.
+    /// The NotifySettlement response.
     /// </summary>
     public class NotifySettlementResponse : AResponse<CS.NotifySettlementRequest,
                                                          NotifySettlementResponse>,
@@ -129,10 +129,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The NotifySettlement request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public NotifySettlementResponse(CS.NotifySettlementRequest  Request,
-                                        Result                      Result)
+                                        Result                      Result,
+                                        DateTime?                   ResponseTimestamp   = null,
+
+                                        NetworkingNode_Id?          DestinationId       = null,
+                                        NetworkPath?                NetworkPath         = null,
+
+                                        IEnumerable<KeyPair>?       SignKeys            = null,
+                                        IEnumerable<SignInfo>?      SignInfos           = null,
+                                        IEnumerable<Signature>?     Signatures          = null,
+
+                                        CustomData?                 CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -337,12 +357,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The NotifySettlement request failed.
+        /// The NotifySettlement failed because of a request error.
         /// </summary>
-        public static NotifySettlementResponse Failed(CS.NotifySettlementRequest Request)
+        /// <param name="Request">The NotifySettlement request.</param>
+        public static NotifySettlementResponse RequestError(CS.NotifySettlementRequest  Request,
+                                                            EventTracking_Id            EventTrackingId,
+                                                            ResultCode                  ErrorCode,
+                                                            String?                     ErrorDescription    = null,
+                                                            JObject?                    ErrorDetails        = null,
+                                                            DateTime?                   ResponseTimestamp   = null,
+
+                                                            NetworkingNode_Id?          DestinationId       = null,
+                                                            NetworkPath?                NetworkPath         = null,
+
+                                                            IEnumerable<KeyPair>?       SignKeys            = null,
+                                                            IEnumerable<SignInfo>?      SignInfos           = null,
+                                                            IEnumerable<Signature>?     Signatures          = null,
+
+                                                            CustomData?                 CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifySettlement failed.
+        /// </summary>
+        /// <param name="Request">The NotifySettlement request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifySettlementResponse SignatureError(CS.NotifySettlementRequest  Request,
+                                                              String                      ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifySettlement failed.
+        /// </summary>
+        /// <param name="Request">The NotifySettlement request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifySettlementResponse Failed(CS.NotifySettlementRequest  Request,
+                                                      String?                     Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifySettlement failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifySettlement request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifySettlementResponse ExceptionOccured(CS.NotifySettlementRequest  Request,
+                                                                Exception                   Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 

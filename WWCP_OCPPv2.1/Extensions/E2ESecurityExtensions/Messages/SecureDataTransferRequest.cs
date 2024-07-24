@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A SecureDataTransfer request.
+    /// The SecureDataTransfer request.
     /// </summary>
     public class SecureDataTransferRequest : ARequest<SecureDataTransferRequest>,
                                              IRequest
@@ -167,7 +167,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
-
 
 
         #region Encrypt(...)

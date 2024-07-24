@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
     /// <summary>
     /// The common interface of all local controller nodes.
     /// </summary>
-    public interface ILocalControllerNode : INetworkingNode
+    public interface ILocalControllerNode : INetworkingNodeButNotCSMS
     {
 
         String   VendorName         { get; }

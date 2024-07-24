@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A boot notification response.
+    /// The DeleteUserRole response.
     /// </summary>
     public class DeleteUserRoleResponse : AResponse<DeleteUserRoleRequest,
                                                     DeleteUserRoleResponse>,
@@ -88,9 +88,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region DeleteUserRoleResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new DeleteUserRole response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The DeleteUserRole request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -141,15 +141,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region DeleteUserRoleResponse(Request, Result)
 
         /// <summary>
-        /// Create a new boot notification response.
+        /// Create a new DeleteUserRole response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public DeleteUserRoleResponse(DeleteUserRoleRequest  Request,
-                                      Result                 Result)
+        public DeleteUserRoleResponse(DeleteUserRoleRequest    Request,
+                                      Result                   Result,
+                                      DateTime?                ResponseTimestamp   = null,
+
+                                      NetworkingNode_Id?       DestinationId       = null,
+                                      NetworkPath?             NetworkPath         = null,
+
+                                      IEnumerable<KeyPair>?    SignKeys            = null,
+                                      IEnumerable<SignInfo>?   SignInfos           = null,
+                                      IEnumerable<Signature>?  Signatures          = null,
+
+                                      CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -255,11 +275,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) Parse   (Request, JSON, CustomDeleteUserRoleResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification response.
+        /// Parse the given JSON representation of a DeleteUserRole response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The DeleteUserRole request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDeleteUserRoleResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomDeleteUserRoleResponseParser">An optional delegate to parse custom DeleteUserRole responses.</param>
         public static DeleteUserRoleResponse Parse(DeleteUserRoleRequest                                 Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<DeleteUserRoleResponse>?  CustomDeleteUserRoleResponseParser   = null)
@@ -275,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return deleteUserRoleResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DeleteUserRole response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -285,13 +305,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(Request, JSON, out DeleteUserRoleResponse, out ErrorResponse, CustomDeleteUserRoleResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification response.
+        /// Try to parse the given JSON representation of a DeleteUserRole response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The DeleteUserRole request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="DeleteUserRoleResponse">The parsed boot notification response.</param>
+        /// <param name="DeleteUserRoleResponse">The parsed DeleteUserRole response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteUserRoleResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomDeleteUserRoleResponseParser">An optional delegate to parse custom DeleteUserRole responses.</param>
         public static Boolean TryParse(DeleteUserRoleRequest                                 Request,
                                        JObject                                               JSON,
                                        [NotNullWhen(true)]  out DeleteUserRoleResponse?      DeleteUserRoleResponse,
@@ -418,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 DeleteUserRoleResponse  = null;
-                ErrorResponse           = "The given JSON representation of a boot notification response is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a DeleteUserRole response is invalid: " + e.Message;
                 return false;
             }
 
@@ -431,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDeleteUserRoleResponseSerializer">A delegate to serialize custom boot notification responses.</param>
+        /// <param name="CustomDeleteUserRoleResponseSerializer">A delegate to serialize custom DeleteUserRole responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -475,12 +495,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Static methods
 
         /// <summary>
-        /// The boot notification failed.
+        /// The DeleteUserRole failed because of a request error.
         /// </summary>
-        public static DeleteUserRoleResponse Failed(DeleteUserRoleRequest Request)
+        /// <param name="Request">The DeleteUserRole request.</param>
+        public static DeleteUserRoleResponse RequestError(DeleteUserRoleRequest    Request,
+                                                          EventTracking_Id         EventTrackingId,
+                                                          ResultCode               ErrorCode,
+                                                          String?                  ErrorDescription    = null,
+                                                          JObject?                 ErrorDetails        = null,
+                                                          DateTime?                ResponseTimestamp   = null,
+
+                                                          NetworkingNode_Id?       DestinationId       = null,
+                                                          NetworkPath?             NetworkPath         = null,
+
+                                                          IEnumerable<KeyPair>?    SignKeys            = null,
+                                                          IEnumerable<SignInfo>?   SignInfos           = null,
+                                                          IEnumerable<Signature>?  Signatures          = null,
+
+                                                          CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The DeleteUserRole failed.
+        /// </summary>
+        /// <param name="Request">The DeleteUserRole request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static DeleteUserRoleResponse SignatureError(DeleteUserRoleRequest  Request,
+                                                            String                 ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The DeleteUserRole failed.
+        /// </summary>
+        /// <param name="Request">The DeleteUserRole request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static DeleteUserRoleResponse Failed(DeleteUserRoleRequest  Request,
+                                                    String?                Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The DeleteUserRole failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The DeleteUserRole request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static DeleteUserRoleResponse ExceptionOccured(DeleteUserRoleRequest  Request,
+                                                              Exception              Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -490,10 +581,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (DeleteUserRoleResponse1, DeleteUserRoleResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two DeleteUserRole responses for equality.
         /// </summary>
-        /// <param name="DeleteUserRoleResponse1">A boot notification response.</param>
-        /// <param name="DeleteUserRoleResponse2">Another boot notification response.</param>
+        /// <param name="DeleteUserRoleResponse1">A DeleteUserRole response.</param>
+        /// <param name="DeleteUserRoleResponse2">Another DeleteUserRole response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (DeleteUserRoleResponse? DeleteUserRoleResponse1,
                                            DeleteUserRoleResponse? DeleteUserRoleResponse2)
@@ -516,10 +607,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (DeleteUserRoleResponse1, DeleteUserRoleResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for inequality.
+        /// Compares two DeleteUserRole responses for inequality.
         /// </summary>
-        /// <param name="DeleteUserRoleResponse1">A boot notification response.</param>
-        /// <param name="DeleteUserRoleResponse2">Another boot notification response.</param>
+        /// <param name="DeleteUserRoleResponse1">A DeleteUserRole response.</param>
+        /// <param name="DeleteUserRoleResponse2">Another DeleteUserRole response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (DeleteUserRoleResponse? DeleteUserRoleResponse1,
                                            DeleteUserRoleResponse? DeleteUserRoleResponse2)
@@ -535,9 +626,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two DeleteUserRole responses for equality.
         /// </summary>
-        /// <param name="Object">A boot notification response to compare with.</param>
+        /// <param name="Object">A DeleteUserRole response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DeleteUserRoleResponse deleteUserRoleResponse &&
@@ -548,9 +639,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(DeleteUserRoleResponse)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two DeleteUserRole responses for equality.
         /// </summary>
-        /// <param name="DeleteUserRoleResponse">A boot notification response to compare with.</param>
+        /// <param name="DeleteUserRoleResponse">A DeleteUserRole response to compare with.</param>
         public override Boolean Equals(DeleteUserRoleResponse? DeleteUserRoleResponse)
 
             => DeleteUserRoleResponse is not null &&
