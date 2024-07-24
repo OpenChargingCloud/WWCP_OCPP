@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A list directory request.
+    /// A ListDirectory request.
     /// </summary>
     public class ListDirectoryRequest : ARequest<ListDirectoryRequest>,
                                         IRequest
@@ -188,11 +188,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomListDirectoryRequestParser">An optional delegate to parse custom ListDirectoryRequest requests.</param>
         public static ListDirectoryRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
                                                  NetworkingNode_Id                                   DestinationId,
                                                  NetworkPath                                         NetworkPath,
+                                                 DateTime?                                           RequestTimestamp                   = null,
+                                                 TimeSpan?                                           RequestTimeout                     = null,
+                                                 EventTracking_Id?                                   EventTrackingId                    = null,
                                                  CustomJObjectParserDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestParser   = null)
         {
 
@@ -203,6 +209,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                          NetworkPath,
                          out var listDirectoryRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomListDirectoryRequestParser))
             {
                 return listDirectoryRequest;
@@ -226,6 +235,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ListDirectoryRequest">The parsed ListDirectoryRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomListDirectoryRequestParser">An optional delegate to parse custom ListDirectoryRequest requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
@@ -233,6 +245,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out ListDirectoryRequest?      ListDirectoryRequest,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
+                                       DateTime?                                           RequestTimestamp                   = null,
+                                       TimeSpan?                                           RequestTimeout                     = null,
+                                       EventTracking_Id?                                   EventTrackingId                    = null,
                                        CustomJObjectParserDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestParser   = null)
         {
 
@@ -366,9 +381,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            CustomData,
 
                                            RequestId,
-                                           null,
-                                           null,
-                                           null,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
                                            NetworkPath
 
                                        );
@@ -498,9 +513,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two list directory requests for equality.
+        /// Compares two ListDirectory requests for equality.
         /// </summary>
-        /// <param name="Object">A list directory request to compare with.</param>
+        /// <param name="Object">A ListDirectory request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ListDirectoryRequest listDirectoryRequest &&
@@ -511,9 +526,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(ListDirectoryRequest)
 
         /// <summary>
-        /// Compares two list directory requests for equality.
+        /// Compares two ListDirectory requests for equality.
         /// </summary>
-        /// <param name="ListDirectoryRequest">A list directory request to compare with.</param>
+        /// <param name="ListDirectoryRequest">A ListDirectory request to compare with.</param>
         public override Boolean Equals(ListDirectoryRequest? ListDirectoryRequest)
 
             => ListDirectoryRequest is not null &&

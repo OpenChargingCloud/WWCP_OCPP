@@ -17,13 +17,13 @@
 
 #region Usings
 
-using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A set default charging tariff response.
+    /// The SetDefaultChargingTariff response.
     /// </summary>
     public class SetDefaultChargingTariffResponse : AResponse<CSMS.SetDefaultChargingTariffRequest,
                                                                    SetDefaultChargingTariffResponse>,
@@ -80,9 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetDefaultChargingTariffResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new set default charging tariff response.
+        /// Create a new SetDefaultChargingTariff response.
         /// </summary>
-        /// <param name="Request">The set default charging tariff request leading to this response.</param>
+        /// <param name="Request">The SetDefaultChargingTariff request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="EVSEStatusInfos">An optional enumeration of status infos for individual EVSEs.</param>
@@ -141,15 +141,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetDefaultChargingTariffResponse(Request, Result)
 
         /// <summary>
-        /// Create a new set default charging tariff response.
+        /// Create a new SetDefaultChargingTariff response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
         public SetDefaultChargingTariffResponse(CSMS.SetDefaultChargingTariffRequest  Request,
-                                                Result                                Result)
+                                                Result                                Result,
+                                                DateTime?                             ResponseTimestamp   = null,
+
+                                                NetworkingNode_Id?                    DestinationId       = null,
+                                                NetworkPath?                          NetworkPath         = null,
+
+                                                IEnumerable<KeyPair>?                 SignKeys            = null,
+                                                IEnumerable<SignInfo>?                SignInfos           = null,
+                                                IEnumerable<Signature>?               Signatures          = null,
+
+                                                CustomData?                           CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -185,11 +205,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomSetDefaultChargingTariffResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set default charging tariff response.
+        /// Parse the given JSON representation of a SetDefaultChargingTariff response.
         /// </summary>
-        /// <param name="Request">The set default charging tariff request leading to this response.</param>
+        /// <param name="Request">The SetDefaultChargingTariff request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetDefaultChargingTariffResponseParser">A delegate to parse custom set default charging tariff responses.</param>
+        /// <param name="CustomSetDefaultChargingTariffResponseParser">A delegate to parse custom SetDefaultChargingTariff responses.</param>
         public static SetDefaultChargingTariffResponse Parse(CSMS.SetDefaultChargingTariffRequest                            Request,
                                                              JObject                                                         JSON,
                                                              CustomJObjectParserDelegate<SetDefaultChargingTariffResponse>?  CustomSetDefaultChargingTariffResponseParser   = null)
@@ -206,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return setDefaultChargingTariffResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a set default charging tariff response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetDefaultChargingTariff response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -216,13 +236,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out SetDefaultChargingTariffResponse, out ErrorResponse, CustomSetDefaultChargingTariffResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set default charging tariff response.
+        /// Try to parse the given JSON representation of a SetDefaultChargingTariff response.
         /// </summary>
-        /// <param name="Request">The set default charging tariff request leading to this response.</param>
+        /// <param name="Request">The SetDefaultChargingTariff request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SetDefaultChargingTariffResponse">The parsed set default charging tariff response.</param>
+        /// <param name="SetDefaultChargingTariffResponse">The parsed SetDefaultChargingTariff response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetDefaultChargingTariffResponseParser">A delegate to parse custom set default charging tariff responses.</param>
+        /// <param name="CustomSetDefaultChargingTariffResponseParser">A delegate to parse custom SetDefaultChargingTariff responses.</param>
         public static Boolean TryParse(CSMS.SetDefaultChargingTariffRequest                            Request,
                                        JObject                                                         JSON,
                                        out SetDefaultChargingTariffResponse?                           SetDefaultChargingTariffResponse,
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status             [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "set default charging tariff status",
+                                         "SetDefaultChargingTariff status",
                                          SetDefaultChargingTariffStatusExtensions.TryParse,
                                          out SetDefaultChargingTariffStatus Status,
                                          out ErrorResponse))
@@ -354,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SetDefaultChargingTariffResponse  = null;
-                ErrorResponse                     = "The given JSON representation of a set default charging tariff response is invalid: " + e.Message;
+                ErrorResponse                     = "The given JSON representation of a SetDefaultChargingTariff response is invalid: " + e.Message;
                 return false;
             }
 
@@ -367,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetDefaultChargingTariffResponseSerializer">A delegate to serialize custom set default charging tariff responses.</param>
+        /// <param name="CustomSetDefaultChargingTariffResponseSerializer">A delegate to serialize custom SetDefaultChargingTariff responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -414,12 +434,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The set default charging tariff failed.
+        /// The SetDefaultChargingTariff failed because of a request error.
         /// </summary>
-        public static SetDefaultChargingTariffResponse Failed(CSMS.SetDefaultChargingTariffRequest Request)
+        /// <param name="Request">The SetDefaultChargingTariff request.</param>
+        public static SetDefaultChargingTariffResponse RequestError(CSMS.SetDefaultChargingTariffRequest  Request,
+                                                                    EventTracking_Id                      EventTrackingId,
+                                                                    ResultCode                            ErrorCode,
+                                                                    String?                               ErrorDescription    = null,
+                                                                    JObject?                              ErrorDetails        = null,
+                                                                    DateTime?                             ResponseTimestamp   = null,
+
+                                                                    NetworkingNode_Id?                    DestinationId       = null,
+                                                                    NetworkPath?                          NetworkPath         = null,
+
+                                                                    IEnumerable<KeyPair>?                 SignKeys            = null,
+                                                                    IEnumerable<SignInfo>?                SignInfos           = null,
+                                                                    IEnumerable<Signature>?               Signatures          = null,
+
+                                                                    CustomData?                           CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SetDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The SetDefaultChargingTariff request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SetDefaultChargingTariffResponse SignatureError(CSMS.SetDefaultChargingTariffRequest  Request,
+                                                                      String                                ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SetDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The SetDefaultChargingTariff request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SetDefaultChargingTariffResponse Failed(CSMS.SetDefaultChargingTariffRequest  Request,
+                                                              String?                               Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SetDefaultChargingTariff failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SetDefaultChargingTariff request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SetDefaultChargingTariffResponse ExceptionOccured(CSMS.SetDefaultChargingTariffRequest  Request,
+                                                                        Exception                             Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -429,10 +520,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (SetDefaultChargingTariffResponse1, SetDefaultChargingTariffResponse2)
 
         /// <summary>
-        /// Compares two set default charging tariff responses for equality.
+        /// Compares two SetDefaultChargingTariff responses for equality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffResponse1">A set default charging tariff response.</param>
-        /// <param name="SetDefaultChargingTariffResponse2">Another set default charging tariff response.</param>
+        /// <param name="SetDefaultChargingTariffResponse1">A SetDefaultChargingTariff response.</param>
+        /// <param name="SetDefaultChargingTariffResponse2">Another SetDefaultChargingTariff response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse1,
                                            SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse2)
@@ -455,10 +546,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (SetDefaultChargingTariffResponse1, SetDefaultChargingTariffResponse2)
 
         /// <summary>
-        /// Compares two set default charging tariff responses for inequality.
+        /// Compares two SetDefaultChargingTariff responses for inequality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffResponse1">A set default charging tariff response.</param>
-        /// <param name="SetDefaultChargingTariffResponse2">Another set default charging tariff response.</param>
+        /// <param name="SetDefaultChargingTariffResponse1">A SetDefaultChargingTariff response.</param>
+        /// <param name="SetDefaultChargingTariffResponse2">Another SetDefaultChargingTariff response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse1,
                                            SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse2)
@@ -474,9 +565,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set default charging tariff responses for equality.
+        /// Compares two SetDefaultChargingTariff responses for equality.
         /// </summary>
-        /// <param name="Object">A set default charging tariff response to compare with.</param>
+        /// <param name="Object">A SetDefaultChargingTariff response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetDefaultChargingTariffResponse setDefaultChargingTariffResponse &&
@@ -487,9 +578,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(SetDefaultChargingTariffResponse)
 
         /// <summary>
-        /// Compares two set default charging tariff responses for equality.
+        /// Compares two SetDefaultChargingTariff responses for equality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffResponse">A set default charging tariff response to compare with.</param>
+        /// <param name="SetDefaultChargingTariffResponse">A SetDefaultChargingTariff response to compare with.</param>
         public override Boolean Equals(SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse)
 
             => SetDefaultChargingTariffResponse is not null &&

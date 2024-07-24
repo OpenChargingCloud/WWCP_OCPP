@@ -119,7 +119,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
-        CustomJObjectSerializerDelegate<            DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
@@ -146,7 +145,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
         #region Charging Station Response Messages
-
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.ResetResponse>?                                       CustomResetResponseSerializer                                { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateFirmwareResponse>?                              CustomUpdateFirmwareResponseSerializer                       { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareResponse>?                             CustomPublishFirmwareResponseSerializer                      { get; set; }
@@ -164,7 +162,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetNetworkProfileResponse>?                           CustomSetNetworkProfileResponseSerializer                    { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.ChangeAvailabilityResponse>?                          CustomChangeAvailabilityResponseSerializer                   { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.TriggerMessageResponse>?                              CustomTriggerMessageResponseSerializer                       { get; set; }
-        CustomJObjectSerializerDelegate<            DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
 
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.InstallCertificateResponse>?                          CustomInstallCertificateResponseSerializer                   { get; set; }
@@ -198,22 +195,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearDisplayMessageResponse>?                         CustomClearDisplayMessageResponseSerializer                  { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.CostUpdatedResponse>?                                 CustomCostUpdatedResponseSerializer                          { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CS.CustomerInformationResponse>?                         CustomCustomerInformationResponseSerializer                  { get; set; }
-
-
-        // Binary Data Streams Extensions
-        CustomBinarySerializerDelegate <            GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
-        CustomJObjectSerializerDelegate<            SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
-        CustomJObjectSerializerDelegate<            DeleteFileResponse>?                                  CustomDeleteFileResponseSerializer                           { get; set; }
-        CustomJObjectSerializerDelegate<            ListDirectoryResponse>?                               CustomListDirectoryResponseSerializer                        { get; set; }
-
-
-        // E2E Security Extensions
-        CustomJObjectSerializerDelegate<            AddSignaturePolicyResponse>?                          CustomAddSignaturePolicyResponseSerializer                   { get; set; }
-        CustomJObjectSerializerDelegate<            UpdateSignaturePolicyResponse>?                       CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
-        CustomJObjectSerializerDelegate<            DeleteSignaturePolicyResponse>?                       CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
-        CustomJObjectSerializerDelegate<            AddUserRoleResponse>?                                 CustomAddUserRoleResponseSerializer                          { get; set; }
-        CustomJObjectSerializerDelegate<            UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                       { get; set; }
-        CustomJObjectSerializerDelegate<            DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                       { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -279,22 +260,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CustomerInformationRequest>?                     CustomCustomerInformationRequestSerializer                   { get; set; }
 
 
-        // Binary Data Streams Extensions
-        CustomJObjectSerializerDelegate<              GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
-        CustomBinarySerializerDelegate <              SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
-        CustomJObjectSerializerDelegate<              DeleteFileRequest>?                              CustomDeleteFileRequestSerializer                            { get; set; }
-        CustomJObjectSerializerDelegate<              ListDirectoryRequest>?                           CustomListDirectoryRequestSerializer                         { get; set; }
-
-
-        // E2E Security Extensions
-        CustomJObjectSerializerDelegate<              AddSignaturePolicyRequest>?                      CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-        CustomJObjectSerializerDelegate<              UpdateSignaturePolicyRequest>?                   CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-        CustomJObjectSerializerDelegate<              DeleteSignaturePolicyRequest>?                   CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
-        CustomJObjectSerializerDelegate<              AddUserRoleRequest>?                             CustomAddUserRoleRequestSerializer                           { get; set; }
-        CustomJObjectSerializerDelegate<              UpdateUserRoleRequest>?                          CustomUpdateUserRoleRequestSerializer                        { get; set; }
-        CustomJObjectSerializerDelegate<              DeleteUserRoleRequest>?                          CustomDeleteUserRoleRequestSerializer                        { get; set; }
-
-
         // E2E Charging Tariffs Extensions
         CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetDefaultChargingTariffRequest>?                CustomSetDefaultChargingTariffRequestSerializer              { get; set; }
         CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetDefaultChargingTariffRequest>?                CustomGetDefaultChargingTariffRequestSerializer              { get; set; }
@@ -340,23 +305,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        CustomJObjectSerializerDelegate<DataTransferRequest>?                                             CustomDataTransferRequestSerializer                          { get; set; }
+        CustomJObjectSerializerDelegate<DataTransferResponse>?                                            CustomIncomingDataTransferResponseSerializer                 { get; set; }
+
 
         // Binary Data Streams Extensions
-        CustomBinarySerializerDelegate <              BinaryDataTransferRequest>?                      CustomBinaryDataTransferRequestSerializer                    { get; set; }
-        CustomBinarySerializerDelegate <              BinaryDataTransferResponse>?                     CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
-        CustomBinarySerializerDelegate <              BinaryDataTransferRequest>?                      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
-        CustomBinarySerializerDelegate <              BinaryDataTransferResponse>?                     CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                                       CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        CustomBinarySerializerDelegate <BinaryDataTransferResponse>?                                      CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        CustomJObjectSerializerDelegate<DeleteFileRequest>?                                               CustomDeleteFileRequestSerializer                            { get; set; }
+        CustomJObjectSerializerDelegate<DeleteFileResponse>?                                              CustomDeleteFileResponseSerializer                           { get; set; }
+        CustomJObjectSerializerDelegate<GetFileRequest>?                                                  CustomGetFileRequestSerializer                               { get; set; }
+        CustomBinarySerializerDelegate <GetFileResponse>?                                                 CustomGetFileResponseSerializer                              { get; set; }
+        CustomJObjectSerializerDelegate<ListDirectoryRequest>?                                            CustomListDirectoryRequestSerializer                         { get; set; }
+        CustomJObjectSerializerDelegate<ListDirectoryResponse>?                                           CustomListDirectoryResponseSerializer                        { get; set; }
+        CustomBinarySerializerDelegate <SendFileRequest>?                                                 CustomSendFileRequestSerializer                              { get; set; }
+        CustomJObjectSerializerDelegate<SendFileResponse>?                                                CustomSendFileResponseSerializer                             { get; set; }
 
 
         // E2E Security Extensions
-        CustomBinarySerializerDelegate <              SecureDataTransferRequest>?                      CustomSecureDataTransferRequestSerializer                    { get; set; }
-        CustomBinarySerializerDelegate <              SecureDataTransferResponse>?                     CustomIncomingSecureDataTransferResponseSerializer           { get; set; }
-        CustomBinarySerializerDelegate <              SecureDataTransferRequest>?                      CustomIncomingSecureDataTransferRequestSerializer            { get; set; }
-        CustomBinarySerializerDelegate <              SecureDataTransferResponse>?                     CustomSecureDataTransferResponseSerializer                   { get; set; }
+        CustomBinarySerializerDelegate <SecureDataTransferRequest>?                                       CustomSecureDataTransferRequestSerializer                    { get; set; }
+        CustomBinarySerializerDelegate <SecureDataTransferResponse>?                                      CustomSecureDataTransferResponseSerializer                   { get; set; }
+        CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?                                       CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+        CustomJObjectSerializerDelegate<AddSignaturePolicyResponse>?                                      CustomAddSignaturePolicyResponseSerializer                   { get; set; }
+        CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?                                    CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+        CustomJObjectSerializerDelegate<UpdateSignaturePolicyResponse>?                                   CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
+        CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?                                    CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+        CustomJObjectSerializerDelegate<DeleteSignaturePolicyResponse>?                                   CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
+        CustomJObjectSerializerDelegate<AddUserRoleRequest>?                                              CustomAddUserRoleRequestSerializer                           { get; set; }
+        CustomJObjectSerializerDelegate<AddUserRoleResponse>?                                             CustomAddUserRoleResponseSerializer                          { get; set; }
+        CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                                           CustomUpdateUserRoleRequestSerializer                        { get; set; }
+        CustomJObjectSerializerDelegate<UpdateUserRoleResponse>?                                          CustomUpdateUserRoleResponseSerializer                       { get; set; }
+        CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                                           CustomDeleteUserRoleRequestSerializer                        { get; set; }
+        CustomJObjectSerializerDelegate<DeleteUserRoleResponse>?                                          CustomDeleteUserRoleResponseSerializer                       { get; set; }
 
 
-        CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?   CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
-        CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseSerializer          { get; set; }
+        // Overlay Networking Extensions
+        CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?                                    CustomNotifyNetworkTopologyRequestSerializer                 { get; set; }
+        CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?                                   CustomNotifyNetworkTopologyResponseSerializer                { get; set; }
+
 
         #region Data Structures
 
@@ -564,19 +550,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region CSMS
 
-        #region BinaryDataStreamsExtensions
-
-        CustomJObjectParserDelegate<DeleteFileRequest>?                                         CustomDeleteFileRequestParser                            { get; set; }
-        CustomJObjectParserDelegate<DeleteFileResponse>?                                        CustomDeleteFileResponseParser                           { get; set; }
-        CustomJObjectParserDelegate<GetFileRequest>?                                            CustomGetFileRequestParser                               { get; set; }
-        CustomJObjectParserDelegate<GetFileResponse>?                                           CustomGetFileResponseParser                              { get; set; }
-        CustomJObjectParserDelegate<ListDirectoryRequest>?                                      CustomListDirectoryRequestParser                         { get; set; }
-        CustomJObjectParserDelegate<ListDirectoryResponse>?                                     CustomListDirectoryResponseParser                        { get; set; }
-        CustomBinaryParserDelegate <SendFileRequest>?                                           CustomSendFileRequestParser                              { get; set; }
-        CustomJObjectParserDelegate<SendFileResponse>?                                          CustomSendFileResponseParser                             { get; set; }
-
-        #endregion
-
         #region Certificates
 
         CustomJObjectParserDelegate<OCPPv2_1.CSMS.CertificateSignedRequest>?                    CustomCertificateSignedRequestParser                     { get; set; }
@@ -679,23 +652,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region E2ESecurityExtensions
-
-        CustomJObjectParserDelegate<AddSignaturePolicyRequest>?                                 CustomAddSignaturePolicyRequestParser                    { get; set; }
-        CustomJObjectParserDelegate<AddSignaturePolicyResponse>?                                CustomAddSignaturePolicyResponseParser                   { get; set; }
-        CustomJObjectParserDelegate<AddUserRoleRequest>?                                        CustomAddUserRoleRequestParser                           { get; set; }
-        CustomJObjectParserDelegate<AddUserRoleResponse>?                                       CustomAddUserRoleResponseParser                          { get; set; }
-        CustomJObjectParserDelegate<DeleteSignaturePolicyRequest>?                              CustomDeleteSignaturePolicyRequestParser                 { get; set; }
-        CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?                             CustomDeleteSignaturePolicyResponseParser                { get; set; }
-        CustomJObjectParserDelegate<DeleteUserRoleRequest>?                                     CustomDeleteUserRoleRequestParser                        { get; set; }
-        CustomJObjectParserDelegate<DeleteUserRoleResponse>?                                    CustomDeleteUserRoleResponseParser                       { get; set; }
-        CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?                              CustomUpdateSignaturePolicyRequestParser                 { get; set; }
-        CustomJObjectParserDelegate<UpdateSignaturePolicyResponse>?                             CustomUpdateSignaturePolicyResponseParser                { get; set; }
-        CustomJObjectParserDelegate<UpdateUserRoleRequest>?                                     CustomUpdateUserRoleRequestParser                        { get; set; }
-        CustomJObjectParserDelegate<UpdateUserRoleResponse>?                                    CustomUpdateUserRoleResponseParser                       { get; set; }
-
-        #endregion
-
         #region Firmware
 
         CustomJObjectParserDelegate<OCPPv2_1.CSMS.PublishFirmwareRequest>?                      CustomPublishFirmwareRequestParser                       { get; set; }
@@ -729,13 +685,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        CustomBinaryParserDelegate<BinaryDataTransferRequest>?                                  CustomBinaryDataTransferRequestParser                    { get; set; }
-        CustomBinaryParserDelegate<BinaryDataTransferResponse>?                                 CustomBinaryDataTransferResponseParser                   { get; set; }
+
         CustomJObjectParserDelegate<DataTransferRequest>?                                       CustomDataTransferRequestParser                          { get; set; }
         CustomJObjectParserDelegate<DataTransferResponse>?                                      CustomDataTransferResponseParser                         { get; set; }
+
+
+        // BinaryDataStreamsExtensions
+        CustomBinaryParserDelegate<BinaryDataTransferRequest>?                                  CustomBinaryDataTransferRequestParser                    { get; set; }
+        CustomBinaryParserDelegate<BinaryDataTransferResponse>?                                 CustomBinaryDataTransferResponseParser                   { get; set; }
+        CustomJObjectParserDelegate<DeleteFileRequest>?                                         CustomDeleteFileRequestParser                            { get; set; }
+        CustomJObjectParserDelegate<DeleteFileResponse>?                                        CustomDeleteFileResponseParser                           { get; set; }
+        CustomJObjectParserDelegate<GetFileRequest>?                                            CustomGetFileRequestParser                               { get; set; }
+        CustomBinaryParserDelegate <GetFileResponse>?                                           CustomGetFileResponseParser                              { get; set; }
+        CustomJObjectParserDelegate<ListDirectoryRequest>?                                      CustomListDirectoryRequestParser                         { get; set; }
+        CustomJObjectParserDelegate<ListDirectoryResponse>?                                     CustomListDirectoryResponseParser                        { get; set; }
+        CustomBinaryParserDelegate <SendFileRequest>?                                           CustomSendFileRequestParser                              { get; set; }
+        CustomJObjectParserDelegate<SendFileResponse>?                                          CustomSendFileResponseParser                             { get; set; }
+
+
+        // E2ESecurityExtensions
         CustomBinaryParserDelegate<SecureDataTransferRequest>?                                  CustomSecureDataTransferRequestParser                    { get; set; }
         CustomBinaryParserDelegate<SecureDataTransferResponse>?                                 CustomSecureDataTransferResponseParser                   { get; set; }
+        CustomJObjectParserDelegate<AddSignaturePolicyRequest>?                                 CustomAddSignaturePolicyRequestParser                    { get; set; }
+        CustomJObjectParserDelegate<AddSignaturePolicyResponse>?                                CustomAddSignaturePolicyResponseParser                   { get; set; }
+        CustomJObjectParserDelegate<AddUserRoleRequest>?                                        CustomAddUserRoleRequestParser                           { get; set; }
+        CustomJObjectParserDelegate<AddUserRoleResponse>?                                       CustomAddUserRoleResponseParser                          { get; set; }
+        CustomJObjectParserDelegate<DeleteSignaturePolicyRequest>?                              CustomDeleteSignaturePolicyRequestParser                 { get; set; }
+        CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?                             CustomDeleteSignaturePolicyResponseParser                { get; set; }
+        CustomJObjectParserDelegate<DeleteUserRoleRequest>?                                     CustomDeleteUserRoleRequestParser                        { get; set; }
+        CustomJObjectParserDelegate<DeleteUserRoleResponse>?                                    CustomDeleteUserRoleResponseParser                       { get; set; }
+        CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?                              CustomUpdateSignaturePolicyRequestParser                 { get; set; }
+        CustomJObjectParserDelegate<UpdateSignaturePolicyResponse>?                             CustomUpdateSignaturePolicyResponseParser                { get; set; }
+        CustomJObjectParserDelegate<UpdateUserRoleRequest>?                                     CustomUpdateUserRoleRequestParser                        { get; set; }
+        CustomJObjectParserDelegate<UpdateUserRoleResponse>?                                    CustomUpdateUserRoleResponseParser                       { get; set; }
 
+
+        // Overlay Networking Extensions
+        CustomJObjectParserDelegate<NotifyNetworkTopologyRequest>?                              CustomNotifyNetworkTopologyRequestParser                 { get; set; }
+        CustomJObjectParserDelegate<NotifyNetworkTopologyResponse>?                             CustomNotifyNetworkTopologyResponseParser                { get; set; }
 
 
         CustomJObjectParserDelegate<ChargingStation>?                                           CustomChargingStationParser                              { get; set; }

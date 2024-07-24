@@ -31,9 +31,6 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The OCPP HTTP Web Socket Adapter for incoming requests.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
@@ -242,10 +239,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
-
-    /// <summary>
-    /// The OCPP HTTP Web Socket Adapter for outgoing requests.
-    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 

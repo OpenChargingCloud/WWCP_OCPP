@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// An automatic frequency restoration reserve (AFRR) signal response.
+    /// The AFRRSignal (Automatic Frequency Restoration Reserve) response.
     /// </summary>
     public class AFRRSignalResponse : AResponse<CSMS.AFRRSignalRequest,
                                                      AFRRSignalResponse>,
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region AFRRSignalResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new automatic frequency restoration reserve (AFRR) signal response.
+        /// Create a new AFRRSignal response.
         /// </summary>
         /// <param name="Request">The AFRR signal request leading to this response.</param>
         /// <param name="Status">The success or failure of the AFRR signal request.</param>
@@ -121,15 +121,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region AFRRSignalResponse(Result)
 
         /// <summary>
-        /// Create a new automatic frequency restoration reserve (AFRR) signal response.
+        /// Create a new AFRRSignal response.
         /// </summary>
         /// <param name="Request">The AFRR signal request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public AFRRSignalResponse(CSMS.AFRRSignalRequest  Request,
-                                  Result                  Result)
+        public AFRRSignalResponse(CSMS.AFRRSignalRequest   Request,
+                                  Result                   Result,
+                                  DateTime?                ResponseTimestamp   = null,
+
+                                  NetworkingNode_Id?       DestinationId       = null,
+                                  NetworkPath?             NetworkPath         = null,
+
+                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  IEnumerable<Signature>?  Signatures          = null,
+
+                                  CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -328,13 +348,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The AFRR signal command failed.
+        /// The AFRRSignal failed because of a request error.
         /// </summary>
-        /// <param name="Request">The AFRR signal request leading to this response.</param>
-        public static AFRRSignalResponse Failed(CSMS.AFRRSignalRequest Request)
+        /// <param name="Request">The AFRRSignal request.</param>
+        public static AFRRSignalResponse RequestError(CSMS.AFRRSignalRequest   Request,
+                                                      EventTracking_Id         EventTrackingId,
+                                                      ResultCode               ErrorCode,
+                                                      String?                  ErrorDescription    = null,
+                                                      JObject?                 ErrorDetails        = null,
+                                                      DateTime?                ResponseTimestamp   = null,
+
+                                                      NetworkingNode_Id?       DestinationId       = null,
+                                                      NetworkPath?             NetworkPath         = null,
+
+                                                      IEnumerable<KeyPair>?    SignKeys            = null,
+                                                      IEnumerable<SignInfo>?   SignInfos           = null,
+                                                      IEnumerable<Signature>?  Signatures          = null,
+
+                                                      CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The AFRRSignal failed.
+        /// </summary>
+        /// <param name="Request">The AFRRSignal request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static AFRRSignalResponse SignatureError(CSMS.AFRRSignalRequest  Request,
+                                                        String                  ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The AFRRSignal failed.
+        /// </summary>
+        /// <param name="Request">The AFRRSignal request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static AFRRSignalResponse Failed(CSMS.AFRRSignalRequest  Request,
+                                                String?                 Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The AFRRSignal failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The AFRRSignal request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static AFRRSignalResponse ExceptionOccured(CSMS.AFRRSignalRequest  Request,
+                                                          Exception               Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 

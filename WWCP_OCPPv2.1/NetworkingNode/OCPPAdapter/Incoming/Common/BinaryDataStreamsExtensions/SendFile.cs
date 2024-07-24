@@ -17,13 +17,14 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
-//using cloud.charging.open.protocols.OCPP.CS;
-//using cloud.charging.open.protocols.OCPP.CSMS;
-
+using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -31,55 +32,22 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomBinaryParserDelegate<SendFileRequest>?        CustomSendFileRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<SendFileResponse>?  CustomSendFileResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a SendFile websocket request was received.
-        /// </summary>
-        public event WebSocketBinaryRequestLogHandler?                OnSendFileWSRequest;
-
-        /// <summary>
         /// An event sent whenever a SendFile request was received.
         /// </summary>
-        public event OnSendFileRequestReceivedDelegate?               OnSendFileRequestReceived;
+        public event OnSendFileRequestReceivedDelegate?  OnSendFileRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a SendFile request was received.
+        /// An event sent whenever a SendFile request was received for processing.
         /// </summary>
-        public event OnSendFileDelegate?                              OnSendFile;
-
-        /// <summary>
-        /// An event sent whenever a response to a SendFile request was sent.
-        /// </summary>
-        public event OnSendFileResponseSentDelegate?                  OnSendFileResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a SendFile request was sent.
-        /// </summary>
-        public event WebSocketBinaryRequestJSONResponseLogHandler?    OnSendFileWSResponse;
+        public event OnSendFileDelegate?                 OnSendFile;
 
         #endregion
-
-        /// <summary>
-        /// An event sent whenever a response to a SendFile request was sent.
-        /// </summary>
-        public event OnSendFileResponseReceivedDelegate? OnSendFileResponseReceived;
-
 
         #region Receive message (wired via reflection!)
 
@@ -91,119 +59,158 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                              NetworkPath           NetworkPath,
                              EventTracking_Id      EventTrackingId,
                              Request_Id            RequestId,
-                             Byte[]                RequestBinary,
+                             Byte[]                BinaryRequest,
                              CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnSendFileWSRequest event
-
             OCPP_Response? ocppResponse = null;
 
-            var startTime = Timestamp.Now;
-
             try
             {
 
-                OnSendFileWSRequest?.Invoke(startTime,
-                                            parentNetworkingNode,
-                                            WebSocketConnection,
-                                            DestinationId,
-                                            NetworkPath,
-                                            EventTrackingId,
-                                            RequestTimestamp,
-                                            RequestBinary);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSendFileWSRequest));
-            }
-
-            #endregion
-
-            try
-            {
-
-                if (SendFileRequest.TryParse(RequestBinary,
+                if (SendFileRequest.TryParse(BinaryRequest,
                                              RequestId,
                                              DestinationId,
                                              NetworkPath,
                                              out var request,
                                              out var errorResponse,
-                                             CustomSendFileRequestParser)) {
+                                             RequestTimestamp,
+                                             parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                             EventTrackingId,
+                                             parentNetworkingNode.OCPP.CustomSendFileRequestParser)) {
 
-                    #region Send OnSendFileRequestReceived event
+                    SendFileResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToBinary(
+                            parentNetworkingNode.OCPP.CustomSendFileRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
+                            IncludeSignatures: false
+                        ),
+                        out errorResponse))
                     {
 
-                        OnSendFileRequestReceived?.Invoke(Timestamp.Now,
-                                                          parentNetworkingNode,
-                                                          WebSocketConnection,
-                                                          request);
+                        response = SendFileResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSendFileRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnSendFileRequestReceived event
+
+                    var logger = OnSendFileRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnSendFileRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnSendFileRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    SendFileResponse? response = null;
-
-                    var results = OnSendFile?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnSendFileDelegate)?.Invoke(Timestamp.Now,
-                                                                                                          parentNetworkingNode,
-                                                                                                          WebSocketConnection,
-                                                                                                          request,
-                                                                                                          CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnSendFile?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnSendFileDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : SendFileResponse.Failed(request, $"Undefined {nameof(OnSendFile)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = SendFileResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnSendFile),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= SendFileResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnSendFileResponseSent event
+                    #region Sign response message
 
-                    try
-                    {
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomSendFileResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
-                        OnSendFileResponseSent?.Invoke(Timestamp.Now,
-                                                       parentNetworkingNode,
-                                                       WebSocketConnection,
-                                                       request,
-                                                       response,
-                                                       response.Runtime);
+                    #endregion
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSendFileResponseSent));
-                    }
+
+                    #region Send OnSendFileResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnSendFileResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
 
                     #endregion
 
                     ocppResponse = OCPP_Response.JSONResponse(
                                        EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath.From(DestinationId),
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomSendFileResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomSendFileResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -218,48 +225,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        EventTrackingId,
                                        RequestId,
                                        nameof(Receive_SendFile)[8..],
-                                       RequestBinary,
+                                       BinaryRequest,
                                        errorResponse
                                    );
 
             }
             catch (Exception e)
             {
+
                 ocppResponse = OCPP_Response.FormationViolation(
                                    EventTrackingId,
                                    RequestId,
                                    nameof(Receive_SendFile)[8..],
-                                   RequestBinary,
+                                   BinaryRequest,
                                    e
                                );
-            }
-
-            #region Send OnSendFileWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnSendFileWSResponse?.Invoke(endTime,
-                                             parentNetworkingNode,
-                                             WebSocketConnection,
-                                             DestinationId,
-                                             NetworkPath,
-                                             EventTrackingId,
-                                             RequestTimestamp,
-                                             RequestBinary,
-                                             ocppResponse.JSONResponseMessage?.Payload,
-                                             ocppResponse.JSONRequestErrorMessage?.   ToJSON(),
-                                             endTime - startTime);
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSendFileWSResponse));
-            }
-
-            #endregion
 
             return ocppResponse;
 
@@ -267,19 +249,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
-        /// <summary>
-        /// An event sent whenever a response to a SendFile request was sent.
-        /// </summary>
-        public event OnSendFileResponseSentDelegate? OnSendFileResponseSent;
+        #region Events
 
-        
+        /// <summary>
+        /// An event sent whenever a response to a SendFile was sent.
+        /// </summary>
+        public event OnSendFileResponseSentDelegate?  OnSendFileResponseSent;
+
+        #endregion
+
+        #region Send OnSendFileResponse event
+
+        public async Task SendOnSendFileResponseSent(DateTime              Timestamp,
+                                                     IEventSender          Sender,
+                                                     IWebSocketConnection  Connection,
+                                                     SendFileRequest       Request,
+                                                     SendFileResponse      Response,
+                                                     TimeSpan              Runtime)
+        {
+
+            var logger = OnSendFileResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnSendFileResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnSendFileResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 
 }
+

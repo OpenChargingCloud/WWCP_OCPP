@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// An get default charging tariff request.
+    /// The GetDefaultChargingTariff request.
     /// </summary>
     public class GetDefaultChargingTariffRequest : ARequest<GetDefaultChargingTariffRequest>,
                                                    IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get default charging tariff request.
+        /// Create a new GetDefaultChargingTariff request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff should be reported on.</param>
@@ -141,11 +141,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomGetDefaultChargingTariffRequestParser">A delegate to parse custom setDefaultChargingTariffs requests.</param>
         public static GetDefaultChargingTariffRequest Parse(JObject                                                        JSON,
                                                             Request_Id                                                     RequestId,
                                                             NetworkingNode_Id                                              DestinationId,
                                                             NetworkPath                                                    NetworkPath,
+                                                            DateTime?                                                      RequestTimestamp                              = null,
+                                                            TimeSpan?                                                      RequestTimeout                                = null,
+                                                            EventTracking_Id?                                              EventTrackingId                               = null,
                                                             CustomJObjectParserDelegate<GetDefaultChargingTariffRequest>?  CustomGetDefaultChargingTariffRequestParser   = null)
         {
 
@@ -156,6 +162,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getDefaultChargingTariffRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetDefaultChargingTariffRequestParser))
             {
                 return getDefaultChargingTariffRequest;
@@ -170,33 +179,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out getDefaultChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a GetDefaultChargingTariff request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="getDefaultChargingTariffRequest">The parsed setDefaultChargingTariffs request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                                    JSON,
-                                       Request_Id                                                 RequestId,
-                                       NetworkingNode_Id                                          DestinationId,
-                                       NetworkPath                                                NetworkPath,
-                                       [NotNullWhen(true)]  out GetDefaultChargingTariffRequest?  getDefaultChargingTariffRequest,
-                                       [NotNullWhen(false)] out String?                           ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        DestinationId,
-                        NetworkPath,
-                        out getDefaultChargingTariffRequest,
-                        out ErrorResponse,
-                        null);
-
-
         /// <summary>
         /// Try to parse the given JSON representation of a GetDefaultChargingTariff request.
         /// </summary>
@@ -206,6 +188,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetDefaultChargingTariffRequest">The parsed setDefaultChargingTariffs request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomGetDefaultChargingTariffRequestParser">A delegate to parse custom setDefaultChargingTariffs requests.</param>
         public static Boolean TryParse(JObject                                                        JSON,
                                        Request_Id                                                     RequestId,
@@ -213,7 +198,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                                    NetworkPath,
                                        [NotNullWhen(true)]  out GetDefaultChargingTariffRequest?      GetDefaultChargingTariffRequest,
                                        [NotNullWhen(false)] out String?                               ErrorResponse,
-                                       CustomJObjectParserDelegate<GetDefaultChargingTariffRequest>?  CustomGetDefaultChargingTariffRequestParser)
+                                       DateTime?                                                      RequestTimestamp                              = null,
+                                       TimeSpan?                                                      RequestTimeout                                = null,
+                                       EventTracking_Id?                                              EventTrackingId                               = null,
+                                       CustomJObjectParserDelegate<GetDefaultChargingTariffRequest>?  CustomGetDefaultChargingTariffRequestParser   = null)
         {
 
             try
@@ -276,9 +264,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                       CustomData,
 
                                                       RequestId,
-                                                      null,
-                                                      null,
-                                                      null,
+                                                      RequestTimestamp,
+                                                      RequestTimeout,
+                                                      EventTrackingId,
                                                       NetworkPath
 
                                                   );

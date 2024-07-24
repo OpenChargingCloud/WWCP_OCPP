@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A notify network topology request.
+    /// The NotifyNetworkTopology request.
     /// </summary>
     public class NotifyNetworkTopologyRequest : ARequest<NotifyNetworkTopologyRequest>,
                                                 IRequest
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new notify network topology request.
+        /// Create a new NotifyNetworkTopology request.
         /// </summary>
         /// <param name="DestinationId">The networking node identification of the message destination.</param>
         /// <param name="NetworkTopologyInformation">A network topology information.</param>
@@ -139,11 +139,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomNotifyNetworkTopologyRequestParser">An optional delegate to parse custom NotifyNetworkTopology requests.</param>
         public static NotifyNetworkTopologyRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
                                                          NetworkingNode_Id                                           DestinationId,
                                                          NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   RequestTimestamp                           = null,
+                                                         TimeSpan?                                                   RequestTimeout                             = null,
+                                                         EventTracking_Id?                                           EventTrackingId                            = null,
                                                          CustomJObjectParserDelegate<NotifyNetworkTopologyRequest>?  CustomNotifyNetworkTopologyRequestParser   = null)
         {
 
@@ -154,6 +160,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                          NetworkPath,
                          out var notifyNetworkTopologyRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomNotifyNetworkTopologyRequestParser))
             {
                 return notifyNetworkTopologyRequest;
@@ -177,6 +186,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyNetworkTopologyRequest">The parsed NotifyNetworkTopology request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomNotifyNetworkTopologyRequestParser">An optional delegate to parse custom NotifyNetworkTopology requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
@@ -184,7 +196,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out NotifyNetworkTopologyRequest?      NotifyNetworkTopologyRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyNetworkTopologyRequest>?  CustomNotifyNetworkTopologyRequestParser)
+                                       DateTime?                                                   RequestTimestamp                           = null,
+                                       TimeSpan?                                                   RequestTimeout                             = null,
+                                       EventTracking_Id?                                           EventTrackingId                            = null,
+                                       CustomJObjectParserDelegate<NotifyNetworkTopologyRequest>?  CustomNotifyNetworkTopologyRequestParser   = null)
         {
 
             try
@@ -247,9 +262,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    CustomData,
 
                                                    RequestId,
-                                                   null,
-                                                   null,
-                                                   null,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
                                                    NetworkPath
 
                                                );

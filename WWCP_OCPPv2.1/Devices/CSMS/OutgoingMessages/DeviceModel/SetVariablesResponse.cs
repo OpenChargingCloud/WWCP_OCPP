@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A set variables response.
+    /// The SetVariables response.
     /// </summary>
     public class SetVariablesResponse : AResponse<CSMS.SetVariablesRequest,
                                                   SetVariablesResponse>,
@@ -68,9 +68,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetVariablesResponse(Request, SetVariableResults, ...)
 
         /// <summary>
-        /// Create a new set variables response.
+        /// Create a new SetVariables response.
         /// </summary>
-        /// <param name="Request">The set variables request leading to this response.</param>
+        /// <param name="Request">The SetVariables request leading to this response.</param>
         /// <param name="SetVariableResults">An enumeration of set variable result status per component and variable.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -113,19 +113,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetVariablesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new set variables response.
+        /// Create a new SetVariables response.
         /// </summary>
-        /// <param name="Request">The set variables request leading to this response.</param>
+        /// <param name="Request">The SetVariables request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetVariablesResponse(CSMS.SetVariablesRequest  Request,
-                                    Result                    Result)
+                                    Result                    Result,
+                                    DateTime?                 ResponseTimestamp   = null,
+
+                                    NetworkingNode_Id?        DestinationId       = null,
+                                    NetworkPath?              NetworkPath         = null,
+
+                                    IEnumerable<KeyPair>?     SignKeys            = null,
+                                    IEnumerable<SignInfo>?    SignInfos           = null,
+                                    IEnumerable<Signature>?   Signatures          = null,
+
+                                    CustomData?               CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
-            this.SetVariableResults = Array.Empty<SetVariableResult>();
+            this.SetVariableResults = [];
 
         }
 
@@ -335,12 +355,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, ..., CustomSetVariablesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set variables response.
+        /// Parse the given JSON representation of a SetVariables response.
         /// </summary>
-        /// <param name="Request">The set variables request leading to this response.</param>
+        /// <param name="Request">The SetVariables request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
+        /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom SetVariables responses.</param>
         public static SetVariablesResponse Parse(CSMS.SetVariablesRequest                            Request,
                                                  JObject                                             JSON,
                                                  DateTime?                                           ResponseTimestamp                  = null,
@@ -357,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return setVariablesResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a set variables response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetVariables response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -367,14 +387,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out SetVariablesResponse, out ErrorResponse, ..., CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set variables response.
+        /// Try to parse the given JSON representation of a SetVariables response.
         /// </summary>
-        /// <param name="Request">The set variables request leading to this response.</param>
+        /// <param name="Request">The SetVariables request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SetVariablesResponse">The parsed set variables response.</param>
+        /// <param name="SetVariablesResponse">The parsed SetVariables response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
+        /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom SetVariables responses.</param>
         public static Boolean TryParse(CSMS.SetVariablesRequest                            Request,
                                        JObject                                             JSON,
                                        [NotNullWhen(true)]  out SetVariablesResponse?      SetVariablesResponse,
@@ -454,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SetVariablesResponse  = null;
-                ErrorResponse         = "The given JSON representation of a set variables response is invalid: " + e.Message;
+                ErrorResponse         = "The given JSON representation of a SetVariables response is invalid: " + e.Message;
                 return false;
             }
 
@@ -517,13 +537,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The set variables command failed.
+        /// The SetVariables failed because of a request error.
         /// </summary>
-        /// <param name="Request">The set variables request leading to this response.</param>
-        public static SetVariablesResponse Failed(CSMS.SetVariablesRequest Request)
+        /// <param name="Request">The SetVariables request.</param>
+        public static SetVariablesResponse RequestError(CSMS.SetVariablesRequest  Request,
+                                                        EventTracking_Id          EventTrackingId,
+                                                        ResultCode                ErrorCode,
+                                                        String?                   ErrorDescription    = null,
+                                                        JObject?                  ErrorDetails        = null,
+                                                        DateTime?                 ResponseTimestamp   = null,
+
+                                                        NetworkingNode_Id?        DestinationId       = null,
+                                                        NetworkPath?              NetworkPath         = null,
+
+                                                        IEnumerable<KeyPair>?     SignKeys            = null,
+                                                        IEnumerable<SignInfo>?    SignInfos           = null,
+                                                        IEnumerable<Signature>?   Signatures          = null,
+
+                                                        CustomData?               CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SetVariables failed.
+        /// </summary>
+        /// <param name="Request">The SetVariables request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SetVariablesResponse SignatureError(CSMS.SetVariablesRequest  Request,
+                                                          String                    ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SetVariables failed.
+        /// </summary>
+        /// <param name="Request">The SetVariables request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SetVariablesResponse Failed(CSMS.SetVariablesRequest  Request,
+                                                  String?                   Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SetVariables failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SetVariables request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SetVariablesResponse ExceptionOccured(CSMS.SetVariablesRequest  Request,
+                                                            Exception                 Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -533,10 +623,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (SetVariablesResponse1, SetVariablesResponse2)
 
         /// <summary>
-        /// Compares two set variables responses for equality.
+        /// Compares two SetVariables responses for equality.
         /// </summary>
-        /// <param name="SetVariablesResponse1">A set variables response.</param>
-        /// <param name="SetVariablesResponse2">Another set variables response.</param>
+        /// <param name="SetVariablesResponse1">A SetVariables response.</param>
+        /// <param name="SetVariablesResponse2">Another SetVariables response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetVariablesResponse? SetVariablesResponse1,
                                            SetVariablesResponse? SetVariablesResponse2)
@@ -559,10 +649,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (SetVariablesResponse1, SetVariablesResponse2)
 
         /// <summary>
-        /// Compares two set variables responses for inequality.
+        /// Compares two SetVariables responses for inequality.
         /// </summary>
-        /// <param name="SetVariablesResponse1">A set variables response.</param>
-        /// <param name="SetVariablesResponse2">Another set variables response.</param>
+        /// <param name="SetVariablesResponse1">A SetVariables response.</param>
+        /// <param name="SetVariablesResponse2">Another SetVariables response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetVariablesResponse? SetVariablesResponse1,
                                            SetVariablesResponse? SetVariablesResponse2)
@@ -578,9 +668,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set variables responses for equality.
+        /// Compares two SetVariables responses for equality.
         /// </summary>
-        /// <param name="Object">A set variables response to compare with.</param>
+        /// <param name="Object">A SetVariables response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetVariablesResponse setVariablesResponse &&
@@ -591,9 +681,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(SetVariablesResponse)
 
         /// <summary>
-        /// Compares two set variables responses for equality.
+        /// Compares two SetVariables responses for equality.
         /// </summary>
-        /// <param name="SetVariablesResponse">A set variables response to compare with.</param>
+        /// <param name="SetVariablesResponse">A SetVariables response to compare with.</param>
         public override Boolean Equals(SetVariablesResponse? SetVariablesResponse)
 
             => SetVariablesResponse is not null &&

@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomResetResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomResetResponseSerializer,
                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer

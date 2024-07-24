@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The trigger message request.
+    /// The TriggerMessage request.
     /// </summary>
     public class TriggerMessageRequest : ARequest<TriggerMessageRequest>,
                                          IRequest
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new trigger message request.
+        /// Create a new TriggerMessage request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
@@ -237,17 +237,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomTriggerMessageRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a trigger message request.
+        /// Parse the given JSON representation of a TriggerMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom TriggerMessage requests.</param>
         public static TriggerMessageRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
                                                   NetworkingNode_Id                                    DestinationId,
                                                   NetworkPath                                          NetworkPath,
+                                                  DateTime?                                            RequestTimestamp                    = null,
+                                                  TimeSpan?                                            RequestTimeout                      = null,
+                                                  EventTracking_Id?                                    EventTrackingId                     = null,
                                                   CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser   = null)
         {
 
@@ -257,12 +263,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var triggerMessageRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomTriggerMessageRequestParser))
             {
                 return triggerMessageRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a trigger message request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a TriggerMessage request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -272,22 +281,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a trigger message request.
+        /// Try to parse the given JSON representation of a TriggerMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
+        /// <param name="TriggerMessageRequest">The parsed TriggerMessage request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom TriggerMessage requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
                                        NetworkingNode_Id                                    DestinationId,
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out TriggerMessageRequest?      TriggerMessageRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser)
+                                       DateTime?                                            RequestTimestamp                    = null,
+                                       TimeSpan?                                            RequestTimeout                      = null,
+                                       EventTracking_Id?                                    EventTrackingId                     = null,
+                                       CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser   = null)
         {
 
             try
@@ -372,9 +387,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             CustomData,
 
                                             RequestId,
-                                            null,
-                                            null,
-                                            null,
+                                            RequestTimestamp,
+                                            RequestTimeout,
+                                            EventTrackingId,
                                             NetworkPath
 
                                         );
@@ -389,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 TriggerMessageRequest  = null;
-                ErrorResponse          = "The given JSON representation of a trigger message request is invalid: " + e.Message;
+                ErrorResponse          = "The given JSON representation of a TriggerMessage request is invalid: " + e.Message;
                 return false;
             }
 
@@ -402,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom trigger message requests.</param>
+        /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom TriggerMessage requests.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -446,10 +461,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (TriggerMessageRequest1, TriggerMessageRequest2)
 
         /// <summary>
-        /// Compares two trigger message requests for equality.
+        /// Compares two TriggerMessage requests for equality.
         /// </summary>
-        /// <param name="TriggerMessageRequest1">A trigger message request.</param>
-        /// <param name="TriggerMessageRequest2">Another trigger message request.</param>
+        /// <param name="TriggerMessageRequest1">A TriggerMessage request.</param>
+        /// <param name="TriggerMessageRequest2">Another TriggerMessage request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (TriggerMessageRequest? TriggerMessageRequest1,
                                            TriggerMessageRequest? TriggerMessageRequest2)
@@ -472,10 +487,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (TriggerMessageRequest1, TriggerMessageRequest2)
 
         /// <summary>
-        /// Compares two trigger message requests for inequality.
+        /// Compares two TriggerMessage requests for inequality.
         /// </summary>
-        /// <param name="TriggerMessageRequest1">A trigger message request.</param>
-        /// <param name="TriggerMessageRequest2">Another trigger message request.</param>
+        /// <param name="TriggerMessageRequest1">A TriggerMessage request.</param>
+        /// <param name="TriggerMessageRequest2">Another TriggerMessage request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (TriggerMessageRequest? TriggerMessageRequest1,
                                            TriggerMessageRequest? TriggerMessageRequest2)
@@ -491,9 +506,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two trigger message requests for equality.
+        /// Compares two TriggerMessage requests for equality.
         /// </summary>
-        /// <param name="Object">A trigger message request to compare with.</param>
+        /// <param name="Object">A TriggerMessage request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is TriggerMessageRequest triggerMessageRequest &&
@@ -504,9 +519,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(TriggerMessageRequest)
 
         /// <summary>
-        /// Compares two trigger message requests for equality.
+        /// Compares two TriggerMessage requests for equality.
         /// </summary>
-        /// <param name="TriggerMessageRequest">A trigger message request to compare with.</param>
+        /// <param name="TriggerMessageRequest">A TriggerMessage request to compare with.</param>
         public override Boolean Equals(TriggerMessageRequest? TriggerMessageRequest)
 
             => TriggerMessageRequest is not null &&

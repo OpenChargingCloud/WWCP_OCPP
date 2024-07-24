@@ -32,7 +32,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The publish firmware (onto a local controller) request.
+    /// The PublishFirmware request.
+    /// In most cases this request will push a firmware image onto a local controller.
     /// </summary>
     public class PublishFirmwareRequest : ARequest<PublishFirmwareRequest>,
                                           IRequest
@@ -56,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The unique identification of this publish firmware request
+        /// The unique identification of this PublishFirmware request
         /// </summary>
         [Mandatory]
         public Int32          PublishFirmwareRequestId    { get; }
@@ -95,11 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new publish firmware request.
+        /// Create a new PublishFirmware request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="PublishFirmwareRequestId">The unique identification of this publish firmware request</param>
+        /// <param name="PublishFirmwareRequestId">The unique identification of this PublishFirmware request</param>
         /// <param name="DownloadLocation">An URL for downloading the firmware.onto the local controller.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
         /// <param name="Retries">The optional number of retries of a charging station for trying to download the firmware before giving up. If this field is not present, it is left to the charging station to decide how many times it wants to retry.</param>
@@ -239,17 +240,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomPublishFirmwareRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a publish firmware request.
+        /// Parse the given JSON representation of a PublishFirmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom publish firmware requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom PublishFirmware requests.</param>
         public static PublishFirmwareRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
                                                    NetworkingNode_Id                                     DestinationId,
                                                    NetworkPath                                           NetworkPath,
+                                                   DateTime?                                             RequestTimestamp                     = null,
+                                                   TimeSpan?                                             RequestTimeout                       = null,
+                                                   EventTracking_Id?                                     EventTrackingId                      = null,
                                                    CustomJObjectParserDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestParser   = null)
         {
 
@@ -259,12 +266,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var publishFirmwareRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomPublishFirmwareRequestParser))
             {
                 return publishFirmwareRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a publish firmware request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a PublishFirmware request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -274,22 +284,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out PublishFirmwareRequest, out ErrorResponse, CustomPublishFirmwareRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a publish firmware request.
+        /// Try to parse the given JSON representation of a PublishFirmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="PublishFirmwareRequest">The parsed publish firmware request.</param>
+        /// <param name="PublishFirmwareRequest">The parsed PublishFirmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom publish firmware requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom PublishFirmware requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
                                        NetworkingNode_Id                                     DestinationId,
                                        NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out PublishFirmwareRequest?      PublishFirmwareRequest,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
-                                       CustomJObjectParserDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestParser)
+                                       DateTime?                                             RequestTimestamp                     = null,
+                                       TimeSpan?                                             RequestTimeout                       = null,
+                                       EventTracking_Id?                                     EventTrackingId                      = null,
+                                       CustomJObjectParserDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestParser   = null)
         {
 
             try
@@ -405,9 +421,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              CustomData,
 
                                              RequestId,
-                                             null,
-                                             null,
-                                             null,
+                                             RequestTimestamp,
+                                             RequestTimeout,
+                                             EventTrackingId,
                                              NetworkPath
 
                                          );
@@ -422,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 PublishFirmwareRequest  = null;
-                ErrorResponse           = "The given JSON representation of a publish firmware request is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a PublishFirmware request is invalid: " + e.Message;
                 return false;
             }
 
@@ -435,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomPublishFirmwareRequestSerializer">A delegate to serialize custom publish firmware requests.</param>
+        /// <param name="CustomPublishFirmwareRequestSerializer">A delegate to serialize custom PublishFirmware requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestSerializer   = null,
@@ -482,10 +498,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (PublishFirmwareRequest1, PublishFirmwareRequest2)
 
         /// <summary>
-        /// Compares two publish firmware requests for equality.
+        /// Compares two PublishFirmware requests for equality.
         /// </summary>
-        /// <param name="PublishFirmwareRequest1">A publish firmware request.</param>
-        /// <param name="PublishFirmwareRequest2">Another publish firmware request.</param>
+        /// <param name="PublishFirmwareRequest1">A PublishFirmware request.</param>
+        /// <param name="PublishFirmwareRequest2">Another PublishFirmware request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (PublishFirmwareRequest? PublishFirmwareRequest1,
                                            PublishFirmwareRequest? PublishFirmwareRequest2)
@@ -508,10 +524,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (PublishFirmwareRequest1, PublishFirmwareRequest2)
 
         /// <summary>
-        /// Compares two publish firmware requests for inequality.
+        /// Compares two PublishFirmware requests for inequality.
         /// </summary>
-        /// <param name="PublishFirmwareRequest1">A publish firmware request.</param>
-        /// <param name="PublishFirmwareRequest2">Another publish firmware request.</param>
+        /// <param name="PublishFirmwareRequest1">A PublishFirmware request.</param>
+        /// <param name="PublishFirmwareRequest2">Another PublishFirmware request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (PublishFirmwareRequest? PublishFirmwareRequest1,
                                            PublishFirmwareRequest? PublishFirmwareRequest2)
@@ -527,9 +543,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two publish firmware requests for equality.
+        /// Compares two PublishFirmware requests for equality.
         /// </summary>
-        /// <param name="Object">A publish firmware request to compare with.</param>
+        /// <param name="Object">A PublishFirmware request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is PublishFirmwareRequest publishFirmwareRequest &&
@@ -540,9 +556,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(PublishFirmwareRequest)
 
         /// <summary>
-        /// Compares two publish firmware requests for equality.
+        /// Compares two PublishFirmware requests for equality.
         /// </summary>
-        /// <param name="PublishFirmwareRequest">A publish firmware request to compare with.</param>
+        /// <param name="PublishFirmwareRequest">A PublishFirmware request to compare with.</param>
         public override Boolean Equals(PublishFirmwareRequest? PublishFirmwareRequest)
 
             => PublishFirmwareRequest is not null &&

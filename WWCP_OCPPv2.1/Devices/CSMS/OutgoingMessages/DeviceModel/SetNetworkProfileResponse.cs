@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A set network profile response.
+    /// The SetNetworkProfile response.
     /// </summary>
     public class SetNetworkProfileResponse : AResponse<CSMS.SetNetworkProfileRequest,
                                                        SetNetworkProfileResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetNetworkProfileResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new set network profile response.
+        /// Create a new SetNetworkProfile response.
         /// </summary>
-        /// <param name="Request">The set network profile request leading to this response.</param>
+        /// <param name="Request">The SetNetworkProfile request leading to this response.</param>
         /// <param name="Status">Whether the charging station was able to accept the request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetNetworkProfileResponse(Request, Result)
 
         /// <summary>
-        /// Create a new set network profile response.
+        /// Create a new SetNetworkProfile response.
         /// </summary>
-        /// <param name="Request">The set network profile request leading to this response.</param>
+        /// <param name="Request">The SetNetworkProfile request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetNetworkProfileResponse(CSMS.SetNetworkProfileRequest  Request,
-                                         Result                         Result)
+                                         Result                         Result,
+                                         DateTime?                      ResponseTimestamp   = null,
+
+                                         NetworkingNode_Id?             DestinationId       = null,
+                                         NetworkPath?                   NetworkPath         = null,
+
+                                         IEnumerable<KeyPair>?          SignKeys            = null,
+                                         IEnumerable<SignInfo>?         SignInfos           = null,
+                                         IEnumerable<Signature>?        Signatures          = null,
+
+                                         CustomData?                    CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -219,11 +239,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomSetNetworkProfileResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set network profile response.
+        /// Parse the given JSON representation of a SetNetworkProfile response.
         /// </summary>
-        /// <param name="Request">The set network profile request leading to this response.</param>
+        /// <param name="Request">The SetNetworkProfile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom set network profile responses.</param>
+        /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom SetNetworkProfile responses.</param>
         public static SetNetworkProfileResponse Parse(CSMS.SetNetworkProfileRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<SetNetworkProfileResponse>?  CustomSetNetworkProfileResponseParser   = null)
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return setNetworkProfileResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a set network profile response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetNetworkProfile response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -248,13 +268,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out SetNetworkProfileResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set network profile response.
+        /// Try to parse the given JSON representation of a SetNetworkProfile response.
         /// </summary>
-        /// <param name="Request">The set network profile request leading to this response.</param>
+        /// <param name="Request">The SetNetworkProfile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SetNetworkProfileResponse">The parsed set network profile response.</param>
+        /// <param name="SetNetworkProfileResponse">The parsed SetNetworkProfile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom set network profile responses.</param>
+        /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom SetNetworkProfile responses.</param>
         public static Boolean TryParse(CSMS.SetNetworkProfileRequest                            Request,
                                        JObject                                                  JSON,
                                        [NotNullWhen(true)]  out SetNetworkProfileResponse?      SetNetworkProfileResponse,
@@ -270,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "set network profile status",
+                                         "SetNetworkProfile status",
                                          SetNetworkProfileStatusExtensions.TryParse,
                                          out SetNetworkProfileStatus Status,
                                          out ErrorResponse))
@@ -344,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SetNetworkProfileResponse  = null;
-                ErrorResponse              = "The given JSON representation of a set network profile response is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a SetNetworkProfile response is invalid: " + e.Message;
                 return false;
             }
 
@@ -399,13 +419,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The set network profile command failed.
+        /// The SetNetworkProfile failed because of a request error.
         /// </summary>
-        /// <param name="Request">The set network profile request leading to this response.</param>
-        public static SetNetworkProfileResponse Failed(CSMS.SetNetworkProfileRequest Request)
+        /// <param name="Request">The SetNetworkProfile request.</param>
+        public static SetNetworkProfileResponse RequestError(CSMS.SetNetworkProfileRequest  Request,
+                                                             EventTracking_Id               EventTrackingId,
+                                                             ResultCode                     ErrorCode,
+                                                             String?                        ErrorDescription    = null,
+                                                             JObject?                       ErrorDetails        = null,
+                                                             DateTime?                      ResponseTimestamp   = null,
+
+                                                             NetworkingNode_Id?             DestinationId       = null,
+                                                             NetworkPath?                   NetworkPath         = null,
+
+                                                             IEnumerable<KeyPair>?          SignKeys            = null,
+                                                             IEnumerable<SignInfo>?         SignInfos           = null,
+                                                             IEnumerable<Signature>?        Signatures          = null,
+
+                                                             CustomData?                    CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SetNetworkProfile failed.
+        /// </summary>
+        /// <param name="Request">The SetNetworkProfile request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SetNetworkProfileResponse SignatureError(CSMS.SetNetworkProfileRequest  Request,
+                                                               String                         ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SetNetworkProfile failed.
+        /// </summary>
+        /// <param name="Request">The SetNetworkProfile request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SetNetworkProfileResponse Failed(CSMS.SetNetworkProfileRequest  Request,
+                                                       String?                        Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SetNetworkProfile failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SetNetworkProfile request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SetNetworkProfileResponse ExceptionOccured(CSMS.SetNetworkProfileRequest  Request,
+                                                                 Exception                      Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -415,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (SetNetworkProfileResponse1, SetNetworkProfileResponse2)
 
         /// <summary>
-        /// Compares two set network profile responses for equality.
+        /// Compares two SetNetworkProfile responses for equality.
         /// </summary>
-        /// <param name="SetNetworkProfileResponse1">A set network profile response.</param>
-        /// <param name="SetNetworkProfileResponse2">Another set network profile response.</param>
+        /// <param name="SetNetworkProfileResponse1">A SetNetworkProfile response.</param>
+        /// <param name="SetNetworkProfileResponse2">Another SetNetworkProfile response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetNetworkProfileResponse? SetNetworkProfileResponse1,
                                            SetNetworkProfileResponse? SetNetworkProfileResponse2)
@@ -441,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (SetNetworkProfileResponse1, SetNetworkProfileResponse2)
 
         /// <summary>
-        /// Compares two set network profile responses for inequality.
+        /// Compares two SetNetworkProfile responses for inequality.
         /// </summary>
-        /// <param name="SetNetworkProfileResponse1">A set network profile response.</param>
-        /// <param name="SetNetworkProfileResponse2">Another set network profile response.</param>
+        /// <param name="SetNetworkProfileResponse1">A SetNetworkProfile response.</param>
+        /// <param name="SetNetworkProfileResponse2">Another SetNetworkProfile response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetNetworkProfileResponse? SetNetworkProfileResponse1,
                                            SetNetworkProfileResponse? SetNetworkProfileResponse2)
@@ -460,9 +550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set network profile responses for equality.
+        /// Compares two SetNetworkProfile responses for equality.
         /// </summary>
-        /// <param name="Object">A set network profile response to compare with.</param>
+        /// <param name="Object">A SetNetworkProfile response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetNetworkProfileResponse setNetworkProfileResponse &&
@@ -473,9 +563,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(SetNetworkProfileResponse)
 
         /// <summary>
-        /// Compares two set network profile responses for equality.
+        /// Compares two SetNetworkProfile responses for equality.
         /// </summary>
-        /// <param name="SetNetworkProfileResponse">A set network profile response to compare with.</param>
+        /// <param name="SetNetworkProfileResponse">A SetNetworkProfile response to compare with.</param>
         public override Boolean Equals(SetNetworkProfileResponse? SetNetworkProfileResponse)
 
             => SetNetworkProfileResponse is not null &&

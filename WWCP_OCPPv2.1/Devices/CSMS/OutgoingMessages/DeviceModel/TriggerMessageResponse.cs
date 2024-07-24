@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A trigger message response.
+    /// The TriggerMessage response.
     /// </summary>
     public class TriggerMessageResponse : AResponse<CSMS.TriggerMessageRequest,
                                                     TriggerMessageResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the trigger message command.
+        /// The success or failure of the TriggerMessage command.
         /// </summary>
         [Mandatory]
         public TriggerMessageStatus  Status        { get; }
@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region TriggerMessageResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new trigger message response.
+        /// Create a new TriggerMessage response.
         /// </summary>
-        /// <param name="Request">The trigger message request leading to this response.</param>
-        /// <param name="Status">The success or failure of the trigger message command.</param>
+        /// <param name="Request">The TriggerMessage request leading to this response.</param>
+        /// <param name="Status">The success or failure of the TriggerMessage command.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region TriggerMessageResponse(Request, Result)
 
         /// <summary>
-        /// Create a new trigger message response.
+        /// Create a new TriggerMessage response.
         /// </summary>
-        /// <param name="Request">The trigger message request leading to this response.</param>
+        /// <param name="Request">The TriggerMessage request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public TriggerMessageResponse(CSMS.TriggerMessageRequest  Request,
-                                      Result                      Result)
+                                      Result                      Result,
+                                      DateTime?                   ResponseTimestamp   = null,
+
+                                      NetworkingNode_Id?          DestinationId       = null,
+                                      NetworkPath?                NetworkPath         = null,
+
+                                      IEnumerable<KeyPair>?       SignKeys            = null,
+                                      IEnumerable<SignInfo>?      SignInfos           = null,
+                                      IEnumerable<Signature>?     Signatures          = null,
+
+                                      CustomData?                 CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -219,11 +239,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomTriggerMessageResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a trigger message response.
+        /// Parse the given JSON representation of a TriggerMessage response.
         /// </summary>
-        /// <param name="Request">The trigger message request leading to this response.</param>
+        /// <param name="Request">The TriggerMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomTriggerMessageResponseParser">A delegate to parse custom trigger message responses.</param>
+        /// <param name="CustomTriggerMessageResponseParser">A delegate to parse custom TriggerMessage responses.</param>
         public static TriggerMessageResponse Parse(CSMS.TriggerMessageRequest                            Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<TriggerMessageResponse>?  CustomTriggerMessageResponseParser   = null)
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return triggerMessageResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a trigger message response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a TriggerMessage response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -248,13 +268,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out TriggerMessageResponse, out ErrorResponse, CustomTriggerMessageResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a trigger message response.
+        /// Try to parse the given JSON representation of a TriggerMessage response.
         /// </summary>
-        /// <param name="Request">The trigger message request leading to this response.</param>
+        /// <param name="Request">The TriggerMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="TriggerMessageResponse">The parsed trigger message response.</param>
+        /// <param name="TriggerMessageResponse">The parsed TriggerMessage response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTriggerMessageResponseParser">A delegate to parse custom trigger message responses.</param>
+        /// <param name="CustomTriggerMessageResponseParser">A delegate to parse custom TriggerMessage responses.</param>
         public static Boolean TryParse(CSMS.TriggerMessageRequest                            Request,
                                        JObject                                               JSON,
                                        [NotNullWhen(true)]  out TriggerMessageResponse?      TriggerMessageResponse,
@@ -270,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region TriggerMessageStatus    [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "trigger message status",
+                                         "TriggerMessage status",
                                          TriggerMessageStatusExtensions.TryParse,
                                          out TriggerMessageStatus TriggerMessageStatus,
                                          out ErrorResponse))
@@ -344,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 TriggerMessageResponse  = null;
-                ErrorResponse           = "The given JSON representation of a trigger message response is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a TriggerMessage response is invalid: " + e.Message;
                 return false;
             }
 
@@ -357,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomTriggerMessageResponseSerializer">A delegate to serialize custom trigger message responses.</param>
+        /// <param name="CustomTriggerMessageResponseSerializer">A delegate to serialize custom TriggerMessage responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -399,13 +419,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The trigger message command failed.
+        /// The TriggerMessage failed because of a request error.
         /// </summary>
-        /// <param name="Request">The trigger message request leading to this response.</param>
-        public static TriggerMessageResponse Failed(CSMS.TriggerMessageRequest  Request)
+        /// <param name="Request">The TriggerMessage request.</param>
+        public static TriggerMessageResponse RequestError(CSMS.TriggerMessageRequest  Request,
+                                                          EventTracking_Id            EventTrackingId,
+                                                          ResultCode                  ErrorCode,
+                                                          String?                     ErrorDescription    = null,
+                                                          JObject?                    ErrorDetails        = null,
+                                                          DateTime?                   ResponseTimestamp   = null,
+
+                                                          NetworkingNode_Id?          DestinationId       = null,
+                                                          NetworkPath?                NetworkPath         = null,
+
+                                                          IEnumerable<KeyPair>?       SignKeys            = null,
+                                                          IEnumerable<SignInfo>?      SignInfos           = null,
+                                                          IEnumerable<Signature>?     Signatures          = null,
+
+                                                          CustomData?                 CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The TriggerMessage failed.
+        /// </summary>
+        /// <param name="Request">The TriggerMessage request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static TriggerMessageResponse SignatureError(CSMS.TriggerMessageRequest  Request,
+                                                            String                      ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The TriggerMessage failed.
+        /// </summary>
+        /// <param name="Request">The TriggerMessage request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static TriggerMessageResponse Failed(CSMS.TriggerMessageRequest  Request,
+                                                    String?                     Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The TriggerMessage failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The TriggerMessage request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static TriggerMessageResponse ExceptionOccured(CSMS.TriggerMessageRequest  Request,
+                                                              Exception                   Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -415,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (TriggerMessageResponse1, TriggerMessageResponse2)
 
         /// <summary>
-        /// Compares two trigger message responses for equality.
+        /// Compares two TriggerMessage responses for equality.
         /// </summary>
-        /// <param name="TriggerMessageResponse1">A trigger message response.</param>
-        /// <param name="TriggerMessageResponse2">Another trigger message response.</param>
+        /// <param name="TriggerMessageResponse1">A TriggerMessage response.</param>
+        /// <param name="TriggerMessageResponse2">Another TriggerMessage response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (TriggerMessageResponse? TriggerMessageResponse1,
                                            TriggerMessageResponse? TriggerMessageResponse2)
@@ -441,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (TriggerMessageResponse1, TriggerMessageResponse2)
 
         /// <summary>
-        /// Compares two trigger message responses for inequality.
+        /// Compares two TriggerMessage responses for inequality.
         /// </summary>
-        /// <param name="TriggerMessageResponse1">A trigger message response.</param>
-        /// <param name="TriggerMessageResponse2">Another trigger message response.</param>
+        /// <param name="TriggerMessageResponse1">A TriggerMessage response.</param>
+        /// <param name="TriggerMessageResponse2">Another TriggerMessage response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (TriggerMessageResponse? TriggerMessageResponse1,
                                            TriggerMessageResponse? TriggerMessageResponse2)
@@ -460,9 +550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two trigger message responses for equality.
+        /// Compares two TriggerMessage responses for equality.
         /// </summary>
-        /// <param name="Object">A trigger message response to compare with.</param>
+        /// <param name="Object">A TriggerMessage response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is TriggerMessageResponse triggerMessageResponse &&
@@ -473,9 +563,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(TriggerMessageResponse)
 
         /// <summary>
-        /// Compares two trigger message responses for equality.
+        /// Compares two TriggerMessage responses for equality.
         /// </summary>
-        /// <param name="TriggerMessageResponse">A trigger message response to compare with.</param>
+        /// <param name="TriggerMessageResponse">A TriggerMessage response to compare with.</param>
         public override Boolean Equals(TriggerMessageResponse? TriggerMessageResponse)
 
             => TriggerMessageResponse is not null &&

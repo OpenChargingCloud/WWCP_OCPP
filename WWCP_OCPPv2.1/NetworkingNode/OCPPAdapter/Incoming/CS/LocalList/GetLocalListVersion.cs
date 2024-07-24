@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,246 +32,276 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<GetLocalListVersionRequest>?       CustomGetLocalListVersionRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a reset websocket request was received.
+        /// An event sent whenever a GetLocalListVersion request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                        OnGetLocalListVersionWSRequest;
+        public event OnGetLocalListVersionRequestReceivedDelegate?  OnGetLocalListVersionRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a GetLocalListVersion request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetLocalListVersionRequestReceivedDelegate?     OnGetLocalListVersionRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetLocalListVersionDelegate?            OnGetLocalListVersion;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetLocalListVersionResponseSentDelegate?    OnGetLocalListVersionResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?            OnGetLocalListVersionWSResponse;
+        public event OnGetLocalListVersionDelegate?                 OnGetLocalListVersion;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_GetLocalListVersion(DateTime                   RequestTimestamp,
+            Receive_GetLocalListVersion(DateTime              RequestTimestamp,
                                         IWebSocketConnection  WebSocketConnection,
-                                        NetworkingNode_Id          DestinationId,
-                                        NetworkPath                NetworkPath,
-                                        EventTracking_Id           EventTrackingId,
-                                        Request_Id                 RequestId,
-                                        JObject                    RequestJSON,
-                                        CancellationToken          CancellationToken)
+                                        NetworkingNode_Id     DestinationId,
+                                        NetworkPath           NetworkPath,
+                                        EventTracking_Id      EventTrackingId,
+                                        Request_Id            RequestId,
+                                        JObject               JSONRequest,
+                                        CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnGetLocalListVersionWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnGetLocalListVersionWSRequest?.Invoke(startTime,
-                                                       parentNetworkingNode,
-                                                       WebSocketConnection,
-                                                       DestinationId,
-                                                       NetworkPath,
-                                                       EventTrackingId,
-                                                       RequestTimestamp,
-                                                       RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetLocalListVersionWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (GetLocalListVersionRequest.TryParse(RequestJSON,
+                if (GetLocalListVersionRequest.TryParse(JSONRequest,
                                                         RequestId,
                                                         DestinationId,
                                                         NetworkPath,
                                                         out var request,
                                                         out var errorResponse,
-                                                        CustomGetLocalListVersionRequestParser)) {
+                                                        RequestTimestamp,
+                                                        parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                        EventTrackingId,
+                                                        parentNetworkingNode.OCPP.CustomGetLocalListVersionRequestParser)) {
 
-                    #region Send OnGetLocalListVersionRequest event
+                    GetLocalListVersionResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetLocalListVersionRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnGetLocalListVersionRequestReceived?.Invoke(Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             request);
+                        response = GetLocalListVersionResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetLocalListVersionRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnGetLocalListVersionRequestReceived event
+
+                    var logger = OnGetLocalListVersionRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnGetLocalListVersionRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetLocalListVersionRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    GetLocalListVersionResponse? response = null;
-
-                    var results = OnGetLocalListVersion?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                     parentNetworkingNode,
-                                                                                                                     WebSocketConnection,
-                                                                                                                     request,
-                                                                                                                     CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnGetLocalListVersion?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : GetLocalListVersionResponse.Failed(request, $"Undefined {nameof(OnGetLocalListVersion)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = GetLocalListVersionResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnGetLocalListVersion),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= GetLocalListVersionResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnGetLocalListVersionResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnGetLocalListVersionResponseSent?.Invoke(Timestamp.Now,
-                                                              parentNetworkingNode,
-                                                              WebSocketConnection,
-                                                              request,
-                                                              response,
-                                                              response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetLocalListVersionResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomGetLocalListVersionResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnGetLocalListVersionResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnGetLocalListVersionResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomGetLocalListVersionResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomGetLocalListVersionResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_GetLocalListVersion)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_GetLocalListVersion)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_GetLocalListVersion)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnGetLocalListVersionWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnGetLocalListVersionWSResponse?.Invoke(endTime,
-                                                        parentNetworkingNode,
-                                                        WebSocketConnection,
-                                                        DestinationId,
-                                                        NetworkPath,
-                                                        EventTrackingId,
-                                                        RequestTimestamp,
-                                                        RequestJSON,
-                                                        OCPPResponse?.Payload,
-                                                        OCPPErrorResponse?.ToJSON(),
-                                                        endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_GetLocalListVersion)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetLocalListVersionWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a GetLocalListVersion was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetLocalListVersionResponseSentDelegate? OnGetLocalListVersionResponseSent;
+        public event OnGetLocalListVersionResponseSentDelegate?  OnGetLocalListVersionResponseSent;
+
+        #endregion
+
+        #region Send OnGetLocalListVersionResponse event
+
+        public async Task SendOnGetLocalListVersionResponseSent(DateTime                     Timestamp,
+                                                                IEventSender                 Sender,
+                                                                IWebSocketConnection         Connection,
+                                                                GetLocalListVersionRequest   Request,
+                                                                GetLocalListVersionResponse  Response,
+                                                                TimeSpan                     Runtime)
+        {
+
+            var logger = OnGetLocalListVersionResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnGetLocalListVersionResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnGetLocalListVersionResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

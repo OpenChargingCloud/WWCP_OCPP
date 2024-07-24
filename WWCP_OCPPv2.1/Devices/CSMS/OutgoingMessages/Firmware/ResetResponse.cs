@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A reset response.
+    /// A Reset response.
     /// </summary>
     public class ResetResponse : AResponse<CSMS.ResetRequest,
                                                 ResetResponse>,
@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/resetResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/ResetResponse");
 
         #endregion
 
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the reset command.
+        /// The success or failure of the Reset command.
         /// </summary>
         [Mandatory]
         public ResetStatus    Status        { get; }
@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ResetResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new reset response.
+        /// Create a new Reset response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Status">The success or failure of the reset command.</param>
+        /// <param name="Request">The Reset request leading to this response.</param>
+        /// <param name="Status">The success or failure of the Reset command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -86,19 +86,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public ResetResponse(CSMS.ResetRequest             Request,
-                             ResetStatus                   Status,
-                             StatusInfo?                   StatusInfo          = null,
-                             DateTime?                     ResponseTimestamp   = null,
+        public ResetResponse(CSMS.ResetRequest        Request,
+                             ResetStatus              Status,
+                             StatusInfo?              StatusInfo          = null,
+                             DateTime?                ResponseTimestamp   = null,
 
-                             NetworkingNode_Id?            DestinationId   = null,
-                             NetworkPath?                  NetworkPath         = null,
+                             NetworkingNode_Id?       DestinationId       = null,
+                             NetworkPath?             NetworkPath         = null,
 
-                             IEnumerable<KeyPair>?         SignKeys            = null,
-                             IEnumerable<SignInfo>?        SignInfos           = null,
-                             IEnumerable<Signature>?       Signatures          = null,
+                             IEnumerable<KeyPair>?    SignKeys            = null,
+                             IEnumerable<SignInfo>?   SignInfos           = null,
+                             IEnumerable<Signature>?  Signatures          = null,
 
-                             CustomData?                   CustomData          = null)
+                             CustomData?              CustomData          = null)
 
             : base(Request,
                    Result.OK(),
@@ -125,15 +125,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ResetResponse(Request, Result)
 
         /// <summary>
-        /// Create a new reset response.
+        /// Create a new Reset response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The Reset request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public ResetResponse(CSMS.ResetRequest  Request,
-                             Result             Result)
+        public ResetResponse(CSMS.ResetRequest        Request,
+                             Result                   Result,
+                             DateTime?                ResponseTimestamp   = null,
+
+                             NetworkingNode_Id?       DestinationId       = null,
+                             NetworkPath?             NetworkPath         = null,
+
+                             IEnumerable<KeyPair>?    SignKeys            = null,
+                             IEnumerable<SignInfo>?   SignInfos           = null,
+                             IEnumerable<Signature>?  Signatures          = null,
+
+                             CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -164,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ResetStatusEnumType": {
-        //       "description": "This indicates whether the Charging Station is able to perform the reset.\r\n",
+        //       "description": "This indicates whether the Charging Station is able to perform the Reset.\r\n",
         //       "javaType": "ResetStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -222,11 +242,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomResetResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a reset response.
+        /// Parse the given JSON representation of a Reset response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The Reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomResetResponseParser">An optional delegate to parse custom reset responses.</param>
+        /// <param name="CustomResetResponseParser">An optional delegate to parse custom Reset responses.</param>
         public static ResetResponse Parse(CSMS.ResetRequest                             Request,
                                           JObject                                       JSON,
                                           NetworkingNode_Id                             DestinationId,
@@ -242,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          DestinationId,
                          NetworkPath,
-                         out var resetResponse,
+                         out var ResetResponse,
                          out var errorResponse,
                          ResponseTimestamp,
                          CustomResetResponseParser,
@@ -250,10 +270,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          CustomSignatureParser,
                          CustomCustomDataParser))
             {
-                return resetResponse;
+                return ResetResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a reset response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a Reset response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -263,13 +283,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out ResetResponse, out ErrorResponse, CustomResetResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a reset response.
+        /// Try to parse the given JSON representation of a Reset response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The Reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ResetResponse">The parsed reset response.</param>
+        /// <param name="ResetResponse">The parsed Reset response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomResetResponseParser">An optional delegate to parse custom reset responses.</param>
+        /// <param name="CustomResetResponseParser">An optional delegate to parse custom Reset responses.</param>
         public static Boolean TryParse(CSMS.ResetRequest                             Request,
                                        JObject                                       JSON,
                                        NetworkingNode_Id                             DestinationId,
@@ -291,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region ResetStatus    [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "reset status",
+                                         "Reset status",
                                          ResetStatusExtensions.TryParse,
                                          out ResetStatus ResetStatus,
                                          out ErrorResponse))
@@ -375,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 ResetResponse  = null;
-                ErrorResponse  = "The given JSON representation of a reset response is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a Reset response is invalid: " + e.Message;
                 return false;
             }
 
@@ -388,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomResetResponseSerializer">A delegate to serialize custom reset responses.</param>
+        /// <param name="CustomResetResponseSerializer">A delegate to serialize custom Reset responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -430,13 +450,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The reset command failed.
+        /// The Reset failed because of a request error.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
-        public static ResetResponse Failed(CSMS.ResetRequest Request)
+        /// <param name="Request">The Reset request.</param>
+        public static ResetResponse RequestError(CSMS.ResetRequest        Request,
+                                                 EventTracking_Id         EventTrackingId,
+                                                 ResultCode               ErrorCode,
+                                                 String?                  ErrorDescription    = null,
+                                                 JObject?                 ErrorDetails        = null,
+                                                 DateTime?                ResponseTimestamp   = null,
+
+                                                 NetworkingNode_Id?       DestinationId       = null,
+                                                 NetworkPath?             NetworkPath         = null,
+
+                                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                                 IEnumerable<Signature>?  Signatures          = null,
+
+                                                 CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The Reset failed.
+        /// </summary>
+        /// <param name="Request">The Reset request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ResetResponse SignatureError(CSMS.ResetRequest  Request,
+                                                   String             ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The Reset failed.
+        /// </summary>
+        /// <param name="Request">The Reset request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ResetResponse Failed(CSMS.ResetRequest  Request,
+                                           String?            Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The Reset failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The Reset request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ResetResponse ExceptionOccured(CSMS.ResetRequest  Request,
+                                                     Exception          Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -446,10 +536,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (ResetResponse1, ResetResponse2)
 
         /// <summary>
-        /// Compares two reset responses for equality.
+        /// Compares two Reset responses for equality.
         /// </summary>
-        /// <param name="ResetResponse1">A reset response.</param>
-        /// <param name="ResetResponse2">Another reset response.</param>
+        /// <param name="ResetResponse1">A Reset response.</param>
+        /// <param name="ResetResponse2">Another Reset response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ResetResponse? ResetResponse1,
                                            ResetResponse? ResetResponse2)
@@ -472,10 +562,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (ResetResponse1, ResetResponse2)
 
         /// <summary>
-        /// Compares two reset responses for inequality.
+        /// Compares two Reset responses for inequality.
         /// </summary>
-        /// <param name="ResetResponse1">A reset response.</param>
-        /// <param name="ResetResponse2">Another reset response.</param>
+        /// <param name="ResetResponse1">A Reset response.</param>
+        /// <param name="ResetResponse2">Another Reset response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ResetResponse? ResetResponse1,
                                            ResetResponse? ResetResponse2)
@@ -491,22 +581,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two reset responses for equality.
+        /// Compares two Reset responses for equality.
         /// </summary>
-        /// <param name="Object">A reset response to compare with.</param>
+        /// <param name="Object">A Reset response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ResetResponse resetResponse &&
-                   Equals(resetResponse);
+            => Object is ResetResponse ResetResponse &&
+                   Equals(ResetResponse);
 
         #endregion
 
         #region Equals(ResetResponse)
 
         /// <summary>
-        /// Compares two reset responses for equality.
+        /// Compares two Reset responses for equality.
         /// </summary>
-        /// <param name="ResetResponse">A reset response to compare with.</param>
+        /// <param name="ResetResponse">A Reset response to compare with.</param>
         public override Boolean Equals(ResetResponse? ResetResponse)
 
             => ResetResponse is not null &&

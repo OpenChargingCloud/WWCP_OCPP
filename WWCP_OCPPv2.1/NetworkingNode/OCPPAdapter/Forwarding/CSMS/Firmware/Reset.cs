@@ -97,6 +97,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        JSONRequestMessage.NetworkPath,
                                        out var Request,
                                        out var errorResponse,
+                                       JSONRequestMessage.RequestTimestamp,
+                                       JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                       JSONRequestMessage.EventTrackingId,
                                        parentNetworkingNode.OCPP.CustomResetRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);

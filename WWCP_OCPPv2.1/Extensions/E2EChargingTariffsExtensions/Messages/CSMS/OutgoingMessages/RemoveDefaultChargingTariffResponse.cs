@@ -17,13 +17,13 @@
 
 #region Usings
 
-using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A remove default charging tariff response.
+    /// The RemoveDefaultChargingTariff response.
     /// </summary>
     public class RemoveDefaultChargingTariffResponse : AResponse<CSMS.RemoveDefaultChargingTariffRequest,
                                                                       RemoveDefaultChargingTariffResponse>,
@@ -80,9 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region RemoveDefaultChargingTariffResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new remove default charging tariff response.
+        /// Create a new RemoveDefaultChargingTariff response.
         /// </summary>
-        /// <param name="Request">The remove default charging tariff request leading to this response.</param>
+        /// <param name="Request">The RemoveDefaultChargingTariff request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="EVSEStatusInfos">An optional enumeration of status infos for individual EVSEs.</param>
@@ -141,15 +141,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region RemoveDefaultChargingTariffResponse(Request, Result)
 
         /// <summary>
-        /// Create a new remove default charging tariff response.
+        /// Create a new RemoveDefaultChargingTariff response.
         /// </summary>
         /// <param name="Request">The RemoveDefaultChargingTariff request.</param>
         /// <param name="Result">A result.</param>
         public RemoveDefaultChargingTariffResponse(CSMS.RemoveDefaultChargingTariffRequest  Request,
-                                                   Result                                   Result)
+                                                   Result                                   Result,
+                                                   DateTime?                                ResponseTimestamp   = null,
+
+                                                   NetworkingNode_Id?                       DestinationId       = null,
+                                                   NetworkPath?                             NetworkPath         = null,
+
+                                                   IEnumerable<KeyPair>?                    SignKeys            = null,
+                                                   IEnumerable<SignInfo>?                   SignInfos           = null,
+                                                   IEnumerable<Signature>?                  Signatures          = null,
+
+                                                   CustomData?                              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -185,11 +205,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomRemoveDefaultChargingTariffResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a remove default charging tariff response.
+        /// Parse the given JSON representation of a RemoveDefaultChargingTariff response.
         /// </summary>
-        /// <param name="Request">The remove default charging tariff request leading to this response.</param>
+        /// <param name="Request">The RemoveDefaultChargingTariff request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomRemoveDefaultChargingTariffResponseParser">A delegate to parse custom remove default charging tariff responses.</param>
+        /// <param name="CustomRemoveDefaultChargingTariffResponseParser">A delegate to parse custom RemoveDefaultChargingTariff responses.</param>
         public static RemoveDefaultChargingTariffResponse Parse(CSMS.RemoveDefaultChargingTariffRequest                               Request,
                                                                 JObject                                                            JSON,
                                                                 CustomJObjectParserDelegate<RemoveDefaultChargingTariffResponse>?  CustomRemoveDefaultChargingTariffResponseParser   = null)
@@ -206,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return removeDefaultChargingTariffResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a remove default charging tariff response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a RemoveDefaultChargingTariff response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -216,17 +236,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out RemoveDefaultChargingTariffResponse, out ErrorResponse, CustomRemoveDefaultChargingTariffResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a remove default charging tariff response.
+        /// Try to parse the given JSON representation of a RemoveDefaultChargingTariff response.
         /// </summary>
-        /// <param name="Request">The remove default charging tariff request leading to this response.</param>
+        /// <param name="Request">The RemoveDefaultChargingTariff request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RemoveDefaultChargingTariffResponse">The parsed remove default charging tariff response.</param>
+        /// <param name="RemoveDefaultChargingTariffResponse">The parsed RemoveDefaultChargingTariff response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRemoveDefaultChargingTariffResponseParser">A delegate to parse custom remove default charging tariff responses.</param>
+        /// <param name="CustomRemoveDefaultChargingTariffResponseParser">A delegate to parse custom RemoveDefaultChargingTariff responses.</param>
         public static Boolean TryParse(CSMS.RemoveDefaultChargingTariffRequest                            Request,
                                        JObject                                                            JSON,
-                                       out RemoveDefaultChargingTariffResponse?                           RemoveDefaultChargingTariffResponse,
-                                       out String?                                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out RemoveDefaultChargingTariffResponse?      RemoveDefaultChargingTariffResponse,
+                                       [NotNullWhen(false)] out String?                                   ErrorResponse,
                                        CustomJObjectParserDelegate<RemoveDefaultChargingTariffResponse>?  CustomRemoveDefaultChargingTariffResponseParser   = null)
         {
 
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status             [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "remove default charging tariff status",
+                                         "RemoveDefaultChargingTariff status",
                                          RemoveDefaultChargingTariffStatusExtensions.TryParse,
                                          out RemoveDefaultChargingTariffStatus Status,
                                          out ErrorResponse))
@@ -354,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 RemoveDefaultChargingTariffResponse  = null;
-                ErrorResponse                        = "The given JSON representation of a remove default charging tariff response is invalid: " + e.Message;
+                ErrorResponse                        = "The given JSON representation of a RemoveDefaultChargingTariff response is invalid: " + e.Message;
                 return false;
             }
 
@@ -367,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomRemoveDefaultChargingTariffResponseSerializer">A delegate to serialize custom remove default charging tariff responses.</param>
+        /// <param name="CustomRemoveDefaultChargingTariffResponseSerializer">A delegate to serialize custom RemoveDefaultChargingTariff responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomEVSEStatusInfoSerializer">A delegate to serialize custom EVSE status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
@@ -415,12 +435,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The remove default charging tariff failed.
+        /// The RemoveDefaultChargingTariff failed because of a request error.
         /// </summary>
-        public static RemoveDefaultChargingTariffResponse Failed(CSMS.RemoveDefaultChargingTariffRequest Request)
+        /// <param name="Request">The RemoveDefaultChargingTariff request.</param>
+        public static RemoveDefaultChargingTariffResponse RequestError(CSMS.RemoveDefaultChargingTariffRequest  Request,
+                                                                       EventTracking_Id                         EventTrackingId,
+                                                                       ResultCode                               ErrorCode,
+                                                                       String?                                  ErrorDescription    = null,
+                                                                       JObject?                                 ErrorDetails        = null,
+                                                                       DateTime?                                ResponseTimestamp   = null,
+
+                                                                       NetworkingNode_Id?                       DestinationId       = null,
+                                                                       NetworkPath?                             NetworkPath         = null,
+
+                                                                       IEnumerable<KeyPair>?                    SignKeys            = null,
+                                                                       IEnumerable<SignInfo>?                   SignInfos           = null,
+                                                                       IEnumerable<Signature>?                  Signatures          = null,
+
+                                                                       CustomData?                              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The RemoveDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The RemoveDefaultChargingTariff request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static RemoveDefaultChargingTariffResponse SignatureError(CSMS.RemoveDefaultChargingTariffRequest  Request,
+                                                                         String                                   ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The RemoveDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The RemoveDefaultChargingTariff request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static RemoveDefaultChargingTariffResponse Failed(CSMS.RemoveDefaultChargingTariffRequest  Request,
+                                                                 String?                                  Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The RemoveDefaultChargingTariff failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The RemoveDefaultChargingTariff request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static RemoveDefaultChargingTariffResponse ExceptionOccured(CSMS.RemoveDefaultChargingTariffRequest  Request,
+                                                                           Exception                                Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -430,10 +521,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (RemoveDefaultChargingTariffResponse1, RemoveDefaultChargingTariffResponse2)
 
         /// <summary>
-        /// Compares two remove default charging tariff responses for equality.
+        /// Compares two RemoveDefaultChargingTariff responses for equality.
         /// </summary>
-        /// <param name="RemoveDefaultChargingTariffResponse1">A remove default charging tariff response.</param>
-        /// <param name="RemoveDefaultChargingTariffResponse2">Another remove default charging tariff response.</param>
+        /// <param name="RemoveDefaultChargingTariffResponse1">A RemoveDefaultChargingTariff response.</param>
+        /// <param name="RemoveDefaultChargingTariffResponse2">Another RemoveDefaultChargingTariff response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RemoveDefaultChargingTariffResponse? RemoveDefaultChargingTariffResponse1,
                                            RemoveDefaultChargingTariffResponse? RemoveDefaultChargingTariffResponse2)
@@ -456,10 +547,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (RemoveDefaultChargingTariffResponse1, RemoveDefaultChargingTariffResponse2)
 
         /// <summary>
-        /// Compares two remove default charging tariff responses for inequality.
+        /// Compares two RemoveDefaultChargingTariff responses for inequality.
         /// </summary>
-        /// <param name="RemoveDefaultChargingTariffResponse1">A remove default charging tariff response.</param>
-        /// <param name="RemoveDefaultChargingTariffResponse2">Another remove default charging tariff response.</param>
+        /// <param name="RemoveDefaultChargingTariffResponse1">A RemoveDefaultChargingTariff response.</param>
+        /// <param name="RemoveDefaultChargingTariffResponse2">Another RemoveDefaultChargingTariff response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RemoveDefaultChargingTariffResponse? RemoveDefaultChargingTariffResponse1,
                                            RemoveDefaultChargingTariffResponse? RemoveDefaultChargingTariffResponse2)
@@ -475,9 +566,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two remove default charging tariff responses for equality.
+        /// Compares two RemoveDefaultChargingTariff responses for equality.
         /// </summary>
-        /// <param name="Object">A remove default charging tariff response to compare with.</param>
+        /// <param name="Object">A RemoveDefaultChargingTariff response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is RemoveDefaultChargingTariffResponse removeDefaultChargingTariffResponse &&
@@ -488,9 +579,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(RemoveDefaultChargingTariffResponse)
 
         /// <summary>
-        /// Compares two remove default charging tariff responses for equality.
+        /// Compares two RemoveDefaultChargingTariff responses for equality.
         /// </summary>
-        /// <param name="RemoveDefaultChargingTariffResponse">A remove default charging tariff response to compare with.</param>
+        /// <param name="RemoveDefaultChargingTariffResponse">A RemoveDefaultChargingTariff response to compare with.</param>
         public override Boolean Equals(RemoveDefaultChargingTariffResponse? RemoveDefaultChargingTariffResponse)
 
             => RemoveDefaultChargingTariffResponse is not null &&

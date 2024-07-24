@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A get file request.
+    /// The GetFile request.
     /// </summary>
     public class GetFileRequest : ARequest<GetFileRequest>,
                                   IRequest
@@ -149,11 +149,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomGetFileRequestParser">An optional delegate to parse custom GetFileRequest requests.</param>
         public static GetFileRequest Parse(JObject                                       JSON,
                                            Request_Id                                    RequestId,
                                            NetworkingNode_Id                             DestinationId,
                                            NetworkPath                                   NetworkPath,
+                                           DateTime?                                     RequestTimestamp             = null,
+                                           TimeSpan?                                     RequestTimeout               = null,
+                                           EventTracking_Id?                             EventTrackingId              = null,
                                            CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser   = null)
         {
 
@@ -164,6 +170,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                          NetworkPath,
                          out var getFileRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetFileRequestParser))
             {
                 return getFileRequest;
@@ -187,6 +196,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetFileRequest">The parsed GetFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomGetFileRequestParser">An optional delegate to parse custom GetFileRequest requests.</param>
         public static Boolean TryParse(JObject                                       JSON,
                                        Request_Id                                    RequestId,
@@ -194,6 +206,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out GetFileRequest?      GetFileRequest,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
+                                       DateTime?                                     RequestTimestamp             = null,
+                                       TimeSpan?                                     RequestTimeout               = null,
+                                       EventTracking_Id?                             EventTrackingId              = null,
                                        CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser   = null)
         {
 
@@ -270,9 +285,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      CustomData,
 
                                      RequestId,
-                                     null,
-                                     null,
-                                     null,
+                                     RequestTimestamp,
+                                     RequestTimeout,
+                                     EventTrackingId,
                                      NetworkPath
 
                                  );
@@ -386,9 +401,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get file requests for equality.
+        /// Compares two GetFile requests for equality.
         /// </summary>
-        /// <param name="Object">A get file request to compare with.</param>
+        /// <param name="Object">A GetFile request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetFileRequest getFileRequest &&
@@ -399,9 +414,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(GetFileRequest)
 
         /// <summary>
-        /// Compares two get file requests for equality.
+        /// Compares two GetFile requests for equality.
         /// </summary>
-        /// <param name="GetFileRequest">A get file request to compare with.</param>
+        /// <param name="GetFileRequest">A GetFile request to compare with.</param>
         public override Boolean Equals(GetFileRequest? GetFileRequest)
 
             => GetFileRequest is not null               &&

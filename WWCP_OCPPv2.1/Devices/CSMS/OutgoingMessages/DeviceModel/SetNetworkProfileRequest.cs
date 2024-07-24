@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The set network profile request.
+    /// The SetNetworkProfile request.
     /// </summary>
     public class SetNetworkProfileRequest : ARequest<SetNetworkProfileRequest>,
                                             IRequest
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new set network profile request.
+        /// Create a new SetNetworkProfile request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="ConfigurationSlot">The slot in which the configuration should be stored.</param>
@@ -386,17 +386,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSetNetworkProfileRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set network profile request.
+        /// Parse the given JSON representation of a SetNetworkProfile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSetNetworkProfileRequestParser">A delegate to parse custom set network profile requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetNetworkProfileRequestParser">A delegate to parse custom SetNetworkProfile requests.</param>
         public static SetNetworkProfileRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      NetworkingNode_Id                                       DestinationId,
                                                      NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               RequestTimestamp                       = null,
+                                                     TimeSpan?                                               RequestTimeout                         = null,
+                                                     EventTracking_Id?                                       EventTrackingId                        = null,
                                                      CustomJObjectParserDelegate<SetNetworkProfileRequest>?  CustomSetNetworkProfileRequestParser   = null)
         {
 
@@ -406,12 +412,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var setNetworkProfileRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomSetNetworkProfileRequestParser))
             {
                 return setNetworkProfileRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a set network profile request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetNetworkProfile request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -421,22 +430,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SetNetworkProfileRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set network profile request.
+        /// Try to parse the given JSON representation of a SetNetworkProfile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SetNetworkProfileRequest">The parsed set network profile request.</param>
+        /// <param name="SetNetworkProfileRequest">The parsed SetNetworkProfile request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetNetworkProfileRequestParser">A delegate to parse custom set network profile requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetNetworkProfileRequestParser">A delegate to parse custom SetNetworkProfile requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       DestinationId,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out SetNetworkProfileRequest?      SetNetworkProfileRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       CustomJObjectParserDelegate<SetNetworkProfileRequest>?  CustomSetNetworkProfileRequestParser)
+                                       DateTime?                                               RequestTimestamp                       = null,
+                                       TimeSpan?                                               RequestTimeout                         = null,
+                                       EventTracking_Id?                                       EventTrackingId                        = null,
+                                       CustomJObjectParserDelegate<SetNetworkProfileRequest>?  CustomSetNetworkProfileRequestParser   = null)
         {
 
             try
@@ -512,9 +527,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CustomData,
 
                                                RequestId,
-                                               null,
-                                               null,
-                                               null,
+                                               RequestTimestamp,
+                                               RequestTimeout,
+                                               EventTrackingId,
                                                NetworkPath
 
                                            );
@@ -529,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 SetNetworkProfileRequest  = null;
-                ErrorResponse             = "The given JSON representation of a set network profile request is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a SetNetworkProfile request is invalid: " + e.Message;
                 return false;
             }
 
@@ -542,7 +557,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetNetworkProfileRequestSerializer">A delegate to serialize custom set network profile requests.</param>
+        /// <param name="CustomSetNetworkProfileRequestSerializer">A delegate to serialize custom SetNetworkProfile requests.</param>
         /// <param name="CustomNetworkConnectionProfileSerializer">A delegate to serialize custom network connection profiles.</param>
         /// <param name="CustomVPNConfigurationSerializer">A delegate to serialize custom VPN configurations.</param>
         /// <param name="CustomAPNConfigurationSerializer">A delegate to serialize custom APN configurations.</param>
@@ -590,10 +605,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SetNetworkProfileRequest1, SetNetworkProfileRequest2)
 
         /// <summary>
-        /// Compares two set network profile requests for equality.
+        /// Compares two SetNetworkProfile requests for equality.
         /// </summary>
-        /// <param name="SetNetworkProfileRequest1">A set network profile request.</param>
-        /// <param name="SetNetworkProfileRequest2">Another set network profile request.</param>
+        /// <param name="SetNetworkProfileRequest1">A SetNetworkProfile request.</param>
+        /// <param name="SetNetworkProfileRequest2">Another SetNetworkProfile request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetNetworkProfileRequest? SetNetworkProfileRequest1,
                                            SetNetworkProfileRequest? SetNetworkProfileRequest2)
@@ -616,10 +631,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SetNetworkProfileRequest1, SetNetworkProfileRequest2)
 
         /// <summary>
-        /// Compares two set network profile requests for inequality.
+        /// Compares two SetNetworkProfile requests for inequality.
         /// </summary>
-        /// <param name="SetNetworkProfileRequest1">A set network profile request.</param>
-        /// <param name="SetNetworkProfileRequest2">Another set network profile request.</param>
+        /// <param name="SetNetworkProfileRequest1">A SetNetworkProfile request.</param>
+        /// <param name="SetNetworkProfileRequest2">Another SetNetworkProfile request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetNetworkProfileRequest? SetNetworkProfileRequest1,
                                            SetNetworkProfileRequest? SetNetworkProfileRequest2)
@@ -635,9 +650,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set network profile requests for equality.
+        /// Compares two SetNetworkProfile requests for equality.
         /// </summary>
-        /// <param name="Object">A set network profile request to compare with.</param>
+        /// <param name="Object">A SetNetworkProfile request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetNetworkProfileRequest setNetworkProfileRequest &&
@@ -648,9 +663,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(SetNetworkProfileRequest)
 
         /// <summary>
-        /// Compares two set network profile requests for equality.
+        /// Compares two SetNetworkProfile requests for equality.
         /// </summary>
-        /// <param name="SetNetworkProfileRequest">A set network profile request to compare with.</param>
+        /// <param name="SetNetworkProfileRequest">A SetNetworkProfile request to compare with.</param>
         public override Boolean Equals(SetNetworkProfileRequest? SetNetworkProfileRequest)
 
             => SetNetworkProfileRequest is not null &&

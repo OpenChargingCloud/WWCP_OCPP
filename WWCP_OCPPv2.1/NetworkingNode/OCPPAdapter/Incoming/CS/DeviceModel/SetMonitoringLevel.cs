@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,278 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<SetMonitoringLevelRequest>?       CustomSetMonitoringLevelRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a set monitoring level websocket request was received.
+        /// An event sent whenever a SetMonitoringLevel request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                       OnSetMonitoringLevelWSRequest;
+        public event OnSetMonitoringLevelRequestReceivedDelegate?  OnSetMonitoringLevelRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a set monitoring level request was received.
+        /// An event sent whenever a SetMonitoringLevel request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringLevelRequestReceivedDelegate?     OnSetMonitoringLevelRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a set monitoring level request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringLevelDelegate?            OnSetMonitoringLevel;
-
-        /// <summary>
-        /// An event sent whenever a response to a set monitoring level request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringLevelResponseSentDelegate?    OnSetMonitoringLevelResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a set monitoring level request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?           OnSetMonitoringLevelWSResponse;
+        public event OnSetMonitoringLevelDelegate?                 OnSetMonitoringLevel;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_SetMonitoringLevel(DateTime                   RequestTimestamp,
+            Receive_SetMonitoringLevel(DateTime              RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
-                                       NetworkingNode_Id          DestinationId,
-                                       NetworkPath                NetworkPath,
-                                       EventTracking_Id           EventTrackingId,
-                                       Request_Id                 RequestId,
-                                       JObject                    RequestJSON,
-                                       CancellationToken          CancellationToken)
+                                       NetworkingNode_Id     DestinationId,
+                                       NetworkPath           NetworkPath,
+                                       EventTracking_Id      EventTrackingId,
+                                       Request_Id            RequestId,
+                                       JObject               JSONRequest,
+                                       CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnSetMonitoringLevelWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnSetMonitoringLevelWSRequest?.Invoke(startTime,
-                                                      parentNetworkingNode,
-                                                      WebSocketConnection,
-                                                      DestinationId,
-                                                      NetworkPath,
-                                                      EventTrackingId,
-                                                      RequestTimestamp,
-                                                      RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetMonitoringLevelWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (SetMonitoringLevelRequest.TryParse(RequestJSON,
+                if (SetMonitoringLevelRequest.TryParse(JSONRequest,
                                                        RequestId,
                                                        DestinationId,
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
-                                                       CustomSetMonitoringLevelRequestParser)) {
+                                                       RequestTimestamp,
+                                                       parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                       EventTrackingId,
+                                                       parentNetworkingNode.OCPP.CustomSetMonitoringLevelRequestParser)) {
 
-                    #region Send OnSetMonitoringLevelRequest event
+                    SetMonitoringLevelResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomSetMonitoringLevelRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnSetMonitoringLevelRequestReceived?.Invoke(Timestamp.Now,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            request);
+                        response = SetMonitoringLevelResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetMonitoringLevelRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnSetMonitoringLevelRequestReceived event
+
+                    var logger = OnSetMonitoringLevelRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnSetMonitoringLevelRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnSetMonitoringLevelRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    SetMonitoringLevelResponse? response = null;
-
-                    var results = OnSetMonitoringLevel?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnSetMonitoringLevelDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                    parentNetworkingNode,
-                                                                                                                    WebSocketConnection,
-                                                                                                                    request,
-                                                                                                                    CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnSetMonitoringLevel?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnSetMonitoringLevelDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : SetMonitoringLevelResponse.Failed(request, $"Undefined {nameof(OnSetMonitoringLevel)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = SetMonitoringLevelResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnSetMonitoringLevel),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= SetMonitoringLevelResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnSetMonitoringLevelResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnSetMonitoringLevelResponseSent?.Invoke(Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             WebSocketConnection,
-                                                             request,
-                                                             response,
-                                                             response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetMonitoringLevelResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomSetMonitoringLevelResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnSetMonitoringLevelResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnSetMonitoringLevelResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomSetMonitoringLevelResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomSetMonitoringLevelResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_SetMonitoringLevel)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_SetMonitoringLevel)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_SetMonitoringLevel)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnSetMonitoringLevelWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnSetMonitoringLevelWSResponse?.Invoke(endTime,
-                                                       parentNetworkingNode,
-                                                       WebSocketConnection,
-                                                       DestinationId,
-                                                       NetworkPath,
-                                                       EventTrackingId,
-                                                       RequestTimestamp,
-                                                       RequestJSON,
-                                                       OCPPResponse?.Payload,
-                                                       OCPPErrorResponse?.ToJSON(),
-                                                       endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_SetMonitoringLevel)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetMonitoringLevelWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a set monitoring level request was sent.
+        /// An event sent whenever a response to a SetMonitoringLevel was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringLevelResponseSentDelegate? OnSetMonitoringLevelResponseSent;
+        public event OnSetMonitoringLevelResponseSentDelegate?  OnSetMonitoringLevelResponseSent;
+
+        #endregion
+
+        #region Send OnSetMonitoringLevelResponse event
+
+        public async Task SendOnSetMonitoringLevelResponseSent(DateTime                    Timestamp,
+                                                               IEventSender                Sender,
+                                                               IWebSocketConnection        Connection,
+                                                               SetMonitoringLevelRequest   Request,
+                                                               SetMonitoringLevelResponse  Response,
+                                                               TimeSpan                    Runtime)
+        {
+
+            var logger = OnSetMonitoringLevelResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnSetMonitoringLevelResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnSetMonitoringLevelResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

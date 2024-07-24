@@ -21,6 +21,7 @@
     <None Remove="Devices\LocalController\.gitkeep" />
     <None Remove="Devices\LocalController\IncomingMessages\.gitkeep" />
     <None Remove="Devices\LocalController\OutgoingMessages\.gitkeep" />
+    <None Remove="NetworkingNode\OCPPAdapter\Forwarding\Common\OverlayNetworkingExtensions\.gitkeep" />
     <None Remove="NetworkingNode\OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 
@@ -31,6 +32,7 @@
     <Compile Include="Devices\LocalController\.gitkeep" />
     <Compile Include="Devices\LocalController\IncomingMessages\.gitkeep" />
     <Compile Include="Devices\LocalController\OutgoingMessages\.gitkeep" />
+    <Compile Include="NetworkingNode\OCPPAdapter\Forwarding\Common\OverlayNetworkingExtensions\.gitkeep" />
     <Compile Include="NetworkingNode\OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 

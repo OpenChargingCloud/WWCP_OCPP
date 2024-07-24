@@ -18,20 +18,16 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The OCPP HTTP Web Socket Adapter for incoming requests.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
@@ -235,10 +231,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
-
-    /// <summary>
-    /// The OCPP HTTP Web Socket Adapter for outgoing requests.
-    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 

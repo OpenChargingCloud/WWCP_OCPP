@@ -38,14 +38,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event sent whenever a RemoveDefaultChargingTariff request was received.
+        /// An event sent whenever a NotifyNetworkTopology request was received.
         /// </summary>
-        public event OnRemoveDefaultChargingTariffRequestReceivedDelegate?  OnRemoveDefaultChargingTariffRequestReceived;
+        public event OnNotifyNetworkTopologyRequestReceivedDelegate?  OnNotifyNetworkTopologyRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a RemoveDefaultChargingTariff request was received for processing.
+        /// An event sent whenever a NotifyNetworkTopology request was received for processing.
         /// </summary>
-        public event OnRemoveDefaultChargingTariffDelegate?                 OnRemoveDefaultChargingTariff;
+        public event OnNotifyNetworkTopologyDelegate?                 OnNotifyNetworkTopology;
 
         #endregion
 
@@ -53,14 +53,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_RemoveDefaultChargingTariff(DateTime              RequestTimestamp,
-                                                IWebSocketConnection  WebSocketConnection,
-                                                NetworkingNode_Id     DestinationId,
-                                                NetworkPath           NetworkPath,
-                                                EventTracking_Id      EventTrackingId,
-                                                Request_Id            RequestId,
-                                                JObject               JSONRequest,
-                                                CancellationToken     CancellationToken)
+            Receive_NotifyNetworkTopology(DateTime              RequestTimestamp,
+                                          IWebSocketConnection  WebSocketConnection,
+                                          NetworkingNode_Id     DestinationId,
+                                          NetworkPath           NetworkPath,
+                                          EventTracking_Id      EventTrackingId,
+                                          Request_Id            RequestId,
+                                          JObject               JSONRequest,
+                                          CancellationToken     CancellationToken)
 
         {
 
@@ -69,32 +69,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                if (RemoveDefaultChargingTariffRequest.TryParse(JSONRequest,
-                                                                RequestId,
-                                                                DestinationId,
-                                                                NetworkPath,
-                                                                out var request,
-                                                                out var errorResponse,
-                                                                RequestTimestamp,
-                                                                parentNetworkingNode.OCPP.DefaultRequestTimeout,
-                                                                EventTrackingId,
-                                                                parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffRequestParser)) {
+                if (NotifyNetworkTopologyRequest.TryParse(JSONRequest,
+                                                          RequestId,
+                                                          DestinationId,
+                                                          NetworkPath,
+                                                          out var request,
+                                                          out var errorResponse,
+                                                          RequestTimestamp,
+                                                          parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                          EventTrackingId,
+                                                          parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyRequestParser)) {
 
-                    RemoveDefaultChargingTariffResponse? response = null;
+                    NotifyNetworkTopologyResponse? response = null;
 
                     #region Verify request signature(s)
 
                     if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
                         request,
                         request.ToJSON(
-                            parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomNetworkTopologyInformationSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
                         out errorResponse))
                     {
 
-                        response = RemoveDefaultChargingTariffResponse.SignatureError(
+                        response = NotifyNetworkTopologyResponse.SignatureError(
                                        request,
                                        errorResponse
                                    );
@@ -103,16 +104,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    #region Send OnRemoveDefaultChargingTariffRequestReceived event
+                    #region Send OnNotifyNetworkTopologyRequestReceived event
 
-                    var logger = OnRemoveDefaultChargingTariffRequestReceived;
+                    var logger = OnNotifyNetworkTopologyRequestReceived;
                     if (logger is not null)
                     {
                         try
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType<OnRemoveDefaultChargingTariffRequestReceivedDelegate>().
+                                                   OfType<OnNotifyNetworkTopologyRequestReceivedDelegate>().
                                                    Select(loggingDelegate => loggingDelegate.Invoke(
                                                                                   Timestamp.Now,
                                                                                   parentNetworkingNode,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
                             await HandleErrors(
                                       nameof(OCPPWebSocketAdapterIN),
-                                      nameof(OnRemoveDefaultChargingTariffRequestReceived),
+                                      nameof(OnNotifyNetworkTopologyRequestReceived),
                                       e
                                   );
                         }
@@ -142,9 +143,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         try
                         {
 
-                            var responseTasks = OnRemoveDefaultChargingTariff?.
+                            var responseTasks = OnNotifyNetworkTopology?.
                                                     GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnRemoveDefaultChargingTariffDelegate)?.Invoke(
+                                                    SafeSelect(subscriber => (subscriber as OnNotifyNetworkTopologyDelegate)?.Invoke(
                                                                                   Timestamp.Now,
                                                                                   parentNetworkingNode,
                                                                                   WebSocketConnection,
@@ -155,24 +156,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             response = responseTasks?.Length > 0
                                            ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : RemoveDefaultChargingTariffResponse.Failed(request, $"Undefined {nameof(OnRemoveDefaultChargingTariff)}!");
+                                           : NotifyNetworkTopologyResponse.Failed(request, $"Undefined {nameof(OnNotifyNetworkTopology)}!");
 
                         }
                         catch (Exception e)
                         {
 
-                            response = RemoveDefaultChargingTariffResponse.ExceptionOccured(request, e);
+                            response = NotifyNetworkTopologyResponse.ExceptionOccured(request, e);
 
                             await HandleErrors(
                                       nameof(OCPPWebSocketAdapterIN),
-                                      nameof(OnRemoveDefaultChargingTariff),
+                                      nameof(OnNotifyNetworkTopology),
                                       e
                                   );
 
                         }
                     }
 
-                    response ??= RemoveDefaultChargingTariffResponse.Failed(request);
+                    response ??= NotifyNetworkTopologyResponse.Failed(request);
 
                     #endregion
 
@@ -181,9 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffResponseSerializer,
-                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                            parentNetworkingNode.OCPP.CustomEVSEStatusInfoSerializer2,
+                            parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
@@ -192,9 +191,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Send OnRemoveDefaultChargingTariffResponse event
+                    #region Send OnNotifyNetworkTopologyResponse event
 
-                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnRemoveDefaultChargingTariffResponseSent(
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnNotifyNetworkTopologyResponseSent(
                               Timestamp.Now,
                               parentNetworkingNode,
                               WebSocketConnection,
@@ -211,9 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffResponseSerializer,
-                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                                           parentNetworkingNode.OCPP.CustomEVSEStatusInfoSerializer2,
+                                           parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
@@ -226,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     ocppResponse = OCPP_Response.CouldNotParse(
                                        EventTrackingId,
                                        RequestId,
-                                       nameof(Receive_RemoveDefaultChargingTariff)[8..],
+                                       nameof(Receive_NotifyNetworkTopology)[8..],
                                        JSONRequest,
                                        errorResponse
                                    );
@@ -238,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 ocppResponse = OCPP_Response.FormationViolation(
                                    EventTrackingId,
                                    RequestId,
-                                   nameof(Receive_RemoveDefaultChargingTariff)[8..],
+                                   nameof(Receive_NotifyNetworkTopology)[8..],
                                    JSONRequest,
                                    e
                                );
@@ -259,30 +256,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event sent whenever a response to a RemoveDefaultChargingTariff was sent.
+        /// An event sent whenever a response to a NotifyNetworkTopology was sent.
         /// </summary>
-        public event OnRemoveDefaultChargingTariffResponseSentDelegate?  OnRemoveDefaultChargingTariffResponseSent;
+        public event OnNotifyNetworkTopologyResponseSentDelegate?  OnNotifyNetworkTopologyResponseSent;
 
         #endregion
 
-        #region Send OnRemoveDefaultChargingTariffResponse event
+        #region Send OnNotifyNetworkTopologyResponse event
 
-        public async Task SendOnRemoveDefaultChargingTariffResponseSent(DateTime                             Timestamp,
-                                                                        IEventSender                         Sender,
-                                                                        IWebSocketConnection                 Connection,
-                                                                        RemoveDefaultChargingTariffRequest   Request,
-                                                                        RemoveDefaultChargingTariffResponse  Response,
-                                                                        TimeSpan                             Runtime)
+        public async Task SendOnNotifyNetworkTopologyResponseSent(DateTime                       Timestamp,
+                                                                  IEventSender                   Sender,
+                                                                  IWebSocketConnection           Connection,
+                                                                  NotifyNetworkTopologyRequest   Request,
+                                                                  NotifyNetworkTopologyResponse  Response,
+                                                                  TimeSpan                       Runtime)
         {
 
-            var logger = OnRemoveDefaultChargingTariffResponseSent;
+            var logger = OnNotifyNetworkTopologyResponseSent;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                              OfType<OnRemoveDefaultChargingTariffResponseSentDelegate>().
+                                              OfType<OnNotifyNetworkTopologyResponseSentDelegate>().
                                               Select(filterDelegate => filterDelegate.Invoke(Timestamp,
                                                                                              Sender,
                                                                                              Connection,
@@ -296,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(OCPPWebSocketAdapterOUT),
-                              nameof(OnRemoveDefaultChargingTariffResponseSent),
+                              nameof(OnNotifyNetworkTopologyResponseSent),
                               e
                           );
                 }

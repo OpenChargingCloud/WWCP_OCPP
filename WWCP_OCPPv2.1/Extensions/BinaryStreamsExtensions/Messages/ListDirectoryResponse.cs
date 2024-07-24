@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A list directory response.
+    /// The ListDirectory response.
     /// </summary>
     public class ListDirectoryResponse : AResponse<ListDirectoryRequest,
                                                    ListDirectoryResponse>,
@@ -78,9 +78,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region ListDirectoryResponse(Request, Status = null, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new list directory response.
+        /// Create a new ListDirectory response.
         /// </summary>
-        /// <param name="Request">The list directory request leading to this response.</param>
+        /// <param name="Request">The ListDirectory request leading to this response.</param>
         /// <param name="DirectoryPath">The name of the stored file including its absolute path.</param>
         /// <param name="Status">An optional response status.</param>
         /// <param name="DirectoryListing">An optional directory listing.</param>
@@ -143,15 +143,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region ListDirectoryResponse(Request, Result)
 
         /// <summary>
-        /// Create a new list directory response.
+        /// Create a new ListDirectory response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public ListDirectoryResponse(ListDirectoryRequest  Request,
-                                     Result                Result)
+        public ListDirectoryResponse(ListDirectoryRequest     Request,
+                                     Result                   Result,
+                                     DateTime?                ResponseTimestamp   = null,
+
+                                     NetworkingNode_Id?       DestinationId       = null,
+                                     NetworkPath?             NetworkPath         = null,
+
+                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                     CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -173,11 +193,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) Parse   (Request, JSON, CustomListDirectoryResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a list directory response.
+        /// Parse the given JSON representation of a ListDirectory response.
         /// </summary>
-        /// <param name="Request">The list directory request leading to this response.</param>
+        /// <param name="Request">The ListDirectory request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom list directory responses.</param>
+        /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom ListDirectory responses.</param>
         public static ListDirectoryResponse Parse(ListDirectoryRequest                                 Request,
                                                   JObject                                              JSON,
                                                   CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser   = null)
@@ -203,13 +223,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(Request, JSON, out ListDirectoryResponse, out ErrorResponse, CustomListDirectoryResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a list directory response.
+        /// Try to parse the given JSON representation of a ListDirectory response.
         /// </summary>
-        /// <param name="Request">The list directory request leading to this response.</param>
+        /// <param name="Request">The ListDirectory request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ListDirectoryResponse">The parsed list directory response.</param>
+        /// <param name="ListDirectoryResponse">The parsed ListDirectory response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom list directory responses.</param>
+        /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom ListDirectory responses.</param>
         public static Boolean TryParse(ListDirectoryRequest                                 Request,
                                        JObject                                              JSON,
                                        [NotNullWhen(true)]  out ListDirectoryResponse?      ListDirectoryResponse,
@@ -348,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomListDirectoryResponseSerializer">A delegate to serialize custom list directory responses.</param>
+        /// <param name="CustomListDirectoryResponseSerializer">A delegate to serialize custom ListDirectory responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -390,12 +410,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Static methods
 
         /// <summary>
-        /// The list directory failed.
+        /// The ListDirectory failed because of a request error.
         /// </summary>
-        public static ListDirectoryResponse Failed(ListDirectoryRequest Request)
+        /// <param name="Request">The ListDirectory request.</param>
+        public static ListDirectoryResponse RequestError(ListDirectoryRequest     Request,
+                                                         EventTracking_Id         EventTrackingId,
+                                                         ResultCode               ErrorCode,
+                                                         String?                  ErrorDescription    = null,
+                                                         JObject?                 ErrorDetails        = null,
+                                                         DateTime?                ResponseTimestamp   = null,
+
+                                                         NetworkingNode_Id?       DestinationId       = null,
+                                                         NetworkPath?             NetworkPath         = null,
+
+                                                         IEnumerable<KeyPair>?    SignKeys            = null,
+                                                         IEnumerable<SignInfo>?   SignInfos           = null,
+                                                         IEnumerable<Signature>?  Signatures          = null,
+
+                                                         CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ListDirectory failed.
+        /// </summary>
+        /// <param name="Request">The ListDirectory request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ListDirectoryResponse SignatureError(ListDirectoryRequest  Request,
+                                                           String                ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ListDirectory failed.
+        /// </summary>
+        /// <param name="Request">The ListDirectory request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ListDirectoryResponse Failed(ListDirectoryRequest  Request,
+                                                   String?               Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ListDirectory failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ListDirectory request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ListDirectoryResponse ExceptionOccured(ListDirectoryRequest  Request,
+                                                             Exception             Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -405,10 +496,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (ListDirectoryResponse1, ListDirectoryResponse2)
 
         /// <summary>
-        /// Compares two list directory responses for equality.
+        /// Compares two ListDirectory responses for equality.
         /// </summary>
-        /// <param name="ListDirectoryResponse1">A list directory response.</param>
-        /// <param name="ListDirectoryResponse2">Another list directory response.</param>
+        /// <param name="ListDirectoryResponse1">A ListDirectory response.</param>
+        /// <param name="ListDirectoryResponse2">Another ListDirectory response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ListDirectoryResponse? ListDirectoryResponse1,
                                            ListDirectoryResponse? ListDirectoryResponse2)
@@ -431,10 +522,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (ListDirectoryResponse1, ListDirectoryResponse2)
 
         /// <summary>
-        /// Compares two list directory responses for inequality.
+        /// Compares two ListDirectory responses for inequality.
         /// </summary>
-        /// <param name="ListDirectoryResponse1">A list directory response.</param>
-        /// <param name="ListDirectoryResponse2">Another list directory response.</param>
+        /// <param name="ListDirectoryResponse1">A ListDirectory response.</param>
+        /// <param name="ListDirectoryResponse2">Another ListDirectory response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ListDirectoryResponse? ListDirectoryResponse1,
                                            ListDirectoryResponse? ListDirectoryResponse2)
@@ -450,9 +541,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two list directory responses for equality.
+        /// Compares two ListDirectory responses for equality.
         /// </summary>
-        /// <param name="Object">A list directory response to compare with.</param>
+        /// <param name="Object">A ListDirectory response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ListDirectoryResponse listDirectoryResponse &&
@@ -463,9 +554,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(ListDirectoryResponse)
 
         /// <summary>
-        /// Compares two list directory responses for equality.
+        /// Compares two ListDirectory responses for equality.
         /// </summary>
-        /// <param name="ListDirectoryResponse">A list directory response to compare with.</param>
+        /// <param name="ListDirectoryResponse">A ListDirectory response to compare with.</param>
         public override Boolean Equals(ListDirectoryResponse? ListDirectoryResponse)
 
             => ListDirectoryResponse is not null &&

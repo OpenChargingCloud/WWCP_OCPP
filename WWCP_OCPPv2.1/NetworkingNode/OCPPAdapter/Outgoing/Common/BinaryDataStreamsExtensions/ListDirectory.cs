@@ -32,55 +32,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
-        #region Custom binary serializer delegates
-
-        public CustomJObjectSerializerDelegate<DeleteFileRequest>?  CustomDeleteFileRequestSerializer    { get; set; }
-
-        public CustomJObjectParserDelegate<DeleteFileResponse>?     CustomDeleteFileResponseParser       { get; set; }
-
-        #endregion
-
         #region Events
 
         /// <summary>
-        /// An event sent whenever a DeleteFile request was sent.
+        /// An event sent whenever a ListDirectory request was sent.
         /// </summary>
-        public event OnDeleteFileRequestSentDelegate?         OnDeleteFileRequestSent;
-
-        /// <summary>
-        /// An event sent whenever a response to a DeleteFile request was received.
-        /// </summary>
-        public event OnDeleteFileResponseReceivedDelegate?    OnDeleteFileResponseReceived;
+        public event OnListDirectoryRequestSentDelegate?  OnListDirectoryRequestSent;
 
         #endregion
 
+        #region ListDirectory(Request)
 
-        #region DeleteFile(Request)
-
-        public async Task<DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
+        public async Task<ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
         {
 
-            #region Send OnDeleteFileRequestSent event
+            #region Send OnListDirectoryRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDeleteFileRequestSent?.Invoke(startTime,
-                                                parentNetworkingNode,
-                                                Request,
-                                                SendMessageResult.Success);
+                OnListDirectoryRequestSent?.Invoke(startTime,
+                                                   parentNetworkingNode,
+                                                   Request,
+                                                   SendMessageResult.Success);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteFileRequestSent));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnListDirectoryRequestSent));
             }
 
             #endregion
 
 
-            DeleteFileResponse? response = null;
+            ListDirectoryResponse? response = null;
 
             try
             {
@@ -89,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  OCPP_JSONRequestMessage.FromRequest(
                                                      Request,
                                                      Request.ToJSON(
-                                                         CustomDeleteFileRequestSerializer,
+                                                         parentNetworkingNode.OCPP.CustomListDirectoryRequestSerializer,
                                                          parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                          parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                      )
@@ -100,13 +86,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (!DeleteFileResponse.TryParse(Request,
-                                                     sendRequestState.JSONResponse.Payload,
-                                                     out response,
-                                                     out var errorResponse,
-                                                     CustomDeleteFileResponseParser))
+                    if (!ListDirectoryResponse.TryParse(Request,
+                                                        sendRequestState.JSONResponse.Payload,
+                                                        out response,
+                                                        out var errorResponse,
+                                                        parentNetworkingNode.OCPP.CustomListDirectoryResponseParser))
                     {
-                        response = new DeleteFileResponse(
+                        response = new ListDirectoryResponse(
                                        Request,
                                        Result.Format(errorResponse)
                                    );
@@ -114,17 +100,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 }
 
-                response ??= new DeleteFileResponse(
+                response ??= new ListDirectoryResponse(
                                  Request,
-                                 Request.FileName,
-                                 DeleteFileStatus.Rejected
+                                 Request.DirectoryPath,
+                                 ListDirectoryStatus.Rejected
                              );
 
             }
             catch (Exception e)
             {
 
-                response = new DeleteFileResponse(
+                response = new ListDirectoryResponse(
                                Request,
                                Result.FromException(e)
                            );
@@ -132,24 +118,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            #region Send OnDeleteFileResponseReceived event
+            #region Send OnListDirectoryResponseReceived event
 
-            var endTime = Timestamp.Now;
+            //var endTime = Timestamp.Now;
 
-            try
-            {
+            //try
+            //{
 
-                OnDeleteFileResponseReceived?.Invoke(endTime,
-                                                     parentNetworkingNode,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
+            //    OnListDirectoryResponseReceived?.Invoke(endTime,
+            //                                            parentNetworkingNode,
+            //                                            Request,
+            //                                            response,
+            //                                            endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnDeleteFileResponseReceived));
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnListDirectoryResponseReceived));
+            //}
 
             #endregion
 
@@ -159,6 +145,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        #region Events
+
+        /// <summary>
+        /// An event sent whenever a response to a ListDirectory request was received.
+        /// </summary>
+        public event OnListDirectoryResponseReceivedDelegate?  OnListDirectoryResponseReceived;
+
+        #endregion
 
     }
 

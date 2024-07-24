@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The set variable monitoring request.
+    /// The SetVariableMonitoring request.
     /// </summary>
     public class SetVariableMonitoringRequest : ARequest<SetVariableMonitoringRequest>,
                                                 IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new set variable monitoring request.
+        /// Create a new SetVariableMonitoring request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="MonitoringData">An enumeration of monitoring data.</param>
@@ -307,17 +307,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSetVariableMonitoringRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set variable monitoring request.
+        /// Parse the given JSON representation of a SetVariableMonitoring request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSetVariableMonitoringRequestParser">A delegate to parse custom set variable monitoring requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetVariableMonitoringRequestParser">A delegate to parse custom SetVariableMonitoring requests.</param>
         public static SetVariableMonitoringRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
                                                          NetworkingNode_Id                                           DestinationId,
                                                          NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   RequestTimestamp                           = null,
+                                                         TimeSpan?                                                   RequestTimeout                             = null,
+                                                         EventTracking_Id?                                           EventTrackingId                            = null,
                                                          CustomJObjectParserDelegate<SetVariableMonitoringRequest>?  CustomSetVariableMonitoringRequestParser   = null)
         {
 
@@ -327,12 +333,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var setVariableMonitoringRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomSetVariableMonitoringRequestParser))
             {
                 return setVariableMonitoringRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a set variable monitoring request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetVariableMonitoring request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -342,22 +351,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SetVariableMonitoringRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set variable monitoring request.
+        /// Try to parse the given JSON representation of a SetVariableMonitoring request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SetVariableMonitoringRequest">The parsed set variable monitoring request.</param>
+        /// <param name="SetVariableMonitoringRequest">The parsed SetVariableMonitoring request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetVariableMonitoringRequestParser">A delegate to parse custom set variable monitoring requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetVariableMonitoringRequestParser">A delegate to parse custom SetVariableMonitoring requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
                                        NetworkingNode_Id                                           DestinationId,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out SetVariableMonitoringRequest?      SetVariableMonitoringRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<SetVariableMonitoringRequest>?  CustomSetVariableMonitoringRequestParser)
+                                       DateTime?                                                   RequestTimestamp                           = null,
+                                       TimeSpan?                                                   RequestTimeout                             = null,
+                                       EventTracking_Id?                                           EventTrackingId                            = null,
+                                       CustomJObjectParserDelegate<SetVariableMonitoringRequest>?  CustomSetVariableMonitoringRequestParser   = null)
         {
 
             try
@@ -419,9 +434,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                    CustomData,
 
                                                    RequestId,
-                                                   null,
-                                                   null,
-                                                   null,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
                                                    NetworkPath
 
                                                );
@@ -436,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 SetVariableMonitoringRequest  = null;
-                ErrorResponse                 = "The given JSON representation of a set variable monitoring request is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a SetVariableMonitoring request is invalid: " + e.Message;
                 return false;
             }
 
@@ -449,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetVariableMonitoringRequestSerializer">A delegate to serialize custom set variable monitoring requests.</param>
+        /// <param name="CustomSetVariableMonitoringRequestSerializer">A delegate to serialize custom SetVariableMonitoring requests.</param>
         /// <param name="CustomSetMonitoringDataSerializer">A delegate to serialize custom set monitoring data.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
@@ -501,10 +516,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SetVariableMonitoringRequest1, SetVariableMonitoringRequest2)
 
         /// <summary>
-        /// Compares two set variable monitoring requests for equality.
+        /// Compares two SetVariableMonitoring requests for equality.
         /// </summary>
-        /// <param name="SetVariableMonitoringRequest1">A set variable monitoring request.</param>
-        /// <param name="SetVariableMonitoringRequest2">Another set variable monitoring request.</param>
+        /// <param name="SetVariableMonitoringRequest1">A SetVariableMonitoring request.</param>
+        /// <param name="SetVariableMonitoringRequest2">Another SetVariableMonitoring request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetVariableMonitoringRequest? SetVariableMonitoringRequest1,
                                            SetVariableMonitoringRequest? SetVariableMonitoringRequest2)
@@ -527,10 +542,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SetVariableMonitoringRequest1, SetVariableMonitoringRequest2)
 
         /// <summary>
-        /// Compares two set variable monitoring requests for inequality.
+        /// Compares two SetVariableMonitoring requests for inequality.
         /// </summary>
-        /// <param name="SetVariableMonitoringRequest1">A set variable monitoring request.</param>
-        /// <param name="SetVariableMonitoringRequest2">Another set variable monitoring request.</param>
+        /// <param name="SetVariableMonitoringRequest1">A SetVariableMonitoring request.</param>
+        /// <param name="SetVariableMonitoringRequest2">Another SetVariableMonitoring request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetVariableMonitoringRequest? SetVariableMonitoringRequest1,
                                            SetVariableMonitoringRequest? SetVariableMonitoringRequest2)
@@ -546,9 +561,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set variable monitoring requests for equality.
+        /// Compares two SetVariableMonitoring requests for equality.
         /// </summary>
-        /// <param name="Object">A set variable monitoring request to compare with.</param>
+        /// <param name="Object">A SetVariableMonitoring request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetVariableMonitoringRequest setVariableMonitoringRequest &&
@@ -559,9 +574,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(SetVariableMonitoringRequest)
 
         /// <summary>
-        /// Compares two set variable monitoring requests for equality.
+        /// Compares two SetVariableMonitoring requests for equality.
         /// </summary>
-        /// <param name="SetVariableMonitoringRequest">A set variable monitoring request to compare with.</param>
+        /// <param name="SetVariableMonitoringRequest">A SetVariableMonitoring request to compare with.</param>
         public override Boolean Equals(SetVariableMonitoringRequest? SetVariableMonitoringRequest)
 
             => SetVariableMonitoringRequest is not null &&

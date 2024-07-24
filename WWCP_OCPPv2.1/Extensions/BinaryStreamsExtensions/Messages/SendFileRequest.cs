@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A send file request.
+    /// The SendFile request.
     /// </summary>
     public class SendFileRequest : ARequest<SendFileRequest>,
                                    IRequest
@@ -202,11 +202,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomSendFileRequestParser">An optional delegate to parse custom SendFileRequest requests.</param>
         public static SendFileRequest Parse(Byte[]                                        Binary,
                                             Request_Id                                    RequestId,
                                             NetworkingNode_Id                             DestinationId,
                                             NetworkPath                                   NetworkPath,
+                                            DateTime?                                     RequestTimestamp              = null,
+                                            TimeSpan?                                     RequestTimeout                = null,
+                                            EventTracking_Id?                             EventTrackingId               = null,
                                             CustomBinaryParserDelegate<SendFileRequest>?  CustomSendFileRequestParser   = null)
         {
 
@@ -217,6 +223,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                          NetworkPath,
                          out var sendFileRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomSendFileRequestParser))
             {
                 return sendFileRequest;
@@ -240,6 +249,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SendFileRequest">The parsed SendFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomSendFileRequestParser">An optional delegate to parse custom SendFileRequest requests.</param>
         public static Boolean TryParse(Byte[]                                        Binary,
                                        Request_Id                                    RequestId,
@@ -247,6 +259,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out SendFileRequest?     SendFileRequest,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
+                                       DateTime?                                     RequestTimestamp              = null,
+                                       TimeSpan?                                     RequestTimeout                = null,
+                                       EventTracking_Id?                             EventTrackingId               = null,
                                        CustomBinaryParserDelegate<SendFileRequest>?  CustomSendFileRequestParser   = null)
         {
 
@@ -384,9 +399,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                       null, // CustomData
 
                                       RequestId,
-                                      null,
-                                      null,
-                                      null,
+                                      RequestTimestamp,
+                                      RequestTimeout,
+                                      EventTrackingId,
                                       NetworkPath
 
                                   );
@@ -410,16 +425,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ToBinary(CustomSendFileRequestSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToBinary(CustomSendFileRequestSerializer = null, CustomBinarySignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
         /// <param name="CustomSendFileRequestSerializer">A delegate to serialize custom SendFileRequest requests.</param>
-        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomBinarySignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<SendFileRequest>?  CustomSendFileRequestSerializer   = null,
-                               CustomBinarySerializerDelegate<Signature>?        CustomSignatureSerializer         = null,
+                               CustomBinarySerializerDelegate<Signature>?        CustomBinarySignatureSerializer   = null,
                                Boolean                                           IncludeSignatures                 = true)
         {
 
@@ -538,9 +553,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two send file requests for equality.
+        /// Compares two SendFile requests for equality.
         /// </summary>
-        /// <param name="Object">A send file request to compare with.</param>
+        /// <param name="Object">A SendFile request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SendFileRequest sendFileRequest &&
@@ -551,9 +566,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(SendFileRequest)
 
         /// <summary>
-        /// Compares two send file requests for equality.
+        /// Compares two SendFile requests for equality.
         /// </summary>
-        /// <param name="SendFileRequest">A send file request to compare with.</param>
+        /// <param name="SendFileRequest">A SendFile request to compare with.</param>
         public override Boolean Equals(SendFileRequest? SendFileRequest)
 
             => SendFileRequest is not null               &&

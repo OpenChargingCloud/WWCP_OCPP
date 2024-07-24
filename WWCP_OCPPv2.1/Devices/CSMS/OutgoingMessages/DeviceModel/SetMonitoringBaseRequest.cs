@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The set monitoring base request.
+    /// The SetMonitoringBase request.
     /// </summary>
     public class SetMonitoringBaseRequest : ARequest<SetMonitoringBaseRequest>,
                                             IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new set monitoring base request.
+        /// Create a new SetMonitoringBase request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="MonitoringBase">The monitoring base to be set.</param>
@@ -179,17 +179,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSetMonitoringBaseRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set monitoring base request.
+        /// Parse the given JSON representation of a SetMonitoringBase request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSetMonitoringBaseRequestParser">A delegate to parse custom set monitoring base requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetMonitoringBaseRequestParser">A delegate to parse custom SetMonitoringBase requests.</param>
         public static SetMonitoringBaseRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      NetworkingNode_Id                                       DestinationId,
                                                      NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               RequestTimestamp                       = null,
+                                                     TimeSpan?                                               RequestTimeout                         = null,
+                                                     EventTracking_Id?                                       EventTrackingId                        = null,
                                                      CustomJObjectParserDelegate<SetMonitoringBaseRequest>?  CustomSetMonitoringBaseRequestParser   = null)
         {
 
@@ -199,12 +205,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var setMonitoringBaseRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomSetMonitoringBaseRequestParser))
             {
                 return setMonitoringBaseRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a set monitoring base request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetMonitoringBase request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -214,22 +223,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SetMonitoringBaseRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set monitoring base request.
+        /// Try to parse the given JSON representation of a SetMonitoringBase request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SetMonitoringBaseRequest">The parsed set monitoring base request.</param>
+        /// <param name="SetMonitoringBaseRequest">The parsed SetMonitoringBase request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetMonitoringBaseRequestParser">A delegate to parse custom set monitoring base requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetMonitoringBaseRequestParser">A delegate to parse custom SetMonitoringBase requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       DestinationId,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out SetMonitoringBaseRequest?      SetMonitoringBaseRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       CustomJObjectParserDelegate<SetMonitoringBaseRequest>?  CustomSetMonitoringBaseRequestParser)
+                                       DateTime?                                               RequestTimestamp                       = null,
+                                       TimeSpan?                                               RequestTimeout                         = null,
+                                       EventTracking_Id?                                       EventTrackingId                        = null,
+                                       CustomJObjectParserDelegate<SetMonitoringBaseRequest>?  CustomSetMonitoringBaseRequestParser   = null)
         {
 
             try
@@ -291,9 +306,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CustomData,
 
                                                RequestId,
-                                               null,
-                                               null,
-                                               null,
+                                               RequestTimestamp,
+                                               RequestTimeout,
+                                               EventTrackingId,
                                                NetworkPath
 
                                            );
@@ -308,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 SetMonitoringBaseRequest  = null;
-                ErrorResponse             = "The given JSON representation of a set monitoring base request is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a SetMonitoringBase request is invalid: " + e.Message;
                 return false;
             }
 
@@ -321,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetMonitoringBaseRequestSerializer">A delegate to serialize custom set monitoring base requests.</param>
+        /// <param name="CustomSetMonitoringBaseRequestSerializer">A delegate to serialize custom SetMonitoringBase requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?  CustomSetMonitoringBaseRequestSerializer   = null,
@@ -359,10 +374,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SetMonitoringBaseRequest1, SetMonitoringBaseRequest2)
 
         /// <summary>
-        /// Compares two set monitoring base requests for equality.
+        /// Compares two SetMonitoringBase requests for equality.
         /// </summary>
-        /// <param name="SetMonitoringBaseRequest1">A set monitoring base request.</param>
-        /// <param name="SetMonitoringBaseRequest2">Another set monitoring base request.</param>
+        /// <param name="SetMonitoringBaseRequest1">A SetMonitoringBase request.</param>
+        /// <param name="SetMonitoringBaseRequest2">Another SetMonitoringBase request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetMonitoringBaseRequest? SetMonitoringBaseRequest1,
                                            SetMonitoringBaseRequest? SetMonitoringBaseRequest2)
@@ -385,10 +400,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SetMonitoringBaseRequest1, SetMonitoringBaseRequest2)
 
         /// <summary>
-        /// Compares two set monitoring base requests for inequality.
+        /// Compares two SetMonitoringBase requests for inequality.
         /// </summary>
-        /// <param name="SetMonitoringBaseRequest1">A set monitoring base request.</param>
-        /// <param name="SetMonitoringBaseRequest2">Another set monitoring base request.</param>
+        /// <param name="SetMonitoringBaseRequest1">A SetMonitoringBase request.</param>
+        /// <param name="SetMonitoringBaseRequest2">Another SetMonitoringBase request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetMonitoringBaseRequest? SetMonitoringBaseRequest1,
                                            SetMonitoringBaseRequest? SetMonitoringBaseRequest2)
@@ -404,9 +419,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set monitoring base requests for equality.
+        /// Compares two SetMonitoringBase requests for equality.
         /// </summary>
-        /// <param name="Object">A set monitoring base request to compare with.</param>
+        /// <param name="Object">A SetMonitoringBase request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetMonitoringBaseRequest setMonitoringBaseRequest &&
@@ -417,9 +432,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(SetMonitoringBaseRequest)
 
         /// <summary>
-        /// Compares two set monitoring base requests for equality.
+        /// Compares two SetMonitoringBase requests for equality.
         /// </summary>
-        /// <param name="SetMonitoringBaseRequest">A set monitoring base request to compare with.</param>
+        /// <param name="SetMonitoringBaseRequest">A SetMonitoringBase request to compare with.</param>
         public override Boolean Equals(SetMonitoringBaseRequest? SetMonitoringBaseRequest)
 
             => SetMonitoringBaseRequest is not null &&

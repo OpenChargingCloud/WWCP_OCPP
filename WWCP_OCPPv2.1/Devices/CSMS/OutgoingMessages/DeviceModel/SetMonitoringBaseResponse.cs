@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A set monitoring base response.
+    /// A SetMonitoringBase response.
     /// </summary>
     public class SetMonitoringBaseResponse : AResponse<CSMS.SetMonitoringBaseRequest,
                                                        SetMonitoringBaseResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetMonitoringBaseResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new set monitoring base response.
+        /// Create a new SetMonitoringBase response.
         /// </summary>
-        /// <param name="Request">The set monitoring base request leading to this response.</param>
+        /// <param name="Request">The SetMonitoringBase request leading to this response.</param>
         /// <param name="Status">Whether the charging station was able to accept the request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetMonitoringBaseResponse(Request, Result)
 
         /// <summary>
-        /// Create a new set monitoring base response.
+        /// Create a new SetMonitoringBase response.
         /// </summary>
-        /// <param name="Request">The set monitoring base request leading to this response.</param>
+        /// <param name="Request">The SetMonitoringBase request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetMonitoringBaseResponse(CSMS.SetMonitoringBaseRequest  Request,
-                                         Result                         Result)
+                                         Result                         Result,
+                                         DateTime?                      ResponseTimestamp   = null,
+
+                                         NetworkingNode_Id?             DestinationId       = null,
+                                         NetworkPath?                   NetworkPath         = null,
+
+                                         IEnumerable<KeyPair>?          SignKeys            = null,
+                                         IEnumerable<SignInfo>?         SignInfos           = null,
+                                         IEnumerable<Signature>?        Signatures          = null,
+
+                                         CustomData?                    CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -220,11 +240,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomSetMonitoringBaseResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set monitoring base response.
+        /// Parse the given JSON representation of a SetMonitoringBase response.
         /// </summary>
-        /// <param name="Request">The set monitoring base request leading to this response.</param>
+        /// <param name="Request">The SetMonitoringBase request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to parse custom set monitoring base responses.</param>
+        /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to parse custom SetMonitoringBase responses.</param>
         public static SetMonitoringBaseResponse Parse(CSMS.SetMonitoringBaseRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<SetMonitoringBaseResponse>?  CustomSetMonitoringBaseResponseParser   = null)
@@ -239,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return setDisplayMessageResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a set monitoring base response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetMonitoringBase response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -249,13 +269,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out SetMonitoringBaseResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set monitoring base response.
+        /// Try to parse the given JSON representation of a SetMonitoringBase response.
         /// </summary>
-        /// <param name="Request">The set monitoring base request leading to this response.</param>
+        /// <param name="Request">The SetMonitoringBase request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SetMonitoringBaseResponse">The parsed set monitoring base response.</param>
+        /// <param name="SetMonitoringBaseResponse">The parsed SetMonitoringBase response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to parse custom set monitoring base responses.</param>
+        /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to parse custom SetMonitoringBase responses.</param>
         public static Boolean TryParse(CSMS.SetMonitoringBaseRequest                            Request,
                                        JObject                                                  JSON,
                                        [NotNullWhen(true)]  out SetMonitoringBaseResponse?      SetMonitoringBaseResponse,
@@ -345,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SetMonitoringBaseResponse  = null;
-                ErrorResponse              = "The given JSON representation of a set monitoring base response is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a SetMonitoringBase response is invalid: " + e.Message;
                 return false;
             }
 
@@ -400,13 +420,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The set monitoring base command failed.
+        /// The SetMonitoringBase failed because of a request error.
         /// </summary>
-        /// <param name="Request">The set monitoring base request leading to this response.</param>
-        public static SetMonitoringBaseResponse Failed(CSMS.SetMonitoringBaseRequest Request)
+        /// <param name="Request">The SetMonitoringBase request.</param>
+        public static SetMonitoringBaseResponse RequestError(CSMS.SetMonitoringBaseRequest  Request,
+                                                             EventTracking_Id               EventTrackingId,
+                                                             ResultCode                     ErrorCode,
+                                                             String?                        ErrorDescription    = null,
+                                                             JObject?                       ErrorDetails        = null,
+                                                             DateTime?                      ResponseTimestamp   = null,
+
+                                                             NetworkingNode_Id?             DestinationId       = null,
+                                                             NetworkPath?                   NetworkPath         = null,
+
+                                                             IEnumerable<KeyPair>?          SignKeys            = null,
+                                                             IEnumerable<SignInfo>?         SignInfos           = null,
+                                                             IEnumerable<Signature>?        Signatures          = null,
+
+                                                             CustomData?                    CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SetMonitoringBase failed.
+        /// </summary>
+        /// <param name="Request">The SetMonitoringBase request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SetMonitoringBaseResponse SignatureError(CSMS.SetMonitoringBaseRequest  Request,
+                                                               String                         ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SetMonitoringBase failed.
+        /// </summary>
+        /// <param name="Request">The SetMonitoringBase request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SetMonitoringBaseResponse Failed(CSMS.SetMonitoringBaseRequest  Request,
+                                                       String?                        Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SetMonitoringBase failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SetMonitoringBase request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SetMonitoringBaseResponse ExceptionOccured(CSMS.SetMonitoringBaseRequest  Request,
+                                                                 Exception                      Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -416,10 +506,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (SetMonitoringBaseResponse1, SetMonitoringBaseResponse2)
 
         /// <summary>
-        /// Compares two set monitoring base responses for equality.
+        /// Compares two SetMonitoringBase responses for equality.
         /// </summary>
-        /// <param name="SetMonitoringBaseResponse1">A set monitoring base response.</param>
-        /// <param name="SetMonitoringBaseResponse2">Another set monitoring base response.</param>
+        /// <param name="SetMonitoringBaseResponse1">A SetMonitoringBase response.</param>
+        /// <param name="SetMonitoringBaseResponse2">Another SetMonitoringBase response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetMonitoringBaseResponse? SetMonitoringBaseResponse1,
                                            SetMonitoringBaseResponse? SetMonitoringBaseResponse2)
@@ -442,10 +532,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (SetMonitoringBaseResponse1, SetMonitoringBaseResponse2)
 
         /// <summary>
-        /// Compares two set monitoring base responses for inequality.
+        /// Compares two SetMonitoringBase responses for inequality.
         /// </summary>
-        /// <param name="SetMonitoringBaseResponse1">A set monitoring base response.</param>
-        /// <param name="SetMonitoringBaseResponse2">Another set monitoring base response.</param>
+        /// <param name="SetMonitoringBaseResponse1">A SetMonitoringBase response.</param>
+        /// <param name="SetMonitoringBaseResponse2">Another SetMonitoringBase response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetMonitoringBaseResponse? SetMonitoringBaseResponse1,
                                            SetMonitoringBaseResponse? SetMonitoringBaseResponse2)
@@ -461,9 +551,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set monitoring base responses for equality.
+        /// Compares two SetMonitoringBase responses for equality.
         /// </summary>
-        /// <param name="Object">A set monitoring base response to compare with.</param>
+        /// <param name="Object">A SetMonitoringBase response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetMonitoringBaseResponse setDisplayMessageResponse &&
@@ -474,9 +564,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(SetMonitoringBaseResponse)
 
         /// <summary>
-        /// Compares two set monitoring base responses for equality.
+        /// Compares two SetMonitoringBase responses for equality.
         /// </summary>
-        /// <param name="SetMonitoringBaseResponse">A set monitoring base response to compare with.</param>
+        /// <param name="SetMonitoringBaseResponse">A SetMonitoringBase response to compare with.</param>
         public override Boolean Equals(SetMonitoringBaseResponse? SetMonitoringBaseResponse)
 
             => SetMonitoringBaseResponse is not null &&

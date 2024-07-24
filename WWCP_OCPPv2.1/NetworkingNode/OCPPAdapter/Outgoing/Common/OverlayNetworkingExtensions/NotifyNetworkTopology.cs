@@ -26,9 +26,6 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
@@ -162,6 +159,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a NotifyNetworkTopology response was received.
+        /// </summary>
+        public event OnNotifyNetworkTopologyResponseReceivedDelegate? OnNotifyNetworkTopologyResponseReceived;
 
     }
 

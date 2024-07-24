@@ -267,11 +267,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
         public static UpdateFirmwareRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
                                                   NetworkingNode_Id                                    DestinationId,
                                                   NetworkPath                                          NetworkPath,
+                                                  DateTime?                                            RequestTimestamp                    = null,
+                                                  TimeSpan?                                            RequestTimeout                      = null,
+                                                  EventTracking_Id?                                    EventTrackingId                     = null,
                                                   CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser   = null)
         {
 
@@ -281,6 +287,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var updateFirmwareRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomUpdateFirmwareRequestParser))
             {
                 return updateFirmwareRequest;
@@ -304,6 +313,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
@@ -311,7 +323,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out UpdateFirmwareRequest?      UpdateFirmwareRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser)
+                                       DateTime?                                            RequestTimestamp                    = null,
+                                       TimeSpan?                                            RequestTimeout                      = null,
+                                       EventTracking_Id?                                    EventTrackingId                     = null,
+                                       CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser   = null)
         {
 
             try
@@ -415,9 +430,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             CustomData,
 
                                             RequestId,
-                                            null,
-                                            null,
-                                            null,
+                                            RequestTimestamp,
+                                            RequestTimeout,
+                                            EventTrackingId,
                                             NetworkPath
 
                                         );

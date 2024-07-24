@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A send local list response.
+    /// The SendLocalList response.
     /// </summary>
     public class SendLocalListResponse : AResponse<CSMS.SendLocalListRequest,
                                                    SendLocalListResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the send local list command.
+        /// The success or failure of the SendLocalList command.
         /// </summary>
         [Mandatory]
         public SendLocalListStatus  Status        { get; }
@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SendLocalListResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new send local list response.
+        /// Create a new SendLocalList response.
         /// </summary>
-        /// <param name="Request">The send local list request leading to this response.</param>
-        /// <param name="Status">The success or failure of the send local list command.</param>
+        /// <param name="Request">The SendLocalList request leading to this response.</param>
+        /// <param name="Status">The success or failure of the SendLocalList command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SendLocalListResponse(Request, Result)
 
         /// <summary>
-        /// Create a new send local list response.
+        /// Create a new SendLocalList response.
         /// </summary>
-        /// <param name="Request">The send local list request leading to this response.</param>
+        /// <param name="Request">The SendLocalList request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SendLocalListResponse(CSMS.SendLocalListRequest  Request,
-                                     Result                     Result)
+                                     Result                     Result,
+                                     DateTime?                  ResponseTimestamp   = null,
+
+                                     NetworkingNode_Id?         DestinationId       = null,
+                                     NetworkPath?               NetworkPath         = null,
+
+                                     IEnumerable<KeyPair>?      SignKeys            = null,
+                                     IEnumerable<SignInfo>?     SignInfos           = null,
+                                     IEnumerable<Signature>?    Signatures          = null,
+
+                                     CustomData?                CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -219,11 +239,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomSendLocalListResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a send local list response.
+        /// Parse the given JSON representation of a SendLocalList response.
         /// </summary>
-        /// <param name="Request">The send local list request leading to this response.</param>
+        /// <param name="Request">The SendLocalList request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom send local list responses.</param>
+        /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom SendLocalList responses.</param>
         public static SendLocalListResponse Parse(CSMS.SendLocalListRequest                            Request,
                                                   JObject                                              JSON,
                                                   CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null)
@@ -238,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return sendLocalListResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a send local list response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SendLocalList response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -248,13 +268,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out SendLocalListResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a send local list response.
+        /// Try to parse the given JSON representation of a SendLocalList response.
         /// </summary>
-        /// <param name="Request">The send local list request leading to this response.</param>
+        /// <param name="Request">The SendLocalList request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SendLocalListResponse">The parsed send local list response.</param>
+        /// <param name="SendLocalListResponse">The parsed SendLocalList response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom send local list responses.</param>
+        /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom SendLocalList responses.</param>
         public static Boolean TryParse(CSMS.SendLocalListRequest                            Request,
                                        JObject                                              JSON,
                                        [NotNullWhen(true)]  out SendLocalListResponse?      SendLocalListResponse,
@@ -344,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SendLocalListResponse  = null;
-                ErrorResponse          = "The given JSON representation of a send local list response is invalid: " + e.Message;
+                ErrorResponse          = "The given JSON representation of a SendLocalList response is invalid: " + e.Message;
                 return false;
             }
 
@@ -357,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSendLocalListResponseSerializer">A delegate to serialize custom send local list responses.</param>
+        /// <param name="CustomSendLocalListResponseSerializer">A delegate to serialize custom SendLocalList responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -399,13 +419,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The send local list command failed.
+        /// The SendLocalList failed because of a request error.
         /// </summary>
-        /// <param name="Request">The send local list request leading to this response.</param>
-        public static SendLocalListResponse Failed(CSMS.SendLocalListRequest  Request)
+        /// <param name="Request">The SendLocalList request.</param>
+        public static SendLocalListResponse RequestError(CSMS.SendLocalListRequest  Request,
+                                                         EventTracking_Id           EventTrackingId,
+                                                         ResultCode                 ErrorCode,
+                                                         String?                    ErrorDescription    = null,
+                                                         JObject?                   ErrorDetails        = null,
+                                                         DateTime?                  ResponseTimestamp   = null,
+
+                                                         NetworkingNode_Id?         DestinationId       = null,
+                                                         NetworkPath?               NetworkPath         = null,
+
+                                                         IEnumerable<KeyPair>?      SignKeys            = null,
+                                                         IEnumerable<SignInfo>?     SignInfos           = null,
+                                                         IEnumerable<Signature>?    Signatures          = null,
+
+                                                         CustomData?                CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SendLocalList failed.
+        /// </summary>
+        /// <param name="Request">The SendLocalList request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SendLocalListResponse SignatureError(CSMS.SendLocalListRequest  Request,
+                                                           String                     ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SendLocalList failed.
+        /// </summary>
+        /// <param name="Request">The SendLocalList request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SendLocalListResponse Failed(CSMS.SendLocalListRequest  Request,
+                                                   String?                    Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SendLocalList failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SendLocalList request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SendLocalListResponse ExceptionOccured(CSMS.SendLocalListRequest  Request,
+                                                             Exception                  Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -415,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (SendLocalListResponse1, SendLocalListResponse2)
 
         /// <summary>
-        /// Compares two send local list responses for equality.
+        /// Compares two SendLocalList responses for equality.
         /// </summary>
-        /// <param name="SendLocalListResponse1">A send local list response.</param>
-        /// <param name="SendLocalListResponse2">Another send local list response.</param>
+        /// <param name="SendLocalListResponse1">A SendLocalList response.</param>
+        /// <param name="SendLocalListResponse2">Another SendLocalList response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SendLocalListResponse? SendLocalListResponse1,
                                            SendLocalListResponse? SendLocalListResponse2)
@@ -441,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (SendLocalListResponse1, SendLocalListResponse2)
 
         /// <summary>
-        /// Compares two send local list responses for inequality.
+        /// Compares two SendLocalList responses for inequality.
         /// </summary>
-        /// <param name="SendLocalListResponse1">A send local list response.</param>
-        /// <param name="SendLocalListResponse2">Another send local list response.</param>
+        /// <param name="SendLocalListResponse1">A SendLocalList response.</param>
+        /// <param name="SendLocalListResponse2">Another SendLocalList response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SendLocalListResponse? SendLocalListResponse1,
                                            SendLocalListResponse? SendLocalListResponse2)
@@ -460,9 +550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two send local list responses for equality.
+        /// Compares two SendLocalList responses for equality.
         /// </summary>
-        /// <param name="Object">A send local list response to compare with.</param>
+        /// <param name="Object">A SendLocalList response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SendLocalListResponse sendLocalListResponse &&
@@ -473,9 +563,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(SendLocalListResponse)
 
         /// <summary>
-        /// Compares two send local list responses for equality.
+        /// Compares two SendLocalList responses for equality.
         /// </summary>
-        /// <param name="SendLocalListResponse">A send local list response to compare with.</param>
+        /// <param name="SendLocalListResponse">A SendLocalList response to compare with.</param>
         public override Boolean Equals(SendLocalListResponse? SendLocalListResponse)
 
             => SendLocalListResponse is not null &&

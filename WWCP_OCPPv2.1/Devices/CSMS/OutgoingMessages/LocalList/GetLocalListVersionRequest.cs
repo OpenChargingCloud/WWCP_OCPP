@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get local list version request.
+    /// The GetLocalListVersion request.
     /// </summary>
     public class GetLocalListVersionRequest : ARequest<GetLocalListVersionRequest>,
                                               IRequest
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get local list version request.
+        /// Create a new GetLocalListVersion request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// 
@@ -151,17 +151,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetLocalListVersionRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get local list version request.
+        /// Parse the given JSON representation of a GetLocalListVersion request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomGetLocalListVersionRequestParser">A delegate to parse custom GetLocalListVersion requests.</param>
         public static GetLocalListVersionRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
                                                        NetworkingNode_Id                                         DestinationId,
                                                        NetworkPath                                               NetworkPath,
+                                                       DateTime?                                                 RequestTimestamp                         = null,
+                                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                                       EventTracking_Id?                                         EventTrackingId                          = null,
                                                        CustomJObjectParserDelegate<GetLocalListVersionRequest>?  CustomGetLocalListVersionRequestParser   = null)
         {
 
@@ -171,12 +177,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getLocalListVersionRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetLocalListVersionRequestParser))
             {
                 return getLocalListVersionRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get local list version request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetLocalListVersion request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -186,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetLocalListVersionRequest, out ErrorResponse, CustomGetLocalListVersionRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get local list version request.
+        /// Try to parse the given JSON representation of a GetLocalListVersion request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -194,6 +203,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetLocalListVersionRequest">The parsed GetLocalListVersion request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomGetLocalListVersionRequestParser">A delegate to parse custom GetLocalListVersion requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
@@ -201,7 +213,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out GetLocalListVersionRequest?      GetLocalListVersionRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
-                                       CustomJObjectParserDelegate<GetLocalListVersionRequest>?  CustomGetLocalListVersionRequestParser)
+                                       DateTime?                                                 RequestTimestamp                         = null,
+                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                       EventTracking_Id?                                         EventTrackingId                          = null,
+                                       CustomJObjectParserDelegate<GetLocalListVersionRequest>?  CustomGetLocalListVersionRequestParser   = null)
         {
 
             try
@@ -249,9 +264,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   CustomData,
 
                                                   RequestId,
-                                                  null,
-                                                  null,
-                                                  null,
+                                                  RequestTimestamp,
+                                                  RequestTimeout,
+                                                  EventTrackingId,
                                                   NetworkPath
 
                                               );
@@ -266,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetLocalListVersionRequest  = null;
-                ErrorResponse               = "The given JSON representation of a get local list version request is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a GetLocalListVersion request is invalid: " + e.Message;
                 return false;
             }
 
@@ -359,9 +374,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get local list version requests for equality.
+        /// Compares two GetLocalListVersion requests for equality.
         /// </summary>
-        /// <param name="Object">A get local list version request to compare with.</param>
+        /// <param name="Object">A GetLocalListVersion request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetLocalListVersionRequest getLocalListVersionRequest &&
@@ -372,9 +387,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetLocalListVersionRequest)
 
         /// <summary>
-        /// Compares two get local list version requests for equality.
+        /// Compares two GetLocalListVersion requests for equality.
         /// </summary>
-        /// <param name="GetLocalListVersionRequest">A get local list version request to compare with.</param>
+        /// <param name="GetLocalListVersionRequest">A GetLocalListVersion request to compare with.</param>
         public override Boolean Equals(GetLocalListVersionRequest? GetLocalListVersionRequest)
 
             => GetLocalListVersionRequest is not null &&

@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A set monitoring level response.
+    /// A SetMonitoringLevel response.
     /// </summary>
     public class SetMonitoringLevelResponse : AResponse<CSMS.SetMonitoringLevelRequest,
                                                         SetMonitoringLevelResponse>,
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetMonitoringLevelResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new set monitoring level response.
+        /// Create a new SetMonitoringLevel response.
         /// </summary>
-        /// <param name="Request">The set monitoring level request leading to this response.</param>
+        /// <param name="Request">The SetMonitoringLevel request leading to this response.</param>
         /// <param name="Status">Whether the charging station was able to accept the request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetMonitoringLevelResponse(Request, Result)
 
         /// <summary>
-        /// Create a new set monitoring level response.
+        /// Create a new SetMonitoringLevel response.
         /// </summary>
-        /// <param name="Request">The set monitoring level request leading to this response.</param>
+        /// <param name="Request">The SetMonitoringLevel request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetMonitoringLevelResponse(CSMS.SetMonitoringLevelRequest  Request,
-                                          Result                          Result)
+                                          Result                          Result,
+                                          DateTime?                       ResponseTimestamp   = null,
+
+                                          NetworkingNode_Id?              DestinationId       = null,
+                                          NetworkPath?                    NetworkPath         = null,
+
+                                          IEnumerable<KeyPair>?           SignKeys            = null,
+                                          IEnumerable<SignInfo>?          SignInfos           = null,
+                                          IEnumerable<Signature>?         Signatures          = null,
+
+                                          CustomData?                     CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -218,11 +238,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomSetMonitoringLevelResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set monitoring level response.
+        /// Parse the given JSON representation of a SetMonitoringLevel response.
         /// </summary>
-        /// <param name="Request">The set monitoring level request leading to this response.</param>
+        /// <param name="Request">The SetMonitoringLevel request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom set monitoring level responses.</param>
+        /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom SetMonitoringLevel responses.</param>
         public static SetMonitoringLevelResponse Parse(CSMS.SetMonitoringLevelRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseParser   = null)
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return setMonitoringLevelResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a set monitoring level response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetMonitoringLevel response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,13 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out SetMonitoringLevelResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set monitoring level response.
+        /// Try to parse the given JSON representation of a SetMonitoringLevel response.
         /// </summary>
-        /// <param name="Request">The set monitoring level request leading to this response.</param>
+        /// <param name="Request">The SetMonitoringLevel request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SetMonitoringLevelResponse">The parsed set monitoring level response.</param>
+        /// <param name="SetMonitoringLevelResponse">The parsed SetMonitoringLevel response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom set monitoring level responses.</param>
+        /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom SetMonitoringLevel responses.</param>
         public static Boolean TryParse(CSMS.SetMonitoringLevelRequest                            Request,
                                        JObject                                                   JSON,
                                        [NotNullWhen(true)]  out SetMonitoringLevelResponse?      SetMonitoringLevelResponse,
@@ -343,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SetMonitoringLevelResponse  = null;
-                ErrorResponse               = "The given JSON representation of a set monitoring level response is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a SetMonitoringLevel response is invalid: " + e.Message;
                 return false;
             }
 
@@ -398,13 +418,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The set monitoring level command failed.
+        /// The SetMonitoringLevel failed because of a request error.
         /// </summary>
-        /// <param name="Request">The set monitoring level request leading to this response.</param>
-        public static SetMonitoringLevelResponse Failed(CSMS.SetMonitoringLevelRequest Request)
+        /// <param name="Request">The SetMonitoringLevel request.</param>
+        public static SetMonitoringLevelResponse RequestError(CSMS.SetMonitoringLevelRequest    Request,
+                                                     EventTracking_Id         EventTrackingId,
+                                                     ResultCode               ErrorCode,
+                                                     String?                  ErrorDescription    = null,
+                                                     JObject?                 ErrorDetails        = null,
+                                                     DateTime?                ResponseTimestamp   = null,
+
+                                                     NetworkingNode_Id?       DestinationId       = null,
+                                                     NetworkPath?             NetworkPath         = null,
+
+                                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                                     CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SetMonitoringLevel failed.
+        /// </summary>
+        /// <param name="Request">The SetMonitoringLevel request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SetMonitoringLevelResponse SignatureError(CSMS.SetMonitoringLevelRequest  Request,
+                                                                String                          ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SetMonitoringLevel failed.
+        /// </summary>
+        /// <param name="Request">The SetMonitoringLevel request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SetMonitoringLevelResponse Failed(CSMS.SetMonitoringLevelRequest  Request,
+                                                        String?                         Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SetMonitoringLevel failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SetMonitoringLevel request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SetMonitoringLevelResponse ExceptionOccured(CSMS.SetMonitoringLevelRequest  Request,
+                                                                  Exception                       Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -414,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (SetMonitoringLevelResponse1, SetMonitoringLevelResponse2)
 
         /// <summary>
-        /// Compares two set monitoring level responses for equality.
+        /// Compares two SetMonitoringLevel responses for equality.
         /// </summary>
-        /// <param name="SetMonitoringLevelResponse1">A set monitoring level response.</param>
-        /// <param name="SetMonitoringLevelResponse2">Another set monitoring level response.</param>
+        /// <param name="SetMonitoringLevelResponse1">A SetMonitoringLevel response.</param>
+        /// <param name="SetMonitoringLevelResponse2">Another SetMonitoringLevel response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetMonitoringLevelResponse? SetMonitoringLevelResponse1,
                                            SetMonitoringLevelResponse? SetMonitoringLevelResponse2)
@@ -440,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (SetMonitoringLevelResponse1, SetMonitoringLevelResponse2)
 
         /// <summary>
-        /// Compares two set monitoring level responses for inequality.
+        /// Compares two SetMonitoringLevel responses for inequality.
         /// </summary>
-        /// <param name="SetMonitoringLevelResponse1">A set monitoring level response.</param>
-        /// <param name="SetMonitoringLevelResponse2">Another set monitoring level response.</param>
+        /// <param name="SetMonitoringLevelResponse1">A SetMonitoringLevel response.</param>
+        /// <param name="SetMonitoringLevelResponse2">Another SetMonitoringLevel response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetMonitoringLevelResponse? SetMonitoringLevelResponse1,
                                            SetMonitoringLevelResponse? SetMonitoringLevelResponse2)
@@ -459,9 +549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set monitoring level responses for equality.
+        /// Compares two SetMonitoringLevel responses for equality.
         /// </summary>
-        /// <param name="Object">A set monitoring level response to compare with.</param>
+        /// <param name="Object">A SetMonitoringLevel response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetMonitoringLevelResponse setMonitoringLevelResponse &&
@@ -472,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(SetMonitoringLevelResponse)
 
         /// <summary>
-        /// Compares two set monitoring level responses for equality.
+        /// Compares two SetMonitoringLevel responses for equality.
         /// </summary>
-        /// <param name="SetMonitoringLevelResponse">A set monitoring level response to compare with.</param>
+        /// <param name="SetMonitoringLevelResponse">A SetMonitoringLevel response to compare with.</param>
         public override Boolean Equals(SetMonitoringLevelResponse? SetMonitoringLevelResponse)
 
             => SetMonitoringLevelResponse is not null &&

@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A clear cache request.
+    /// The ClearCache request.
     /// </summary>
     public class ClearCacheRequest : ARequest<ClearCacheRequest>,
                                      IRequest
@@ -151,17 +151,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomClearCacheRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear cache request.
+        /// Parse the given JSON representation of a ClearCache request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
         public static ClearCacheRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
                                               NetworkingNode_Id                                DestinationId,
                                               NetworkPath                                      NetworkPath,
+                                              DateTime?                                        RequestTimestamp                = null,
+                                              TimeSpan?                                        RequestTimeout                  = null,
+                                              EventTracking_Id?                                EventTrackingId                 = null,
                                               CustomJObjectParserDelegate<ClearCacheRequest>?  CustomClearCacheRequestParser   = null)
         {
 
@@ -171,12 +177,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var clearCacheRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomClearCacheRequestParser))
             {
                 return clearCacheRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a clear cache request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ClearCache request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -186,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ClearCacheRequest, out ErrorResponse, CustomClearCacheRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear cache request.
+        /// Try to parse the given JSON representation of a ClearCache request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -194,6 +203,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ClearCacheRequest">The parsed ClearCache request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
@@ -201,7 +213,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out ClearCacheRequest?      ClearCacheRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
-                                       CustomJObjectParserDelegate<ClearCacheRequest>?  CustomClearCacheRequestParser)
+                                       DateTime?                                        RequestTimestamp                = null,
+                                       TimeSpan?                                        RequestTimeout                  = null,
+                                       EventTracking_Id?                                EventTrackingId                 = null,
+                                       CustomJObjectParserDelegate<ClearCacheRequest>?  CustomClearCacheRequestParser   = null)
         {
 
             try
@@ -249,9 +264,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         CustomData,
 
                                         RequestId,
-                                        null,
-                                        null,
-                                        null,
+                                        RequestTimestamp,
+                                        RequestTimeout,
+                                        EventTrackingId,
                                         NetworkPath
 
                                     );
@@ -266,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 ClearCacheRequest  = null;
-                ErrorResponse      = "The given JSON representation of a clear cache request is invalid: " + e.Message;
+                ErrorResponse      = "The given JSON representation of a ClearCache request is invalid: " + e.Message;
                 return false;
             }
 
@@ -359,9 +374,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two clear cache requests for equality.
+        /// Compares two ClearCache requests for equality.
         /// </summary>
-        /// <param name="Object">A clear cache request to compare with.</param>
+        /// <param name="Object">A ClearCache request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ClearCacheRequest clearCacheRequest &&
@@ -372,9 +387,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(ClearCacheRequest)
 
         /// <summary>
-        /// Compares two clear cache requests for equality.
+        /// Compares two ClearCache requests for equality.
         /// </summary>
-        /// <param name="ClearCacheRequest">A clear cache request to compare with.</param>
+        /// <param name="ClearCacheRequest">A ClearCache request to compare with.</param>
         public override Boolean Equals(ClearCacheRequest? ClearCacheRequest)
 
             => ClearCacheRequest is not null &&

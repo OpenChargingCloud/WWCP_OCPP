@@ -30,9 +30,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The OCPP adapter for sending messages.
-    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
@@ -189,10 +186,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
-
-    /// <summary>
-    /// The OCPP adapter for receiving messages.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 

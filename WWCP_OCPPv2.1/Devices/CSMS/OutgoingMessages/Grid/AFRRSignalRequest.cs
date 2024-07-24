@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// An automatic frequency restoration reserve (AFRR) signal request.
+    /// The AFRRSignal (Automatic Frequency Restoration Reserve) request.
     /// </summary>
     public class AFRRSignalRequest : ARequest<AFRRSignalRequest>,
                                      IRequest
@@ -55,13 +55,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The time when the AFRR signal becomes active.
+        /// The time when the AFRRSignal becomes active.
         /// </summary>
         [Mandatory]
         public DateTime       ActivationTimestamp    { get; }
 
         /// <summary>
-        /// The value of the AFRR signal in v2xSignalWattCurve. Usually between -1 and 1.
+        /// The value of the AFRRSignal in v2xSignalWattCurve. Usually between -1 and 1.
         /// </summary>
         [Mandatory]
         public AFRR_Signal    Signal                 { get; }
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
-        /// <param name="Signal">The value of the AFRR signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
+        /// <param name="Signal">The value of the AFRRSignal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -148,17 +148,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomAFRRSignalRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an AFRR signal request.
+        /// Parse the given JSON representation of an AFRRSignal request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRR signal requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRRSignal requests.</param>
         public static AFRRSignalRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
                                               NetworkingNode_Id                                DestinationId,
                                               NetworkPath                                      NetworkPath,
+                                              DateTime?                                        RequestTimestamp                = null,
+                                              TimeSpan?                                        RequestTimeout                  = null,
+                                              EventTracking_Id?                                EventTrackingId                 = null,
                                               CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser   = null)
         {
 
@@ -168,12 +174,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var afrrSignalRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomAFRRSignalRequestParser))
             {
                 return afrrSignalRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an AFRR signal request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an AFRRSignal request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -183,22 +192,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON,  RequestId, DestinationId, NetworkPath, out AFRRSignalRequest, out ErrorResponse, CustomAFRRSignalRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an AFRR signal request.
+        /// Try to parse the given JSON representation of an AFRRSignal request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="AFRRSignalRequest">The parsed AFRR signal request.</param>
+        /// <param name="AFRRSignalRequest">The parsed AFRRSignal request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRR signal requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRRSignal requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
                                        NetworkingNode_Id                                DestinationId,
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out AFRRSignalRequest?      AFRRSignalRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
-                                       CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser)
+                                       DateTime?                                        RequestTimestamp                = null,
+                                       TimeSpan?                                        RequestTimeout                  = null,
+                                       EventTracking_Id?                                EventTrackingId                 = null,
+                                       CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser   = null)
         {
 
             try
@@ -221,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region Signal                 [mandatory]
 
                 if (!JSON.ParseMandatory("signal",
-                                         "AFRR signal",
+                                         "AFRRSignal",
                                          AFRR_Signal.TryParse,
                                          out AFRR_Signal Signal,
                                          out ErrorResponse))
@@ -273,9 +288,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         CustomData,
 
                                         RequestId,
-                                        null,
-                                        null,
-                                        null,
+                                        RequestTimestamp,
+                                        RequestTimeout,
+                                        EventTrackingId,
                                         NetworkPath
 
                                     );
@@ -290,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 AFRRSignalRequest  = null;
-                ErrorResponse      = "The given JSON representation of an AFRR signal request is invalid: " + e.Message;
+                ErrorResponse      = "The given JSON representation of an AFRRSignal request is invalid: " + e.Message;
                 return false;
             }
 
@@ -303,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomAFRRSignalRequestSerializer">A delegate to serialize custom AFRR signal requests.</param>
+        /// <param name="CustomAFRRSignalRequestSerializer">A delegate to serialize custom AFRRSignal requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestSerializer   = null,
@@ -342,10 +357,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (AFRRSignalRequest1, AFRRSignalRequest2)
 
         /// <summary>
-        /// Compares two AFRR signal requests for equality.
+        /// Compares two AFRRSignal requests for equality.
         /// </summary>
-        /// <param name="AFRRSignalRequest1">An AFRR signal request.</param>
-        /// <param name="AFRRSignalRequest2">Another AFRR signal request.</param>
+        /// <param name="AFRRSignalRequest1">An AFRRSignal request.</param>
+        /// <param name="AFRRSignalRequest2">Another AFRRSignal request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AFRRSignalRequest? AFRRSignalRequest1,
                                            AFRRSignalRequest? AFRRSignalRequest2)
@@ -368,10 +383,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (AFRRSignalRequest1, AFRRSignalRequest2)
 
         /// <summary>
-        /// Compares two AFRR signal requests for inequality.
+        /// Compares two AFRRSignal requests for inequality.
         /// </summary>
-        /// <param name="AFRRSignalRequest1">An AFRR signal request.</param>
-        /// <param name="AFRRSignalRequest2">Another AFRR signal request.</param>
+        /// <param name="AFRRSignalRequest1">An AFRRSignal request.</param>
+        /// <param name="AFRRSignalRequest2">Another AFRRSignal request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AFRRSignalRequest? AFRRSignalRequest1,
                                            AFRRSignalRequest? AFRRSignalRequest2)
@@ -387,9 +402,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two AFRR signal requests for equality.
+        /// Compares two AFRRSignal requests for equality.
         /// </summary>
-        /// <param name="Object">An AFRR signal request to compare with.</param>
+        /// <param name="Object">An AFRRSignal request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is AFRRSignalRequest afrrSignalRequest &&
@@ -400,9 +415,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(AFRRSignalRequest)
 
         /// <summary>
-        /// Compares two AFRR signal requests for equality.
+        /// Compares two AFRRSignal requests for equality.
         /// </summary>
-        /// <param name="AFRRSignalRequest">An AFRR signal request to compare with.</param>
+        /// <param name="AFRRSignalRequest">An AFRRSignal request to compare with.</param>
         public override Boolean Equals(AFRRSignalRequest? AFRRSignalRequest)
 
             => AFRRSignalRequest is not null &&

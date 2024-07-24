@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,246 +32,276 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<UnpublishFirmwareRequest>?       CustomUnpublishFirmwareRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever an unpublish firmware websocket request was received.
+        /// An event sent whenever a UnpublishFirmware request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                      OnUnpublishFirmwareWSRequest;
+        public event OnUnpublishFirmwareRequestReceivedDelegate?  OnUnpublishFirmwareRequestReceived;
 
         /// <summary>
-        /// An event sent whenever an unpublish firmware request was received.
+        /// An event sent whenever a UnpublishFirmware request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnUnpublishFirmwareRequestReceivedDelegate?     OnUnpublishFirmwareRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever an unpublish firmware request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUnpublishFirmwareDelegate?            OnUnpublishFirmware;
-
-        /// <summary>
-        /// An event sent whenever a response to an unpublish firmware request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUnpublishFirmwareResponseSentDelegate?    OnUnpublishFirmwareResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to an unpublish firmware request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?          OnUnpublishFirmwareWSResponse;
+        public event OnUnpublishFirmwareDelegate?                 OnUnpublishFirmware;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_UnpublishFirmware(DateTime                   RequestTimestamp,
+            Receive_UnpublishFirmware(DateTime              RequestTimestamp,
                                       IWebSocketConnection  WebSocketConnection,
-                                      NetworkingNode_Id          DestinationId,
-                                      NetworkPath                NetworkPath,
-                                      EventTracking_Id           EventTrackingId,
-                                      Request_Id                 RequestId,
-                                      JObject                    RequestJSON,
-                                      CancellationToken          CancellationToken)
+                                      NetworkingNode_Id     DestinationId,
+                                      NetworkPath           NetworkPath,
+                                      EventTracking_Id      EventTrackingId,
+                                      Request_Id            RequestId,
+                                      JObject               JSONRequest,
+                                      CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnUnpublishFirmwareWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnUnpublishFirmwareWSRequest?.Invoke(startTime,
-                                                     parentNetworkingNode,
-                                                     WebSocketConnection,
-                                                     DestinationId,
-                                                     NetworkPath,
-                                                     EventTrackingId,
-                                                     RequestTimestamp,
-                                                     RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUnpublishFirmwareWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (UnpublishFirmwareRequest.TryParse(RequestJSON,
+                if (UnpublishFirmwareRequest.TryParse(JSONRequest,
                                                       RequestId,
                                                       DestinationId,
                                                       NetworkPath,
                                                       out var request,
                                                       out var errorResponse,
-                                                      CustomUnpublishFirmwareRequestParser)) {
+                                                      RequestTimestamp,
+                                                      parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                      EventTrackingId,
+                                                      parentNetworkingNode.OCPP.CustomUnpublishFirmwareRequestParser)) {
 
-                    #region Send OnUnpublishFirmwareRequest event
+                    UnpublishFirmwareResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomUnpublishFirmwareRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnUnpublishFirmwareRequestReceived?.Invoke(Timestamp.Now,
-                                                           parentNetworkingNode,
-                                                           WebSocketConnection,
-                                                           request);
+                        response = UnpublishFirmwareResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUnpublishFirmwareRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnUnpublishFirmwareRequestReceived event
+
+                    var logger = OnUnpublishFirmwareRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnUnpublishFirmwareRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnUnpublishFirmwareRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    UnpublishFirmwareResponse? response = null;
-
-                    var results = OnUnpublishFirmware?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnUnpublishFirmwareDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                   parentNetworkingNode,
-                                                                                                                   WebSocketConnection,
-                                                                                                                   request,
-                                                                                                                   CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnUnpublishFirmware?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnUnpublishFirmwareDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : UnpublishFirmwareResponse.Failed(request, $"Undefined {nameof(OnUnpublishFirmware)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = UnpublishFirmwareResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnUnpublishFirmware),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= UnpublishFirmwareResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnUnpublishFirmwareResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnUnpublishFirmwareResponseSent?.Invoke(Timestamp.Now,
-                                                            parentNetworkingNode,
-                                                            WebSocketConnection,
-                                                            request,
-                                                            response,
-                                                            response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUnpublishFirmwareResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomUnpublishFirmwareResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnUnpublishFirmwareResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnUnpublishFirmwareResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomUnpublishFirmwareResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomUnpublishFirmwareResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_UnpublishFirmware)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_UnpublishFirmware)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_UnpublishFirmware)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnUnpublishFirmwareWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnUnpublishFirmwareWSResponse?.Invoke(endTime,
-                                                      parentNetworkingNode,
-                                                      WebSocketConnection,
-                                                      DestinationId,
-                                                      NetworkPath,
-                                                      EventTrackingId,
-                                                      RequestTimestamp,
-                                                      RequestJSON,
-                                                      OCPPResponse?.Payload,
-                                                      OCPPErrorResponse?.ToJSON(),
-                                                      endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_UnpublishFirmware)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUnpublishFirmwareWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to an unpublish firmware request was sent.
+        /// An event sent whenever a response to a UnpublishFirmware was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnUnpublishFirmwareResponseSentDelegate? OnUnpublishFirmwareResponseSent;
+        public event OnUnpublishFirmwareResponseSentDelegate?  OnUnpublishFirmwareResponseSent;
+
+        #endregion
+
+        #region Send OnUnpublishFirmwareResponse event
+
+        public async Task SendOnUnpublishFirmwareResponseSent(DateTime                   Timestamp,
+                                                              IEventSender               Sender,
+                                                              IWebSocketConnection       Connection,
+                                                              UnpublishFirmwareRequest   Request,
+                                                              UnpublishFirmwareResponse  Response,
+                                                              TimeSpan                   Runtime)
+        {
+
+            var logger = OnUnpublishFirmwareResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnUnpublishFirmwareResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnUnpublishFirmwareResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

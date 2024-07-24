@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The send local list request.
+    /// The SendLocalList request.
     /// </summary>
     public class SendLocalListRequest : ARequest<SendLocalListRequest>,
                                         IRequest
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a send local list request.
+        /// Create a SendLocalList request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="VersionNumber">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
@@ -421,17 +421,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSendLocalListRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a send local list request.
+        /// Parse the given JSON representation of a SendLocalList request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom send local list requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
         public static SendLocalListRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
                                                  NetworkingNode_Id                                   DestinationId,
                                                  NetworkPath                                         NetworkPath,
+                                                 DateTime?                                           RequestTimestamp                   = null,
+                                                 TimeSpan?                                           RequestTimeout                     = null,
+                                                 EventTracking_Id?                                   EventTrackingId                    = null,
                                                  CustomJObjectParserDelegate<SendLocalListRequest>?  CustomSendLocalListRequestParser   = null)
         {
 
@@ -441,12 +447,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var sendLocalListRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomSendLocalListRequestParser))
             {
                 return sendLocalListRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a send local list request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SendLocalList request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -456,22 +465,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SendLocalListRequest, out ErrorResponse, CustomSendLocalListRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a send local list request.
+        /// Try to parse the given JSON representation of a SendLocalList request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SendLocalListRequest">The parsed send local list request.</param>
+        /// <param name="SendLocalListRequest">The parsed SendLocalList request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom send local list requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
                                        NetworkingNode_Id                                   DestinationId,
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out SendLocalListRequest?      SendLocalListRequest,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
-                                       CustomJObjectParserDelegate<SendLocalListRequest>?  CustomSendLocalListRequestParser)
+                                       DateTime?                                           RequestTimestamp                   = null,
+                                       TimeSpan?                                           RequestTimeout                     = null,
+                                       EventTracking_Id?                                   EventTrackingId                    = null,
+                                       CustomJObjectParserDelegate<SendLocalListRequest>?  CustomSendLocalListRequestParser   = null)
         {
 
             try
@@ -560,9 +575,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            CustomData,
 
                                            RequestId,
-                                           null,
-                                           null,
-                                           null,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
                                            NetworkPath
 
                                        );
@@ -577,7 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 SendLocalListRequest  = null;
-                ErrorResponse         = "The given JSON representation of a send local list request is invalid: " + e.Message;
+                ErrorResponse         = "The given JSON representation of a SendLocalList request is invalid: " + e.Message;
                 return false;
             }
 
@@ -590,7 +605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSendLocalListRequestSerializer">A delegate to serialize custom send local list requests.</param>
+        /// <param name="CustomSendLocalListRequestSerializer">A delegate to serialize custom SendLocalList requests.</param>
         /// <param name="CustomAuthorizationDataSerializer">A delegate to serialize custom authorization data objects.</param>
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
@@ -647,10 +662,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SendLocalListRequest1, SendLocalListRequest2)
 
         /// <summary>
-        /// Compares two send local list requests for equality.
+        /// Compares two SendLocalList requests for equality.
         /// </summary>
-        /// <param name="SendLocalListRequest1">A send local list request.</param>
-        /// <param name="SendLocalListRequest2">Another send local list request.</param>
+        /// <param name="SendLocalListRequest1">A SendLocalList request.</param>
+        /// <param name="SendLocalListRequest2">Another SendLocalList request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SendLocalListRequest? SendLocalListRequest1,
                                            SendLocalListRequest? SendLocalListRequest2)
@@ -673,10 +688,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SendLocalListRequest1, SendLocalListRequest2)
 
         /// <summary>
-        /// Compares two send local list requests for inequality.
+        /// Compares two SendLocalList requests for inequality.
         /// </summary>
-        /// <param name="SendLocalListRequest1">A send local list request.</param>
-        /// <param name="SendLocalListRequest2">Another send local list request.</param>
+        /// <param name="SendLocalListRequest1">A SendLocalList request.</param>
+        /// <param name="SendLocalListRequest2">Another SendLocalList request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SendLocalListRequest? SendLocalListRequest1,
                                            SendLocalListRequest? SendLocalListRequest2)
@@ -692,9 +707,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two send local list requests for equality.
+        /// Compares two SendLocalList requests for equality.
         /// </summary>
-        /// <param name="Object">A send local list request to compare with.</param>
+        /// <param name="Object">A SendLocalList request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SendLocalListRequest sendLocalListRequest &&
@@ -705,9 +720,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(SendLocalListRequest)
 
         /// <summary>
-        /// Compares two send local list requests for equality.
+        /// Compares two SendLocalList requests for equality.
         /// </summary>
-        /// <param name="SendLocalListRequest">A send local list request to compare with.</param>
+        /// <param name="SendLocalListRequest">A SendLocalList request to compare with.</param>
         public override Boolean Equals(SendLocalListRequest? SendLocalListRequest)
 
             => SendLocalListRequest is not null &&

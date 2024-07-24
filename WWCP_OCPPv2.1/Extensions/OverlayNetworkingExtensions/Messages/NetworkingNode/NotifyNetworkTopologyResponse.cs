@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A notify network topology response.
+    /// The NotifyNetworkTopology response.
     /// </summary>
     public class NotifyNetworkTopologyResponse : AResponse<NotifyNetworkTopologyRequest,
                                                            NotifyNetworkTopologyResponse>,
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The status of the notify network topology request.
+        /// The status of the NotifyNetworkTopology request.
         /// </summary>
         public NetworkTopologyStatus  Status    { get; }
 
@@ -65,10 +65,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyNetworkTopologyResponse(Request, Status, ...)
 
         /// <summary>
-        /// Create a new notify network topology response.
+        /// Create a new NotifyNetworkTopology response.
         /// </summary>
-        /// <param name="Request">The notify network topology request leading to this response.</param>
-        /// <param name="Status">The status of the notify network topology request.</param>
+        /// <param name="Request">The NotifyNetworkTopology request leading to this response.</param>
+        /// <param name="Status">The status of the NotifyNetworkTopology request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -113,15 +113,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyNetworkTopologyResponse(Request, Result)
 
         /// <summary>
-        /// Create a new notify network topology response.
+        /// Create a new NotifyNetworkTopology response.
         /// </summary>
-        /// <param name="Request">The notify network topology request leading to this response.</param>
+        /// <param name="Request">The NotifyNetworkTopology request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public NotifyNetworkTopologyResponse(NotifyNetworkTopologyRequest  Request,
-                                             Result                        Result)
+                                             Result                        Result,
+                                             DateTime?                     ResponseTimestamp   = null,
+
+                                             NetworkingNode_Id?            DestinationId       = null,
+                                             NetworkPath?                  NetworkPath         = null,
+
+                                             IEnumerable<KeyPair>?         SignKeys            = null,
+                                             IEnumerable<SignInfo>?        SignInfos           = null,
+                                             IEnumerable<Signature>?       Signatures          = null,
+
+                                             CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -139,11 +159,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) Parse   (Request, JSON, CustomNotifyNetworkTopologyResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify network topology response.
+        /// Parse the given JSON representation of a NotifyNetworkTopology response.
         /// </summary>
-        /// <param name="Request">The notify network topology request leading to this response.</param>
+        /// <param name="Request">The NotifyNetworkTopology request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyNetworkTopologyResponseParser">An optional delegate to parse custom notify network topology responses.</param>
+        /// <param name="CustomNotifyNetworkTopologyResponseParser">An optional delegate to parse custom NotifyNetworkTopology responses.</param>
         public static NotifyNetworkTopologyResponse Parse(NotifyNetworkTopologyRequest                                 Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseParser   = null)
@@ -158,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return notifyNetworkTopologyResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify network topology response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a NotifyNetworkTopology response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -168,13 +188,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(Request, JSON, out NotifyNetworkTopologyResponse, out ErrorResponse, CustomNotifyNetworkTopologyResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify network topology response.
+        /// Try to parse the given JSON representation of a NotifyNetworkTopology response.
         /// </summary>
-        /// <param name="Request">The notify network topology request leading to this response.</param>
+        /// <param name="Request">The NotifyNetworkTopology request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NotifyNetworkTopologyResponse">The parsed notify network topology response.</param>
+        /// <param name="NotifyNetworkTopologyResponse">The parsed NotifyNetworkTopology response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyNetworkTopologyResponseParser">An optional delegate to parse custom notify network topology responses.</param>
+        /// <param name="CustomNotifyNetworkTopologyResponseParser">An optional delegate to parse custom NotifyNetworkTopology responses.</param>
         public static Boolean TryParse(NotifyNetworkTopologyRequest                                 Request,
                                        JObject                                                      JSON,
                                        [NotNullWhen(true)]  out NotifyNetworkTopologyResponse?      NotifyNetworkTopologyResponse,
@@ -258,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 NotifyNetworkTopologyResponse  = null;
-                ErrorResponse                  = "The given JSON representation of a notify network topology response is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a NotifyNetworkTopology response is invalid: " + e.Message;
                 return false;
             }
 
@@ -271,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyNetworkTopologyResponseSerializer">A delegate to serialize custom notify network topology responses.</param>
+        /// <param name="CustomNotifyNetworkTopologyResponseSerializer">A delegate to serialize custom NotifyNetworkTopology responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseSerializer   = null,
@@ -306,12 +326,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Static methods
 
         /// <summary>
-        /// The notify network topology request failed.
+        /// The NotifyNetworkTopology failed because of a request error.
         /// </summary>
-        public static NotifyNetworkTopologyResponse Failed(NotifyNetworkTopologyRequest Request)
+        /// <param name="Request">The NotifyNetworkTopology request.</param>
+        public static NotifyNetworkTopologyResponse RequestError(NotifyNetworkTopologyRequest  Request,
+                                                                 EventTracking_Id              EventTrackingId,
+                                                                 ResultCode                    ErrorCode,
+                                                                 String?                       ErrorDescription    = null,
+                                                                 JObject?                      ErrorDetails        = null,
+                                                                 DateTime?                     ResponseTimestamp   = null,
+
+                                                                 NetworkingNode_Id?            DestinationId       = null,
+                                                                 NetworkPath?                  NetworkPath         = null,
+
+                                                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                 IEnumerable<Signature>?       Signatures          = null,
+
+                                                                 CustomData?                   CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The NotifyNetworkTopology failed.
+        /// </summary>
+        /// <param name="Request">The NotifyNetworkTopology request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static NotifyNetworkTopologyResponse SignatureError(NotifyNetworkTopologyRequest  Request,
+                                                                   String                        ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The NotifyNetworkTopology failed.
+        /// </summary>
+        /// <param name="Request">The NotifyNetworkTopology request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static NotifyNetworkTopologyResponse Failed(NotifyNetworkTopologyRequest  Request,
+                                                           String?                       Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The NotifyNetworkTopology failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The NotifyNetworkTopology request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static NotifyNetworkTopologyResponse ExceptionOccured(NotifyNetworkTopologyRequest  Request,
+                                                                     Exception                     Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -321,10 +412,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (NotifyNetworkTopologyResponse1, NotifyNetworkTopologyResponse2)
 
         /// <summary>
-        /// Compares two notify network topology responses for equality.
+        /// Compares two NotifyNetworkTopology responses for equality.
         /// </summary>
-        /// <param name="NotifyNetworkTopologyResponse1">A notify network topology response.</param>
-        /// <param name="NotifyNetworkTopologyResponse2">Another notify network topology response.</param>
+        /// <param name="NotifyNetworkTopologyResponse1">A NotifyNetworkTopology response.</param>
+        /// <param name="NotifyNetworkTopologyResponse2">Another NotifyNetworkTopology response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (NotifyNetworkTopologyResponse? NotifyNetworkTopologyResponse1,
                                            NotifyNetworkTopologyResponse? NotifyNetworkTopologyResponse2)
@@ -347,10 +438,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (NotifyNetworkTopologyResponse1, NotifyNetworkTopologyResponse2)
 
         /// <summary>
-        /// Compares two notify network topology responses for inequality.
+        /// Compares two NotifyNetworkTopology responses for inequality.
         /// </summary>
-        /// <param name="NotifyNetworkTopologyResponse1">A notify network topology response.</param>
-        /// <param name="NotifyNetworkTopologyResponse2">Another notify network topology response.</param>
+        /// <param name="NotifyNetworkTopologyResponse1">A NotifyNetworkTopology response.</param>
+        /// <param name="NotifyNetworkTopologyResponse2">Another NotifyNetworkTopology response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (NotifyNetworkTopologyResponse? NotifyNetworkTopologyResponse1,
                                            NotifyNetworkTopologyResponse? NotifyNetworkTopologyResponse2)
@@ -366,9 +457,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify network topology responses for equality.
+        /// Compares two NotifyNetworkTopology responses for equality.
         /// </summary>
-        /// <param name="Object">A notify network topology response to compare with.</param>
+        /// <param name="Object">A NotifyNetworkTopology response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is NotifyNetworkTopologyResponse notifyNetworkTopologyResponse &&
@@ -379,9 +470,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(NotifyNetworkTopologyResponse)
 
         /// <summary>
-        /// Compares two notify network topology responses for equality.
+        /// Compares two NotifyNetworkTopology responses for equality.
         /// </summary>
-        /// <param name="NotifyNetworkTopologyResponse">A notify network topology response to compare with.</param>
+        /// <param name="NotifyNetworkTopologyResponse">A NotifyNetworkTopology response to compare with.</param>
         public override Boolean Equals(NotifyNetworkTopologyResponse? NotifyNetworkTopologyResponse)
 
             => NotifyNetworkTopologyResponse is not null &&

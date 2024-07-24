@@ -19,9 +19,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using cloud.charging.open.protocols.OCPP;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -176,11 +176,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The get file request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public GetFileResponse(GetFileRequest  Request,
-                               Result          Result)
+        public GetFileResponse(GetFileRequest           Request,
+                               Result                   Result,
+                               DateTime?                ResponseTimestamp   = null,
+
+                               NetworkingNode_Id?       DestinationId       = null,
+                               NetworkPath?             NetworkPath         = null,
+
+                               IEnumerable<KeyPair>?    SignKeys            = null,
+                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               IEnumerable<Signature>?  Signatures          = null,
+
+                               CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -497,13 +517,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Static methods
 
         /// <summary>
-        /// The get file failed.
+        /// The GetFile failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get file request leading to this response.</param>
-        public static GetFileResponse Failed(GetFileRequest       Request)
+        /// <param name="Request">The GetFile request.</param>
+        public static GetFileResponse RequestError(GetFileRequest           Request,
+                                                   EventTracking_Id         EventTrackingId,
+                                                   ResultCode               ErrorCode,
+                                                   String?                  ErrorDescription    = null,
+                                                   JObject?                 ErrorDetails        = null,
+                                                   DateTime?                ResponseTimestamp   = null,
+
+                                                   NetworkingNode_Id?       DestinationId       = null,
+                                                   NetworkPath?             NetworkPath         = null,
+
+                                                   IEnumerable<KeyPair>?    SignKeys            = null,
+                                                   IEnumerable<SignInfo>?   SignInfos           = null,
+                                                   IEnumerable<Signature>?  Signatures          = null,
+
+                                                   CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetFile failed.
+        /// </summary>
+        /// <param name="Request">The GetFile request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetFileResponse SignatureError(GetFileRequest  Request,
+                                                     String          ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetFile failed.
+        /// </summary>
+        /// <param name="Request">The GetFile request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetFileResponse Failed(GetFileRequest  Request,
+                                             String?         Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetFile failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetFile request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetFileResponse ExceptionOccured(GetFileRequest  Request,
+                                                       Exception       Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 

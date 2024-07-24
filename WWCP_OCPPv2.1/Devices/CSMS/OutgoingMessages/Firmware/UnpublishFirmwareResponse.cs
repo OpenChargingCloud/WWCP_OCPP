@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// An unpublish firmware response.
+    /// The UnpublishFirmware response.
     /// </summary>
     public class UnpublishFirmwareResponse : AResponse<CSMS.UnpublishFirmwareRequest,
                                                        UnpublishFirmwareResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the unpublish firmware request.
+        /// The success or failure of the UnpublishFirmware request.
         /// </summary>
         public UnpublishFirmwareStatus  Status    { get; }
 
@@ -67,10 +67,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region UnpublishFirmwareResponse(Request, Status, ...)
 
         /// <summary>
-        /// Create a new unpublish firmware response.
+        /// Create a new UnpublishFirmware response.
         /// </summary>
-        /// <param name="Request">The unpublish firmware request leading to this response.</param>
-        /// <param name="Status">The success or failure of the unpublish firmware request.</param>
+        /// <param name="Request">The UnpublishFirmware request leading to this response.</param>
+        /// <param name="Status">The success or failure of the UnpublishFirmware request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -112,15 +112,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region UnpublishFirmwareResponse(Result)
 
         /// <summary>
-        /// Create a new unpublish firmware response.
+        /// Create a new UnpublishFirmware response.
         /// </summary>
-        /// <param name="Request">The unpublish firmware request leading to this response.</param>
+        /// <param name="Request">The UnpublishFirmware request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public UnpublishFirmwareResponse(CSMS.UnpublishFirmwareRequest  Request,
-                                         Result                         Result)
+                                         Result                         Result,
+                                         DateTime?                      ResponseTimestamp   = null,
+
+                                         NetworkingNode_Id?             DestinationId       = null,
+                                         NetworkPath?                   NetworkPath         = null,
+
+                                         IEnumerable<KeyPair>?          SignKeys            = null,
+                                         IEnumerable<SignInfo>?         SignInfos           = null,
+                                         IEnumerable<Signature>?        Signatures          = null,
+
+                                         CustomData?                    CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -182,11 +202,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomUnpublishFirmwareResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an unpublish firmware response.
+        /// Parse the given JSON representation of an UnpublishFirmware response.
         /// </summary>
-        /// <param name="Request">The unpublish firmware request leading to this response.</param>
+        /// <param name="Request">The UnpublishFirmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom unpublish firmware responses.</param>
+        /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom UnpublishFirmware responses.</param>
         public static UnpublishFirmwareResponse Parse(CSMS.UnpublishFirmwareRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseParser   = null)
@@ -201,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return unpublishFirmwareResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of an unpublish firmware response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UnpublishFirmware response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -211,13 +231,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out UnpublishFirmwareResponse, out ErrorResponse, CustomUnpublishFirmwareResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an unpublish firmware response.
+        /// Try to parse the given JSON representation of an UnpublishFirmware response.
         /// </summary>
-        /// <param name="Request">The unpublish firmware request leading to this response.</param>
+        /// <param name="Request">The UnpublishFirmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="UnpublishFirmwareResponse">The parsed unpublish firmware response.</param>
+        /// <param name="UnpublishFirmwareResponse">The parsed UnpublishFirmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom unpublish firmware responses.</param>
+        /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom UnpublishFirmware responses.</param>
         public static Boolean TryParse(CSMS.UnpublishFirmwareRequest                            Request,
                                        JObject                                                  JSON,
                                        [NotNullWhen(true)]  out UnpublishFirmwareResponse?      UnpublishFirmwareResponse,
@@ -233,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "unpublish firmware status",
+                                         "UnpublishFirmware status",
                                          UnpublishFirmwareStatusExtensions.TryParse,
                                          out UnpublishFirmwareStatus Status,
                                          out ErrorResponse))
@@ -292,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 UnpublishFirmwareResponse  = null;
-                ErrorResponse              = "The given JSON representation of an unpublish firmware response is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of an UnpublishFirmware response is invalid: " + e.Message;
                 return false;
             }
 
@@ -305,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUnpublishFirmwareResponseSerializer">A delegate to serialize custom unpublish firmware responses.</param>
+        /// <param name="CustomUnpublishFirmwareResponseSerializer">A delegate to serialize custom UnpublishFirmware responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseSerializer   = null,
@@ -340,13 +360,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The unpublish firmware command failed.
+        /// The UnpublishFirmware failed because of a request error.
         /// </summary>
-        /// <param name="Request">The unpublish firmware request leading to this response.</param>
-        public static UnpublishFirmwareResponse Failed(CSMS.UnpublishFirmwareRequest Request)
+        /// <param name="Request">The UnpublishFirmware request.</param>
+        public static UnpublishFirmwareResponse RequestError(CSMS.UnpublishFirmwareRequest  Request,
+                                                             EventTracking_Id               EventTrackingId,
+                                                             ResultCode                     ErrorCode,
+                                                             String?                        ErrorDescription    = null,
+                                                             JObject?                       ErrorDetails        = null,
+                                                             DateTime?                      ResponseTimestamp   = null,
+
+                                                             NetworkingNode_Id?             DestinationId       = null,
+                                                             NetworkPath?                   NetworkPath         = null,
+
+                                                             IEnumerable<KeyPair>?          SignKeys            = null,
+                                                             IEnumerable<SignInfo>?         SignInfos           = null,
+                                                             IEnumerable<Signature>?        Signatures          = null,
+
+                                                             CustomData?                    CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The UnpublishFirmware failed.
+        /// </summary>
+        /// <param name="Request">The UnpublishFirmware request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static UnpublishFirmwareResponse SignatureError(CSMS.UnpublishFirmwareRequest  Request,
+                                                               String                         ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The UnpublishFirmware failed.
+        /// </summary>
+        /// <param name="Request">The UnpublishFirmware request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static UnpublishFirmwareResponse Failed(CSMS.UnpublishFirmwareRequest  Request,
+                                                       String?                        Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The UnpublishFirmware failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The UnpublishFirmware request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static UnpublishFirmwareResponse ExceptionOccured(CSMS.UnpublishFirmwareRequest  Request,
+                                                                 Exception                      Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -356,10 +446,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (UnpublishFirmwareResponse1, UnpublishFirmwareResponse2)
 
         /// <summary>
-        /// Compares two unpublish firmware responses for equality.
+        /// Compares two UnpublishFirmware responses for equality.
         /// </summary>
-        /// <param name="UnpublishFirmwareResponse1">An unpublish firmware response.</param>
-        /// <param name="UnpublishFirmwareResponse2">Another unpublish firmware response.</param>
+        /// <param name="UnpublishFirmwareResponse1">An UnpublishFirmware response.</param>
+        /// <param name="UnpublishFirmwareResponse2">Another UnpublishFirmware response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UnpublishFirmwareResponse? UnpublishFirmwareResponse1,
                                            UnpublishFirmwareResponse? UnpublishFirmwareResponse2)
@@ -382,10 +472,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (UnpublishFirmwareResponse1, UnpublishFirmwareResponse2)
 
         /// <summary>
-        /// Compares two unpublish firmware responses for inequality.
+        /// Compares two UnpublishFirmware responses for inequality.
         /// </summary>
-        /// <param name="UnpublishFirmwareResponse1">An unpublish firmware response.</param>
-        /// <param name="UnpublishFirmwareResponse2">Another unpublish firmware response.</param>
+        /// <param name="UnpublishFirmwareResponse1">An UnpublishFirmware response.</param>
+        /// <param name="UnpublishFirmwareResponse2">Another UnpublishFirmware response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UnpublishFirmwareResponse? UnpublishFirmwareResponse1,
                                            UnpublishFirmwareResponse? UnpublishFirmwareResponse2)
@@ -401,9 +491,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two unpublish firmware responses for equality.
+        /// Compares two UnpublishFirmware responses for equality.
         /// </summary>
-        /// <param name="UnpublishFirmwareResponse">An unpublish firmware response to compare with.</param>
+        /// <param name="UnpublishFirmwareResponse">An UnpublishFirmware response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UnpublishFirmwareResponse unpublishFirmwareResponse &&
@@ -414,9 +504,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(UnpublishFirmwareResponse)
 
         /// <summary>
-        /// Compares two unpublish firmware responses for equality.
+        /// Compares two UnpublishFirmware responses for equality.
         /// </summary>
-        /// <param name="UnpublishFirmwareResponse">An unpublish firmware response to compare with.</param>
+        /// <param name="UnpublishFirmwareResponse">An UnpublishFirmware response to compare with.</param>
         public override Boolean Equals(UnpublishFirmwareResponse? UnpublishFirmwareResponse)
 
             => UnpublishFirmwareResponse is not null &&

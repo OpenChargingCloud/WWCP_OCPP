@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A delete file request.
+    /// The DeleteFile request.
     /// </summary>
     public class DeleteFileRequest : ARequest<DeleteFileRequest>,
                                      IRequest
@@ -161,11 +161,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomDeleteFileRequestParser">An optional delegate to parse custom DeleteFileRequest requests.</param>
         public static DeleteFileRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
                                               NetworkingNode_Id                                DestinationId,
                                               NetworkPath                                      NetworkPath,
+                                              DateTime?                                        RequestTimestamp                = null,
+                                              TimeSpan?                                        RequestTimeout                  = null,
+                                              EventTracking_Id?                                EventTrackingId                 = null,
                                               CustomJObjectParserDelegate<DeleteFileRequest>?  CustomDeleteFileRequestParser   = null)
         {
 
@@ -176,6 +182,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                          NetworkPath,
                          out var deleteFileRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomDeleteFileRequestParser))
             {
                 return deleteFileRequest;
@@ -199,6 +208,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DeleteFileRequest">The parsed DeleteFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomDeleteFileRequestParser">An optional delegate to parse custom DeleteFileRequest requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
@@ -206,6 +218,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out DeleteFileRequest?      DeleteFileRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
+                                       DateTime?                                        RequestTimestamp                = null,
+                                       TimeSpan?                                        RequestTimeout                  = null,
+                                       EventTracking_Id?                                EventTrackingId                 = null,
                                        CustomJObjectParserDelegate<DeleteFileRequest>?  CustomDeleteFileRequestParser   = null)
         {
 
@@ -300,9 +315,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                         CustomData,
 
                                         RequestId,
-                                        null,
-                                        null,
-                                        null,
+                                        RequestTimestamp,
+                                        RequestTimeout,
+                                        EventTrackingId,
                                         NetworkPath
 
                                     );
@@ -420,9 +435,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two delete file requests for equality.
+        /// Compares two DeleteFile requests for equality.
         /// </summary>
-        /// <param name="Object">A delete file request to compare with.</param>
+        /// <param name="Object">A DeleteFile request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DeleteFileRequest deleteFileRequest &&
@@ -433,9 +448,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(DeleteFileRequest)
 
         /// <summary>
-        /// Compares two delete file requests for equality.
+        /// Compares two DeleteFile requests for equality.
         /// </summary>
-        /// <param name="DeleteFileRequest">A delete file request to compare with.</param>
+        /// <param name="DeleteFileRequest">A DeleteFile request to compare with.</param>
         public override Boolean Equals(DeleteFileRequest? DeleteFileRequest)
 
             => DeleteFileRequest is not null               &&

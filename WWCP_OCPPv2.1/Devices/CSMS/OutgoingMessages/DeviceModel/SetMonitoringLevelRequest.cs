@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The set monitoring level request.
+    /// The SetMonitoringLevel request.
     /// </summary>
     public class SetMonitoringLevelRequest : ARequest<SetMonitoringLevelRequest>,
                                              IRequest
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new set monitoring level request.
+        /// Create a new SetMonitoringLevel request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
@@ -170,17 +170,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSetMonitoringLevelRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set monitoring level request.
+        /// Parse the given JSON representation of a SetMonitoringLevel request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSetMonitoringLevelRequestParser">A delegate to parse custom set monitoring level requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetMonitoringLevelRequestParser">A delegate to parse custom SetMonitoringLevel requests.</param>
         public static SetMonitoringLevelRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
                                                       NetworkingNode_Id                                        DestinationId,
                                                       NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      TimeSpan?                                                RequestTimeout                          = null,
+                                                      EventTracking_Id?                                        EventTrackingId                         = null,
                                                       CustomJObjectParserDelegate<SetMonitoringLevelRequest>?  CustomSetMonitoringLevelRequestParser   = null)
         {
 
@@ -190,12 +196,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var setMonitoringLevelRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomSetMonitoringLevelRequestParser))
             {
                 return setMonitoringLevelRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a set monitoring level request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetMonitoringLevel request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -205,22 +214,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SetMonitoringLevelRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set monitoring level request.
+        /// Try to parse the given JSON representation of a SetMonitoringLevel request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SetMonitoringLevelRequest">The parsed set monitoring level request.</param>
+        /// <param name="SetMonitoringLevelRequest">The parsed SetMonitoringLevel request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetMonitoringLevelRequestParser">A delegate to parse custom set monitoring level requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetMonitoringLevelRequestParser">A delegate to parse custom SetMonitoringLevel requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
                                        NetworkingNode_Id                                        DestinationId,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out SetMonitoringLevelRequest?      SetMonitoringLevelRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       CustomJObjectParserDelegate<SetMonitoringLevelRequest>?  CustomSetMonitoringLevelRequestParser)
+                                       DateTime?                                                RequestTimestamp                        = null,
+                                       TimeSpan?                                                RequestTimeout                          = null,
+                                       EventTracking_Id?                                        EventTrackingId                         = null,
+                                       CustomJObjectParserDelegate<SetMonitoringLevelRequest>?  CustomSetMonitoringLevelRequestParser   = null)
         {
 
             try
@@ -286,9 +301,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 CustomData,
 
                                                 RequestId,
-                                                null,
-                                                null,
-                                                null,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
                                                 NetworkPath
 
                                             );
@@ -303,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 SetMonitoringLevelRequest  = null;
-                ErrorResponse              = "The given JSON representation of a set monitoring level request is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a SetMonitoringLevel request is invalid: " + e.Message;
                 return false;
             }
 
@@ -316,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetMonitoringLevelRequestSerializer">A delegate to serialize custom set monitoring level requests.</param>
+        /// <param name="CustomSetMonitoringLevelRequestSerializer">A delegate to serialize custom SetMonitoringLevel requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?  CustomSetMonitoringLevelRequestSerializer   = null,
@@ -353,10 +368,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SetMonitoringLevelRequest1, SetMonitoringLevelRequest2)
 
         /// <summary>
-        /// Compares two set monitoring level requests for equality.
+        /// Compares two SetMonitoringLevel requests for equality.
         /// </summary>
-        /// <param name="SetMonitoringLevelRequest1">A set monitoring level request.</param>
-        /// <param name="SetMonitoringLevelRequest2">Another set monitoring level request.</param>
+        /// <param name="SetMonitoringLevelRequest1">A SetMonitoringLevel request.</param>
+        /// <param name="SetMonitoringLevelRequest2">Another SetMonitoringLevel request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetMonitoringLevelRequest? SetMonitoringLevelRequest1,
                                            SetMonitoringLevelRequest? SetMonitoringLevelRequest2)
@@ -379,10 +394,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SetMonitoringLevelRequest1, SetMonitoringLevelRequest2)
 
         /// <summary>
-        /// Compares two set monitoring level requests for inequality.
+        /// Compares two SetMonitoringLevel requests for inequality.
         /// </summary>
-        /// <param name="SetMonitoringLevelRequest1">A set monitoring level request.</param>
-        /// <param name="SetMonitoringLevelRequest2">Another set monitoring level request.</param>
+        /// <param name="SetMonitoringLevelRequest1">A SetMonitoringLevel request.</param>
+        /// <param name="SetMonitoringLevelRequest2">Another SetMonitoringLevel request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetMonitoringLevelRequest? SetMonitoringLevelRequest1,
                                            SetMonitoringLevelRequest? SetMonitoringLevelRequest2)
@@ -398,9 +413,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set monitoring level requests for equality.
+        /// Compares two SetMonitoringLevel requests for equality.
         /// </summary>
-        /// <param name="Object">A set monitoring level request to compare with.</param>
+        /// <param name="Object">A SetMonitoringLevel request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetMonitoringLevelRequest setMonitoringLevelRequest &&
@@ -411,9 +426,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(SetMonitoringLevelRequest)
 
         /// <summary>
-        /// Compares two set monitoring level requests for equality.
+        /// Compares two SetMonitoringLevel requests for equality.
         /// </summary>
-        /// <param name="SetMonitoringLevelRequest">A set monitoring level request to compare with.</param>
+        /// <param name="SetMonitoringLevelRequest">A SetMonitoringLevel request to compare with.</param>
         public override Boolean Equals(SetMonitoringLevelRequest? SetMonitoringLevelRequest)
 
             => SetMonitoringLevelRequest is not null &&

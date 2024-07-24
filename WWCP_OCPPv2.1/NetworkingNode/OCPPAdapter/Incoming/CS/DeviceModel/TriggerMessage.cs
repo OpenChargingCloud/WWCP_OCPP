@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,279 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<TriggerMessageRequest>?       CustomTriggerMessageRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<TriggerMessageResponse>?  CustomTriggerMessageResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a trigger message websocket request was received.
+        /// An event sent whenever a TriggerMessage request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                   OnTriggerMessageWSRequest;
+        public event OnTriggerMessageRequestReceivedDelegate?  OnTriggerMessageRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a trigger message request was received.
+        /// An event sent whenever a TriggerMessage request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnTriggerMessageRequestReceivedDelegate?     OnTriggerMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a trigger message request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnTriggerMessageDelegate?            OnTriggerMessage;
-
-        /// <summary>
-        /// An event sent whenever a response to a trigger message request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnTriggerMessageResponseSentDelegate?    OnTriggerMessageResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a trigger message request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?       OnTriggerMessageWSResponse;
+        public event OnTriggerMessageDelegate?                 OnTriggerMessage;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_TriggerMessage(DateTime                   RequestTimestamp,
+            Receive_TriggerMessage(DateTime              RequestTimestamp,
                                    IWebSocketConnection  WebSocketConnection,
-                                   NetworkingNode_Id          DestinationId,
-                                   NetworkPath                NetworkPath,
-                                   EventTracking_Id           EventTrackingId,
-                                   Request_Id                 RequestId,
-                                   JObject                    RequestJSON,
-                                   CancellationToken          CancellationToken)
+                                   NetworkingNode_Id     DestinationId,
+                                   NetworkPath           NetworkPath,
+                                   EventTracking_Id      EventTrackingId,
+                                   Request_Id            RequestId,
+                                   JObject               JSONRequest,
+                                   CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnTriggerMessageWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnTriggerMessageWSRequest?.Invoke(startTime,
-                                                  parentNetworkingNode,
-                                                  WebSocketConnection,
-                                                  DestinationId,
-                                                  NetworkPath,
-                                                  EventTrackingId,
-                                                  RequestTimestamp,
-                                                  RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnTriggerMessageWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (TriggerMessageRequest.TryParse(RequestJSON,
+                if (TriggerMessageRequest.TryParse(JSONRequest,
                                                    RequestId,
                                                    DestinationId,
                                                    NetworkPath,
                                                    out var request,
                                                    out var errorResponse,
-                                                   CustomTriggerMessageRequestParser)) {
+                                                   RequestTimestamp,
+                                                   parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                   EventTrackingId,
+                                                   parentNetworkingNode.OCPP.CustomTriggerMessageRequestParser)) {
 
-                    #region Send OnTriggerMessageRequest event
+                    TriggerMessageResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomTriggerMessageRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomEVSESerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnTriggerMessageRequestReceived?.Invoke(Timestamp.Now,
-                                                        parentNetworkingNode,
-                                                        WebSocketConnection,
-                                                        request);
+                        response = TriggerMessageResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnTriggerMessageRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnTriggerMessageRequestReceived event
+
+                    var logger = OnTriggerMessageRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnTriggerMessageRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnTriggerMessageRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    TriggerMessageResponse? response = null;
-
-                    var results = OnTriggerMessage?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                parentNetworkingNode,
-                                                                                                                WebSocketConnection,
-                                                                                                                request,
-                                                                                                                CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnTriggerMessage?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : TriggerMessageResponse.Failed(request, $"Undefined {nameof(OnTriggerMessage)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = TriggerMessageResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnTriggerMessage),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= TriggerMessageResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnTriggerMessageResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnTriggerMessageResponseSent?.Invoke(Timestamp.Now,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         request,
-                                                         response,
-                                                         response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnTriggerMessageResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomTriggerMessageResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnTriggerMessageResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnTriggerMessageResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomTriggerMessageResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomTriggerMessageResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_TriggerMessage)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_TriggerMessage)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_TriggerMessage)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnTriggerMessageWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnTriggerMessageWSResponse?.Invoke(endTime,
-                                                   parentNetworkingNode,
-                                                   WebSocketConnection,
-                                                   DestinationId,
-                                                   NetworkPath,
-                                                   EventTrackingId,
-                                                   RequestTimestamp,
-                                                   RequestJSON,
-                                                   OCPPResponse?.Payload,
-                                                   OCPPErrorResponse?.ToJSON(),
-                                                   endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_TriggerMessage)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnTriggerMessageWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a trigger message request was sent.
+        /// An event sent whenever a response to a TriggerMessage was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnTriggerMessageResponseSentDelegate? OnTriggerMessageResponseSent;
+        public event OnTriggerMessageResponseSentDelegate?  OnTriggerMessageResponseSent;
+
+        #endregion
+
+        #region Send OnTriggerMessageResponse event
+
+        public async Task SendOnTriggerMessageResponseSent(DateTime                Timestamp,
+                                                           IEventSender            Sender,
+                                                           IWebSocketConnection    Connection,
+                                                           TriggerMessageRequest   Request,
+                                                           TriggerMessageResponse  Response,
+                                                           TimeSpan                Runtime)
+        {
+
+            var logger = OnTriggerMessageResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnTriggerMessageResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnTriggerMessageResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

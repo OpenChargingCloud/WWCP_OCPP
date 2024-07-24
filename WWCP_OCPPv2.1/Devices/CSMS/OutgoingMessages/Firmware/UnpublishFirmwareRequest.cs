@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The unpublish firmware request.
+    /// The UnpublishFirmware request.
     /// </summary>
     public class UnpublishFirmwareRequest : ARequest<UnpublishFirmwareRequest>,
                                             IRequest
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new unpublish firmware request.
+        /// Create a new UnpublishFirmware request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware image as a hexadecimal string of length 32.</param>
@@ -171,17 +171,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomUnpublishFirmwareRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an unpublish firmware request.
+        /// Parse the given JSON representation of an UnpublishFirmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomUnpublishFirmwareRequestParser">A delegate to parse custom unpublish firmware requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUnpublishFirmwareRequestParser">A delegate to parse custom UnpublishFirmware requests.</param>
         public static UnpublishFirmwareRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      NetworkingNode_Id                                       DestinationId,
                                                      NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               RequestTimestamp                       = null,
+                                                     TimeSpan?                                               RequestTimeout                         = null,
+                                                     EventTracking_Id?                                       EventTrackingId                        = null,
                                                      CustomJObjectParserDelegate<UnpublishFirmwareRequest>?  CustomUnpublishFirmwareRequestParser   = null)
         {
 
@@ -191,12 +197,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var unpublishFirmwareRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomUnpublishFirmwareRequestParser))
             {
                 return unpublishFirmwareRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an unpublish firmware request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UnpublishFirmware request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -206,21 +215,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out UnpublishFirmwareRequest, out ErrorResponse, CustomUnpublishFirmwareRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an unpublish firmware request.
+        /// Try to parse the given JSON representation of an UnpublishFirmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
-        /// <param name="UnpublishFirmwareRequest">The parsed unpublish firmware request.</param>
+        /// <param name="UnpublishFirmwareRequest">The parsed UnpublishFirmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUnpublishFirmwareRequestParser">A delegate to parse custom unpublish firmware requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUnpublishFirmwareRequestParser">A delegate to parse custom UnpublishFirmware requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       DestinationId,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out UnpublishFirmwareRequest?      UnpublishFirmwareRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       CustomJObjectParserDelegate<UnpublishFirmwareRequest>?  CustomUnpublishFirmwareRequestParser)
+                                       DateTime?                                               RequestTimestamp                       = null,
+                                       TimeSpan?                                               RequestTimeout                         = null,
+                                       EventTracking_Id?                                       EventTrackingId                        = null,
+                                       CustomJObjectParserDelegate<UnpublishFirmwareRequest>?  CustomUnpublishFirmwareRequestParser   = null)
         {
 
             try
@@ -281,9 +296,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CustomData,
 
                                                RequestId,
-                                               null,
-                                               null,
-                                               null,
+                                               RequestTimestamp,
+                                               RequestTimeout,
+                                               EventTrackingId,
                                                NetworkPath
 
                                            );
@@ -298,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 UnpublishFirmwareRequest  = null;
-                ErrorResponse             = "The given JSON representation of an unpublish firmware request is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of an UnpublishFirmware request is invalid: " + e.Message;
                 return false;
             }
 
@@ -349,10 +364,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (UnpublishFirmwareRequest1, UnpublishFirmwareRequest2)
 
         /// <summary>
-        /// Compares two unpublish firmware requests for equality.
+        /// Compares two UnpublishFirmware requests for equality.
         /// </summary>
-        /// <param name="UnpublishFirmwareRequest1">An unpublish firmware request.</param>
-        /// <param name="UnpublishFirmwareRequest2">Another unpublish firmware request.</param>
+        /// <param name="UnpublishFirmwareRequest1">An UnpublishFirmware request.</param>
+        /// <param name="UnpublishFirmwareRequest2">Another UnpublishFirmware request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UnpublishFirmwareRequest? UnpublishFirmwareRequest1,
                                            UnpublishFirmwareRequest? UnpublishFirmwareRequest2)
@@ -375,10 +390,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (UnpublishFirmwareRequest1, UnpublishFirmwareRequest2)
 
         /// <summary>
-        /// Compares two unpublish firmware requests for inequality.
+        /// Compares two UnpublishFirmware requests for inequality.
         /// </summary>
-        /// <param name="UnpublishFirmwareRequest1">An unpublish firmware request.</param>
-        /// <param name="UnpublishFirmwareRequest2">Another unpublish firmware request.</param>
+        /// <param name="UnpublishFirmwareRequest1">An UnpublishFirmware request.</param>
+        /// <param name="UnpublishFirmwareRequest2">Another UnpublishFirmware request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UnpublishFirmwareRequest? UnpublishFirmwareRequest1,
                                            UnpublishFirmwareRequest? UnpublishFirmwareRequest2)
@@ -394,9 +409,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two unpublish firmware requests for equality.
+        /// Compares two UnpublishFirmware requests for equality.
         /// </summary>
-        /// <param name="Object">An unpublish firmware request to compare with.</param>
+        /// <param name="Object">An UnpublishFirmware request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UnpublishFirmwareRequest unpublishFirmwareRequest &&
@@ -407,9 +422,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(UnpublishFirmwareRequest)
 
         /// <summary>
-        /// Compares two unpublish firmware requests for equality.
+        /// Compares two UnpublishFirmware requests for equality.
         /// </summary>
-        /// <param name="UnpublishFirmwareRequest">An unpublish firmware request to compare with.</param>
+        /// <param name="UnpublishFirmwareRequest">An UnpublishFirmware request to compare with.</param>
         public override Boolean Equals(UnpublishFirmwareRequest? UnpublishFirmwareRequest)
 
             => UnpublishFirmwareRequest is not null &&

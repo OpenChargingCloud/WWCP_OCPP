@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A clear cache response.
+    /// The ClearCache response.
     /// </summary>
     public class ClearCacheResponse : AResponse<CSMS.ClearCacheRequest,
                                                 ClearCacheResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the clear cache command.
+        /// The success or failure of the ClearCache command.
         /// </summary>
         [Mandatory]
         public ClearCacheStatus  Status        { get; }
@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ClearCacheResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new clear cache response.
+        /// Create a new ClearCache response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
-        /// <param name="Status">The success or failure of the clear cache command.</param>
+        /// <param name="Request">The ClearCache request leading to this response.</param>
+        /// <param name="Status">The success or failure of the ClearCache command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ClearCacheResponse(Request, Result)
 
         /// <summary>
-        /// Create a new clear cache response.
+        /// Create a new ClearCache response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
+        /// <param name="Request">The ClearCache request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public ClearCacheResponse(CSMS.ClearCacheRequest  Request,
-                                  Result                  Result)
+        public ClearCacheResponse(CSMS.ClearCacheRequest   Request,
+                                  Result                   Result,
+                                  DateTime?                ResponseTimestamp   = null,
+
+                                  NetworkingNode_Id?       DestinationId       = null,
+                                  NetworkPath?             NetworkPath         = null,
+
+                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  IEnumerable<Signature>?  Signatures          = null,
+
+                                  CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -218,9 +238,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomClearCacheResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear cache response.
+        /// Parse the given JSON representation of a ClearCache response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
+        /// <param name="Request">The ClearCache request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomClearCacheResponseParser">A delegate to parse custom ClearCache responses.</param>
         public static ClearCacheResponse Parse(CSMS.ClearCacheRequest                            Request,
@@ -237,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return clearCacheResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a clear cache response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ClearCache response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -247,13 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out ClearCacheResponse, out ErrorResponse, CustomClearCacheResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear cache response.
+        /// Try to parse the given JSON representation of a ClearCache response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
+        /// <param name="Request">The ClearCache request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
+        /// <param name="ClearCacheResponse">The parsed ClearCache response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearCacheResponseParser">A delegate to parse custom clear cache responses.</param>
+        /// <param name="CustomClearCacheResponseParser">A delegate to parse custom ClearCache responses.</param>
         public static Boolean TryParse(CSMS.ClearCacheRequest                            Request,
                                        JObject                                           JSON,
                                        [NotNullWhen(true)]  out ClearCacheResponse?      ClearCacheResponse,
@@ -269,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region ClearCacheStatus    [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "clear cache status",
+                                         "ClearCache status",
                                          ClearCacheStatusExtensions.TryParse,
                                          out ClearCacheStatus ClearCacheStatus,
                                          out ErrorResponse))
@@ -343,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 ClearCacheResponse  = null;
-                ErrorResponse       = "The given JSON representation of a clear cache response is invalid: " + e.Message;
+                ErrorResponse       = "The given JSON representation of a ClearCache response is invalid: " + e.Message;
                 return false;
             }
 
@@ -356,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearCacheResponseSerializer">A delegate to serialize custom clear cache responses.</param>
+        /// <param name="CustomClearCacheResponseSerializer">A delegate to serialize custom ClearCache responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -398,13 +418,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The clear cache command failed.
+        /// The ClearCache failed because of a request error.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
-        public static ClearCacheResponse Failed(CSMS.ClearCacheRequest Request)
+        /// <param name="Request">The ClearCache request.</param>
+        public static ClearCacheResponse RequestError(CSMS.ClearCacheRequest   Request,
+                                                      EventTracking_Id         EventTrackingId,
+                                                      ResultCode               ErrorCode,
+                                                      String?                  ErrorDescription    = null,
+                                                      JObject?                 ErrorDetails        = null,
+                                                      DateTime?                ResponseTimestamp   = null,
+
+                                                      NetworkingNode_Id?       DestinationId       = null,
+                                                      NetworkPath?             NetworkPath         = null,
+
+                                                      IEnumerable<KeyPair>?    SignKeys            = null,
+                                                      IEnumerable<SignInfo>?   SignInfos           = null,
+                                                      IEnumerable<Signature>?  Signatures          = null,
+
+                                                      CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ClearCache failed.
+        /// </summary>
+        /// <param name="Request">The ClearCache request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static ClearCacheResponse SignatureError(CSMS.ClearCacheRequest  Request,
+                                                        String                  ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The ClearCache failed.
+        /// </summary>
+        /// <param name="Request">The ClearCache request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static ClearCacheResponse Failed(CSMS.ClearCacheRequest  Request,
+                                                String?                 Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The ClearCache failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ClearCache request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ClearCacheResponse ExceptionOccured(CSMS.ClearCacheRequest  Request,
+                                                          Exception               Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -414,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (ClearCacheResponse1, ClearCacheResponse2)
 
         /// <summary>
-        /// Compares two clear cache responses for equality.
+        /// Compares two ClearCache responses for equality.
         /// </summary>
-        /// <param name="ClearCacheResponse1">A clear cache response.</param>
-        /// <param name="ClearCacheResponse2">Another clear cache response.</param>
+        /// <param name="ClearCacheResponse1">A ClearCache response.</param>
+        /// <param name="ClearCacheResponse2">Another ClearCache response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ClearCacheResponse? ClearCacheResponse1,
                                            ClearCacheResponse? ClearCacheResponse2)
@@ -440,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (ClearCacheResponse1, ClearCacheResponse2)
 
         /// <summary>
-        /// Compares two clear cache responses for inequality.
+        /// Compares two ClearCache responses for inequality.
         /// </summary>
-        /// <param name="ClearCacheResponse1">A clear cache response.</param>
-        /// <param name="ClearCacheResponse2">Another clear cache response.</param>
+        /// <param name="ClearCacheResponse1">A ClearCache response.</param>
+        /// <param name="ClearCacheResponse2">Another ClearCache response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ClearCacheResponse? ClearCacheResponse1,
                                            ClearCacheResponse? ClearCacheResponse2)
@@ -459,9 +549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two clear cache responses for equality.
+        /// Compares two ClearCache responses for equality.
         /// </summary>
-        /// <param name="Object">A clear cache response to compare with.</param>
+        /// <param name="Object">A ClearCache response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ClearCacheResponse clearCacheResponse &&
@@ -472,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(ClearCacheResponse)
 
         /// <summary>
-        /// Compares two clear cache responses for equality.
+        /// Compares two ClearCache responses for equality.
         /// </summary>
-        /// <param name="ClearCacheResponse">A clear cache response to compare with.</param>
+        /// <param name="ClearCacheResponse">A ClearCache response to compare with.</param>
         public override Boolean Equals(ClearCacheResponse? ClearCacheResponse)
 
             => ClearCacheResponse is not null &&

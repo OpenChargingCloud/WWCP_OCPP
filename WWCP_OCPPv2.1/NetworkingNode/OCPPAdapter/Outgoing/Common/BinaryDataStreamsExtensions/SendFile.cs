@@ -26,19 +26,8 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
-
-        #region Custom binary serializer delegates
-
-        public CustomBinarySerializerDelegate<SendFileRequest>?  CustomSendFileRequestSerializer    { get; set; }
-
-        public CustomJObjectParserDelegate<SendFileResponse>?    CustomSendFileResponseParser       { get; set; }
-
-        #endregion
 
         #region Events
 
@@ -47,13 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnSendFileRequestSentDelegate?         OnSendFileRequestSent;
 
-        /// <summary>
-        /// An event sent whenever a response to a SendFile request was sent.
-        /// </summary>
-        public event OnSendFileResponseReceivedDelegate?    OnSendFileResponseReceived;
-
         #endregion
-
 
         #region SendFile(Request)
 
@@ -89,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  OCPP_BinaryRequestMessage.FromRequest(
                                                      Request,
                                                      Request.ToBinary(
-                                                         CustomSendFileRequestSerializer,
+                                                         parentNetworkingNode.OCPP.CustomSendFileRequestSerializer,
                                                          parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                                                          IncludeSignatures: true
                                                      )
@@ -104,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    sendRequestState.JSONResponse.Payload,
                                                    out response,
                                                    out var errorResponse,
-                                                   CustomSendFileResponseParser))
+                                                   parentNetworkingNode.OCPP.CustomSendFileResponseParser))
                     {
                         response = new SendFileResponse(
                                        Request,
@@ -134,22 +117,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnSendFileResponseReceived event
 
-            var endTime = Timestamp.Now;
+            //var endTime = Timestamp.Now;
 
-            try
-            {
+            //try
+            //{
 
-                OnSendFileResponseReceived?.Invoke(endTime,
-                                                   parentNetworkingNode,
-                                                   Request,
-                                                   response,
-                                                   endTime - startTime);
+            //    OnSendFileResponseReceived?.Invoke(endTime,
+            //                                       parentNetworkingNode,
+            //                                       Request,
+            //                                       response,
+            //                                       endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendFileResponseReceived));
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendFileResponseReceived));
+            //}
 
             #endregion
 
@@ -159,6 +142,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        #region Events
+
+        /// <summary>
+        /// An event sent whenever a response to a SendFile request was received.
+        /// </summary>
+        public event OnSendFileResponseReceivedDelegate?  OnSendFileResponseReceived;
+
+        #endregion
 
     }
 

@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,278 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<ClearCacheRequest>?       CustomClearCacheRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearCacheResponse>?  CustomClearCacheResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a reset websocket request was received.
+        /// An event sent whenever a ClearCache request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                OnClearCacheWSRequest;
+        public event OnClearCacheRequestReceivedDelegate?  OnClearCacheRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a ClearCache request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearCacheRequestReceivedDelegate?      OnClearCacheRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearCacheDelegate?             OnClearCache;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearCacheResponseSentDelegate?     OnClearCacheResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?    OnClearCacheWSResponse;
+        public event OnClearCacheDelegate?                 OnClearCache;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_ClearCache(DateTime                   RequestTimestamp,
+            Receive_ClearCache(DateTime              RequestTimestamp,
                                IWebSocketConnection  WebSocketConnection,
-                               NetworkingNode_Id          DestinationId,
-                               NetworkPath                NetworkPath,
-                               EventTracking_Id           EventTrackingId,
-                               Request_Id                 RequestId,
-                               JObject                    RequestJSON,
-                               CancellationToken          CancellationToken)
+                               NetworkingNode_Id     DestinationId,
+                               NetworkPath           NetworkPath,
+                               EventTracking_Id      EventTrackingId,
+                               Request_Id            RequestId,
+                               JObject               JSONRequest,
+                               CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnClearCacheWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnClearCacheWSRequest?.Invoke(startTime,
-                                              parentNetworkingNode,
-                                              WebSocketConnection,
-                                              DestinationId,
-                                              NetworkPath,
-                                              EventTrackingId,
-                                              RequestTimestamp,
-                                              RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearCacheWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (ClearCacheRequest.TryParse(RequestJSON,
+                if (ClearCacheRequest.TryParse(JSONRequest,
                                                RequestId,
                                                DestinationId,
                                                NetworkPath,
                                                out var request,
                                                out var errorResponse,
-                                               CustomClearCacheRequestParser)) {
+                                               RequestTimestamp,
+                                               parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                               EventTrackingId,
+                                               parentNetworkingNode.OCPP.CustomClearCacheRequestParser)) {
 
-                    #region Send OnClearCacheRequest event
+                    ClearCacheResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomClearCacheRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnClearCacheRequestReceived?.Invoke(Timestamp.Now,
-                                                    parentNetworkingNode,
-                                                    WebSocketConnection,
-                                                    request);
+                        response = ClearCacheResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearCacheRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnClearCacheRequestReceived event
+
+                    var logger = OnClearCacheRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnClearCacheRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnClearCacheRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    ClearCacheResponse? response = null;
-
-                    var results = OnClearCache?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)?.Invoke(Timestamp.Now,
-                                                                                                            parentNetworkingNode,
-                                                                                                            WebSocketConnection,
-                                                                                                            request,
-                                                                                                            CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnClearCache?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : ClearCacheResponse.Failed(request, $"Undefined {nameof(OnClearCache)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = ClearCacheResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnClearCache),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= ClearCacheResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnClearCacheResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnClearCacheResponseSent?.Invoke(Timestamp.Now,
-                                                     parentNetworkingNode,
-                                                     WebSocketConnection,
-                                                     request,
-                                                     response,
-                                                     response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearCacheResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomClearCacheResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnClearCacheResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnClearCacheResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomClearCacheResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomClearCacheResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_ClearCache)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_ClearCache)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_ClearCache)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnClearCacheWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnClearCacheWSResponse?.Invoke(endTime,
-                                               parentNetworkingNode,
-                                               WebSocketConnection,
-                                               DestinationId,
-                                               NetworkPath,
-                                               EventTrackingId,
-                                               RequestTimestamp,
-                                               RequestJSON,
-                                               OCPPResponse?.Payload,
-                                               OCPPErrorResponse?.ToJSON(),
-                                               endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_ClearCache)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearCacheWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a ClearCache was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearCacheResponseSentDelegate? OnClearCacheResponseSent;
+        public event OnClearCacheResponseSentDelegate?  OnClearCacheResponseSent;
+
+        #endregion
+
+        #region Send OnClearCacheResponse event
+
+        public async Task SendOnClearCacheResponseSent(DateTime              Timestamp,
+                                                       IEventSender          Sender,
+                                                       IWebSocketConnection  Connection,
+                                                       ClearCacheRequest     Request,
+                                                       ClearCacheResponse    Response,
+                                                       TimeSpan              Runtime)
+        {
+
+            var logger = OnClearCacheResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnClearCacheResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnClearCacheResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

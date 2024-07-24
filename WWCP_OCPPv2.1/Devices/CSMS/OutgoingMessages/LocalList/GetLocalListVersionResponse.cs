@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A get local list version response.
+    /// The GetLocalListVersion response.
     /// </summary>
     public class GetLocalListVersionResponse : AResponse<CSMS.GetLocalListVersionRequest,
                                                          GetLocalListVersionResponse>,
@@ -68,9 +68,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetLocalListVersionResponse(Request, VersionNumber, ...)
 
         /// <summary>
-        /// Create a new get local list version response.
+        /// Create a new GetLocalListVersion response.
         /// </summary>
-        /// <param name="Request">The get local list version request leading to this response.</param>
+        /// <param name="Request">The GetLocalListVersion request leading to this response.</param>
         /// <param name="VersionNumber">The current version number of the local authorization list within the charging station.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -113,15 +113,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetLocalListVersionResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get local list version response.
+        /// Create a new GetLocalListVersion response.
         /// </summary>
-        /// <param name="Request">The get local list version request leading to this response.</param>
+        /// <param name="Request">The GetLocalListVersion request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetLocalListVersionResponse(CSMS.GetLocalListVersionRequest  Request,
-                                           Result                           Result)
+                                           Result                           Result,
+                                           DateTime?                        ResponseTimestamp   = null,
+
+                                           NetworkingNode_Id?               DestinationId       = null,
+                                           NetworkPath?                     NetworkPath         = null,
+
+                                           IEnumerable<KeyPair>?            SignKeys            = null,
+                                           IEnumerable<SignInfo>?           SignInfos           = null,
+                                           IEnumerable<Signature>?          Signatures          = null,
+
+                                           CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -173,11 +193,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomGetLocalListVersionResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get local list version response.
+        /// Parse the given JSON representation of a GetLocalListVersion response.
         /// </summary>
-        /// <param name="Request">The get local list version request leading to this response.</param>
+        /// <param name="Request">The GetLocalListVersion request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom get local list version responses.</param>
+        /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom GetLocalListVersion responses.</param>
         public static GetLocalListVersionResponse Parse(CSMS.GetLocalListVersionRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseParser   = null)
@@ -192,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return getLocalListVersionResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get local list version response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetLocalListVersion response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -202,13 +222,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, out GetLocalListVersionResponse, out ErrorResponse, CustomGetLocalListVersionResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get local list version response.
+        /// Try to parse the given JSON representation of a GetLocalListVersion response.
         /// </summary>
-        /// <param name="Request">The get local list version request leading to this response.</param>
+        /// <param name="Request">The GetLocalListVersion request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
+        /// <param name="GetLocalListVersionResponse">The parsed GetLocalListVersion response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom get local list version responses.</param>
+        /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom GetLocalListVersion responses.</param>
         public static Boolean TryParse(CSMS.GetLocalListVersionRequest                            Request,
                                        JObject                                                    JSON,
                                        [NotNullWhen(true)]  out GetLocalListVersionResponse?      GetLocalListVersionResponse,
@@ -282,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 GetLocalListVersionResponse  = null;
-                ErrorResponse                = "The given JSON representation of a get local list version response is invalid: " + e.Message;
+                ErrorResponse                = "The given JSON representation of a GetLocalListVersion response is invalid: " + e.Message;
                 return false;
             }
 
@@ -295,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetLocalListVersionResponseSerializer">A delegate to serialize custom get local list version responses.</param>
+        /// <param name="CustomGetLocalListVersionResponseSerializer">A delegate to serialize custom GetLocalListVersion responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseSerializer   = null,
@@ -330,13 +350,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The get local list version failed.
+        /// The GetLocalListVersion failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get local list version request leading to this response.</param>
-        public static GetLocalListVersionResponse Failed(CSMS.GetLocalListVersionRequest Request)
+        /// <param name="Request">The GetLocalListVersion request.</param>
+        public static GetLocalListVersionResponse RequestError(CSMS.GetLocalListVersionRequest  Request,
+                                                               EventTracking_Id                 EventTrackingId,
+                                                               ResultCode                       ErrorCode,
+                                                               String?                          ErrorDescription    = null,
+                                                               JObject?                         ErrorDetails        = null,
+                                                               DateTime?                        ResponseTimestamp   = null,
+
+                                                               NetworkingNode_Id?               DestinationId       = null,
+                                                               NetworkPath?                     NetworkPath         = null,
+
+                                                               IEnumerable<KeyPair>?            SignKeys            = null,
+                                                               IEnumerable<SignInfo>?           SignInfos           = null,
+                                                               IEnumerable<Signature>?          Signatures          = null,
+
+                                                               CustomData?                      CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetLocalListVersion failed.
+        /// </summary>
+        /// <param name="Request">The GetLocalListVersion request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static GetLocalListVersionResponse SignatureError(CSMS.GetLocalListVersionRequest  Request,
+                                                                 String                           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The GetLocalListVersion failed.
+        /// </summary>
+        /// <param name="Request">The GetLocalListVersion request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static GetLocalListVersionResponse Failed(CSMS.GetLocalListVersionRequest  Request,
+                                                         String?                          Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetLocalListVersion failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetLocalListVersion request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetLocalListVersionResponse ExceptionOccured(CSMS.GetLocalListVersionRequest  Request,
+                                                                   Exception                        Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -346,10 +436,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (GetLocalListVersionResponse1, GetLocalListVersionResponse2)
 
         /// <summary>
-        /// Compares two get local list version responses for equality.
+        /// Compares two GetLocalListVersion responses for equality.
         /// </summary>
-        /// <param name="GetLocalListVersionResponse1">A get local list version response.</param>
-        /// <param name="GetLocalListVersionResponse2">Another get local list version response.</param>
+        /// <param name="GetLocalListVersionResponse1">A GetLocalListVersion response.</param>
+        /// <param name="GetLocalListVersionResponse2">Another GetLocalListVersion response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetLocalListVersionResponse? GetLocalListVersionResponse1,
                                            GetLocalListVersionResponse? GetLocalListVersionResponse2)
@@ -372,10 +462,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (GetLocalListVersionResponse1, GetLocalListVersionResponse2)
 
         /// <summary>
-        /// Compares two get local list version responses for inequality.
+        /// Compares two GetLocalListVersion responses for inequality.
         /// </summary>
-        /// <param name="GetLocalListVersionResponse1">A get local list version response.</param>
-        /// <param name="GetLocalListVersionResponse2">Another get local list version response.</param>
+        /// <param name="GetLocalListVersionResponse1">A GetLocalListVersion response.</param>
+        /// <param name="GetLocalListVersionResponse2">Another GetLocalListVersion response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetLocalListVersionResponse? GetLocalListVersionResponse1,
                                            GetLocalListVersionResponse? GetLocalListVersionResponse2)
@@ -391,9 +481,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get local list version responses for equality.
+        /// Compares two GetLocalListVersion responses for equality.
         /// </summary>
-        /// <param name="Object">A get local list version response to compare with.</param>
+        /// <param name="Object">A GetLocalListVersion response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetLocalListVersionResponse getLocalListVersionResponse &&
@@ -404,9 +494,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(GetLocalListVersionResponse)
 
         /// <summary>
-        /// Compares two get local list version responses for equality.
+        /// Compares two GetLocalListVersion responses for equality.
         /// </summary>
-        /// <param name="GetLocalListVersionResponse">A get local list version response to compare with.</param>
+        /// <param name="GetLocalListVersionResponse">A GetLocalListVersion response to compare with.</param>
         public override Boolean Equals(GetLocalListVersionResponse? GetLocalListVersionResponse)
 
             => GetLocalListVersionResponse is not null &&

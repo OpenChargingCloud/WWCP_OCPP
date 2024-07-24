@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,247 +32,278 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
-    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<PublishFirmwareRequest>?       CustomPublishFirmwareRequestParser         { get; set; }
-
-        public CustomJObjectSerializerDelegate<PublishFirmwareResponse>?  CustomPublishFirmwareResponseSerializer    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a publish firmware websocket request was received.
+        /// An event sent whenever a PublishFirmware request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                    OnPublishFirmwareWSRequest;
+        public event OnPublishFirmwareRequestReceivedDelegate?  OnPublishFirmwareRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a publish firmware request was received.
+        /// An event sent whenever a PublishFirmware request was received for processing.
         /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareRequestReceivedDelegate?     OnPublishFirmwareRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever a publish firmware request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareDelegate?            OnPublishFirmware;
-
-        /// <summary>
-        /// An event sent whenever a response to a publish firmware request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareResponseSentDelegate?    OnPublishFirmwareResponseSent;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a publish firmware request was sent.
-        /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?        OnPublishFirmwareWSResponse;
+        public event OnPublishFirmwareDelegate?                 OnPublishFirmware;
 
         #endregion
 
-
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONRequestErrorMessage?>>
+        public async Task<OCPP_Response>
 
-            Receive_PublishFirmware(DateTime                   RequestTimestamp,
+            Receive_PublishFirmware(DateTime              RequestTimestamp,
                                     IWebSocketConnection  WebSocketConnection,
-                                    NetworkingNode_Id          DestinationId,
-                                    NetworkPath                NetworkPath,
-                                    EventTracking_Id           EventTrackingId,
-                                    Request_Id                 RequestId,
-                                    JObject                    RequestJSON,
-                                    CancellationToken          CancellationToken)
+                                    NetworkingNode_Id     DestinationId,
+                                    NetworkPath           NetworkPath,
+                                    EventTracking_Id      EventTrackingId,
+                                    Request_Id            RequestId,
+                                    JObject               JSONRequest,
+                                    CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnPublishFirmwareWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnPublishFirmwareWSRequest?.Invoke(startTime,
-                                                   parentNetworkingNode,
-                                                   WebSocketConnection,
-                                                   DestinationId,
-                                                   NetworkPath,
-                                                   EventTrackingId,
-                                                   RequestTimestamp,
-                                                   RequestJSON);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPublishFirmwareWSRequest));
-            }
-
-            #endregion
-
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (PublishFirmwareRequest.TryParse(RequestJSON,
+                if (PublishFirmwareRequest.TryParse(JSONRequest,
                                                     RequestId,
                                                     DestinationId,
                                                     NetworkPath,
                                                     out var request,
                                                     out var errorResponse,
-                                                    CustomPublishFirmwareRequestParser)) {
+                                                    RequestTimestamp,
+                                                    parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                    EventTrackingId,
+                                                    parentNetworkingNode.OCPP.CustomPublishFirmwareRequestParser)) {
 
-                    #region Send OnPublishFirmwareRequest event
+                    PublishFirmwareResponse? response = null;
 
-                    try
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomPublishFirmwareRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
                     {
 
-                        OnPublishFirmwareRequestReceived?.Invoke(Timestamp.Now,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         request);
+                        response = PublishFirmwareResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPublishFirmwareRequestReceived));
                     }
 
                     #endregion
 
+                    #region Send OnPublishFirmwareRequestReceived event
+
+                    var logger = OnPublishFirmwareRequestReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnPublishFirmwareRequestReceivedDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request
+                                                                             )).
+                                                   ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnPublishFirmwareRequestReceived),
+                                      e
+                                  );
+                        }
+                    }
+
+                    #endregion
+
+
                     #region Call async subscribers
 
-                    PublishFirmwareResponse? response = null;
-
-                    var results = OnPublishFirmware?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnPublishFirmwareDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                 parentNetworkingNode,
-                                                                                                                 WebSocketConnection,
-                                                                                                                 request,
-                                                                                                                 CancellationToken)).
-                                      ToArray();
-
-                    if (results?.Length > 0)
+                    if (response is null)
                     {
+                        try
+                        {
 
-                        await Task.WhenAll(results!);
+                            var responseTasks = OnPublishFirmware?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnPublishFirmwareDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : PublishFirmwareResponse.Failed(request, $"Undefined {nameof(OnPublishFirmware)}!");
 
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = PublishFirmwareResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnPublishFirmware),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= PublishFirmwareResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnPublishFirmwareResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnPublishFirmwareResponseSent?.Invoke(Timestamp.Now,
-                                                          parentNetworkingNode,
-                                                          WebSocketConnection,
-                                                          request,
-                                                          response,
-                                                          response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPublishFirmwareResponseSent));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomPublishFirmwareResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+
+                    #region Send OnPublishFirmwareResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnPublishFirmwareResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
-                                           CustomPublishFirmwareResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomPublishFirmwareResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_PublishFirmware)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_PublishFirmware)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_PublishFirmware)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
-            }
 
-            #region Send OnPublishFirmwareWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnPublishFirmwareWSResponse?.Invoke(endTime,
-                                                    parentNetworkingNode,
-                                                    WebSocketConnection,
-                                                    DestinationId,
-                                                    NetworkPath,
-                                                    EventTrackingId,
-                                                    RequestTimestamp,
-                                                    RequestJSON,
-                                                    OCPPResponse?.Payload,
-                                                    OCPPErrorResponse?.ToJSON(),
-                                                    endTime - startTime);
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_PublishFirmware)[8..],
+                                   JSONRequest,
+                                   e
+                               );
 
             }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPublishFirmwareWSResponse));
-            }
 
-            #endregion
-
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
-
 
     }
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a publish firmware request was sent.
+        /// An event sent whenever a response to a PublishFirmware was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareResponseSentDelegate? OnPublishFirmwareResponseSent;
+        public event OnPublishFirmwareResponseSentDelegate?  OnPublishFirmwareResponseSent;
+
+        #endregion
+
+        #region Send OnPublishFirmwareResponse event
+
+        public async Task SendOnPublishFirmwareResponseSent(DateTime                 Timestamp,
+                                                            IEventSender             Sender,
+                                                            IWebSocketConnection     Connection,
+                                                            PublishFirmwareRequest   Request,
+                                                            PublishFirmwareResponse  Response,
+                                                            TimeSpan                 Runtime)
+        {
+
+            var logger = OnPublishFirmwareResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnPublishFirmwareResponseSentDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnPublishFirmwareResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

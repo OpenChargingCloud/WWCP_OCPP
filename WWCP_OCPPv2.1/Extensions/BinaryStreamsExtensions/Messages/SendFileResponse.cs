@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A send file response.
+    /// The SendFile response.
     /// </summary>
     public class SendFileResponse : AResponse<SendFileRequest,
                                               SendFileResponse>,
@@ -78,9 +78,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region SendFileResponse(Request, Status = null, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new send file response.
+        /// Create a new SendFile response.
         /// </summary>
-        /// <param name="Request">The send file request leading to this response.</param>
+        /// <param name="Request">The SendFile request leading to this response.</param>
         /// <param name="FileName">The name of the stored file including its absolute path.</param>
         /// <param name="Status">An optional response status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the response status.</param>
@@ -143,15 +143,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region SendFileResponse(Request, Result)
 
         /// <summary>
-        /// Create a new send file response.
+        /// Create a new SendFile response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public SendFileResponse(SendFileRequest  Request,
-                                Result           Result)
+        public SendFileResponse(SendFileRequest          Request,
+                                Result                   Result,
+                                DateTime?                ResponseTimestamp   = null,
+
+                                NetworkingNode_Id?       DestinationId       = null,
+                                NetworkPath?             NetworkPath         = null,
+
+                                IEnumerable<KeyPair>?    SignKeys            = null,
+                                IEnumerable<SignInfo>?   SignInfos           = null,
+                                IEnumerable<Signature>?  Signatures          = null,
+
+                                CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -173,11 +193,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) Parse   (Request, JSON, CustomSendFileResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a send file response.
+        /// Parse the given JSON representation of a SendFile response.
         /// </summary>
-        /// <param name="Request">The send file request leading to this response.</param>
+        /// <param name="Request">The SendFile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSendFileResponseParser">An optional delegate to parse custom send file responses.</param>
+        /// <param name="CustomSendFileResponseParser">An optional delegate to parse custom SendFile responses.</param>
         public static SendFileResponse Parse(SendFileRequest                                 Request,
                                              JObject                                         JSON,
                                              CustomJObjectParserDelegate<SendFileResponse>?  CustomSendFileResponseParser   = null)
@@ -203,13 +223,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(Request, JSON, out SendFileResponse, out ErrorResponse, CustomSendFileResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a send file response.
+        /// Try to parse the given JSON representation of a SendFile response.
         /// </summary>
-        /// <param name="Request">The send file request leading to this response.</param>
+        /// <param name="Request">The SendFile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SendFileResponse">The parsed send file response.</param>
+        /// <param name="SendFileResponse">The parsed SendFile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSendFileResponseParser">An optional delegate to parse custom send file responses.</param>
+        /// <param name="CustomSendFileResponseParser">An optional delegate to parse custom SendFile responses.</param>
         public static Boolean TryParse(SendFileRequest                                 Request,
                                        JObject                                         JSON,
                                        [NotNullWhen(true)]  out SendFileResponse?      SendFileResponse,
@@ -333,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSendFileResponseSerializer">A delegate to serialize custom send file responses.</param>
+        /// <param name="CustomSendFileResponseSerializer">A delegate to serialize custom SendFile responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -376,12 +396,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Static methods
 
         /// <summary>
-        /// The send file failed.
+        /// The SendFile failed because of a request error.
         /// </summary>
-        public static SendFileResponse Failed(SendFileRequest      Request)
+        /// <param name="Request">The SendFile request.</param>
+        public static SendFileResponse RequestError(SendFileRequest          Request,
+                                                    EventTracking_Id         EventTrackingId,
+                                                    ResultCode               ErrorCode,
+                                                    String?                  ErrorDescription    = null,
+                                                    JObject?                 ErrorDetails        = null,
+                                                    DateTime?                ResponseTimestamp   = null,
+
+                                                    NetworkingNode_Id?       DestinationId       = null,
+                                                    NetworkPath?             NetworkPath         = null,
+
+                                                    IEnumerable<KeyPair>?    SignKeys            = null,
+                                                    IEnumerable<SignInfo>?   SignInfos           = null,
+                                                    IEnumerable<Signature>?  Signatures          = null,
+
+                                                    CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SendFile failed.
+        /// </summary>
+        /// <param name="Request">The SendFile request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SendFileResponse SignatureError(SendFileRequest  Request,
+                                                      String           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SendFile failed.
+        /// </summary>
+        /// <param name="Request">The SendFile request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SendFileResponse Failed(SendFileRequest  Request,
+                                              String?          Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SendFile failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SendFile request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SendFileResponse ExceptionOccured(SendFileRequest  Request,
+                                                        Exception        Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -391,10 +482,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator == (SendFileResponse1, SendFileResponse2)
 
         /// <summary>
-        /// Compares two send file responses for equality.
+        /// Compares two SendFile responses for equality.
         /// </summary>
-        /// <param name="SendFileResponse1">A send file response.</param>
-        /// <param name="SendFileResponse2">Another send file response.</param>
+        /// <param name="SendFileResponse1">A SendFile response.</param>
+        /// <param name="SendFileResponse2">Another SendFile response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SendFileResponse? SendFileResponse1,
                                            SendFileResponse? SendFileResponse2)
@@ -417,10 +508,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Operator != (SendFileResponse1, SendFileResponse2)
 
         /// <summary>
-        /// Compares two send file responses for inequality.
+        /// Compares two SendFile responses for inequality.
         /// </summary>
-        /// <param name="SendFileResponse1">A send file response.</param>
-        /// <param name="SendFileResponse2">Another send file response.</param>
+        /// <param name="SendFileResponse1">A SendFile response.</param>
+        /// <param name="SendFileResponse2">Another SendFile response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SendFileResponse? SendFileResponse1,
                                            SendFileResponse? SendFileResponse2)
@@ -436,9 +527,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two send file responses for equality.
+        /// Compares two SendFile responses for equality.
         /// </summary>
-        /// <param name="Object">A send file response to compare with.</param>
+        /// <param name="Object">A SendFile response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SendFileResponse sendFileResponse &&
@@ -449,9 +540,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Equals(SendFileResponse)
 
         /// <summary>
-        /// Compares two send file responses for equality.
+        /// Compares two SendFile responses for equality.
         /// </summary>
-        /// <param name="SendFileResponse">A send file response to compare with.</param>
+        /// <param name="SendFileResponse">A SendFile response to compare with.</param>
         public override Boolean Equals(SendFileResponse? SendFileResponse)
 
             => SendFileResponse is not null &&

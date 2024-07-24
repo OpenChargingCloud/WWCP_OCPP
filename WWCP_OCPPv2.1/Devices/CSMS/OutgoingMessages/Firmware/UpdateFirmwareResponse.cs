@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// An update firmware response.
+    /// The UpdateFirmware response.
     /// </summary>
     public class UpdateFirmwareResponse : AResponse<CSMS.UpdateFirmwareRequest,
                                                     UpdateFirmwareResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the update firmware command.
+        /// The success or failure of the UpdateFirmware command.
         /// </summary>
         [Mandatory]
         public UpdateFirmwareStatus  Status        { get; }
@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region UpdateFirmwareResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new update firmware response.
+        /// Create a new UpdateFirmware response.
         /// </summary>
-        /// <param name="Request">The update firmware request leading to this response.</param>
-        /// <param name="Status">The success or failure of the update firmware command.</param>
+        /// <param name="Request">The UpdateFirmware request leading to this response.</param>
+        /// <param name="Status">The success or failure of the UpdateFirmware command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -122,15 +122,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region UpdateFirmwareResponse(Request, Result)
 
         /// <summary>
-        /// Create a new update firmware response.
+        /// Create a new UpdateFirmware response.
         /// </summary>
-        /// <param name="Request">The update firmware request leading to this response.</param>
+        /// <param name="Request">The UpdateFirmware request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public UpdateFirmwareResponse(CSMS.UpdateFirmwareRequest  Request,
-                                      Result                      Result)
+                                      Result                      Result,
+                                      DateTime?                   ResponseTimestamp   = null,
+
+                                      NetworkingNode_Id?          DestinationId       = null,
+                                      NetworkPath?                NetworkPath         = null,
+
+                                      IEnumerable<KeyPair>?       SignKeys            = null,
+                                      IEnumerable<SignInfo>?      SignInfos           = null,
+                                      IEnumerable<Signature>?     Signatures          = null,
+
+                                      CustomData?                 CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -221,11 +241,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomUpdateFirmwareResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an update firmware response.
+        /// Parse the given JSON representation of an UpdateFirmware response.
         /// </summary>
-        /// <param name="Request">The update firmware request leading to this response.</param>
+        /// <param name="Request">The UpdateFirmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom update firmware responses.</param>
+        /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom UpdateFirmware responses.</param>
         public static UpdateFirmwareResponse Parse(CSMS.UpdateFirmwareRequest                            Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null)
@@ -240,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return updateFirmwareResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a update firmware response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a UpdateFirmware response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -250,13 +270,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out UpdateFirmwareResponse, out ErrorResponse, CustomUpdateFirmwareResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an update firmware response.
+        /// Try to parse the given JSON representation of an UpdateFirmware response.
         /// </summary>
-        /// <param name="Request">The update firmware request leading to this response.</param>
+        /// <param name="Request">The UpdateFirmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>
+        /// <param name="UpdateFirmwareResponse">The parsed UpdateFirmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom update firmware responses.</param>
+        /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom UpdateFirmware responses.</param>
         public static Boolean TryParse(CSMS.UpdateFirmwareRequest                            Request,
                                        JObject                                               JSON,
                                        [NotNullWhen(true)]  out UpdateFirmwareResponse?      UpdateFirmwareResponse,
@@ -272,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "update firmware status",
+                                         "UpdateFirmware status",
                                          UpdateFirmwareStatus.TryParse,
                                          out UpdateFirmwareStatus Status,
                                          out ErrorResponse))
@@ -347,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 UpdateFirmwareResponse  = null;
-                ErrorResponse           = "The given JSON representation of an update firmware response is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of an UpdateFirmware response is invalid: " + e.Message;
                 return false;
             }
 
@@ -360,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUpdateFirmwareResponseSerializer">A delegate to serialize custom update firmware responses.</param>
+        /// <param name="CustomUpdateFirmwareResponseSerializer">A delegate to serialize custom UpdateFirmware responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -402,13 +422,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The update firmware command failed.
+        /// The UpdateFirmware failed because of a request error.
         /// </summary>
-        /// <param name="Request">The update firmware request leading to this response.</param>
-        public static UpdateFirmwareResponse Failed(CSMS.UpdateFirmwareRequest Request)
+        /// <param name="Request">The UpdateFirmware request.</param>
+        public static UpdateFirmwareResponse RequestError(CSMS.UpdateFirmwareRequest  Request,
+                                                          EventTracking_Id            EventTrackingId,
+                                                          ResultCode                  ErrorCode,
+                                                          String?                     ErrorDescription    = null,
+                                                          JObject?                    ErrorDetails        = null,
+                                                          DateTime?                   ResponseTimestamp   = null,
+
+                                                          NetworkingNode_Id?          DestinationId       = null,
+                                                          NetworkPath?                NetworkPath         = null,
+
+                                                          IEnumerable<KeyPair>?       SignKeys            = null,
+                                                          IEnumerable<SignInfo>?      SignInfos           = null,
+                                                          IEnumerable<Signature>?     Signatures          = null,
+
+                                                          CustomData?                 CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The UpdateFirmware failed.
+        /// </summary>
+        /// <param name="Request">The UpdateFirmware request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static UpdateFirmwareResponse SignatureError(CSMS.UpdateFirmwareRequest  Request,
+                                                            String                      ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The UpdateFirmware failed.
+        /// </summary>
+        /// <param name="Request">The UpdateFirmware request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static UpdateFirmwareResponse Failed(CSMS.UpdateFirmwareRequest  Request,
+                                                    String?                     Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The UpdateFirmware failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The UpdateFirmware request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static UpdateFirmwareResponse ExceptionOccured(CSMS.UpdateFirmwareRequest  Request,
+                                                              Exception                   Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -418,10 +508,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (UpdateFirmwareResponse1, UpdateFirmwareResponse2)
 
         /// <summary>
-        /// Compares two update firmware responses for equality.
+        /// Compares two UpdateFirmware responses for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareResponse1">An update firmware response.</param>
-        /// <param name="UpdateFirmwareResponse2">Another update firmware response.</param>
+        /// <param name="UpdateFirmwareResponse1">An UpdateFirmware response.</param>
+        /// <param name="UpdateFirmwareResponse2">Another UpdateFirmware response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UpdateFirmwareResponse? UpdateFirmwareResponse1,
                                            UpdateFirmwareResponse? UpdateFirmwareResponse2)
@@ -444,10 +534,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (UpdateFirmwareResponse1, UpdateFirmwareResponse2)
 
         /// <summary>
-        /// Compares two update firmware responses for inequality.
+        /// Compares two UpdateFirmware responses for inequality.
         /// </summary>
-        /// <param name="UpdateFirmwareResponse1">An update firmware response.</param>
-        /// <param name="UpdateFirmwareResponse2">Another update firmware response.</param>
+        /// <param name="UpdateFirmwareResponse1">An UpdateFirmware response.</param>
+        /// <param name="UpdateFirmwareResponse2">Another UpdateFirmware response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UpdateFirmwareResponse? UpdateFirmwareResponse1,
                                            UpdateFirmwareResponse? UpdateFirmwareResponse2)
@@ -463,9 +553,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two update firmware responses for equality.
+        /// Compares two UpdateFirmware responses for equality.
         /// </summary>
-        /// <param name="Object">An update firmware response to compare with.</param>
+        /// <param name="Object">An UpdateFirmware response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UpdateFirmwareResponse updateFirmwareResponse &&
@@ -476,9 +566,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(UpdateFirmwareResponse)
 
         /// <summary>
-        /// Compares two update firmware responses for equality.
+        /// Compares two UpdateFirmware responses for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareResponse">An update firmware response to compare with.</param>
+        /// <param name="UpdateFirmwareResponse">An UpdateFirmware response to compare with.</param>
         public override Boolean Equals(UpdateFirmwareResponse? UpdateFirmwareResponse)
 
             => UpdateFirmwareResponse is not null &&

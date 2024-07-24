@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A set variable monitoring response.
+    /// A SetVariableMonitoring response.
     /// </summary>
     public class SetVariableMonitoringResponse : AResponse<CSMS.SetVariableMonitoringRequest,
                                                            SetVariableMonitoringResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The enumeration of set variable monitoring result status per monitor.
+        /// The enumeration of SetVariableMonitoring result status per monitor.
         /// </summary>
         [Mandatory]
         public IEnumerable<SetMonitoringResult>  SetMonitoringResults    { get; }
@@ -68,10 +68,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetVariableMonitoringResponse(Request, SetMonitoringResults, ...)
 
         /// <summary>
-        /// Create a new set variable monitoring response.
+        /// Create a new SetVariableMonitoring response.
         /// </summary>
-        /// <param name="Request">The set variable monitoring request leading to this response.</param>
-        /// <param name="SetMonitoringResults">An enumeration of set variable monitoring result status per monitor.</param>
+        /// <param name="Request">The SetVariableMonitoring request leading to this response.</param>
+        /// <param name="SetMonitoringResults">An enumeration of SetVariableMonitoring result status per monitor.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -113,19 +113,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SetVariableMonitoringResponse(Request, Result)
 
         /// <summary>
-        /// Create a new set variable monitoring response.
+        /// Create a new SetVariableMonitoring response.
         /// </summary>
-        /// <param name="Request">The set variable monitoring request leading to this response.</param>
+        /// <param name="Request">The SetVariableMonitoring request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetVariableMonitoringResponse(CSMS.SetVariableMonitoringRequest  Request,
-                                             Result                             Result)
+                                             Result                             Result,
+                                             DateTime?                          ResponseTimestamp   = null,
+
+                                             NetworkingNode_Id?                 DestinationId       = null,
+                                             NetworkPath?                       NetworkPath         = null,
+
+                                             IEnumerable<KeyPair>?              SignKeys            = null,
+                                             IEnumerable<SignInfo>?             SignInfos           = null,
+                                             IEnumerable<Signature>?            Signatures          = null,
+
+                                             CustomData?                        CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
-            this.SetMonitoringResults = Array.Empty<SetMonitoringResult>();
+            this.SetMonitoringResults = [];
 
         }
 
@@ -346,11 +366,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (Request, JSON, CustomSetVariableMonitoringResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set variable monitoring response.
+        /// Parse the given JSON representation of a SetVariableMonitoring response.
         /// </summary>
-        /// <param name="Request">The set variable monitoring request leading to this response.</param>
+        /// <param name="Request">The SetVariableMonitoring request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom set variable monitoring responses.</param>
+        /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom SetVariableMonitoring responses.</param>
         public static SetVariableMonitoringResponse Parse(CSMS.SetVariableMonitoringRequest                            Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<SetVariableMonitoringResponse>?  CustomSetVariableMonitoringResponseParser   = null)
@@ -365,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return setNetworkProfileResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a set variable monitoring response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetVariableMonitoring response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -375,13 +395,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out SetVariableMonitoringResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set variable monitoring response.
+        /// Try to parse the given JSON representation of a SetVariableMonitoring response.
         /// </summary>
-        /// <param name="Request">The set variable monitoring request leading to this response.</param>
+        /// <param name="Request">The SetVariableMonitoring request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SetVariableMonitoringResponse">The parsed set variable monitoring response.</param>
+        /// <param name="SetVariableMonitoringResponse">The parsed SetVariableMonitoring response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom set variable monitoring responses.</param>
+        /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom SetVariableMonitoring responses.</param>
         public static Boolean TryParse(CSMS.SetVariableMonitoringRequest                            Request,
                                        JObject                                                      JSON,
                                        [NotNullWhen(true)]  out SetVariableMonitoringResponse?      SetVariableMonitoringResponse,
@@ -397,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region SetMonitoringResults    [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("setVariableResult",
-                                                "set variable monitoring results",
+                                                "SetVariableMonitoring results",
                                                 SetMonitoringResult.TryParse,
                                                 out HashSet<SetMonitoringResult> SetMonitoringResults,
                                                 out ErrorResponse))
@@ -456,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SetVariableMonitoringResponse  = null;
-                ErrorResponse                  = "The given JSON representation of a set variable monitoring response is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a SetVariableMonitoring response is invalid: " + e.Message;
                 return false;
             }
 
@@ -519,13 +539,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The set variable monitoring command failed.
+        /// The SetVariableMonitoring failed because of a request error.
         /// </summary>
-        /// <param name="Request">The set variable monitoring request leading to this response.</param>
-        public static SetVariableMonitoringResponse Failed(CSMS.SetVariableMonitoringRequest Request)
+        /// <param name="Request">The SetVariableMonitoring request.</param>
+        public static SetVariableMonitoringResponse RequestError(CSMS.SetVariableMonitoringRequest  Request,
+                                                                 EventTracking_Id                   EventTrackingId,
+                                                                 ResultCode                         ErrorCode,
+                                                                 String?                            ErrorDescription    = null,
+                                                                 JObject?                           ErrorDetails        = null,
+                                                                 DateTime?                          ResponseTimestamp   = null,
+
+                                                                 NetworkingNode_Id?                 DestinationId       = null,
+                                                                 NetworkPath?                       NetworkPath         = null,
+
+                                                                 IEnumerable<KeyPair>?              SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?             SignInfos           = null,
+                                                                 IEnumerable<Signature>?            Signatures          = null,
+
+                                                                 CustomData?                        CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SetVariableMonitoring failed.
+        /// </summary>
+        /// <param name="Request">The SetVariableMonitoring request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static SetVariableMonitoringResponse SignatureError(CSMS.SetVariableMonitoringRequest  Request,
+                                                                   String                             ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The SetVariableMonitoring failed.
+        /// </summary>
+        /// <param name="Request">The SetVariableMonitoring request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static SetVariableMonitoringResponse Failed(CSMS.SetVariableMonitoringRequest  Request,
+                                                           String?                            Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The SetVariableMonitoring failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SetVariableMonitoring request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SetVariableMonitoringResponse ExceptionOccured(CSMS.SetVariableMonitoringRequest  Request,
+                                                                     Exception                          Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 
@@ -535,10 +625,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (SetVariableMonitoringResponse1, SetVariableMonitoringResponse2)
 
         /// <summary>
-        /// Compares two set variable monitoring responses for equality.
+        /// Compares two SetVariableMonitoring responses for equality.
         /// </summary>
-        /// <param name="SetVariableMonitoringResponse1">A set variable monitoring response.</param>
-        /// <param name="SetVariableMonitoringResponse2">Another set variable monitoring response.</param>
+        /// <param name="SetVariableMonitoringResponse1">A SetVariableMonitoring response.</param>
+        /// <param name="SetVariableMonitoringResponse2">Another SetVariableMonitoring response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetVariableMonitoringResponse? SetVariableMonitoringResponse1,
                                            SetVariableMonitoringResponse? SetVariableMonitoringResponse2)
@@ -561,10 +651,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (SetVariableMonitoringResponse1, SetVariableMonitoringResponse2)
 
         /// <summary>
-        /// Compares two set variable monitoring responses for inequality.
+        /// Compares two SetVariableMonitoring responses for inequality.
         /// </summary>
-        /// <param name="SetVariableMonitoringResponse1">A set variable monitoring response.</param>
-        /// <param name="SetVariableMonitoringResponse2">Another set variable monitoring response.</param>
+        /// <param name="SetVariableMonitoringResponse1">A SetVariableMonitoring response.</param>
+        /// <param name="SetVariableMonitoringResponse2">Another SetVariableMonitoring response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetVariableMonitoringResponse? SetVariableMonitoringResponse1,
                                            SetVariableMonitoringResponse? SetVariableMonitoringResponse2)
@@ -580,9 +670,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set variable monitoring responses for equality.
+        /// Compares two SetVariableMonitoring responses for equality.
         /// </summary>
-        /// <param name="Object">A set variable monitoring response to compare with.</param>
+        /// <param name="Object">A SetVariableMonitoring response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetVariableMonitoringResponse setNetworkProfileResponse &&
@@ -593,9 +683,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(SetVariableMonitoringResponse)
 
         /// <summary>
-        /// Compares two set variable monitoring responses for equality.
+        /// Compares two SetVariableMonitoring responses for equality.
         /// </summary>
-        /// <param name="SetVariableMonitoringResponse">A set variable monitoring response to compare with.</param>
+        /// <param name="SetVariableMonitoringResponse">A SetVariableMonitoring response to compare with.</param>
         public override Boolean Equals(SetVariableMonitoringResponse? SetVariableMonitoringResponse)
 
             => SetVariableMonitoringResponse is not null &&
