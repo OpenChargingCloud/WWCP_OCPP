@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP request message.
         /// </summary>
         /// <param name="JSONRequestMessage">A JSON OCPP request message.</param>
-        public async Task<SendMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
+        public async Task<SentMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
         {
 
             try
@@ -358,12 +358,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP request message.
         /// </summary>
         /// <param name="JSONResponseMessage">A JSON OCPP request message.</param>
-        public async Task<SendMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        public async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
             try
@@ -433,12 +433,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }
@@ -451,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP request message.
         /// </summary>
         /// <param name="JSONRequestErrorMessage">A JSON OCPP request message.</param>
-        public async Task<SendMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+        public async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
             try
@@ -508,12 +508,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }
@@ -526,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP response message.
         /// </summary>
         /// <param name="JSONResponseErrorMessage">A JSON OCPP response message.</param>
-        public async Task<SendMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        public async Task<SentMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
         {
 
             try
@@ -583,12 +583,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }
@@ -601,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP send message.
         /// </summary>
         /// <param name="JSONSendMessage">A JSON OCPP send message.</param>
-        public async Task<SendMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
+        public async Task<SentMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
         {
 
             try
@@ -658,12 +658,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }
@@ -677,7 +677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP request message.
         /// </summary>
         /// <param name="BinaryRequestMessage">A binary OCPP request message.</param>
-        public async Task<SendMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        public async Task<SentMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
 
             try
@@ -734,12 +734,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }
@@ -752,7 +752,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP request message.
         /// </summary>
         /// <param name="BinaryResponseMessage">A binary OCPP request message.</param>
-        public async Task<SendMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
             try
@@ -809,12 +809,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }
@@ -827,7 +827,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP request message.
         /// </summary>
         /// <param name="BinaryRequestErrorMessage">A binary OCPP request message.</param>
-        public async Task<SendMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        public async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
         {
 
             try
@@ -884,12 +884,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }
@@ -902,7 +902,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP response message.
         /// </summary>
         /// <param name="BinaryResponseErrorMessage">A binary OCPP response message.</param>
-        public async Task<SendMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
+        public async Task<SentMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
         {
 
             try
@@ -959,12 +959,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }
@@ -977,7 +977,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP send message.
         /// </summary>
         /// <param name="BinarySendMessage">A binary OCPP send message.</param>
-        public async Task<SendMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
+        public async Task<SentMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
         {
 
             try
@@ -1034,12 +1034,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.Success(webSocketClientConnection);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e, webSocketClientConnection);
             }
 
         }

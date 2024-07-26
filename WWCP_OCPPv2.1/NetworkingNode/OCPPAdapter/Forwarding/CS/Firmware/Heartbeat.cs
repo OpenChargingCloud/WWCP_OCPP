@@ -109,9 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-
             ForwardingDecision<HeartbeatRequest, HeartbeatResponse>? forwardingDecision = null;
-
 
             #region Send OnHeartbeatRequestReceived event
 
@@ -121,54 +119,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 try
                 {
 
-                    await Task.WhenAll(receivedLogging.GetInvocationList().
-                                          OfType<OnHeartbeatRequestReceivedDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request)).
-                                          ToArray());
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnHeartbeatRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                                "NetworkingNode",
-                                nameof(OnHeartbeatRequestReceived),
-                                e
-                            );
-                }
-
-            }
-
-            #endregion
-
-            #region Send OnHeartbeatRequest event
-
-            var requestFilter = OnHeartbeatRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
-
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType<OnHeartbeatRequestFilterDelegate>().
-                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                    parentNetworkingNode,
-                                                                                                    Connection,
-                                                                                                    request,
-                                                                                                    CancellationToken)).
-                                                     ToArray());
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnHeartbeatRequestFilter),
+                              nameof(NetworkingNode),
+                              nameof(OnHeartbeatRequestReceived),
                               e
                           );
                 }
@@ -177,6 +144,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
+            #region Send OnHeartbeatRequestFilter event
+
+            var requestFilter = OnHeartbeatRequestFilter;
+            if (requestFilter is not null)
+            {
+                try
+                {
+
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnHeartbeatRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
+
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnHeartbeatRequestFilter),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
 
             #region Default result
 
@@ -211,8 +216,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomHeartbeatRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnHeartbeatRequestLogging event
+            #region Send OnHeartbeatRequestFiltered event
 
             var logger = OnHeartbeatRequestFiltered;
             if (logger is not null)
@@ -220,20 +231,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType<OnHeartbeatRequestFilteredDelegate>().
-                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                        parentNetworkingNode,
-                                                                                        Connection,
-                                                                                        request,
-                                                                                        forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnHeartbeatRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
+                              nameof(NetworkingNode),
                               nameof(OnHeartbeatRequestFiltered),
                               e
                           );
@@ -243,48 +258,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region Send OnHeartbeatRequestSent event
+
+            #region Attach OnHeartbeatRequestSent event
 
             if (forwardingDecision.Result == ForwardingResults.FORWARD)
             {
 
                 var sentLogging = OnHeartbeatRequestSent;
                 if (sentLogging is not null)
-                {
-                    try
-                    {
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
 
-                        await Task.WhenAll(sentLogging.GetInvocationList().
-                                              OfType<OnHeartbeatRequestSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                             parentNetworkingNode,
-                                                                                             request,
-                                                SendMessageResult.Success)).
-                                              ToArray());
+                        try
+                        {
 
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                    "NetworkingNode",
-                                    nameof(OnHeartbeatRequestSent),
-                                    e
-                                );
-                    }
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnHeartbeatRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
 
-                }
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnHeartbeatRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 
             #endregion
-
-
-            if (forwardingDecision.NewRequest is not null)
-                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
-                                                        parentNetworkingNode.OCPP.CustomHeartbeatRequestSerializer,
-                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                    );
 
             return forwardingDecision;
 

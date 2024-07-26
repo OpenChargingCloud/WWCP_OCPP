@@ -109,9 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-
             ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>? forwardingDecision = null;
-
 
             #region Send OnPublishFirmwareStatusNotificationRequestReceived event
 
@@ -121,54 +119,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 try
                 {
 
-                    await Task.WhenAll(receivedLogging.GetInvocationList().
-                                          OfType<OnPublishFirmwareStatusNotificationRequestReceivedDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request)).
-                                          ToArray());
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnPublishFirmwareStatusNotificationRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                                "NetworkingNode",
-                                nameof(OnPublishFirmwareStatusNotificationRequestReceived),
-                                e
-                            );
-                }
-
-            }
-
-            #endregion
-
-            #region Send OnPublishFirmwareStatusNotificationRequest event
-
-            var requestFilter = OnPublishFirmwareStatusNotificationRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
-
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType<OnPublishFirmwareStatusNotificationRequestFilterDelegate>().
-                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                    parentNetworkingNode,
-                                                                                                    Connection,
-                                                                                                    request,
-                                                                                                    CancellationToken)).
-                                                     ToArray());
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnPublishFirmwareStatusNotificationRequestFilter),
+                              nameof(NetworkingNode),
+                              nameof(OnPublishFirmwareStatusNotificationRequestReceived),
                               e
                           );
                 }
@@ -177,6 +144,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
+            #region Send OnPublishFirmwareStatusNotificationRequestFilter event
+
+            var requestFilter = OnPublishFirmwareStatusNotificationRequestFilter;
+            if (requestFilter is not null)
+            {
+                try
+                {
+
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnPublishFirmwareStatusNotificationRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
+
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnPublishFirmwareStatusNotificationRequestFilter),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
 
             #region Default result
 
@@ -211,8 +216,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomPublishFirmwareStatusNotificationRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnPublishFirmwareStatusNotificationRequestLogging event
+            #region Send OnPublishFirmwareStatusNotificationRequestFiltered event
 
             var logger = OnPublishFirmwareStatusNotificationRequestFiltered;
             if (logger is not null)
@@ -220,20 +231,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType<OnPublishFirmwareStatusNotificationRequestFilteredDelegate>().
-                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnPublishFirmwareStatusNotificationRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
+                              nameof(NetworkingNode),
                               nameof(OnPublishFirmwareStatusNotificationRequestFiltered),
                               e
                           );
@@ -243,48 +258,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region Send OnPublishFirmwareStatusNotificationRequestSent event
+
+            #region Attach OnPublishFirmwareStatusNotificationRequestSent event
 
             if (forwardingDecision.Result == ForwardingResults.FORWARD)
             {
 
                 var sentLogging = OnPublishFirmwareStatusNotificationRequestSent;
                 if (sentLogging is not null)
-                {
-                    try
-                    {
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
 
-                        await Task.WhenAll(sentLogging.GetInvocationList().
-                                              OfType<OnPublishFirmwareStatusNotificationRequestSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                             parentNetworkingNode,
-                                                                                             request,
-                                                SendMessageResult.Success)).
-                                              ToArray());
+                        try
+                        {
 
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                    "NetworkingNode",
-                                    nameof(OnPublishFirmwareStatusNotificationRequestSent),
-                                    e
-                                );
-                    }
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnPublishFirmwareStatusNotificationRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
 
-                }
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnPublishFirmwareStatusNotificationRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 
             #endregion
-
-
-            if (forwardingDecision.NewRequest is not null)
-                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
-                                                        parentNetworkingNode.OCPP.CustomPublishFirmwareStatusNotificationRequestSerializer,
-                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                    );
 
             return forwardingDecision;
 

@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnClearDisplayMessageRequestFilterDelegate?      OnClearDisplayMessageRequest;
+        public event OnClearDisplayMessageRequestReceivedDelegate?    OnClearDisplayMessageRequestReceived;
+        public event OnClearDisplayMessageRequestFilterDelegate?      OnClearDisplayMessageRequestFilter;
+        public event OnClearDisplayMessageRequestFilteredDelegate?    OnClearDisplayMessageRequestFiltered;
+        public event OnClearDisplayMessageRequestSentDelegate?        OnClearDisplayMessageRequestSent;
 
-        public event OnClearDisplayMessageRequestFilteredDelegate?    OnClearDisplayMessageRequestLogging;
+        public event OnClearDisplayMessageResponseReceivedDelegate?   OnClearDisplayMessageResponseReceived;
+        public event OnClearDisplayMessageResponseSentDelegate?       OnClearDisplayMessageResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<ClearDisplayMessageRequest, ClearDisplayMessageResponse>? forwardingDecision = null;
 
-            #region Send OnClearDisplayMessageRequest event
+            #region Send OnClearDisplayMessageRequestReceived event
 
-            var requestFilter = OnClearDisplayMessageRequest;
+            var receivedLogging = OnClearDisplayMessageRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnClearDisplayMessageRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnClearDisplayMessageRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnClearDisplayMessageRequestFilter event
+
+            var requestFilter = OnClearDisplayMessageRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnClearDisplayMessageRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnClearDisplayMessageRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnClearDisplayMessageRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnClearDisplayMessageRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomClearDisplayMessageRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnClearDisplayMessageRequestLogging event
+            #region Send OnClearDisplayMessageRequestFiltered event
 
-            var logger = OnClearDisplayMessageRequestLogging;
+            var logger = OnClearDisplayMessageRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnClearDisplayMessageRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnClearDisplayMessageRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnClearDisplayMessageRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnClearDisplayMessageRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnClearDisplayMessageRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnClearDisplayMessageRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnClearDisplayMessageRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnClearDisplayMessageRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

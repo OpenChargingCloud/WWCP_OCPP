@@ -71,7 +71,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnGetDefaultChargingTariffRequestSent?.Invoke(startTime,
                                                               parentNetworkingNode,
-                                                              Request);
+                                                              null,
+                                                              Request,
+                                                SentMessageResults.Success);
             }
             catch (Exception e)
             {
@@ -162,6 +164,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a GetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetDefaultChargingTariffResponseReceivedDelegate? OnGetDefaultChargingTariffResponseReceived;
 
     }
 

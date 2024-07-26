@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnCertificateSignedRequestFilterDelegate?      OnCertificateSignedRequest;
+        public event OnCertificateSignedRequestReceivedDelegate?    OnCertificateSignedRequestReceived;
+        public event OnCertificateSignedRequestFilterDelegate?      OnCertificateSignedRequestFilter;
+        public event OnCertificateSignedRequestFilteredDelegate?    OnCertificateSignedRequestFiltered;
+        public event OnCertificateSignedRequestSentDelegate?        OnCertificateSignedRequestSent;
 
-        public event OnCertificateSignedRequestFilteredDelegate?    OnCertificateSignedRequestLogging;
+        public event OnCertificateSignedResponseReceivedDelegate?   OnCertificateSignedResponseReceived;
+        public event OnCertificateSignedResponseSentDelegate?       OnCertificateSignedResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<CertificateSignedRequest, CertificateSignedResponse>? forwardingDecision = null;
 
-            #region Send OnCertificateSignedRequest event
+            #region Send OnCertificateSignedRequestReceived event
 
-            var requestFilter = OnCertificateSignedRequest;
+            var receivedLogging = OnCertificateSignedRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnCertificateSignedRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnCertificateSignedRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnCertificateSignedRequestFilter event
+
+            var requestFilter = OnCertificateSignedRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnCertificateSignedRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnCertificateSignedRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnCertificateSignedRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnCertificateSignedRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomCertificateSignedRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnCertificateSignedRequestLogging event
+            #region Send OnCertificateSignedRequestFiltered event
 
-            var logger = OnCertificateSignedRequestLogging;
+            var logger = OnCertificateSignedRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnCertificateSignedRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnCertificateSignedRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnCertificateSignedRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnCertificateSignedRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnCertificateSignedRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnCertificateSignedRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnCertificateSignedRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnCertificateSignedRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

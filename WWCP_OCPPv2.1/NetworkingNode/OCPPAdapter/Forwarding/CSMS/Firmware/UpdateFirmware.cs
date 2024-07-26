@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnUpdateFirmwareRequestFilterDelegate?      OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestReceivedDelegate?    OnUpdateFirmwareRequestReceived;
+        public event OnUpdateFirmwareRequestFilterDelegate?      OnUpdateFirmwareRequestFilter;
+        public event OnUpdateFirmwareRequestFilteredDelegate?    OnUpdateFirmwareRequestFiltered;
+        public event OnUpdateFirmwareRequestSentDelegate?        OnUpdateFirmwareRequestSent;
 
-        public event OnUpdateFirmwareRequestFilteredDelegate?    OnUpdateFirmwareRequestLogging;
+        public event OnUpdateFirmwareResponseReceivedDelegate?   OnUpdateFirmwareResponseReceived;
+        public event OnUpdateFirmwareResponseSentDelegate?       OnUpdateFirmwareResponseSent;
 
         #endregion
 
@@ -90,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 JSONRequestMessage.RequestId,
                                                 JSONRequestMessage.DestinationId,
                                                 JSONRequestMessage.NetworkPath,
-                                                out var Request,
+                                                out var request,
                                                 out var errorResponse,
                                                 JSONRequestMessage.RequestTimestamp,
                                                 JSONRequestMessage.RequestTimeout - Timestamp.Now,
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<UpdateFirmwareRequest, UpdateFirmwareResponse>? forwardingDecision = null;
 
-            #region Send OnUpdateFirmwareRequest event
+            #region Send OnUpdateFirmwareRequestReceived event
 
-            var requestFilter = OnUpdateFirmwareRequest;
+            var receivedLogging = OnUpdateFirmwareRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnUpdateFirmwareRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnUpdateFirmwareRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnUpdateFirmwareRequestFilter event
+
+            var requestFilter = OnUpdateFirmwareRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnUpdateFirmwareRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnUpdateFirmwareRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnUpdateFirmwareRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnUpdateFirmwareRequestFilter),
                               e
                           );
                 }
@@ -140,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<UpdateFirmwareRequest, UpdateFirmwareResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -150,12 +192,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new UpdateFirmwareResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<UpdateFirmwareRequest, UpdateFirmwareResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -170,30 +212,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomUpdateFirmwareRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomFirmwareSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnUpdateFirmwareRequestLogging event
+            #region Send OnUpdateFirmwareRequestFiltered event
 
-            var logger = OnUpdateFirmwareRequestLogging;
+            var logger = OnUpdateFirmwareRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnUpdateFirmwareRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnUpdateFirmwareRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnUpdateFirmwareRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnUpdateFirmwareRequestFiltered),
                               e
                           );
                 }
@@ -202,7 +255,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
+            #region Attach OnUpdateFirmwareRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnUpdateFirmwareRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnUpdateFirmwareRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnUpdateFirmwareRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
+
+            }
+
+            #endregion
+
             return forwardingDecision;
+
 
         }
 

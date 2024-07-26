@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnRemoveDefaultChargingTariffRequestFilterDelegate?      OnRemoveDefaultChargingTariffRequest;
+        public event OnRemoveDefaultChargingTariffRequestReceivedDelegate?    OnRemoveDefaultChargingTariffRequestReceived;
+        public event OnRemoveDefaultChargingTariffRequestFilterDelegate?      OnRemoveDefaultChargingTariffRequestFilter;
+        public event OnRemoveDefaultChargingTariffRequestFilteredDelegate?    OnRemoveDefaultChargingTariffRequestFiltered;
+        public event OnRemoveDefaultChargingTariffRequestSentDelegate?        OnRemoveDefaultChargingTariffRequestSent;
 
-        public event OnRemoveDefaultChargingTariffRequestFilteredDelegate?    OnRemoveDefaultChargingTariffRequestLogging;
+        public event OnRemoveDefaultChargingTariffResponseReceivedDelegate?   OnRemoveDefaultChargingTariffResponseReceived;
+        public event OnRemoveDefaultChargingTariffResponseSentDelegate?       OnRemoveDefaultChargingTariffResponseSent;
 
         #endregion
 
@@ -90,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              JSONRequestMessage.RequestId,
                                                              JSONRequestMessage.DestinationId,
                                                              JSONRequestMessage.NetworkPath,
-                                                             out var Request,
+                                                             out var request,
                                                              out var errorResponse,
                                                              JSONRequestMessage.RequestTimestamp,
                                                              JSONRequestMessage.RequestTimeout - Timestamp.Now,
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<RemoveDefaultChargingTariffRequest, RemoveDefaultChargingTariffResponse>? forwardingDecision = null;
 
-            #region Send OnRemoveDefaultChargingTariffRequest event
+            #region Send OnRemoveDefaultChargingTariffRequestReceived event
 
-            var requestFilter = OnRemoveDefaultChargingTariffRequest;
+            var receivedLogging = OnRemoveDefaultChargingTariffRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnRemoveDefaultChargingTariffRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnRemoveDefaultChargingTariffRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnRemoveDefaultChargingTariffRequestFilter event
+
+            var requestFilter = OnRemoveDefaultChargingTariffRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnRemoveDefaultChargingTariffRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnRemoveDefaultChargingTariffRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnRemoveDefaultChargingTariffRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnRemoveDefaultChargingTariffRequestFilter),
                               e
                           );
                 }
@@ -140,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<RemoveDefaultChargingTariffRequest, RemoveDefaultChargingTariffResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -150,12 +192,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new RemoveDefaultChargingTariffResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<RemoveDefaultChargingTariffRequest, RemoveDefaultChargingTariffResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -171,33 +213,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnRemoveDefaultChargingTariffRequestLogging event
+            #region Send OnRemoveDefaultChargingTariffRequestFiltered event
 
-            var logger = OnRemoveDefaultChargingTariffRequestLogging;
+            var logger = OnRemoveDefaultChargingTariffRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnRemoveDefaultChargingTariffRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnRemoveDefaultChargingTariffRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnRemoveDefaultChargingTariffRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnRemoveDefaultChargingTariffRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnRemoveDefaultChargingTariffRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnRemoveDefaultChargingTariffRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnRemoveDefaultChargingTariffRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnRemoveDefaultChargingTariffRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

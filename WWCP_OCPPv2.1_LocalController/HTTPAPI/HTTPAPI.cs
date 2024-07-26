@@ -650,7 +650,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGet15118EVCertificateRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -718,7 +718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetCertificateStatusRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -786,7 +786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
                                                             sender,
-                                                            //connection,
+                                                            connection,
                                                             request,
                                                                 sendMessageResult) =>
 
@@ -854,7 +854,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSignCertificateRequestSent += (timestamp,
                                                                      sender,
-                                                                     //connection,
+                                                                     connection,
                                                                      request,
                                                                 sendMessageResult) =>
 
@@ -926,7 +926,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
                                                                sender,
-                                                               //connection,
+                                                               connection,
                                                                request,
                                                                sendMessageResult) =>
 
@@ -994,7 +994,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnClearedChargingLimitRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -1061,9 +1061,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnMeterValuesRequestSent += (timestamp,
-                                                                 sender,
-                                                                 request,
-                                                                 sendMessageResult) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnMeterValuesRequestSent),
                                      new JObject(
@@ -1129,7 +1130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyChargingLimitRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -1197,7 +1198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -1265,7 +1266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent += (timestamp,
                                                                               sender,
-                                                                              //connection,
+                                                                              connection,
                                                                               request,
                                                                 sendMessageResult) =>
 
@@ -1333,7 +1334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyPriorityChargingRequestSent += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                 sendMessageResult) =>
 
@@ -1401,7 +1402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifySettlementRequestSent += (timestamp,
                                                                       sender,
-                                                                      //connection,
+                                                                      connection,
                                                                       request,
                                                                 sendMessageResult) =>
 
@@ -1469,7 +1470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent += (timestamp,
                                                                                sender,
-                                                                               //connection,
+                                                                               connection,
                                                                                request,
                                                                 sendMessageResult) =>
 
@@ -1537,7 +1538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnReportChargingProfilesRequestSent += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                 sendMessageResult) =>
 
@@ -1605,7 +1606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnReservationStatusUpdateRequestSent += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                 sendMessageResult) =>
 
@@ -1673,7 +1674,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnStatusNotificationRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -1741,7 +1742,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnTransactionEventRequestSent += (timestamp,
                                                                       sender,
-                                                                      //connection,
+                                                                      connection,
                                                                       request,
                                                                 sendMessageResult) =>
 
@@ -1813,7 +1814,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyCustomerInformationRequestSent += (timestamp,
                                                                                sender,
-                                                                               //connection,
+                                                                               connection,
                                                                                request,
                                                                 sendMessageResult) =>
 
@@ -1881,7 +1882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyDisplayMessagesRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -1953,7 +1954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnLogStatusNotificationRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -2021,7 +2022,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyEventRequestSent += (timestamp,
                                                                  sender,
-                                                                 //connection,
+                                                                 connection,
                                                                  request,
                                                                 sendMessageResult) =>
 
@@ -2089,7 +2090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyMonitoringReportRequestSent += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                 sendMessageResult) =>
 
@@ -2157,7 +2158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyReportRequestSent += (timestamp,
                                                                   sender,
-                                                                  //connection,
+                                                                  connection,
                                                                   request,
                                                                 sendMessageResult) =>
 
@@ -2225,7 +2226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSecurityEventNotificationRequestSent += (timestamp,
                                                                                sender,
-                                                                               //connection,
+                                                                               connection,
                                                                                request,
                                                                 sendMessageResult) =>
 
@@ -2297,7 +2298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
                                                                       sender,
-                                                                      //connection,
+                                                                      connection,
                                                                       request,
                                                                       sendMessageResult) =>
 
@@ -2365,7 +2366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                 sender,
-                                                                                //connection,
+                                                                                connection,
                                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -2433,7 +2434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnHeartbeatRequestSent += (timestamp,
                                                                sender,
-                                                               //connection,
+                                                               connection,
                                                                request,
                                                                 sendMessageResult) =>
 
@@ -2501,7 +2502,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                        sender,
-                                                                                       //connection,
+                                                                                       connection,
                                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -2577,7 +2578,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnCertificateSignedRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -2592,7 +2593,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.IN.OnCertificateSignedResponseReceived += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                            response,
                                                                            runtime) =>
@@ -2645,7 +2646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnDeleteCertificateRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -2713,7 +2714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent += (timestamp,
                                                                                 sender,
-                                                                                //connection,
+                                                                                connection,
                                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -2781,7 +2782,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnInstallCertificateRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -2849,7 +2850,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyCRLRequestSent += (timestamp,
                                                                sender,
-                                                               //connection,
+                                                               connection,
                                                                request,
                                                                 sendMessageResult) =>
 
@@ -2921,7 +2922,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnCancelReservationRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -2989,7 +2990,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnClearChargingProfileRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -3057,7 +3058,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetChargingProfilesRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -3125,7 +3126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetCompositeScheduleRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -3193,7 +3194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetTransactionStatusRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -3261,7 +3262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
                                                                                  sender,
-                                                                                 //connection,
+                                                                                 connection,
                                                                                  request,
                                                                 sendMessageResult) =>
 
@@ -3329,7 +3330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnRequestStartTransactionRequestSent += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                 sendMessageResult) =>
 
@@ -3397,7 +3398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnRequestStopTransactionRequestSent += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                 sendMessageResult) =>
 
@@ -3465,7 +3466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnReserveNowRequestSent += (timestamp,
                                                                 sender,
-                                                                //connection,
+                                                                connection,
                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -3533,7 +3534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSetChargingProfileRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -3601,7 +3602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnUnlockConnectorRequestSent += (timestamp,
                                                                      sender,
-                                                                     //connection,
+                                                                     connection,
                                                                      request,
                                                                 sendMessageResult) =>
 
@@ -3669,7 +3670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnUpdateDynamicScheduleRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -3737,7 +3738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnUsePriorityChargingRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -3809,7 +3810,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnClearDisplayMessageRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -3877,7 +3878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnCostUpdatedRequestSent += (timestamp,
                                                                  sender,
-                                                                 //connection,
+                                                                 connection,
                                                                  request,
                                                                 sendMessageResult) =>
 
@@ -3945,7 +3946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnCustomerInformationRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -4013,7 +4014,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetDisplayMessagesRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -4081,7 +4082,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSetDisplayMessageRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -4153,7 +4154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnChangeAvailabilityRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -4221,7 +4222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnClearVariableMonitoringRequestSent += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                 sendMessageResult) =>
 
@@ -4289,7 +4290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetBaseReportRequestSent += (timestamp,
                                                                    sender,
-                                                                   //connection,
+                                                                   connection,
                                                                    request,
                                                                 sendMessageResult) =>
 
@@ -4357,7 +4358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetLogRequestSent += (timestamp,
                                                             sender,
-                                                            //connection,
+                                                            connection,
                                                             request,
                                                                 sendMessageResult) =>
 
@@ -4425,7 +4426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetMonitoringReportRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -4493,7 +4494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetReportRequestSent += (timestamp,
                                                                sender,
-                                                               //connection,
+                                                               connection,
                                                                request,
                                                                 sendMessageResult) =>
 
@@ -4561,7 +4562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetVariablesRequestSent += (timestamp,
                                                                   sender,
-                                                                  //connection,
+                                                                  connection,
                                                                   request,
                                                                 sendMessageResult) =>
 
@@ -4629,7 +4630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSetMonitoringBaseRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -4697,7 +4698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSetMonitoringLevelRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -4765,7 +4766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSetNetworkProfileRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -4833,7 +4834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSetVariableMonitoringRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -4901,7 +4902,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSetVariablesRequestSent += (timestamp,
                                                                   sender,
-                                                                  //connection,
+                                                                  connection,
                                                                   request,
                                                                 sendMessageResult) =>
 
@@ -4969,7 +4970,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnTriggerMessageRequestSent += (timestamp,
                                                                     sender,
-                                                                    //connection,
+                                                                    connection,
                                                                     request,
                                                                 sendMessageResult) =>
 
@@ -5041,7 +5042,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnPublishFirmwareRequestSent += (timestamp,
                                                                      sender,
-                                                                     //connection,
+                                                                     connection,
                                                                      request,
                                                                 sendMessageResult) =>
 
@@ -5109,7 +5110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnResetRequestSent += (timestamp,
                                                            sender,
-                                                           //connection,
+                                                           connection,
                                                            request,
                                                                 sendMessageResult) =>
 
@@ -5177,7 +5178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnUnpublishFirmwareRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -5245,7 +5246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnUpdateFirmwareRequestSent += (timestamp,
                                                                     sender,
-                                                                    //connection,
+                                                                    connection,
                                                                     request,
                                                                 sendMessageResult) =>
 
@@ -5317,7 +5318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnAFRRSignalRequestSent += (timestamp,
                                                                 sender,
-                                                                //connection,
+                                                                connection,
                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -5389,7 +5390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnClearCacheRequestSent += (timestamp,
                                                                 sender,
-                                                                //connection,
+                                                                connection,
                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -5457,7 +5458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnGetLocalListVersionRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -5525,7 +5526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnSendLocalListRequestSent += (timestamp,
                                                                    sender,
-                                                                   //connection,
+                                                                   connection,
                                                                    request,
                                                                 sendMessageResult) =>
 
@@ -5599,7 +5600,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnDataTransferRequestSent += (timestamp,
                                                                    sender,
-                                                                   //connection,
+                                                                   connection,
                                                                    request,
                                                                    sendMessageResult) =>
 
@@ -5667,7 +5668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.OUT.OnBinaryDataTransferRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                          sendMessageResult) =>
 
@@ -5682,7 +5683,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             LocalController.OCPP.IN.OnBinaryDataTransferResponseReceived += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                              response,
                                                                              runtime) =>

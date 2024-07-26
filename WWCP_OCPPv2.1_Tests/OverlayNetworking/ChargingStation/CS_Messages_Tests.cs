@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 var nnBootNotificationRequestsOUT  = new ConcurrentList<BootNotificationRequest>();
                 var csmsBootNotificationRequests   = new ConcurrentList<BootNotificationRequest>();
 
-                chargingStation1.OCPP.OUT.    OnBootNotificationRequestSent     += (timestamp, sender,             bootNotificationRequest, sendMessageResult) => {
+                chargingStation1.OCPP.OUT.    OnBootNotificationRequestSent     += (timestamp, sender, connection, bootNotificationRequest, sendMessageResult) => {
                     csBootNotificationRequests.   TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 var nnBinaryDataTransferRequestsOUT         = new ConcurrentList<BinaryDataTransferRequest>();
                 var csmsIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                chargingStation1.OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, binaryDataTransferRequest, sendMessageResult) => {
+                chargingStation1.OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, connection, binaryDataTransferRequest, sendMessageResult) => {
                     csBinaryDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };

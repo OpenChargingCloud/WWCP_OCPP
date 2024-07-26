@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnSetDisplayMessageRequestFilterDelegate?      OnSetDisplayMessageRequest;
+        public event OnSetDisplayMessageRequestReceivedDelegate?    OnSetDisplayMessageRequestReceived;
+        public event OnSetDisplayMessageRequestFilterDelegate?      OnSetDisplayMessageRequestFilter;
+        public event OnSetDisplayMessageRequestFilteredDelegate?    OnSetDisplayMessageRequestFiltered;
+        public event OnSetDisplayMessageRequestSentDelegate?        OnSetDisplayMessageRequestSent;
 
-        public event OnSetDisplayMessageRequestFilteredDelegate?    OnSetDisplayMessageRequestLogging;
+        public event OnSetDisplayMessageResponseReceivedDelegate?   OnSetDisplayMessageResponseReceived;
+        public event OnSetDisplayMessageResponseSentDelegate?       OnSetDisplayMessageResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<SetDisplayMessageRequest, SetDisplayMessageResponse>? forwardingDecision = null;
 
-            #region Send OnSetDisplayMessageRequest event
+            #region Send OnSetDisplayMessageRequestReceived event
 
-            var requestFilter = OnSetDisplayMessageRequest;
+            var receivedLogging = OnSetDisplayMessageRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnSetDisplayMessageRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnSetDisplayMessageRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnSetDisplayMessageRequestFilter event
+
+            var requestFilter = OnSetDisplayMessageRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnSetDisplayMessageRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnSetDisplayMessageRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnSetDisplayMessageRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnSetDisplayMessageRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,89 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomSetDisplayMessageRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomMessageInfoSerializer,
+                                                        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                                                        parentNetworkingNode.OCPP.CustomComponentSerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVSESerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnSetDisplayMessageRequestLogging event
+            #region Send OnSetDisplayMessageRequestFiltered event
 
-            var logger = OnSetDisplayMessageRequestLogging;
+            var logger = OnSetDisplayMessageRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnSetDisplayMessageRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnSetDisplayMessageRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnSetDisplayMessageRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnSetDisplayMessageRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnSetDisplayMessageRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnSetDisplayMessageRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnSetDisplayMessageRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnSetDisplayMessageRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

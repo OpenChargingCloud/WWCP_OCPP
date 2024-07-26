@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnRequestStopTransactionRequestFilterDelegate?      OnRequestStopTransactionRequest;
+        public event OnRequestStopTransactionRequestReceivedDelegate?    OnRequestStopTransactionRequestReceived;
+        public event OnRequestStopTransactionRequestFilterDelegate?      OnRequestStopTransactionRequestFilter;
+        public event OnRequestStopTransactionRequestFilteredDelegate?    OnRequestStopTransactionRequestFiltered;
+        public event OnRequestStopTransactionRequestSentDelegate?        OnRequestStopTransactionRequestSent;
 
-        public event OnRequestStopTransactionRequestFilteredDelegate?    OnRequestStopTransactionRequestLogging;
+        public event OnRequestStopTransactionResponseReceivedDelegate?   OnRequestStopTransactionResponseReceived;
+        public event OnRequestStopTransactionResponseSentDelegate?       OnRequestStopTransactionResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>? forwardingDecision = null;
 
-            #region Send OnRequestStopTransactionRequest event
+            #region Send OnRequestStopTransactionRequestReceived event
 
-            var requestFilter = OnRequestStopTransactionRequest;
+            var receivedLogging = OnRequestStopTransactionRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnRequestStopTransactionRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnRequestStopTransactionRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnRequestStopTransactionRequestFilter event
+
+            var requestFilter = OnRequestStopTransactionRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnRequestStopTransactionRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnRequestStopTransactionRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnRequestStopTransactionRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnRequestStopTransactionRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomRequestStopTransactionRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnRequestStopTransactionRequestLogging event
+            #region Send OnRequestStopTransactionRequestFiltered event
 
-            var logger = OnRequestStopTransactionRequestLogging;
+            var logger = OnRequestStopTransactionRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnRequestStopTransactionRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnRequestStopTransactionRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnRequestStopTransactionRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnRequestStopTransactionRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnRequestStopTransactionRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnRequestStopTransactionRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnRequestStopTransactionRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnRequestStopTransactionRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
@@ -55,8 +56,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnListDirectoryRequestSent?.Invoke(startTime,
                                                    parentNetworkingNode,
+                                                   null,
                                                    Request,
-                                                   SendMessageResult.Success);
+                                                   SentMessageResults.Success);
             }
             catch (Exception e)
             {
@@ -156,6 +158,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event sent whenever a response to a ListDirectory request was received.
         /// </summary>
         public event OnListDirectoryResponseReceivedDelegate?  OnListDirectoryResponseReceived;
+
+        #endregion
+
+
+        #region Receive ListDirectoryRequestError
+
+        public async Task<ListDirectoryResponse>
+
+            Receive_ListDirectoryRequestError(ListDirectoryRequest          Request,
+                                              OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                              IWebSocketConnection          WebSocketConnection)
+
+        {
+
+            var response = ListDirectoryResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomListDirectoryResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
+
+            #region Send OnListDirectoryResponseReceived event
+
+            var logger = OnListDirectoryResponseReceived;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                           OfType<OnListDirectoryResponseReceivedDelegate>().
+                                           Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                          Timestamp.Now,
+                                                                          parentNetworkingNode,
+                                                                          //    WebSocketConnection,
+                                                                          Request,
+                                                                          response,
+                                                                          response.Runtime
+                                                                      )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnListDirectoryResponseReceived));
+                }
+            }
+
+            #endregion
+
+            return response;
+
+        }
 
         #endregion
 

@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
@@ -55,8 +56,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnDeleteFileRequestSent?.Invoke(startTime,
                                                 parentNetworkingNode,
+                                                null,
                                                 Request,
-                                                SendMessageResult.Success);
+                                                SentMessageResults.Success);
             }
             catch (Exception e)
             {
@@ -158,6 +160,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnDeleteFileResponseReceivedDelegate?  OnDeleteFileResponseReceived;
 
         #endregion
+
+
+        #region Receive DeleteFileRequestError
+
+        public async Task<DeleteFileResponse>
+
+            Receive_DeleteFileRequestError(DeleteFileRequest             Request,
+                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                           IWebSocketConnection          WebSocketConnection)
+
+        {
+
+            var response = DeleteFileResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomDeleteFileResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
+
+            #region Send OnDeleteFileResponseReceived event
+
+            var logger = OnDeleteFileResponseReceived;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                           OfType<OnDeleteFileResponseReceivedDelegate>().
+                                           Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                          Timestamp.Now,
+                                                                          parentNetworkingNode,
+                                                                          //    WebSocketConnection,
+                                                                          Request,
+                                                                          response,
+                                                                          response.Runtime
+                                                                      )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteFileResponseReceived));
+                }
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
 
     }
 

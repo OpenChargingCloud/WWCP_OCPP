@@ -109,9 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-
             ForwardingDecision<LogStatusNotificationRequest, LogStatusNotificationResponse>? forwardingDecision = null;
-
 
             #region Send OnLogStatusNotificationRequestReceived event
 
@@ -121,27 +119,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 try
                 {
 
-                    await Task.WhenAll(receivedLogging.GetInvocationList().
-                                          OfType<OnLogStatusNotificationRequestReceivedDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request)).
-                                          ToArray());
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnLogStatusNotificationRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                                "NetworkingNode",
-                                nameof(OnLogStatusNotificationRequestReceived),
-                                e
-                            );
+                              nameof(NetworkingNode),
+                              nameof(OnLogStatusNotificationRequestReceived),
+                              e
+                          );
                 }
 
             }
 
             #endregion
+
 
             #region Send OnLogStatusNotificationRequestFilter event
 
@@ -151,14 +153,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType<OnLogStatusNotificationRequestFilterDelegate>().
-                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                    parentNetworkingNode,
-                                                                                                    Connection,
-                                                                                                    request,
-                                                                                                    CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnLogStatusNotificationRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -167,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
+                              nameof(NetworkingNode),
                               nameof(OnLogStatusNotificationRequestFilter),
                               e
                           );
@@ -176,7 +182,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
-
 
             #region Default result
 
@@ -211,6 +216,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomLogStatusNotificationRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
             #region Send OnLogStatusNotificationRequestFiltered event
 
@@ -220,20 +231,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType<OnLogStatusNotificationRequestFilteredDelegate>().
-                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                        parentNetworkingNode,
-                                                                                        Connection,
-                                                                                        request,
-                                                                                        forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnLogStatusNotificationRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
+                              nameof(NetworkingNode),
                               nameof(OnLogStatusNotificationRequestFiltered),
                               e
                           );
@@ -243,48 +258,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region Send OnLogStatusNotificationRequestSent event
+
+            #region Attach OnLogStatusNotificationRequestSent event
 
             if (forwardingDecision.Result == ForwardingResults.FORWARD)
             {
 
                 var sentLogging = OnLogStatusNotificationRequestSent;
                 if (sentLogging is not null)
-                {
-                    try
-                    {
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
 
-                        await Task.WhenAll(sentLogging.GetInvocationList().
-                                              OfType<OnLogStatusNotificationRequestSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                             parentNetworkingNode,
-                                                                                             request,
-                                                SendMessageResult.Success)).
-                                              ToArray());
+                        try
+                        {
 
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                    "NetworkingNode",
-                                    nameof(OnLogStatusNotificationRequestSent),
-                                    e
-                                );
-                    }
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnLogStatusNotificationRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
 
-                }
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnLogStatusNotificationRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 
             #endregion
-
-
-            if (forwardingDecision.NewRequest is not null)
-                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
-                                                        parentNetworkingNode.OCPP.CustomLogStatusNotificationRequestSerializer,
-                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                    );
 
             return forwardingDecision;
 

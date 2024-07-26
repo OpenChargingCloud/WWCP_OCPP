@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnSendLocalListRequestFilterDelegate?      OnSendLocalListRequest;
+        public event OnSendLocalListRequestReceivedDelegate?    OnSendLocalListRequestReceived;
+        public event OnSendLocalListRequestFilterDelegate?      OnSendLocalListRequestFilter;
+        public event OnSendLocalListRequestFilteredDelegate?    OnSendLocalListRequestFiltered;
+        public event OnSendLocalListRequestSentDelegate?        OnSendLocalListRequestSent;
 
-        public event OnSendLocalListRequestFilteredDelegate?    OnSendLocalListRequestLogging;
+        public event OnSendLocalListResponseReceivedDelegate?   OnSendLocalListResponseReceived;
+        public event OnSendLocalListResponseSentDelegate?       OnSendLocalListResponseSent;
 
         #endregion
 
@@ -90,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                JSONRequestMessage.RequestId,
                                                JSONRequestMessage.DestinationId,
                                                JSONRequestMessage.NetworkPath,
-                                               out var Request,
+                                               out var request,
                                                out var errorResponse,
                                                JSONRequestMessage.RequestTimestamp,
                                                JSONRequestMessage.RequestTimeout - Timestamp.Now,
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<SendLocalListRequest, SendLocalListResponse>? forwardingDecision = null;
 
-            #region Send OnSendLocalListRequest event
+            #region Send OnSendLocalListRequestReceived event
 
-            var requestFilter = OnSendLocalListRequest;
+            var receivedLogging = OnSendLocalListRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnSendLocalListRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnSendLocalListRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnSendLocalListRequestFilter event
+
+            var requestFilter = OnSendLocalListRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnSendLocalListRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnSendLocalListRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnSendLocalListRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnSendLocalListRequestFilter),
                               e
                           );
                 }
@@ -140,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<SendLocalListRequest, SendLocalListResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -150,12 +192,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new SendLocalListResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<SendLocalListRequest, SendLocalListResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -170,33 +212,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomSendLocalListRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomAuthorizationDataSerializer,
+                                                        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                                                        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+                                                        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+                                                        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnSendLocalListRequestLogging event
+            #region Send OnSendLocalListRequestFiltered event
 
-            var logger = OnSendLocalListRequestLogging;
+            var logger = OnSendLocalListRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnSendLocalListRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnSendLocalListRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnSendLocalListRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnSendLocalListRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnSendLocalListRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnSendLocalListRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnSendLocalListRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnSendLocalListRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

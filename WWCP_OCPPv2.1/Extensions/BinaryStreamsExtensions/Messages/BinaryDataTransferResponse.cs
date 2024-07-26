@@ -17,6 +17,8 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using System.Diagnostics.CodeAnalysis;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -142,10 +144,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public BinaryDataTransferResponse(BinaryDataTransferRequest  Request,
-                                          Result                     Result)
+                                          Result                     Result,
+                                          DateTime?                  ResponseTimestamp   = null,
+
+                                          NetworkingNode_Id?         DestinationId       = null,
+                                          NetworkPath?               NetworkPath         = null,
+
+                                          IEnumerable<KeyPair>?      SignKeys            = null,
+                                          IEnumerable<SignInfo>?     SignInfos           = null,
+                                          IEnumerable<Signature>?    Signatures          = null,
+
+                                          CustomData?                CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -455,6 +477,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         #region Static methods
+
+        /// <summary>
+        /// The BinaryDataTransfer failed because of a request error.
+        /// </summary>
+        /// <param name="Request">The BinaryDataTransfer request.</param>
+        public static BinaryDataTransferResponse RequestError(BinaryDataTransferRequest  Request,
+                                                              EventTracking_Id           EventTrackingId,
+                                                              ResultCode                 ErrorCode,
+                                                              String?                    ErrorDescription    = null,
+                                                              JObject?                   ErrorDetails        = null,
+                                                              DateTime?                  ResponseTimestamp   = null,
+
+                                                              NetworkingNode_Id?         DestinationId       = null,
+                                                              NetworkPath?               NetworkPath         = null,
+
+                                                              IEnumerable<KeyPair>?      SignKeys            = null,
+                                                              IEnumerable<SignInfo>?     SignInfos           = null,
+                                                              IEnumerable<Signature>?    Signatures          = null,
+
+                                                              CustomData?                CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The BinaryDataTransfer failed.
+        /// </summary>
+        /// <param name="Request">The BinaryDataTransfer request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static BinaryDataTransferResponse SignatureError(BinaryDataTransferRequest  Request,
+                                                                String                     ErrorDescription)
+
+            => new (Request,
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
 
         /// <summary>
         /// The BinaryDataTransfer failed.

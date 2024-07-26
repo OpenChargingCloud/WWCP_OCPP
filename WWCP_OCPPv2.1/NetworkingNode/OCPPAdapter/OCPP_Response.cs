@@ -27,34 +27,46 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
-    public class OCPP_Response(OCPP_JSONResponseMessage?      JSONResponseMessage,
-                               OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage,
-                               OCPP_BinaryResponseMessage?    BinaryResponseMessage) : IEquatable<OCPP_Response>
+    public class OCPP_Response(OCPP_JSONResponseMessage?        JSONResponseMessage,
+                               OCPP_JSONRequestErrorMessage?    JSONRequestErrorMessage,
+                               OCPP_BinaryResponseMessage?      BinaryResponseMessage,
+                               OCPP_BinaryRequestErrorMessage?  BinaryRequestErrorMessage) : IEquatable<OCPP_Response>
     {
 
-        public OCPP_JSONResponseMessage?      JSONResponseMessage        { get; } = JSONResponseMessage;
-        public OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage    { get; } = JSONRequestErrorMessage;
-        public OCPP_BinaryResponseMessage?    BinaryResponseMessage      { get; } = BinaryResponseMessage;
+        public OCPP_JSONResponseMessage?        JSONResponseMessage          { get; } = JSONResponseMessage;
+        public OCPP_JSONRequestErrorMessage?    JSONRequestErrorMessage      { get; } = JSONRequestErrorMessage;
+        public OCPP_BinaryResponseMessage?      BinaryResponseMessage        { get; } = BinaryResponseMessage;
+        public OCPP_BinaryRequestErrorMessage?  BinaryRequestErrorMessage    { get; } = BinaryRequestErrorMessage;
 
 
 
-        public static OCPP_Response FromJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        public static OCPP_Response FromJSONResponse   (OCPP_JSONResponseMessage        JSONResponseMessage)
 
             => new (JSONResponseMessage,
                     null,
+                    null,
                     null);
 
-        public static OCPP_Response FromJSONError(OCPP_JSONRequestErrorMessage JSONErrorMessage)
+        public static OCPP_Response FromJSONError      (OCPP_JSONRequestErrorMessage    JSONRequestErrorMessage)
 
             => new (null,
-                    JSONErrorMessage,
+                    JSONRequestErrorMessage,
+                    null,
                     null);
 
-        public static OCPP_Response FromBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public static OCPP_Response FromBinaryResponse (OCPP_BinaryResponseMessage      BinaryResponseMessage)
 
             => new (null,
                     null,
-                    BinaryResponseMessage);
+                    BinaryResponseMessage,
+                    null);
+
+        public static OCPP_Response FromBinaryError    (OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage)
+
+            => new (null,
+                    null,
+                    null,
+                    BinaryRequestErrorMessage);
 
 
 
@@ -75,6 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         Payload,
                         CancellationToken
                     ),
+                    null,
                     null,
                     null);
 
@@ -102,6 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         ErrorDetails,
                         CancellationToken
                     ),
+                    null,
                     null);
 
 
@@ -124,6 +138,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         RequestId,
                         Payload,
                         CancellationToken
+                    ),
+                    null);
+
+
+        public static OCPP_Response BinaryRequestError(EventTracking_Id   EventTrackingId,
+                                                       NetworkingNode_Id  DestinationId,
+                                                       NetworkPath        NetworkPath,
+                                                       Request_Id         RequestId,
+                                                       ResultCode         ErrorCode,
+                                                       String?            ErrorDescription    = null,
+                                                       JObject?           ErrorDetails        = null,
+                                                       CancellationToken  CancellationToken   = default)
+
+            => new (null,
+                    null,
+                    null,
+                    new OCPP_BinaryRequestErrorMessage(
+                        Timestamp.Now,
+                        EventTrackingId,
+                        NetworkingMode.Unknown,
+                        DestinationId,
+                        NetworkPath,
+                        RequestId,
+                        ErrorCode,
+                        ErrorDescription,
+                        ErrorDetails,
+                        CancellationToken
                     ));
 
 
@@ -142,6 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         JSONObjectRequest,
                         ErrorResponse
                     ),
+                    null,
                     null);
 
         public static OCPP_Response CouldNotParse(EventTracking_Id  EventTrackingId,
@@ -158,6 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         BinaryRequest,
                         ErrorResponse
                     ),
+                    null,
                     null);
 
 
@@ -175,6 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         JSONObjectRequest,
                         Exception
                     ),
+                    null,
                     null);
 
 
@@ -192,6 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         BinaryRequest,
                         Exception
                     ),
+                    null,
                     null);
 
 
@@ -206,16 +251,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         public Boolean Equals(OCPP_Response? OCPPResponse)
 
             => OCPPResponse is not null &&
-               Equals(JSONResponseMessage,     OCPPResponse.JSONResponseMessage)     &&
-               Equals(JSONRequestErrorMessage, OCPPResponse.JSONRequestErrorMessage) &&
-               Equals(BinaryResponseMessage,   OCPPResponse.BinaryResponseMessage);
+               Equals(JSONResponseMessage,       OCPPResponse.JSONResponseMessage)     &&
+               Equals(JSONRequestErrorMessage,   OCPPResponse.JSONRequestErrorMessage) &&
+               Equals(BinaryResponseMessage,     OCPPResponse.BinaryResponseMessage)   &&
+               Equals(BinaryRequestErrorMessage, OCPPResponse.BinaryRequestErrorMessage);
 
 
         public override Int32 GetHashCode()
 
-            => (JSONResponseMessage?.    GetHashCode() ?? 0) ^
-               (JSONRequestErrorMessage?.GetHashCode() ?? 0) ^
-               (BinaryResponseMessage?.  GetHashCode() ?? 0);
+            => (JSONResponseMessage?.      GetHashCode() ?? 0) ^
+               (JSONRequestErrorMessage?.  GetHashCode() ?? 0) ^
+               (BinaryResponseMessage?.    GetHashCode() ?? 0) ^
+               (BinaryRequestErrorMessage?.GetHashCode() ?? 0);
 
 
     }

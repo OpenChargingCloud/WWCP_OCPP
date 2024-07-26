@@ -18,6 +18,8 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -28,63 +30,26 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
-
-        #region Custom JSON serializer delegates
-
-        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?  CustomCertificateSignedRequestSerializer    { get; set; }
-
-        public CustomJObjectParserDelegate<CertificateSignedResponse>?     CustomCertificateSignedResponseParser       { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
         /// An event sent whenever a CertificateSigned request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCertificateSignedRequestSentDelegate?     OnCertificateSignedRequestSent;
-
-        /// <summary>
-        /// An event sent whenever a response to a CertificateSigned request was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnCertificateSignedResponseReceivedDelegate?    OnCertificateSignedResponseReceived;
+        public event OnCertificateSignedRequestSentDelegate?  OnCertificateSignedRequestSent;
 
         #endregion
-
 
         #region CertificateSigned(Request)
 
         /// <summary>
         /// Send the signed certificate to the charging station.
         /// </summary>
-        /// <param name="Request">A certificate signed request.</param>
+        /// <param name="Request">A CertificateSigned request.</param>
         public async Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
         {
-
-            #region Send OnCertificateSignedRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnCertificateSignedRequestSent?.Invoke(startTime,
-                                                   parentNetworkingNode,
-                                                   Request,
-                                                SendMessageResult.Success);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCertificateSignedRequestSent));
-            }
-
-            #endregion
-
 
             CertificateSignedResponse? response = null;
 
@@ -92,14 +57,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 var sendRequestState = await SendJSONRequestAndWait(
+
                                                  OCPP_JSONRequestMessage.FromRequest(
                                                      Request,
                                                      Request.ToJSON(
-                                                         CustomCertificateSignedRequestSerializer,
+                                                         parentNetworkingNode.OCPP.CustomCertificateSignedRequestSerializer,
                                                          parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                          parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                      )
-                                                 )
+                                                 ),
+
+                                                 async sendMessageResult => {
+
+                                                     #region Send OnCertificateSignedRequestSent event
+
+                                                     try
+                                                     {
+
+                                                         var logger = OnCertificateSignedRequestSent;
+                                                         if (logger is not null)
+                                                         {
+                                                             try
+                                                             {
+
+                                                                 await Task.WhenAll(logger.GetInvocationList().
+                                                                                        OfType<OnCertificateSignedRequestSentDelegate>().
+                                                                                        Select(filterDelegate => filterDelegate.Invoke(
+                                                                                                                     Timestamp.Now,
+                                                                                                                     parentNetworkingNode,
+                                                                                                                     sendMessageResult.Connection,
+                                                                                                                     Request,
+                                                                                                                     sendMessageResult.Result
+                                                                                                                 )).
+                                                                                        ToArray());
+
+                                                             }
+                                                             catch (Exception e)
+                                                             {
+                                                                 await HandleErrors(
+                                                                           nameof(OCPPWebSocketAdapterOUT),
+                                                                           nameof(OnCertificateSignedRequestSent),
+                                                                           e
+                                                                       );
+                                                             }
+
+                                                         }
+
+                                                     }
+                                                     catch (Exception e)
+                                                     {
+                                                         DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCertificateSignedRequestSent));
+                                                     }
+
+                                                     #endregion
+
+                                                 }
+
                                              );
 
                 if (sendRequestState.NoErrors &&
@@ -110,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            sendRequestState.JSONResponse.Payload,
                                                            out var certificateSignedResponse,
                                                            out var errorResponse,
-                                                           CustomCertificateSignedResponseParser) &&
+                                                           parentNetworkingNode.OCPP.CustomCertificateSignedResponseParser) &&
                         certificateSignedResponse is not null)
                     {
                         response = certificateSignedResponse;
@@ -142,22 +155,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnCertificateSignedResponse event
 
-            var endTime = Timestamp.Now;
+            //var endTime = Timestamp.Now;
 
-            try
-            {
-
-                OnCertificateSignedResponseReceived?.Invoke(endTime,
-                                                    parentNetworkingNode,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCertificateSignedResponseReceived));
-            }
+            await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).SendOnCertificateSignedResponseReceived(
+                       Timestamp.Now,
+                       parentNetworkingNode,
+                       null,
+                       Request,
+                       response,
+                       response.Runtime
+                   );
 
             #endregion
 
@@ -167,7 +174,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-
     }
 
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
@@ -176,7 +182,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a CertificateSigned request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCertificateSignedResponseReceivedDelegate? OnCertificateSignedResponseReceived;
+        public event OnCertificateSignedResponseReceivedDelegate? OnCertificateSignedResponseReceived;
+
+        #region Send OnCertificateSignedResponseReceived event
+
+        public async Task SendOnCertificateSignedResponseReceived(DateTime                   Timestamp,
+                                                                  IEventSender               Sender,
+                                                                  IWebSocketConnection       Connection,
+                                                                  CertificateSignedRequest   Request,
+                                                                  CertificateSignedResponse  Response,
+                                                                  TimeSpan                   Runtime)
+        {
+
+            var logger = OnCertificateSignedResponseReceived;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType<OnCertificateSignedResponseReceivedDelegate>().
+                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                             Sender,
+                                                                                             Connection,
+                                                                                             Request,
+                                                                                             Response,
+                                                                                             Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterIN),
+                              nameof(OnCertificateSignedResponseReceived),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

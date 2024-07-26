@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -72,9 +73,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnAFRRSignalRequestFilterDelegate?      OnAFRRSignalRequest;
+        public event OnAFRRSignalRequestReceivedDelegate?    OnAFRRSignalRequestReceived;
+        public event OnAFRRSignalRequestFilterDelegate?      OnAFRRSignalRequestFilter;
+        public event OnAFRRSignalRequestFilteredDelegate?    OnAFRRSignalRequestFiltered;
+        public event OnAFRRSignalRequestSentDelegate?        OnAFRRSignalRequestSent;
 
-        public event OnAFRRSignalRequestFilteredDelegate?    OnAFRRSignalRequestLogging;
+        public event OnAFRRSignalResponseReceivedDelegate?   OnAFRRSignalResponseReceived;
+        public event OnAFRRSignalResponseSentDelegate?       OnAFRRSignalResponseSent;
 
         #endregion
 
@@ -90,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             JSONRequestMessage.RequestId,
                                             JSONRequestMessage.DestinationId,
                                             JSONRequestMessage.NetworkPath,
-                                            out var Request,
+                                            out var request,
                                             out var errorResponse,
                                             JSONRequestMessage.RequestTimestamp,
                                             JSONRequestMessage.RequestTimeout - Timestamp.Now,
@@ -102,22 +107,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<AFRRSignalRequest, AFRRSignalResponse>? forwardingDecision = null;
 
-            #region Send OnAFRRSignalRequest event
+            #region Send OnAFRRSignalRequestReceived event
 
-            var requestFilter = OnAFRRSignalRequest;
+            var receivedLogging = OnAFRRSignalRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnAFRRSignalRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                  Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnAFRRSignalRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnAFRRSignalRequestFilter event
+
+            var requestFilter = OnAFRRSignalRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnAFRRSignalRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnAFRRSignalRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +169,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnAFRRSignalRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnAFRRSignalRequestFilter),
                               e
                           );
                 }
@@ -140,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<AFRRSignalRequest, AFRRSignalResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -150,12 +193,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new AFRRSignalResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<AFRRSignalRequest, AFRRSignalResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -170,30 +213,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomAFRRSignalRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnAFRRSignalRequestLogging event
+            #region Send OnAFRRSignalRequestFiltered event
 
-            var logger = OnAFRRSignalRequestLogging;
+            var logger = OnAFRRSignalRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnAFRRSignalRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnAFRRSignalRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnAFRRSignalRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnAFRRSignalRequestFiltered),
                               e
                           );
                 }
@@ -202,7 +255,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
+            #region Attach OnAFRRSignalRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnAFRRSignalRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnAFRRSignalRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnAFRRSignalRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
+
+            }
+
+            #endregion
+
             return forwardingDecision;
+
 
         }
 

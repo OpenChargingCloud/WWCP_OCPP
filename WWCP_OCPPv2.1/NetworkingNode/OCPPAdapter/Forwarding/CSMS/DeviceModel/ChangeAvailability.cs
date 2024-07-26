@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnChangeAvailabilityRequestFilterDelegate?      OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestReceivedDelegate?    OnChangeAvailabilityRequestReceived;
+        public event OnChangeAvailabilityRequestFilterDelegate?      OnChangeAvailabilityRequestFilter;
+        public event OnChangeAvailabilityRequestFilteredDelegate?    OnChangeAvailabilityRequestFiltered;
+        public event OnChangeAvailabilityRequestSentDelegate?        OnChangeAvailabilityRequestSent;
 
-        public event OnChangeAvailabilityRequestFilteredDelegate?    OnChangeAvailabilityRequestLogging;
+        public event OnChangeAvailabilityResponseReceivedDelegate?   OnChangeAvailabilityResponseReceived;
+        public event OnChangeAvailabilityResponseSentDelegate?       OnChangeAvailabilityResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<ChangeAvailabilityRequest, ChangeAvailabilityResponse>? forwardingDecision = null;
 
-            #region Send OnChangeAvailabilityRequest event
+            #region Send OnChangeAvailabilityRequestReceived event
 
-            var requestFilter = OnChangeAvailabilityRequest;
+            var receivedLogging = OnChangeAvailabilityRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnChangeAvailabilityRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnChangeAvailabilityRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnChangeAvailabilityRequestFilter event
+
+            var requestFilter = OnChangeAvailabilityRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnChangeAvailabilityRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnChangeAvailabilityRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnChangeAvailabilityRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnChangeAvailabilityRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,86 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomChangeAvailabilityRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVSESerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnChangeAvailabilityRequestLogging event
+            #region Send OnChangeAvailabilityRequestFiltered event
 
-            var logger = OnChangeAvailabilityRequestLogging;
+            var logger = OnChangeAvailabilityRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnChangeAvailabilityRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnChangeAvailabilityRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnChangeAvailabilityRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnChangeAvailabilityRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnChangeAvailabilityRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnChangeAvailabilityRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnChangeAvailabilityRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnChangeAvailabilityRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

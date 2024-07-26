@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnCustomerInformationRequestFilterDelegate?      OnCustomerInformationRequest;
+        public event OnCustomerInformationRequestReceivedDelegate?    OnCustomerInformationRequestReceived;
+        public event OnCustomerInformationRequestFilterDelegate?      OnCustomerInformationRequestFilter;
+        public event OnCustomerInformationRequestFilteredDelegate?    OnCustomerInformationRequestFiltered;
+        public event OnCustomerInformationRequestSentDelegate?        OnCustomerInformationRequestSent;
 
-        public event OnCustomerInformationRequestFilteredDelegate?    OnCustomerInformationRequestLogging;
+        public event OnCustomerInformationResponseReceivedDelegate?   OnCustomerInformationResponseReceived;
+        public event OnCustomerInformationResponseSentDelegate?       OnCustomerInformationResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<CustomerInformationRequest, CustomerInformationResponse>? forwardingDecision = null;
 
-            #region Send OnCustomerInformationRequest event
+            #region Send OnCustomerInformationRequestReceived event
 
-            var requestFilter = OnCustomerInformationRequest;
+            var receivedLogging = OnCustomerInformationRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnCustomerInformationRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnCustomerInformationRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnCustomerInformationRequestFilter event
+
+            var requestFilter = OnCustomerInformationRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnCustomerInformationRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnCustomerInformationRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnCustomerInformationRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnCustomerInformationRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomCustomerInformationRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                                                        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnCustomerInformationRequestLogging event
+            #region Send OnCustomerInformationRequestFiltered event
 
-            var logger = OnCustomerInformationRequestLogging;
+            var logger = OnCustomerInformationRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnCustomerInformationRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnCustomerInformationRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnCustomerInformationRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnCustomerInformationRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnCustomerInformationRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnCustomerInformationRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnCustomerInformationRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnCustomerInformationRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

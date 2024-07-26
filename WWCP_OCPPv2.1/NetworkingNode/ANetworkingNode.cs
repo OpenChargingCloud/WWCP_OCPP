@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -894,6 +895,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+        public async Task LogEvent<TDelegate>(String                                             OCPPIO,
+                                              TDelegate?                                         Logger,
+                                              Func<TDelegate, Task>                              LogHandler,
+                                              [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+                                              [CallerMemberName()]                       String  OCPPCommand   = "")
+
+            where TDelegate : Delegate
+
+        {
+            if (Logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              Logger.GetInvocationList().
+                                     OfType<TDelegate>().
+                                     Select(LogHandler)
+                          );
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(OCPPIO, $"{OCPPCommand}.{EventName}", e);
+                }
+            }
+        }
 
 
         #region (virtual) HandleErrors(Module, Caller, ErrorResponse)

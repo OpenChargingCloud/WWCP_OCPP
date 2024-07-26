@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
@@ -32,12 +33,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnInstallCertificateRequestSentDelegate(DateTime                    Timestamp,
                                                                  IEventSender                Sender,
+                                                                 IWebSocketConnection        Connection,
                                                                  InstallCertificateRequest   Request,
-                                                                 SendMessageResult           SendMessageResult);
+                                                                 SentMessageResults          SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to an InstallCertificate request was received.

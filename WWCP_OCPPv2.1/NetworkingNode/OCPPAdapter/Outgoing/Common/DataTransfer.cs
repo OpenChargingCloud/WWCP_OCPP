@@ -100,14 +100,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              {
 
                                                                  await Task.WhenAll(logger.GetInvocationList().
-                                                                                         OfType<OnDataTransferRequestSentDelegate>().
-                                                                                         Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                                                       Timestamp.Now,
-                                                                                                                       parentNetworkingNode,
-                                                                                                                       Request,
-                                                                                                                       sendMessageResult
-                                                                                                                   )).
-                                                                                         ToArray());
+                                                                                        OfType<OnDataTransferRequestSentDelegate>().
+                                                                                        Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                                                                      Timestamp.Now,
+                                                                                                                      parentNetworkingNode,
+                                                                                                                      sendMessageResult.Connection,
+                                                                                                                      Request,
+                                                                                                                      sendMessageResult.Result
+                                                                                                                  )).
+                                                                                        ToArray());
 
                                                              }
                                                              catch (Exception e)

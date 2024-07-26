@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Receive message (wired via reflection!)
+        #region Receive DeleteFileRequest (wired via reflection!)
 
         public async Task<OCPP_Response>
 

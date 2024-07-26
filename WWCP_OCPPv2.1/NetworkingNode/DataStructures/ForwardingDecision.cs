@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -53,57 +54,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The JSON-LD context of the request.
         /// </summary>
-        public JSONLDContext?      RequestContext          { get; }
+        public JSONLDContext?             RequestContext          { get; }
 
         /// <summary>
         /// The forwarding decision.
         /// </summary>
-        public ForwardingResults   Result                  { get; }
+        public ForwardingResults          Result                  { get; }
 
         /// <summary>
         /// The optional new JSON request sent instead of the original request.
         /// </summary>
-        public JObject?            NewJSONRequest          { get; set; }
+        public JObject?                   NewJSONRequest          { get; set; }
 
         /// <summary>
         /// The optional new binary request sent instead of the original request.
         /// </summary>
-        public Byte[]?             NewBinaryRequest        { get; set; }
+        public Byte[]?                    NewBinaryRequest        { get; set; }
 
         /// <summary>
         /// The optional new OCPP action.
         /// </summary>
-        public String?             NewAction               { get; set; }
+        public String?                    NewAction               { get; set; }
 
         /// <summary>
         /// The optional new destination id.
         /// </summary>
-        public NetworkingNode_Id?  NewDestinationId        { get; set; }
+        public NetworkingNode_Id?         NewDestinationId        { get; set; }
 
         /// <summary>
         /// The JSON response, when the request was rejected.
         /// </summary>
-        public JObject?            JSONRejectResponse      { get; }
+        public JObject?                   JSONRejectResponse      { get; }
 
         /// <summary>
         /// The binary response, when the request was rejected.
         /// </summary>
-        public Byte[]?             BinaryRejectResponse    { get; }
+        public Byte[]?                    BinaryRejectResponse    { get; }
 
         /// <summary>
         /// The REJECT message sent back to the sender.
         /// </summary>
-        public String              RejectMessage           { get; }
+        public String                     RejectMessage           { get; }
 
         /// <summary>
         /// Optional REJECT details sent back to the sender.
         /// </summary>
-        public JObject?            RejectDetails           { get; }
+        public JObject?                   RejectDetails           { get; }
 
         /// <summary>
         /// The log message.
         /// </summary>
-        public String              LogMessage              { get; }
+        public String                     LogMessage              { get; }
+
+        /// <summary>
+        /// A delegate for logging the result of a forwarded message sending.
+        /// </summary>
+        public Action<SentMessageResult>  SentMessageLogger       { get; set; }
 
         #endregion
 
@@ -273,6 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Constructor(s)
 
+        #region ForwardingDecision(Request, Result, NewRequest = null, NewAction = null, NewDestinationId = null, RejectMessage = null, RejectDetails = null, LogMessage = null)
+
         /// <summary>
         /// Create a new forwarding decision.
         /// </summary>
@@ -304,6 +312,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.NewDestinationId  = NewDestinationId;
 
         }
+
+        #endregion
+
+        #region ForwardingDecision(Request, Result, RejectResponse, JSONRejectResponse,   RejectMessage = null, RejectDetails = null, LogMessage = null)
 
         /// <summary>
         /// Create a new forwarding decision.
@@ -337,6 +349,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
+        #endregion
+
+        #region ForwardingDecision(Request, Result, RejectResponse, BinaryRejectResponse, RejectMessage = null, RejectDetails = null, LogMessage = null)
+
         /// <summary>
         /// Create a new forwarding decision.
         /// </summary>
@@ -368,6 +384,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.RejectResponse  = RejectResponse;
 
         }
+
+        #endregion
 
         #endregion
 
@@ -418,13 +436,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    null,
                    null,
                    null,
-                  // RequestContext,
+                   RejectMessage,
+                   RejectDetails,
+                   LogMessage
+               );
+
+
+        /// <summary>
+        /// Create a new forwarding decision.
+        /// </summary>
+        /// <param name="Request">The request.</param>
+        /// <param name="RejectResponse">The response, when the request was rejected.</param>
+        /// <param name="JSONRejectResponse">The JSON response, when the request was rejected.</param>
+        /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
+        /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
+        /// <param name="LogMessage">An optional log message.</param>
+        public static ForwardingDecision<TRequest, TResponse> REJECT(TRequest   Request,
+                                                                     TResponse  RejectResponse,
+                                                                     JObject    JSONRejectResponse,
+                                                                     String?    RejectMessage   = null,
+                                                                     JObject?   RejectDetails   = null,
+                                                                     String?    LogMessage      = null)
+
+            => new (
+                   Request,
+                   ForwardingResults.REJECT,
+                   RejectResponse,
+                   JSONRejectResponse,
                    RejectMessage,
                    RejectDetails,
                    LogMessage
                );
 
         #endregion
+
 
         #region (static) REPLACE (Request, NewRequest, NewAction = null, NewDestinationId = null, LogMessage = null, RequestContext = null)
 

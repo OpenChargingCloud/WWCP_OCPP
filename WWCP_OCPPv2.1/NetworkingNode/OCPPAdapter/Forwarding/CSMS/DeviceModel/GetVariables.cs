@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -72,9 +73,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnGetVariablesRequestFilterDelegate?      OnGetVariablesRequest;
+        public event OnGetVariablesRequestReceivedDelegate?    OnGetVariablesRequestReceived;
+        public event OnGetVariablesRequestFilterDelegate?      OnGetVariablesRequestFilter;
+        public event OnGetVariablesRequestFilteredDelegate?    OnGetVariablesRequestFiltered;
+        public event OnGetVariablesRequestSentDelegate?        OnGetVariablesRequestSent;
 
-        public event OnGetVariablesRequestFilteredDelegate?    OnGetVariablesRequestLogging;
+        public event OnGetVariablesResponseReceivedDelegate?   OnGetVariablesResponseReceived;
+        public event OnGetVariablesResponseSentDelegate?       OnGetVariablesResponseSent;
 
         #endregion
 
@@ -90,11 +95,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               JSONRequestMessage.RequestId,
                                               JSONRequestMessage.DestinationId,
                                               JSONRequestMessage.NetworkPath,
-                                              out var Request,
+                                              out var request,
                                               out var errorResponse,
-                                              null, //RequestTimestamp
-                                              null, //RequestTimeout
-                                              null, //EventTrackingId
+                                              JSONRequestMessage.RequestTimestamp,
+                                              JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                              JSONRequestMessage.EventTrackingId,
                                               parentNetworkingNode.OCPP.CustomGetVariablesRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
@@ -102,22 +107,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<GetVariablesRequest, GetVariablesResponse>? forwardingDecision = null;
 
-            #region Send OnGetVariablesRequest event
+            #region Send OnGetVariablesRequestReceived event
 
-            var requestFilter = OnGetVariablesRequest;
+            var receivedLogging = OnGetVariablesRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnGetVariablesRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                  Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnGetVariablesRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnGetVariablesRequestFilter event
+
+            var requestFilter = OnGetVariablesRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnGetVariablesRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnGetVariablesRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +169,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnGetVariablesRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnGetVariablesRequestFilter),
                               e
                           );
                 }
@@ -140,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
                 forwardingDecision = new ForwardingDecision<GetVariablesRequest, GetVariablesResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.FORWARD
                                      );
 
@@ -150,12 +193,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response = forwardingDecision?.RejectResponse ??
                                    new GetVariablesResponse(
-                                       Request,
+                                       request,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<GetVariablesRequest, GetVariablesResponse>(
-                                         Request,
+                                         request,
                                          ForwardingResults.REJECT,
                                          response,
                                          response.ToJSON(
@@ -174,33 +217,89 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomGetVariablesRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomGetVariableDataSerializer,
+                                                        parentNetworkingNode.OCPP.CustomComponentSerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVSESerializer,
+                                                        parentNetworkingNode.OCPP.CustomVariableSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnGetVariablesRequestLogging event
+            #region Send OnGetVariablesRequestFiltered event
 
-            var logger = OnGetVariablesRequestLogging;
+            var logger = OnGetVariablesRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnGetVariablesRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         Request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnGetVariablesRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnGetVariablesRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnGetVariablesRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnGetVariablesRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnGetVariablesRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnGetVariablesRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnGetVariablesRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

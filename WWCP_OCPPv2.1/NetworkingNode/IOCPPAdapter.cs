@@ -734,19 +734,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        Task<SendMessageResult> SendJSONRequest          (OCPP_JSONRequestMessage          JSONRequestMessage);
-        Task<SendRequestState>  SendJSONRequestAndWait   (OCPP_JSONRequestMessage          JSONRequestMessage,   Action<SendMessageResult>? SendMessageResultDelegate = null);
-        Task<SendMessageResult> SendJSONResponse         (OCPP_JSONResponseMessage         JSONResponseMessage);
-        Task<SendMessageResult> SendJSONRequestError     (OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage);
-        Task<SendMessageResult> SendJSONResponseError    (OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage);
-        Task<SendMessageResult> SendJSONSendMessage      (OCPP_JSONSendMessage             JSONSendMessage);
+        Task<SentMessageResult> SendJSONRequest          (OCPP_JSONRequestMessage          JSONRequestMessage);
+        Task<SendRequestState>  SendJSONRequestAndWait   (OCPP_JSONRequestMessage          JSONRequestMessage,   Action<SentMessageResult>? SendMessageResultDelegate = null);
+        Task<SentMessageResult> SendJSONResponse         (OCPP_JSONResponseMessage         JSONResponseMessage);
+        Task<SentMessageResult> SendJSONRequestError     (OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage);
+        Task<SentMessageResult> SendJSONResponseError    (OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage);
+        Task<SentMessageResult> SendJSONSendMessage      (OCPP_JSONSendMessage             JSONSendMessage);
 
-        Task<SendMessageResult> SendBinaryRequest        (OCPP_BinaryRequestMessage        BinaryRequestMessage);
-        Task<SendRequestState>  SendBinaryRequestAndWait (OCPP_BinaryRequestMessage        BinaryRequestMessage, Action<SendMessageResult>? SendMessageResultDelegate = null);
-        Task<SendMessageResult> SendBinaryResponse       (OCPP_BinaryResponseMessage       BinaryResponseMessage);
-        Task<SendMessageResult> SendBinaryRequestError   (OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage);
-        Task<SendMessageResult> SendBinaryResponseError  (OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
-        Task<SendMessageResult> SendBinarySendMessage    (OCPP_BinarySendMessage           BinarySendMessage);
+        Task<SentMessageResult> SendBinaryRequest        (OCPP_BinaryRequestMessage        BinaryRequestMessage);
+        Task<SendRequestState>  SendBinaryRequestAndWait (OCPP_BinaryRequestMessage        BinaryRequestMessage, Action<SentMessageResult>? SendMessageResultDelegate = null);
+        Task<SentMessageResult> SendBinaryResponse       (OCPP_BinaryResponseMessage       BinaryResponseMessage);
+        Task<SentMessageResult> SendBinaryRequestError   (OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage);
+        Task<SentMessageResult> SendBinaryResponseError  (OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
+        Task<SentMessageResult> SendBinarySendMessage    (OCPP_BinarySendMessage           BinarySendMessage);
 
 
         Boolean ReceiveJSONResponse        (OCPP_JSONResponseMessage         JSONResponseMessage);
@@ -761,27 +761,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         Boolean LookupNetworkingNode(NetworkingNode_Id DestinationId, out Reachability? Reachability);
 
-        void AddStaticRouting   (NetworkingNode_Id     DestinationId,
-                                 IOCPPWebSocketClient  WebSocketClient,
-                                 Byte?                 Priority    = 0,
-                                 DateTime?             Timestamp   = null,
-                                 DateTime?             Timeout     = null);
+        void AddStaticRouting    (NetworkingNode_Id     DestinationId,
+                                  IOCPPWebSocketClient  WebSocketClient,
+                                  Byte?                 Priority    = 0,
+                                  DateTime?             Timestamp   = null,
+                                  DateTime?             Timeout     = null);
 
-        void AddStaticRouting   (NetworkingNode_Id     DestinationId,
-                                 IOCPPWebSocketServer  WebSocketServer,
-                                 Byte?                 Priority    = 0,
-                                 DateTime?             Timestamp   = null,
-                                 DateTime?             Timeout     = null);
+        void AddStaticRouting    (NetworkingNode_Id     DestinationId,
+                                  IOCPPWebSocketServer  WebSocketServer,
+                                  Byte?                 Priority    = 0,
+                                  DateTime?             Timestamp   = null,
+                                  DateTime?             Timeout     = null);
 
-        void AddStaticRouting   (NetworkingNode_Id     DestinationId,
-                                 NetworkingNode_Id     NetworkingHubId,
-                                 Byte?                 Priority    = 0,
-                                 DateTime?             Timestamp   = null,
-                                 DateTime?             Timeout     = null);
+        void AddStaticRouting    (NetworkingNode_Id     DestinationId,
+                                  NetworkingNode_Id     NetworkingHubId,
+                                  Byte?                 Priority    = 0,
+                                  DateTime?             Timestamp   = null,
+                                  DateTime?             Timeout     = null);
 
-        void RemoveStaticRouting(NetworkingNode_Id     DestinationId,
-                                 NetworkingNode_Id?    NetworkingHubId   = null,
-                                 Byte?                 Priority          = 0);
+        void RemoveStaticRouting (NetworkingNode_Id     DestinationId,
+                                  NetworkingNode_Id?    NetworkingHubId   = null,
+                                  Byte?                 Priority          = 0);
 
 
     }

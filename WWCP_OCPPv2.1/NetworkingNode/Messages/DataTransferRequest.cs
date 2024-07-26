@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The data transfer request.
+    /// The DataTransfer request.
     /// </summary>
     public class DataTransferRequest : ARequest<DataTransferRequest>,
                                        IRequest
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new data transfer request.
+        /// Create a new DataTransfer request.
         /// </summary>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomDataTransferRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a data transfer request.
+        /// Parse the given JSON representation of a DataTransfer request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom data transfer requests.</param>
+        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
                                                 NetworkingNode_Id                                  DestinationId,
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return dataTransferRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a data transfer request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DataTransfer request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out DataTransferRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a data transfer request.
+        /// Try to parse the given JSON representation of a DataTransfer request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -390,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DataTransferRequest  = null;
-                ErrorResponse        = "The given JSON representation of a data transfer request is invalid: " + e.Message;
+                ErrorResponse        = "The given JSON representation of a DataTransfer request is invalid: " + e.Message;
                 return false;
             }
 
@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom data transfer requests.</param>
+        /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom DataTransfer requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer   = null,
@@ -493,9 +493,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two data transfer requests for equality.
+        /// Compares two DataTransfer requests for equality.
         /// </summary>
-        /// <param name="Object">A data transfer request to compare with.</param>
+        /// <param name="Object">A DataTransfer request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DataTransferRequest dataTransferRequest &&
@@ -506,9 +506,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(DataTransferRequest)
 
         /// <summary>
-        /// Compares two data transfer requests for equality.
+        /// Compares two DataTransfer requests for equality.
         /// </summary>
-        /// <param name="DataTransferRequest">A data transfer request to compare with.</param>
+        /// <param name="DataTransferRequest">A DataTransfer request to compare with.</param>
         public override Boolean Equals(DataTransferRequest? DataTransferRequest)
 
             => DataTransferRequest is not null               &&

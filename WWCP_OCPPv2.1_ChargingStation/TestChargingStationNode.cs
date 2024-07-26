@@ -168,11 +168,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             };
 
 
-            OCPP.FORWARD.OnResetRequest += (timestamp,
-                                            sender,
-                                            connection,
-                                            request,
-                                            cancellationToken) =>
+            OCPP.FORWARD.OnResetRequestFilter += (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  cancellationToken) =>
 
                 Task.FromResult(
                     new ForwardingDecision<OCPPv2_1.CSMS.ResetRequest, OCPPv2_1.CS.ResetResponse>(

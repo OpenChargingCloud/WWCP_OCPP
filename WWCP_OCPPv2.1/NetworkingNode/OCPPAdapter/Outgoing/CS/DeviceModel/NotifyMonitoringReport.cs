@@ -89,8 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnNotifyMonitoringReportRequestSent?.Invoke(startTime,
                                                         parentNetworkingNode,
+                                                        null,
                                                         Request,
-                                                SendMessageResult.Success);
+                                                SentMessageResults.Success);
 
             }
             catch (Exception e)

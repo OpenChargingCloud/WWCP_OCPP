@@ -104,9 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-
             ForwardingDecision<AuthorizeRequest, AuthorizeResponse>? forwardingDecision = null;
-
 
             #region Send OnAuthorizeRequestReceived event
 
@@ -116,27 +114,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 try
                 {
 
-                    await Task.WhenAll(receivedLogging.GetInvocationList().
-                                          OfType<OnAuthorizeRequestReceivedDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request)).
-                                          ToArray());
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnAuthorizeRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                                "NetworkingNode",
-                                nameof(OnAuthorizeRequestReceived),
-                                e
-                            );
+                              nameof(NetworkingNode),
+                              nameof(OnAuthorizeRequestReceived),
+                              e
+                          );
                 }
 
             }
 
             #endregion
+
 
             #region Send OnAuthorizeRequestFilter event
 
@@ -146,14 +148,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType<OnAuthorizeRequestFilterDelegate>().
-                                                     Select(filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                    parentNetworkingNode,
-                                                                                                    Connection,
-                                                                                                    request,
-                                                                                                    CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnAuthorizeRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -162,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
+                              nameof(NetworkingNode),
                               nameof(OnAuthorizeRequestFilter),
                               e
                           );
@@ -171,7 +177,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
-
 
             #region Default result
 
@@ -215,76 +220,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-
-            #region Send OnAuthorizeRequestFiltered event
-
-            var logger = OnAuthorizeRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType<OnAuthorizeRequestFilteredDelegate>().
-                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                        parentNetworkingNode,
-                                                                                        Connection,
-                                                                                        request,
-                                                                                        forwardingDecision)).
-                                       ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnAuthorizeRequestFiltered),
-                              e
-                          );
-                }
-
-            }
-
-            #endregion
-
-            #region Send OnAuthorizeRequestSent event
-
-            if (forwardingDecision.Result == ForwardingResults.FORWARD)
-            {
-
-                var sentLogging = OnAuthorizeRequestSent;
-                if (sentLogging is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(sentLogging.GetInvocationList().
-                                              OfType<OnAuthorizeRequestSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(
-                                                                           Timestamp.Now,
-                                                                           parentNetworkingNode,
-                                                                           request,
-                                                                           SendMessageResult.Success
-                                                                       )).
-                                              ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                    "NetworkingNode",
-                                    nameof(OnAuthorizeRequestSent),
-                                    e
-                                );
-                    }
-
-                }
-
-            }
-
-            #endregion
-
-
             if (forwardingDecision.NewRequest is not null)
                 forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
                                                         parentNetworkingNode.OCPP.CustomAuthorizeRequestSerializer,
@@ -294,6 +229,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                     );
+
+            #region Send OnAuthorizeRequestFiltered event
+
+            var logger = OnAuthorizeRequestFiltered;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnAuthorizeRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnAuthorizeRequestFiltered),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnAuthorizeRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnAuthorizeRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnAuthorizeRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnAuthorizeRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
+
+            }
+
+            #endregion
 
             return forwardingDecision;
 

@@ -651,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGet15118EVCertificateRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -719,7 +719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetCertificateStatusRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -787,7 +787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
                                                             sender,
-                                                            //connection,
+                                                            connection,
                                                             request,
                                                                 sendMessageResult) =>
 
@@ -855,7 +855,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSignCertificateRequestSent += (timestamp,
                                                                      sender,
-                                                                     //connection,
+                                                                     connection,
                                                                      request,
                                                                 sendMessageResult) =>
 
@@ -927,7 +927,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
                                                                sender,
-                                                               //connection,
+                                                               connection,
                                                                request,
                                                                sendMessageResult) =>
 
@@ -995,7 +995,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnClearedChargingLimitRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -1063,7 +1063,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnMeterValuesRequestSent += (timestamp,
                                                                  sender,
-                                                                 //connection,
+                                                                 connection,
                                                                  request,
                                                                  sendMessageResult) =>
 
@@ -1131,7 +1131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyChargingLimitRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -1199,7 +1199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -1267,7 +1267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent += (timestamp,
                                                                               sender,
-                                                                              //connection,
+                                                                              connection,
                                                                               request,
                                                                 sendMessageResult) =>
 
@@ -1335,7 +1335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingRequestSent += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                 sendMessageResult) =>
 
@@ -1403,7 +1403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifySettlementRequestSent += (timestamp,
                                                                       sender,
-                                                                      //connection,
+                                                                      connection,
                                                                       request,
                                                                 sendMessageResult) =>
 
@@ -1471,7 +1471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent += (timestamp,
                                                                                sender,
-                                                                               //connection,
+                                                                               connection,
                                                                                request,
                                                                 sendMessageResult) =>
 
@@ -1539,7 +1539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnReportChargingProfilesRequestSent += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                 sendMessageResult) =>
 
@@ -1607,7 +1607,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnReservationStatusUpdateRequestSent += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                 sendMessageResult) =>
 
@@ -1675,7 +1675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnStatusNotificationRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -1743,7 +1743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnTransactionEventRequestSent += (timestamp,
                                                                       sender,
-                                                                      //connection,
+                                                                      connection,
                                                                       request,
                                                                 sendMessageResult) =>
 
@@ -1815,7 +1815,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationRequestSent += (timestamp,
                                                                                sender,
-                                                                               //connection,
+                                                                               connection,
                                                                                request,
                                                                 sendMessageResult) =>
 
@@ -1883,7 +1883,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -1955,7 +1955,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnLogStatusNotificationRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -2023,7 +2023,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyEventRequestSent += (timestamp,
                                                                  sender,
-                                                                 //connection,
+                                                                 connection,
                                                                  request,
                                                                 sendMessageResult) =>
 
@@ -2091,7 +2091,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportRequestSent += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                 sendMessageResult) =>
 
@@ -2159,7 +2159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyReportRequestSent += (timestamp,
                                                                   sender,
-                                                                  //connection,
+                                                                  connection,
                                                                   request,
                                                                 sendMessageResult) =>
 
@@ -2227,7 +2227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSecurityEventNotificationRequestSent += (timestamp,
                                                                                sender,
-                                                                               //connection,
+                                                                               connection,
                                                                                request,
                                                                 sendMessageResult) =>
 
@@ -2299,7 +2299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
                                                                       sender,
-                                                                      //connection,
+                                                                      connection,
                                                                       request,
                                                                       sendMessageResult) =>
 
@@ -2367,7 +2367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                 sender,
-                                                                                //connection,
+                                                                                connection,
                                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -2435,7 +2435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnHeartbeatRequestSent += (timestamp,
                                                                sender,
-                                                               //connection,
+                                                               connection,
                                                                request,
                                                                 sendMessageResult) =>
 
@@ -2503,7 +2503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                        sender,
-                                                                                       //connection,
+                                                                                       connection,
                                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -2579,7 +2579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnCertificateSignedRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -2594,7 +2594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.IN.OnCertificateSignedResponseReceived += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                            response,
                                                                            runtime) =>
@@ -2647,7 +2647,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnDeleteCertificateRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -2715,7 +2715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent += (timestamp,
                                                                                 sender,
-                                                                                //connection,
+                                                                                connection,
                                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -2783,7 +2783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnInstallCertificateRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -2851,7 +2851,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyCRLRequestSent += (timestamp,
                                                                sender,
-                                                               //connection,
+                                                               connection,
                                                                request,
                                                                 sendMessageResult) =>
 
@@ -2923,7 +2923,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnCancelReservationRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -2991,7 +2991,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnClearChargingProfileRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -3059,7 +3059,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetChargingProfilesRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -3127,7 +3127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetCompositeScheduleRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -3195,7 +3195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetTransactionStatusRequestSent += (timestamp,
                                                                           sender,
-                                                                          //connection,
+                                                                          connection,
                                                                           request,
                                                                 sendMessageResult) =>
 
@@ -3263,7 +3263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
                                                                                  sender,
-                                                                                 //connection,
+                                                                                 connection,
                                                                                  request,
                                                                 sendMessageResult) =>
 
@@ -3331,7 +3331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnRequestStartTransactionRequestSent += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                 sendMessageResult) =>
 
@@ -3399,7 +3399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnRequestStopTransactionRequestSent += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                 sendMessageResult) =>
 
@@ -3467,7 +3467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnReserveNowRequestSent += (timestamp,
                                                                 sender,
-                                                                //connection,
+                                                                connection,
                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -3535,7 +3535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSetChargingProfileRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -3603,7 +3603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnUnlockConnectorRequestSent += (timestamp,
                                                                      sender,
-                                                                     //connection,
+                                                                     connection,
                                                                      request,
                                                                 sendMessageResult) =>
 
@@ -3671,7 +3671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -3739,7 +3739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnUsePriorityChargingRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -3811,7 +3811,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnClearDisplayMessageRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -3879,7 +3879,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnCostUpdatedRequestSent += (timestamp,
                                                                  sender,
-                                                                 //connection,
+                                                                 connection,
                                                                  request,
                                                                 sendMessageResult) =>
 
@@ -3947,7 +3947,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnCustomerInformationRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -4015,7 +4015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetDisplayMessagesRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -4083,7 +4083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSetDisplayMessageRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -4155,7 +4155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnChangeAvailabilityRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -4223,7 +4223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnClearVariableMonitoringRequestSent += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                 sendMessageResult) =>
 
@@ -4291,7 +4291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetBaseReportRequestSent += (timestamp,
                                                                    sender,
-                                                                   //connection,
+                                                                   connection,
                                                                    request,
                                                                 sendMessageResult) =>
 
@@ -4359,7 +4359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetLogRequestSent += (timestamp,
                                                             sender,
-                                                            //connection,
+                                                            connection,
                                                             request,
                                                                 sendMessageResult) =>
 
@@ -4427,7 +4427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetMonitoringReportRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -4495,7 +4495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetReportRequestSent += (timestamp,
                                                                sender,
-                                                               //connection,
+                                                               connection,
                                                                request,
                                                                 sendMessageResult) =>
 
@@ -4563,7 +4563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetVariablesRequestSent += (timestamp,
                                                                   sender,
-                                                                  //connection,
+                                                                  connection,
                                                                   request,
                                                                 sendMessageResult) =>
 
@@ -4631,7 +4631,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSetMonitoringBaseRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -4699,7 +4699,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSetMonitoringLevelRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                 sendMessageResult) =>
 
@@ -4767,7 +4767,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSetNetworkProfileRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -4835,7 +4835,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSetVariableMonitoringRequestSent += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                 sendMessageResult) =>
 
@@ -4903,7 +4903,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSetVariablesRequestSent += (timestamp,
                                                                   sender,
-                                                                  //connection,
+                                                                  connection,
                                                                   request,
                                                                 sendMessageResult) =>
 
@@ -4971,7 +4971,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnTriggerMessageRequestSent += (timestamp,
                                                                     sender,
-                                                                    //connection,
+                                                                    connection,
                                                                     request,
                                                                 sendMessageResult) =>
 
@@ -5043,7 +5043,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnPublishFirmwareRequestSent += (timestamp,
                                                                      sender,
-                                                                     //connection,
+                                                                     connection,
                                                                      request,
                                                                 sendMessageResult) =>
 
@@ -5111,7 +5111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnResetRequestSent += (timestamp,
                                                            sender,
-                                                           //connection,
+                                                           connection,
                                                            request,
                                                                 sendMessageResult) =>
 
@@ -5179,7 +5179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnUnpublishFirmwareRequestSent += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                 sendMessageResult) =>
 
@@ -5247,7 +5247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnUpdateFirmwareRequestSent += (timestamp,
                                                                     sender,
-                                                                    //connection,
+                                                                    connection,
                                                                     request,
                                                                 sendMessageResult) =>
 
@@ -5319,7 +5319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnAFRRSignalRequestSent += (timestamp,
                                                                 sender,
-                                                                //connection,
+                                                                connection,
                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -5391,7 +5391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnClearCacheRequestSent += (timestamp,
                                                                 sender,
-                                                                //connection,
+                                                                connection,
                                                                 request,
                                                                 sendMessageResult) =>
 
@@ -5459,7 +5459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnGetLocalListVersionRequestSent += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                 sendMessageResult) =>
 
@@ -5527,7 +5527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnSendLocalListRequestSent += (timestamp,
                                                                    sender,
-                                                                   //connection,
+                                                                   connection,
                                                                    request,
                                                                 sendMessageResult) =>
 
@@ -5601,7 +5601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnDataTransferRequestSent += (timestamp,
                                                                   sender,
-                                                                  //connection,
+                                                                  connection,
                                                                   request,
                                                                   sendMessageResult) =>
 
@@ -5669,7 +5669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.OUT.OnBinaryDataTransferRequestSent += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                         sendMessageResult) =>
 
@@ -5684,7 +5684,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                             response,
                                                                             runtime) =>

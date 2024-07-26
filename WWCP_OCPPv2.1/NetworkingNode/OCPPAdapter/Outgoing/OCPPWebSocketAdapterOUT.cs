@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -118,16 +119,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Send requests/responses...
 
-        #region SendJSONRequest          (JSONRequestMessage)
+        #region SendJSONRequest          (JSONRequestMessage, SentAction = null)
 
         /// <summary>
         /// Send (and forget) the given JSON request message.
         /// </summary>
         /// <param name="JSONRequestMessage">A JSON request message.</param>
-        public async Task<SendMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
+        /// <param name="SentAction">An action called after trying to send the request.</param>
+        public async Task<SentMessageResult> SendJSONRequest(OCPP_JSONRequestMessage     JSONRequestMessage,
+                                                             Action<SentMessageResult>?  SentAction   = null)
         {
 
             var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONRequest(JSONRequestMessage);
+
+            SentAction?.Invoke(sendMessageResult);
 
             #region OnJSONRequestMessageSent
 
@@ -142,8 +147,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         sendMessageResult.Connection,
                                                                          JSONRequestMessage,
-                                                                         sendMessageResult
+                                                                         sendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -170,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="JSONRequestMessage">A JSON request message.</param>
         /// <param name="SentAction">An action called after trying to send the request.</param>
         public async Task<SendRequestState> SendJSONRequestAndWait(OCPP_JSONRequestMessage     JSONRequestMessage,
-                                                                   Action<SendMessageResult>?  SentAction   = null)
+                                                                   Action<SentMessageResult>?  SentAction   = null)
         {
 
             var sendRequestState = await parentNetworkingNode.OCPP.SendJSONRequestAndWait(JSONRequestMessage,
@@ -189,8 +195,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                Select(loggingDelegate => loggingDelegate.Invoke(
                                                                              Timestamp.Now,
                                                                              this,
+                                                                             sendMessageResult.Connection,
                                                                              JSONRequestMessage,
-                                                                             sendMessageResult
+                                                                             sendMessageResult.Result
                                                                          )).
                                                ToArray());
 
@@ -211,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region SendJSONResponse         (JSONResponseMessage)
 
-        public async Task<SendMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        public async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
             var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONResponse(JSONResponseMessage);
@@ -226,18 +233,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     await Task.WhenAll(logger.GetInvocationList().
                                         OfType<OnJSONResponseMessageSentDelegate>().
-                                        Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         this,
-                                                                                         //Connection,
-                                                                                         JSONResponseMessage,
-                                                                                         sendMessageResult)).
+                                        Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                      Timestamp.Now,
+                                                                      this,
+                                                                      sendMessageResult.Connection,
+                                                                      JSONResponseMessage,
+                                                                      sendMessageResult.Result
+                                                                  )).
                                         ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                                "NetworkingNode",
+                                nameof(NetworkingNode),
                                 nameof(OnJSONResponseMessageSent),
                                 e
                             );
@@ -255,10 +264,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region SendJSONRequestError     (JSONRequestErrorMessage)
 
-        public async Task<SendMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+        public async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
-            var sendMessageResult = SendMessageResult.TransmissionFailed;
+            var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONRequestError(JSONRequestErrorMessage);
 
             #region Send OnJSONRequestErrorMessageSent event
 
@@ -270,18 +279,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     await Task.WhenAll(logger.GetInvocationList().
                                        OfType<OnJSONRequestErrorMessageSentDelegate>().
-                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                        this,
-                                                                                        //Connection,
-                                                                                        JSONRequestErrorMessage,
-                                                                                        sendMessageResult)).
+                                       Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                     Timestamp.Now,
+                                                                     this,
+                                                                     sendMessageResult.Connection,
+                                                                     JSONRequestErrorMessage,
+                                                                     sendMessageResult.Result
+                                                                 )).
                                        ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
+                              nameof(NetworkingNode),
                               nameof(OnJSONRequestErrorMessageSent),
                               e
                           );
@@ -299,10 +310,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region SendJSONResponseError    (JSONResponseErrorMessage)
 
-        public async Task<SendMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        public async Task<SentMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
         {
 
-            var sendMessageResult = SendMessageResult.TransmissionFailed;
+            var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONResponseError(JSONResponseErrorMessage);
 
             #region Send OnJSONResponseErrorMessageSent event
 
@@ -314,18 +325,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     await Task.WhenAll(logger.GetInvocationList().
                                        OfType<OnJSONResponseErrorMessageSentDelegate>().
-                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                        this,
-                                                                                        //Connection,
-                                                                                        JSONResponseErrorMessage,
-                                                                                        sendMessageResult)).
+                                       Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                     Timestamp.Now,
+                                                                     this,
+                                                                     sendMessageResult.Connection,
+                                                                     JSONResponseErrorMessage,
+                                                                     sendMessageResult.Result
+                                                                 )).
                                        ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
+                              nameof(NetworkingNode),
                               nameof(OnJSONResponseErrorMessageSent),
                               e
                           );
@@ -347,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send (and forget) the given JSON send message.
         /// </summary>
         /// <param name="JSONSendMessage">A JSON send message.</param>
-        public async Task<SendMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
+        public async Task<SentMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
         {
 
             var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONSendMessage(JSONSendMessage);
@@ -365,8 +378,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         sendMessageResult.Connection,
                                                                          JSONSendMessage,
-                                                                         sendMessageResult
+                                                                         sendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -386,16 +400,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region SendBinaryRequest        (BinaryRequestMessage)
+        #region SendBinaryRequest        (BinaryRequestMessage, SentAction = null)
 
         /// <summary>
         /// Send (and forget) the given binary request message.
         /// </summary>
         /// <param name="BinaryRequestMessage">A binary request message.</param>
-        public async Task<SendMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        /// <param name="SentAction">An action called after trying to send the request.</param>
+        public async Task<SentMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage   BinaryRequestMessage,
+                                                               Action<SentMessageResult>?  SentAction   = null)
         {
 
             var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage);
+
+            SentAction?.Invoke(sendMessageResult);
 
             #region OnBinaryRequestMessageSent
 
@@ -410,8 +428,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         sendMessageResult.Connection,
                                                                          BinaryRequestMessage,
-                                                                         sendMessageResult
+                                                                         sendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -438,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="BinaryRequestMessage">A binary request message.</param>
         /// <param name="SentAction">An action called after trying to send the request.</param>
         public async Task<SendRequestState> SendBinaryRequestAndWait(OCPP_BinaryRequestMessage   BinaryRequestMessage,
-                                                                     Action<SendMessageResult>?  SentAction   = null)
+                                                                     Action<SentMessageResult>?  SentAction   = null)
         {
 
             var sendRequestState = await parentNetworkingNode.OCPP.SendBinaryRequestAndWait(BinaryRequestMessage,
@@ -457,8 +476,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                Select(loggingDelegate => loggingDelegate.Invoke(
                                                                              Timestamp.Now,
                                                                              this,
+                                                                             sendMessageResult.Connection,
                                                                              BinaryRequestMessage,
-                                                                             sendMessageResult
+                                                                             sendMessageResult.Result
                                                                          )).
                                                ToArray());
 
@@ -479,7 +499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region SendBinaryResponse       (BinaryResponseMessage)
 
-        public async Task<SendMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
             var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryResponse(BinaryResponseMessage);
@@ -494,18 +514,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     await Task.WhenAll(logger.GetInvocationList().
                                         OfType<OnBinaryResponseMessageSentDelegate>().
-                                        Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         this,
-                                                                                         //Connection,
-                                                                                         BinaryResponseMessage,
-                                                                                         sendMessageResult)).
+                                        Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                      Timestamp.Now,
+                                                                      this,
+                                                                      sendMessageResult.Connection,
+                                                                      BinaryResponseMessage,
+                                                                      sendMessageResult.Result
+                                                                  )).
                                         ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                                "NetworkingNode",
+                                nameof(NetworkingNode),
                                 nameof(OnBinaryResponseMessageSent),
                                 e
                             );
@@ -523,10 +545,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region SendBinaryRequestError   (BinaryRequestErrorMessage)
 
-        public async Task<SendMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        public async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
         {
 
-            var sendMessageResult = SendMessageResult.TransmissionFailed;
+            var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryRequestError(BinaryRequestErrorMessage);
 
             #region Send OnBinaryRequestErrorMessageSent event
 
@@ -538,18 +560,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     await Task.WhenAll(logger.GetInvocationList().
                                        OfType<OnBinaryRequestErrorMessageSentDelegate>().
-                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                        this,
-                                                                                        //Connection,
-                                                                                        BinaryRequestErrorMessage,
-                                                                                        sendMessageResult)).
+                                       Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                     Timestamp.Now,
+                                                                     this,
+                                                                     sendMessageResult.Connection,
+                                                                     BinaryRequestErrorMessage,
+                                                                     sendMessageResult.Result
+                                                                 )).
                                        ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
+                              nameof(NetworkingNode),
                               nameof(OnBinaryRequestErrorMessageSent),
                               e
                           );
@@ -567,10 +591,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region SendBinaryResponseError  (BinaryResponseErrorMessage)
 
-        public async Task<SendMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
+        public async Task<SentMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
         {
 
-            var sendMessageResult = SendMessageResult.TransmissionFailed;
+            var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryResponseError(BinaryResponseErrorMessage);
 
             #region Send OnBinaryResponseErrorMessageSent event
 
@@ -582,18 +606,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     await Task.WhenAll(logger.GetInvocationList().
                                        OfType<OnBinaryResponseErrorMessageSentDelegate>().
-                                       Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                        this,
-                                                                                        //Connection,
-                                                                                        BinaryResponseErrorMessage,
-                                                                                        sendMessageResult)).
+                                       Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                     Timestamp.Now,
+                                                                     this,
+                                                                     sendMessageResult.Connection,
+                                                                     BinaryResponseErrorMessage,
+                                                                     sendMessageResult.Result
+                                                                 )).
                                        ToArray());
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
+                              nameof(NetworkingNode),
                               nameof(OnBinaryResponseErrorMessageSent),
                               e
                           );
@@ -615,7 +641,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send (and forget) the given binary send message.
         /// </summary>
         /// <param name="BinarySendMessage">A binary send message.</param>
-        public async Task<SendMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
+        public async Task<SentMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
         {
 
             var sendMessageResult = await parentNetworkingNode.OCPP.SendBinarySendMessage(BinarySendMessage);
@@ -633,8 +659,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         sendMessageResult.Connection,
                                                                          BinarySendMessage,
-                                                                         sendMessageResult
+                                                                         sendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -660,7 +687,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyJSONMessageResponseSent   (JSONResponseMessage,        SendMessageResult)
 
         public async Task NotifyJSONMessageResponseSent(OCPP_JSONResponseMessage  JSONResponseMessage,
-                                                        SendMessageResult         SendMessageResult)
+                                                        SentMessageResult         SendMessageResult)
         {
 
             var logger = OnJSONResponseMessageSent;
@@ -674,8 +701,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         SendMessageResult.Connection,
                                                                          JSONResponseMessage,
-                                                                         SendMessageResult
+                                                                         SendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -693,7 +721,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyJSONRequestErrorSent      (JSONRequestErrorMessage,    SendMessageResult)
 
         public async Task NotifyJSONRequestErrorSent(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
-                                                     SendMessageResult             SendMessageResult)
+                                                     SentMessageResult             SendMessageResult)
         {
 
             var logger = OnJSONRequestErrorMessageSent;
@@ -707,8 +735,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         SendMessageResult.Connection,
                                                                          JSONRequestErrorMessage,
-                                                                         SendMessageResult
+                                                                         SendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -726,7 +755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyJSONResponseErrorSent     (JSONResponseErrorMessage,   SendMessageResult)
 
         public async Task NotifyJSONResponseErrorSent(OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,
-                                                      SendMessageResult              SendMessageResult)
+                                                      SentMessageResult              SendMessageResult)
         {
 
             var logger = OnJSONResponseErrorMessageSent;
@@ -740,8 +769,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         SendMessageResult.Connection,
                                                                          JSONResponseErrorMessage,
-                                                                         SendMessageResult
+                                                                         SendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -759,7 +789,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyJSONSendMessageSent       (JSONResponseErrorMessage,   SendMessageResult)
 
         public async Task NotifyJSONSendMessageSent(OCPP_JSONSendMessage  JSONSendMessage,
-                                                    SendMessageResult     SendMessageResult)
+                                                    SentMessageResult     SendMessageResult)
         {
 
             var logger = OnJSONSendMessageSent;
@@ -773,8 +803,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         SendMessageResult.Connection,
                                                                          JSONSendMessage,
-                                                                         SendMessageResult
+                                                                         SendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -794,7 +825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         public async Task NotifyBinaryMessageResponseSent(OCPP_BinaryResponseMessage  BinaryResponseMessage,
-                                                          SendMessageResult       SendMessageResult)
+                                                          SentMessageResult           SendMessageResult)
         {
 
             var logger = OnBinaryResponseMessageSent;
@@ -808,8 +839,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         SendMessageResult.Connection,
                                                                          BinaryResponseMessage,
-                                                                         SendMessageResult
+                                                                         SendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -827,7 +859,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyBinaryRequestErrorSent    (BinaryRequestErrorMessage,  SendMessageResult)
 
         public async Task NotifyBinaryRequestErrorSent(OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,
-                                                       SendMessageResult               SendMessageResult)
+                                                       SentMessageResult               SendMessageResult)
         {
 
             var logger = OnBinaryRequestErrorMessageSent;
@@ -841,8 +873,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         SendMessageResult.Connection,
                                                                          BinaryRequestErrorMessage,
-                                                                         SendMessageResult
+                                                                         SendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -860,7 +893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyBinaryResponseErrorSent   (BinaryResponseErrorMessage, SendMessageResult)
 
         public async Task NotifyBinaryResponseErrorSent(OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
-                                                        SendMessageResult                SendMessageResult)
+                                                        SentMessageResult                SendMessageResult)
         {
 
             var logger = OnBinaryResponseErrorMessageSent;
@@ -874,8 +907,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         SendMessageResult.Connection,
                                                                          BinaryResponseErrorMessage,
-                                                                         SendMessageResult
+                                                                         SendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -893,7 +927,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region NotifyBinarySendMessageSent     (BinaryResponseErrorMessage, SendMessageResult)
 
         public async Task NotifyBinarySendMessageSent(OCPP_BinarySendMessage  BinarySendMessage,
-                                                      SendMessageResult       SendMessageResult)
+                                                      SentMessageResult       SendMessageResult)
         {
 
             var logger = OnBinarySendMessageSent;
@@ -907,8 +941,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,
+                                                                         SendMessageResult.Connection,
                                                                          BinarySendMessage,
-                                                                         SendMessageResult
+                                                                         SendMessageResult.Result
                                                                      )).
                                            ToArray());
 
@@ -924,18 +959,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region HandleErrors(Module, Caller, ExceptionOccured)
+
+        #region (private) LogEvent(Logger, LogHandler, ...)
+
+        private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
+                                         Func<TDelegate, Task>                              LogHandler,
+                                         [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+                                         [CallerMemberName()]                       String  OCPPCommand   = "")
+
+            where TDelegate : Delegate
+
+            => parentNetworkingNode.LogEvent(nameof(OCPPWebSocketAdapterOUT), Logger, LogHandler, EventName, OCPPCommand);
+
+        #endregion
+
+        #region (private) HandleErrors(Module, Caller, ExceptionOccured)
 
         private Task HandleErrors(String     Module,
                                   String     Caller,
                                   Exception  ExceptionOccured)
-        {
 
-            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
-
-            return Task.CompletedTask;
-
-        }
+            => parentNetworkingNode.HandleErrors(Module, Caller, ExceptionOccured);
 
         #endregion
 

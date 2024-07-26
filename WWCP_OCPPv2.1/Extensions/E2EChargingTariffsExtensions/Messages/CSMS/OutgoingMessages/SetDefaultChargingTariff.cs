@@ -18,8 +18,10 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -27,14 +29,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A delegate called whenever a SetDefaultChargingTariff request will be sent to a charging station.
+    /// A delegate called whenever a SetDefaultChargingTariff request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnSetDefaultChargingTariffRequestSentDelegate(DateTime                          Timestamp,
                                                                        IEventSender                      Sender,
-                                                                       SetDefaultChargingTariffRequest   Request);
+                                                                       IWebSocketConnection              Connection,
+                                                                       SetDefaultChargingTariffRequest   Request,
+                                                                       SentMessageResults                SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a SetDefaultChargingTariff request was received.

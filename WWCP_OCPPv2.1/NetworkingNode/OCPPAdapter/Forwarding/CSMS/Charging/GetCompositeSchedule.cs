@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnGetCompositeScheduleRequestFilterDelegate?      OnGetCompositeScheduleRequest;
+        public event OnGetCompositeScheduleRequestReceivedDelegate?    OnGetCompositeScheduleRequestReceived;
+        public event OnGetCompositeScheduleRequestFilterDelegate?      OnGetCompositeScheduleRequestFilter;
+        public event OnGetCompositeScheduleRequestFilteredDelegate?    OnGetCompositeScheduleRequestFiltered;
+        public event OnGetCompositeScheduleRequestSentDelegate?        OnGetCompositeScheduleRequestSent;
 
-        public event OnGetCompositeScheduleRequestFilteredDelegate?    OnGetCompositeScheduleRequestLogging;
+        public event OnGetCompositeScheduleResponseReceivedDelegate?   OnGetCompositeScheduleResponseReceived;
+        public event OnGetCompositeScheduleResponseSentDelegate?       OnGetCompositeScheduleResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<GetCompositeScheduleRequest, GetCompositeScheduleResponse>? forwardingDecision = null;
 
-            #region Send OnGetCompositeScheduleRequest event
+            #region Send OnGetCompositeScheduleRequestReceived event
 
-            var requestFilter = OnGetCompositeScheduleRequest;
+            var receivedLogging = OnGetCompositeScheduleRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnGetCompositeScheduleRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnGetCompositeScheduleRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnGetCompositeScheduleRequestFilter event
+
+            var requestFilter = OnGetCompositeScheduleRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnGetCompositeScheduleRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnGetCompositeScheduleRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnGetCompositeScheduleRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnGetCompositeScheduleRequestFilter),
                               e
                           );
                 }
@@ -172,33 +214,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomGetCompositeScheduleRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnGetCompositeScheduleRequestLogging event
+            #region Send OnGetCompositeScheduleRequestFiltered event
 
-            var logger = OnGetCompositeScheduleRequestLogging;
+            var logger = OnGetCompositeScheduleRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnGetCompositeScheduleRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnGetCompositeScheduleRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnGetCompositeScheduleRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnGetCompositeScheduleRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnGetCompositeScheduleRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnGetCompositeScheduleRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnGetCompositeScheduleRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnGetCompositeScheduleRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

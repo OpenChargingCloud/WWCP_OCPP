@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
@@ -31,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="SendMessageResult">The result of the send message process.</param>
-    public delegate Task OnGetFileRequestSentDelegate(DateTime            Timestamp,
-                                                      IEventSender        Sender,
-                                                      GetFileRequest      Request,
-                                                      SendMessageResult   SendMessageResult);
+    public delegate Task OnGetFileRequestSentDelegate(DateTime               Timestamp,
+                                                      IEventSender           Sender,
+                                                      IWebSocketConnection   Connection,
+                                                      GetFileRequest         Request,
+                                                      SentMessageResults     SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a GetFile request was received.

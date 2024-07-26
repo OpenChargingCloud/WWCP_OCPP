@@ -56,8 +56,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnAddSignaturePolicyRequestSent?.Invoke(startTime,
                                                         parentNetworkingNode,
+                                                        null,
                                                         Request,
-                                                        SendMessageResult.Success);
+                                                        SentMessageResults.Success);
             }
             catch (Exception e)
             {

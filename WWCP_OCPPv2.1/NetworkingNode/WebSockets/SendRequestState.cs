@@ -52,15 +52,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                   NetworkPath                       NetworkPath,
                                   DateTime                          Timeout,
 
-                                  OCPP_JSONRequestMessage?          JSONRequest                = null,
-                                  OCPP_BinaryRequestMessage?        BinaryRequest              = null,
-                                  SendMessageResult?                SendMessageResult          = null,
+                                  OCPP_JSONRequestMessage?          JSONRequest                  = null,
+                                  OCPP_BinaryRequestMessage?        BinaryRequest                = null,
+                                  SentMessageResult?                SendMessageResult            = null,
 
-                                  DateTime?                         ResponseTimestamp          = null,
+                                  DateTime?                         ResponseTimestamp            = null,
 
-                                  OCPP_JSONResponseMessage?         JSONResponse               = null,
-                                  OCPP_JSONRequestErrorMessage?     JSONRequestErrorMessage    = null,
-                                  OCPP_JSONResponseErrorMessage?    JSONResponseErrorMessage   = null,
+                                  OCPP_JSONResponseMessage?         JSONResponse                 = null,
+                                  OCPP_JSONRequestErrorMessage?     JSONRequestErrorMessage      = null,
+                                  OCPP_JSONResponseErrorMessage?    JSONResponseErrorMessage     = null,
 
                                   OCPP_BinaryResponseMessage?       BinaryResponse               = null,
                                   OCPP_BinaryRequestErrorMessage?   BinaryRequestErrorMessage    = null,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// The (optional) SendMessage result.
         /// Will only be null while (still) waiting for a response!
         /// </summary>
-        public SendMessageResult?                SendMessageResult             { get; }      = SendMessageResult;
+        public SentMessageResult?                SendMessageResult             { get; }      = SendMessageResult;
 
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The network (source) path of the response.
         /// </summary>
-        public NetworkPath                       NetworkPathReceived           { get; set; }
+        public NetworkPath                       NetworkPathReceived           { get; set; } = NetworkPath.Empty;
 
 
         /// <summary>
@@ -180,8 +180,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         {
 
             if (NoErrors &&
-                JSONResponse?.Payload   is not null &&
-                JSONResponse. RequestId == Request.RequestId)
+                JSONResponse           is not null &&
+                JSONResponse.Payload   is not null &&
+                JSONResponse.RequestId == Request.RequestId)
             {
                 JSONMessage = JSONResponse.Payload;
                 return true;
@@ -197,8 +198,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         {
 
             if (!NoErrors &&
-                JSONRequestErrorMessage            is not null &&
-                JSONRequestErrorMessage. RequestId == Request.RequestId)
+                JSONRequestErrorMessage is not null &&
+                JSONRequestErrorMessage.RequestId == Request.RequestId)
             {
                 JSONRequestError = JSONRequestErrorMessage;
                 return true;
@@ -215,14 +216,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         {
 
             if (NoErrors &&
-                BinaryResponse?.Payload   is not null &&
-                BinaryResponse. RequestId == Request.RequestId)
+                BinaryResponse         is not null &&
+                BinaryResponse.Payload is not null &&
+                BinaryResponse.RequestId == Request.RequestId)
             {
                 BinaryMessage = BinaryResponse.Payload;
                 return true;
             }
 
             BinaryMessage = null;
+            return false;
+
+        }
+
+
+        public Boolean IsValidBinaryRequestError(IRequest                                                 Request,
+                                                 [NotNullWhen(true)] out OCPP_BinaryRequestErrorMessage?  BinaryRequestError)
+        {
+
+            if (!NoErrors &&
+                BinaryRequestErrorMessage is not null &&
+                BinaryRequestErrorMessage.RequestId == Request.RequestId)
+            {
+                BinaryRequestError = BinaryRequestErrorMessage;
+                return true;
+            }
+
+            BinaryRequestError = null;
             return false;
 
         }
@@ -235,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                        DateTime                       Timeout,
 
                                                        OCPP_JSONRequestMessage        JSONRequest,
-                                                       SendMessageResult?             SendMessageResult         = null,
+                                                       SentMessageResult?             SendMessageResult         = null,
 
                                                        DateTime?                      ResponseTimestamp         = null,
 
@@ -270,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                          DateTime                       Timeout,
 
                                                          OCPP_BinaryRequestMessage      BinaryRequest,
-                                                         SendMessageResult?             SendMessageResult         = null,
+                                                         SentMessageResult?             SendMessageResult         = null,
 
                                                          DateTime?                      ResponseTimestamp         = null,
 

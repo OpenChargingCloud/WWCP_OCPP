@@ -60,22 +60,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      CancellationToken           CancellationToken);
 
 
-    /// <summary>
-    /// An incoming binary data transfer response.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket connection.</param>
-    /// <param name="Request">The BinaryDataTransfer request.</param>
-    /// <param name="Response">The stop transaction response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task
 
-        OnBinaryDataTransferResponseSentDelegate(DateTime                     Timestamp,
-                                                 IEventSender                 Sender,
-                                                 IWebSocketConnection         Connection,
-                                                 BinaryDataTransferRequest    Request,
-                                                 BinaryDataTransferResponse   Response,
-                                                 TimeSpan                     Runtime);
 
 }

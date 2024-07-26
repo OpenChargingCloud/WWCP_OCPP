@@ -71,7 +71,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnSetDefaultChargingTariffRequestSent?.Invoke(startTime,
                                                               parentNetworkingNode,
-                                                              Request);
+                                                              null,
+                                                              Request,
+                                                SentMessageResults.Success);
             }
             catch (Exception e)
             {

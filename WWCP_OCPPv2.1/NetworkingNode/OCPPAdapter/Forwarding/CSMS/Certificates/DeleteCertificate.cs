@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnDeleteCertificateRequestFilterDelegate?      OnDeleteCertificateRequest;
+        public event OnDeleteCertificateRequestReceivedDelegate?    OnDeleteCertificateRequestReceived;
+        public event OnDeleteCertificateRequestFilterDelegate?      OnDeleteCertificateRequestFilter;
+        public event OnDeleteCertificateRequestFilteredDelegate?    OnDeleteCertificateRequestFiltered;
+        public event OnDeleteCertificateRequestSentDelegate?        OnDeleteCertificateRequestSent;
 
-        public event OnDeleteCertificateRequestFilteredDelegate?    OnDeleteCertificateRequestLogging;
+        public event OnDeleteCertificateResponseReceivedDelegate?   OnDeleteCertificateResponseReceived;
+        public event OnDeleteCertificateResponseSentDelegate?       OnDeleteCertificateResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<DeleteCertificateRequest, DeleteCertificateResponse>? forwardingDecision = null;
 
-            #region Send OnDeleteCertificateRequest event
+            #region Send OnDeleteCertificateRequestReceived event
 
-            var requestFilter = OnDeleteCertificateRequest;
+            var receivedLogging = OnDeleteCertificateRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnDeleteCertificateRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnDeleteCertificateRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnDeleteCertificateRequestFilter event
+
+            var requestFilter = OnDeleteCertificateRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnDeleteCertificateRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnDeleteCertificateRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnDeleteCertificateRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnDeleteCertificateRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,86 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomDeleteCertificateRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnDeleteCertificateRequestLogging event
+            #region Send OnDeleteCertificateRequestFiltered event
 
-            var logger = OnDeleteCertificateRequestLogging;
+            var logger = OnDeleteCertificateRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnDeleteCertificateRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnDeleteCertificateRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnDeleteCertificateRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnDeleteCertificateRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnDeleteCertificateRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnDeleteCertificateRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnDeleteCertificateRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnDeleteCertificateRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

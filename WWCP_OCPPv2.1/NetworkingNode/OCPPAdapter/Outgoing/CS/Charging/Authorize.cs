@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -31,16 +32,34 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Delegates
+
     /// <summary>
-    /// A charging station HTTP Web Socket client.
+    /// A delegate called whenever a RequestError to a Authorize request was received.
     /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="RequestErrorMessage">The RequestErrorMessage.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnAuthorizeRequestErrorReceivedDelegate(DateTime                       Timestamp,
+                                                                 IEventSender                   Sender,
+                                                                 IWebSocketConnection           Connection,
+                                                                 AuthorizeRequest               Request,
+                                                                 OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                                 TimeSpan                       Runtime);
+
+    #endregion
+
+
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
         #region Events
 
         /// <summary>
-        /// An event fired whenever an authorize request will be sent.
+        /// An event fired whenever an Authorize request will be sent.
         /// </summary>
         public event OnAuthorizeRequestSentDelegate?  OnAuthorizeRequestSent;
 
@@ -59,6 +78,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             try
             {
+
+                #region Sign request message
 
                 if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
                         Request,
@@ -79,8 +100,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                );
                 }
 
+                #endregion
+
                 else
                 {
+
+                    #region Send request message
 
                     var sendRequestState = await SendJSONRequestAndWait(
 
@@ -96,38 +121,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          )
                                                      ),
 
-                                                     async sendMessageResult => {
+                                                     sendMessageResult => LogEvent(
+                                                         OnAuthorizeRequestSent,
+                                                         loggingDelegate => loggingDelegate.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             sendMessageResult.Connection,
+                                                             Request,
+                                                             sendMessageResult.Result
+                                                         )
+                                                     )
 
-                                                         #region Send OnAuthorizeRequestSent event
+                                                     //async sendMessageResult => {
 
-                                                         var logger = OnAuthorizeRequestSent;
-                                                         if (logger is not null)
-                                                         {
-                                                             try
-                                                             {
+                                                     //    #region Send OnAuthorizeRequestSent event
 
-                                                                 await Task.WhenAll(logger.GetInvocationList().
-                                                                                         OfType<OnAuthorizeRequestSentDelegate>().
-                                                                                         Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                                                       Timestamp.Now,
-                                                                                                                       parentNetworkingNode,
-                                                                                                                       Request,
-                                                                                                                       sendMessageResult
-                                                                                                                   )).
-                                                                                         ToArray());
+                                                     //    var logger = OnAuthorizeRequestSent;
+                                                     //    if (logger is not null)
+                                                     //    {
+                                                     //        try
+                                                     //        {
 
-                                                             }
-                                                             catch (Exception e)
-                                                             {
-                                                                 DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAuthorizeRequestSent));
-                                                             }
-                                                         }
+                                                     //            await Task.WhenAll(logger.GetInvocationList().
+                                                     //                                   OfType<OnAuthorizeRequestSentDelegate>().
+                                                     //                                   Select(loggingDelegate => loggingDelegate.Invoke(
+                                                     //                                                                 Timestamp.Now,
+                                                     //                                                                 parentNetworkingNode,
+                                                     //                                                                 sendMessageResult.Connection,
+                                                     //                                                                 Request,
+                                                     //                                                                 sendMessageResult.Result
+                                                     //                                                             )).
+                                                     //                                   ToArray());
 
-                                                         #endregion
+                                                     //        }
+                                                     //        catch (Exception e)
+                                                     //        {
+                                                     //            DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAuthorizeRequestSent));
+                                                     //        }
+                                                     //    }
 
-                                                     }
+                                                     //    #endregion
+
+                                                     //}
 
                                                  );
+
+                    #endregion
 
                     if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
                         response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_AuthorizeResponse(
@@ -146,7 +185,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_AuthorizeRequestError(
                                              Request,
                                              jsonRequestError,
-                                             null
+                                             null,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.CancellationToken
                                          );
 
                     response ??= new AuthorizeResponse(
@@ -182,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event fired whenever a Authorize response was received.
+        /// An event fired whenever an Authorize response was received.
         /// </summary>
         public event OnAuthorizeResponseReceivedDelegate?  OnAuthorizeResponseReceived;
 
@@ -235,30 +280,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnAuthorizeResponseReceived event
 
-                    var logger = OnAuthorizeResponseReceived;
-                    if (logger is not null)
-                    {
-                        try
-                        {
+                    await LogEvent(
+                        OnAuthorizeResponseReceived,
+                        loggingDelegate => loggingDelegate.Invoke(
+                            Timestamp.Now,
+                            parentNetworkingNode,
+                            //sendMessageResult.Connection,
+                            Request,
+                            response,
+                            response.Runtime
+                        )
+                    );
 
-                            await Task.WhenAll(logger.GetInvocationList().
-                                                      OfType<OnAuthorizeResponseReceivedDelegate>().
-                                                      Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                     Timestamp.Now,
-                                                                                     parentNetworkingNode,
-                                                                                     //    WebSocketConnection,
-                                                                                     Request,
-                                                                                     response,
-                                                                                     response.Runtime
-                                                                                 )).
-                                                      ToArray());
+                    //var logger = OnAuthorizeResponseReceived;
+                    //if (logger is not null)
+                    //{
+                    //    try
+                    //    {
 
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeResponseReceived));
-                        }
-                    }
+                    //        await Task.WhenAll(logger.GetInvocationList().
+                    //                                  OfType<OnAuthorizeResponseReceivedDelegate>().
+                    //                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                    //                                                                 Timestamp.Now,
+                    //                                                                 parentNetworkingNode,
+                    //                                                                 //    WebSocketConnection,
+                    //                                                                 Request,
+                    //                                                                 response,
+                    //                                                                 response.Runtime
+                    //                                                             )).
+                    //                                  ToArray());
+
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeResponseReceived));
+                    //    }
+                    //}
 
                     #endregion
 
@@ -290,24 +347,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Receive AuthorizeRequestError
 
+        /// <summary>
+        /// An event fired whenever a Authorize RequestError was received.
+        /// </summary>
+        public event OnAuthorizeRequestErrorReceivedDelegate? AuthorizeRequestErrorReceived;
+
+
         public async Task<AuthorizeResponse>
 
             Receive_AuthorizeRequestError(AuthorizeRequest              Request,
                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                          IWebSocketConnection          WebSocketConnection)
-
+                                          IWebSocketConnection          WebSocketConnection,
+                                          NetworkingNode_Id             DestinationId,
+                                          NetworkPath                   NetworkPath,
+                                          EventTracking_Id              EventTrackingId,
+                                          Request_Id                    RequestId,
+                                          DateTime?                     ResponseTimestamp   = null,
+                                          CancellationToken             CancellationToken   = default)
         {
-
-            var response = AuthorizeResponse.RequestError(
-                               Request,
-                               RequestErrorMessage.EventTrackingId,
-                               RequestErrorMessage.ErrorCode,
-                               RequestErrorMessage.ErrorDescription,
-                               RequestErrorMessage.ErrorDetails,
-                               RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
-                               RequestErrorMessage.NetworkPath
-                           );
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
             //    response,
@@ -324,32 +381,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //    out errorResponse
             //);
 
+            #region Send AuthorizeRequestErrorReceived event
+
+            await LogEvent(
+                      AuthorizeRequestErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          Request,
+                          RequestErrorMessage,
+                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp
+                      )
+                  );
+
+            #endregion
+
+
+            var response = AuthorizeResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
+
             #region Send OnAuthorizeResponseReceived event
 
-            var logger = OnAuthorizeResponseReceived;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(logger.GetInvocationList().
-                                                OfType<OnAuthorizeResponseReceivedDelegate>().
-                                                Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                               Timestamp.Now,
-                                                                               parentNetworkingNode,
-                                                                               //    WebSocketConnection,
-                                                                               Request,
-                                                                               response,
-                                                                               response.Runtime
-                                                                           )).
-                                                ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeResponseReceived));
-                }
-            }
+            await LogEvent(
+                      OnAuthorizeResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          //WebSocketConnection,
+                          Request,
+                          response,
+                          response.Runtime
+                      )
+                  );
 
             #endregion
 

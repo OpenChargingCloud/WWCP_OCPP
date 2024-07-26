@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region SendCertificateSigningRequest(Request)
+        #region SignCertificate(Request)
 
         /// <summary>
         /// Send a sign certificate request.
@@ -89,8 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnSignCertificateRequestSent?.Invoke(startTime,
                                                  parentNetworkingNode,
+                                                 null,
                                                  Request,
-                                                SendMessageResult.Success);
+                                                SentMessageResults.Success);
 
             }
             catch (Exception e)
@@ -181,7 +182,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
-
 
     }
 

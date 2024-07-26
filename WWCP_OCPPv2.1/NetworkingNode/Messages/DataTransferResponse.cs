@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A data transfer response.
+    /// The DataTransfer response.
     /// </summary>
     public class DataTransferResponse : AResponse<DataTransferRequest,
                                                   DataTransferResponse>,
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure status of the data transfer.
+        /// The success or failure status of the DataTransfer.
         /// </summary>
         [Mandatory]
         public DataTransferStatus  Status        { get; }
@@ -80,10 +80,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region DataTransferResponse(Request, Status, Data = null, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new data transfer response.
+        /// Create a new DataTransfer response.
         /// </summary>
-        /// <param name="Request">The data transfer request leading to this response.</param>
-        /// <param name="Status">The success or failure status of the data transfer.</param>
+        /// <param name="Request">The DataTransfer request leading to this response.</param>
+        /// <param name="Status">The success or failure status of the DataTransfer.</param>
         /// <param name="Data">A vendor-specific JSON token.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -134,15 +134,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region DataTransferResponse(Request, Result)
 
         /// <summary>
-        /// Create a new data transfer response.
+        /// Create a new DataTransfer response.
         /// </summary>
-        /// <param name="Request">The data transfer request leading to this response.</param>
+        /// <param name="Request">The DataTransfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public DataTransferResponse(DataTransferRequest  Request,
-                                    Result               Result)
+        public DataTransferResponse(DataTransferRequest      Request,
+                                    Result                   Result,
+                                    DateTime?                ResponseTimestamp   = null,
+
+                                    NetworkingNode_Id?       DestinationId       = null,
+                                    NetworkPath?             NetworkPath         = null,
+
+                                    IEnumerable<KeyPair>?    SignKeys            = null,
+                                    IEnumerable<SignInfo>?   SignInfos           = null,
+                                    IEnumerable<Signature>?  Signatures          = null,
+
+                                    CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result)
+                   Result,
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -192,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       ]
         //     },
         //     "DataTransferStatusEnumType": {
-        //       "description": "This indicates the success or failure of the data transfer.\r\n",
+        //       "description": "This indicates the success or failure of the DataTransfer.\r\n",
         //       "javaType": "DataTransferStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -254,11 +274,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (Request, JSON, CustomDataTransferResponseSerializer = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a data transfer response.
+        /// Parse the given JSON representation of a DataTransfer response.
         /// </summary>
-        /// <param name="Request">The data transfer request leading to this response.</param>
+        /// <param name="Request">The DataTransfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom data transfer responses.</param>
+        /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom DataTransfer responses.</param>
         public static DataTransferResponse Parse(DataTransferRequest                                 Request,
                                                  JObject                                             JSON,
                                                  NetworkingNode_Id                                   DestinationId,
@@ -285,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return dataTransferResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a data transfer response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DataTransfer response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -295,16 +315,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) TryParse(Request, JSON, out DataTransferResponse, out ErrorResponse, CustomDataTransferResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a data transfer response.
+        /// Try to parse the given JSON representation of a DataTransfer response.
         /// </summary>
-        /// <param name="Request">The data transfer request leading to this response.</param>
+        /// <param name="Request">The DataTransfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DestinationId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DataTransferResponse">The parsed data transfer response.</param>
+        /// <param name="DataTransferResponse">The parsed DataTransfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom data transfer responses.</param>
+        /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom DataTransfer responses.</param>
         public static Boolean TryParse(DataTransferRequest                                 Request,
                                        JObject                                             JSON,
                                        NetworkingNode_Id                                   DestinationId,
@@ -326,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #region DataTransferStatus    [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "data transfer status",
+                                         "DataTransfer status",
                                          DataTransferStatusExtensions.TryParse,
                                          out DataTransferStatus DataTransferStatus,
                                          out ErrorResponse))
@@ -417,7 +437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DataTransferResponse  = null;
-                ErrorResponse         = "The given JSON representation of a data transfer response is invalid: " + e.Message;
+                ErrorResponse         = "The given JSON representation of a DataTransfer response is invalid: " + e.Message;
                 return false;
             }
 
@@ -430,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferResponseSerializer">A delegate to serialize custom data transfer responses.</param>
+        /// <param name="CustomDataTransferResponseSerializer">A delegate to serialize custom DataTransfer responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -476,6 +496,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Static methods
 
         /// <summary>
+        /// The DataTransfer failed because of a request error.
+        /// </summary>
+        /// <param name="Request">The DataTransfer request.</param>
+        public static DataTransferResponse RequestError(DataTransferRequest      Request,
+                                                        EventTracking_Id         EventTrackingId,
+                                                        ResultCode               ErrorCode,
+                                                        String?                  ErrorDescription    = null,
+                                                        JObject?                 ErrorDetails        = null,
+                                                        DateTime?                ResponseTimestamp   = null,
+
+                                                        NetworkingNode_Id?       DestinationId       = null,
+                                                        NetworkPath?             NetworkPath         = null,
+
+                                                        IEnumerable<KeyPair>?    SignKeys            = null,
+                                                        IEnumerable<SignInfo>?   SignInfos           = null,
+                                                        IEnumerable<Signature>?  Signatures          = null,
+
+                                                        CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The DataTransfer failed.
+        /// </summary>
+        /// <param name="Request">The DataTransfer request.</param>
+        /// <param name="ErrorDescription">An optional error decription.</param>
+        public static DataTransferResponse SignatureError(DataTransferRequest  Request,
+                                                          String               ErrorDescription)
+
+            => new (Request,
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
         /// The DataTransfer failed.
         /// </summary>
         /// <param name="Request">The DataTransfer request.</param>
@@ -506,10 +582,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Operator == (DataTransferResponse1, DataTransferResponse2)
 
         /// <summary>
-        /// Compares two data transfer responses for equality.
+        /// Compares two DataTransfer responses for equality.
         /// </summary>
-        /// <param name="DataTransferResponse1">A data transfer response.</param>
-        /// <param name="DataTransferResponse2">Another data transfer response.</param>
+        /// <param name="DataTransferResponse1">A DataTransfer response.</param>
+        /// <param name="DataTransferResponse2">Another DataTransfer response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (DataTransferResponse? DataTransferResponse1,
                                            DataTransferResponse? DataTransferResponse2)
@@ -532,10 +608,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Operator != (DataTransferResponse1, DataTransferResponse2)
 
         /// <summary>
-        /// Compares two data transfer responses for inequality.
+        /// Compares two DataTransfer responses for inequality.
         /// </summary>
-        /// <param name="DataTransferResponse1">A data transfer response.</param>
-        /// <param name="DataTransferResponse2">Another data transfer response.</param>
+        /// <param name="DataTransferResponse1">A DataTransfer response.</param>
+        /// <param name="DataTransferResponse2">Another DataTransfer response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (DataTransferResponse? DataTransferResponse1,
                                            DataTransferResponse? DataTransferResponse2)
@@ -551,9 +627,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two data transfer responses for equality.
+        /// Compares two DataTransfer responses for equality.
         /// </summary>
-        /// <param name="Object">A data transfer response to compare with.</param>
+        /// <param name="Object">A DataTransfer response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DataTransferResponse dataTransferResponse &&
@@ -564,9 +640,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(DataTransferResponse)
 
         /// <summary>
-        /// Compares two data transfer responses for equality.
+        /// Compares two DataTransfer responses for equality.
         /// </summary>
-        /// <param name="DataTransferResponse">A data transfer response to compare with.</param>
+        /// <param name="DataTransferResponse">A DataTransfer response to compare with.</param>
         public override Boolean Equals(DataTransferResponse? DataTransferResponse)
 
             => DataTransferResponse is not null &&

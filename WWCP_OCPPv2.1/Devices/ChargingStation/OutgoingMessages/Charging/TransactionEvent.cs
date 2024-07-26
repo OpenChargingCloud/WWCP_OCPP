@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
@@ -36,8 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnTransactionEventRequestSentDelegate(DateTime                  Timestamp,
                                                                IEventSender              Sender,
+                                                               IWebSocketConnection      Connection,
                                                                TransactionEventRequest   Request,
-                                                               SendMessageResult         SendMessageResult);
+                                                               SentMessageResults        SendMessageResult);
 
     /// <summary>
     /// A delegate called whenever a response to a TransactionEvent request was received.

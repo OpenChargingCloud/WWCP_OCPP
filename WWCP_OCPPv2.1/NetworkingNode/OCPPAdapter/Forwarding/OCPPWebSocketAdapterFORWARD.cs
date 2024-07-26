@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -156,7 +157,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             )
                         );
 
-                        await parentNetworkingNode.OCPP.OUT.SendJSONRequest(newJSONRequestMessage);
+                        await parentNetworkingNode.OCPP.OUT.SendJSONRequest(
+                                  newJSONRequestMessage,
+                                  forwardingDecision.SentMessageLogger
+                              );
 
                     }
 
@@ -576,7 +580,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             )
                         );
 
-                        await parentNetworkingNode.OCPP.OUT.SendBinaryRequest(newBinaryRequestMessage);
+                        await parentNetworkingNode.OCPP.OUT.SendBinaryRequest(
+                                  newBinaryRequestMessage,
+                                  forwardingDecision.SentMessageLogger
+                              );
 
                     }
 
@@ -686,9 +693,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             #endregion
-
-
-   //         await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage);
 
         }
 
@@ -802,7 +806,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        #region HandleErrors(Module, Caller, ExceptionOccured)
+        #region (private) LogEvent(Logger, LogHandler, ...)
+
+        private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
+                                         Func<TDelegate, Task>                              LogHandler,
+                                         [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+                                         [CallerMemberName()]                       String  OCPPCommand   = "")
+
+            where TDelegate : Delegate
+
+            => parentNetworkingNode.LogEvent(nameof(OCPPWebSocketAdapterIN), Logger, LogHandler, EventName, OCPPCommand);
+
+        #endregion
+
+        #region (private) HandleErrors(Module, Caller, ExceptionOccured)
 
         private Task HandleErrors(String     Module,
                                   String     Caller,

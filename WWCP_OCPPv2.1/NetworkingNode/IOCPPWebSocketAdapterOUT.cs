@@ -17,6 +17,8 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -29,55 +31,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public delegate Task OnJSONRequestMessageSentDelegate         (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONRequestMessage          JSONRequestMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
     public delegate Task OnJSONResponseMessageSentDelegate        (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONResponseMessage         JSONResponseMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
     public delegate Task OnJSONRequestErrorMessageSentDelegate    (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
     public delegate Task OnJSONResponseErrorMessageSentDelegate   (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONResponseErrorMessage    JSONRequestErrorMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
     public delegate Task OnJSONSendMessageSentDelegate            (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONSendMessage             JSONSendMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
 
 
     public delegate Task OnBinaryRequestMessageSentDelegate       (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinaryRequestMessage        BinaryRequestMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
     public delegate Task OnBinaryResponseMessageSentDelegate      (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinaryResponseMessage       BinaryResponseMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
     public delegate Task OnBinaryRequestErrorMessageSentDelegate  (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
     public delegate Task OnBinaryResponseErrorMessageSentDelegate (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinaryResponseErrorMessage  BinaryRequestErrorMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
     public delegate Task OnBinarySendMessageSentDelegate          (DateTime                         Timestamp,
                                                                    IOCPPWebSocketAdapterOUT         Server,
+                                                                   IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinarySendMessage           BinarySendMessage,
-                                                                   SendMessageResult                SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult);
 
     #endregion
 
@@ -159,28 +171,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        Task<SendMessageResult> SendJSONRequest         (OCPP_JSONRequestMessage          JSONRequestMessage);
-        Task<SendMessageResult> SendJSONResponse        (OCPP_JSONResponseMessage         JSONResponseMessage);
-        Task<SendMessageResult> SendJSONRequestError    (OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage);
-        Task<SendMessageResult> SendJSONResponseError   (OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage);
-        Task<SendMessageResult> SendJSONSendMessage     (OCPP_JSONSendMessage             JSONSendMessage);
+        Task<SentMessageResult> SendJSONRequest         (OCPP_JSONRequestMessage          JSONRequestMessage, Action<SentMessageResult>? SentAction = null);
+        Task<SentMessageResult> SendJSONResponse        (OCPP_JSONResponseMessage         JSONResponseMessage);
+        Task<SentMessageResult> SendJSONRequestError    (OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage);
+        Task<SentMessageResult> SendJSONResponseError   (OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage);
+        Task<SentMessageResult> SendJSONSendMessage     (OCPP_JSONSendMessage             JSONSendMessage);
 
-        Task<SendMessageResult> SendBinaryRequest       (OCPP_BinaryRequestMessage        BinaryRequestMessage);
-        Task<SendMessageResult> SendBinaryResponse      (OCPP_BinaryResponseMessage       BinaryResponseMessage);
-        Task<SendMessageResult> SendBinaryRequestError  (OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage);
-        Task<SendMessageResult> SendBinaryResponseError (OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
-        Task<SendMessageResult> SendBinarySendMessage   (OCPP_BinarySendMessage           BinarySendMessage);
+        Task<SentMessageResult> SendBinaryRequest       (OCPP_BinaryRequestMessage        BinaryRequestMessage, Action<SentMessageResult>? SentAction = null);
+        Task<SentMessageResult> SendBinaryResponse      (OCPP_BinaryResponseMessage       BinaryResponseMessage);
+        Task<SentMessageResult> SendBinaryRequestError  (OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage);
+        Task<SentMessageResult> SendBinaryResponseError (OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
+        Task<SentMessageResult> SendBinarySendMessage   (OCPP_BinarySendMessage           BinarySendMessage);
 
 
-        Task NotifyJSONMessageResponseSent   (OCPP_JSONResponseMessage        JSONResponseMessage,        SendMessageResult SendMessageResult);
-        Task NotifyJSONRequestErrorSent      (OCPP_JSONRequestErrorMessage    JSONRequestErrorMessage,    SendMessageResult SendMessageResult);
-        Task NotifyJSONResponseErrorSent     (OCPP_JSONResponseErrorMessage   JSONResponseErrorMessage,   SendMessageResult SendMessageResult);
-        Task NotifyJSONSendMessageSent       (OCPP_JSONSendMessage            JSONSendMessage,            SendMessageResult SendMessageResult);
+        Task NotifyJSONMessageResponseSent   (OCPP_JSONResponseMessage        JSONResponseMessage,        SentMessageResult SendMessageResult);
+        Task NotifyJSONRequestErrorSent      (OCPP_JSONRequestErrorMessage    JSONRequestErrorMessage,    SentMessageResult SendMessageResult);
+        Task NotifyJSONResponseErrorSent     (OCPP_JSONResponseErrorMessage   JSONResponseErrorMessage,   SentMessageResult SendMessageResult);
+        Task NotifyJSONSendMessageSent       (OCPP_JSONSendMessage            JSONSendMessage,            SentMessageResult SendMessageResult);
 
-        Task NotifyBinaryMessageResponseSent (OCPP_BinaryResponseMessage      BinaryResponseMessage,      SendMessageResult SendMessageResult);
-        Task NotifyBinaryRequestErrorSent    (OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,  SendMessageResult SendMessageResult);
-        Task NotifyBinaryResponseErrorSent   (OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage, SendMessageResult SendMessageResult);
-        Task NotifyBinarySendMessageSent     (OCPP_BinarySendMessage          BinarySendMessage,          SendMessageResult SendMessageResult);
+        Task NotifyBinaryMessageResponseSent (OCPP_BinaryResponseMessage      BinaryResponseMessage,      SentMessageResult SendMessageResult);
+        Task NotifyBinaryRequestErrorSent    (OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,  SentMessageResult SendMessageResult);
+        Task NotifyBinaryResponseErrorSent   (OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage, SentMessageResult SendMessageResult);
+        Task NotifyBinarySendMessageSent     (OCPP_BinarySendMessage          BinarySendMessage,          SentMessageResult SendMessageResult);
 
     }
 

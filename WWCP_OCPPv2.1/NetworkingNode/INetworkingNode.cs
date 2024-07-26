@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Runtime.CompilerServices;
+
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -58,6 +60,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         String? ClientCloseMessage { get; }
 
+
+
+        Task LogEvent<TDelegate>(String                                             OCPPIO,
+                                 TDelegate?                                         Logger,
+                                 Func<TDelegate, Task>                              LogHandler,
+                                 [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+                                 [CallerMemberName()]                       String  OCPPCommand   = "")
+
+            where TDelegate : Delegate;
 
 
         Task HandleErrors(String     Module,

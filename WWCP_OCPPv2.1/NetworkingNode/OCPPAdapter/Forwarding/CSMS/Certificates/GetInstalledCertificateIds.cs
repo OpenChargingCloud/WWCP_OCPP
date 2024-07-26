@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnGetInstalledCertificateIdsRequestFilterDelegate?      OnGetInstalledCertificateIdsRequest;
+        public event OnGetInstalledCertificateIdsRequestReceivedDelegate?    OnGetInstalledCertificateIdsRequestReceived;
+        public event OnGetInstalledCertificateIdsRequestFilterDelegate?      OnGetInstalledCertificateIdsRequestFilter;
+        public event OnGetInstalledCertificateIdsRequestFilteredDelegate?    OnGetInstalledCertificateIdsRequestFiltered;
+        public event OnGetInstalledCertificateIdsRequestSentDelegate?        OnGetInstalledCertificateIdsRequestSent;
 
-        public event OnGetInstalledCertificateIdsRequestFilteredDelegate?    OnGetInstalledCertificateIdsRequestLogging;
+        public event OnGetInstalledCertificateIdsResponseReceivedDelegate?   OnGetInstalledCertificateIdsResponseReceived;
+        public event OnGetInstalledCertificateIdsResponseSentDelegate?       OnGetInstalledCertificateIdsResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<GetInstalledCertificateIdsRequest, GetInstalledCertificateIdsResponse>? forwardingDecision = null;
 
-            #region Send OnGetInstalledCertificateIdsRequest event
+            #region Send OnGetInstalledCertificateIdsRequestReceived event
 
-            var requestFilter = OnGetInstalledCertificateIdsRequest;
+            var receivedLogging = OnGetInstalledCertificateIdsRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnGetInstalledCertificateIdsRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnGetInstalledCertificateIdsRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnGetInstalledCertificateIdsRequestFilter event
+
+            var requestFilter = OnGetInstalledCertificateIdsRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnGetInstalledCertificateIdsRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnGetInstalledCertificateIdsRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnGetInstalledCertificateIdsRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnGetInstalledCertificateIdsRequestFilter),
                               e
                           );
                 }
@@ -171,33 +213,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomGetInstalledCertificateIdsRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnGetInstalledCertificateIdsRequestLogging event
+            #region Send OnGetInstalledCertificateIdsRequestFiltered event
 
-            var logger = OnGetInstalledCertificateIdsRequestLogging;
+            var logger = OnGetInstalledCertificateIdsRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnGetInstalledCertificateIdsRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnGetInstalledCertificateIdsRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnGetInstalledCertificateIdsRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnGetInstalledCertificateIdsRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnGetInstalledCertificateIdsRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnGetInstalledCertificateIdsRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnGetInstalledCertificateIdsRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnGetInstalledCertificateIdsRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

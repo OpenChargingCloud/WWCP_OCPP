@@ -919,18 +919,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP request message.
         /// </summary>
         /// <param name="JSONRequestMessage">A JSON OCPP request message.</param>
-        public async Task<SendMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
+        public async Task<SentMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(JSONRequestMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONRequestMessage.DestinationId))
                 {
 
                     JSONRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -976,18 +971,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1000,18 +995,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP response message.
         /// </summary>
         /// <param name="JSONResponseMessage">A JSON OCPP response message.</param>
-        public async Task<SendMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        public async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(JSONResponseMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONResponseMessage.DestinationId))
                 {
 
                     JSONResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1054,21 +1044,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                             }
                         }
 
-                        #endregion
+                    #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1081,18 +1071,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP error message.
         /// </summary>
         /// <param name="JSONRequestErrorMessage">A JSON OCPP error message.</param>
-        public async Task<SendMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+        public async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(JSONRequestErrorMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONRequestErrorMessage.DestinationId))
                 {
 
                     JSONRequestErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1138,18 +1123,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1162,18 +1147,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP error message.
         /// </summary>
         /// <param name="JSONResponseErrorMessage">A JSON OCPP error message.</param>
-        public async Task<SendMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        public async Task<SentMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(JSONResponseErrorMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONResponseErrorMessage.DestinationId))
                 {
 
                     JSONResponseErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1219,18 +1199,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1243,18 +1223,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given JSON OCPP send message.
         /// </summary>
         /// <param name="JSONSendMessage">A JSON OCPP send message.</param>
-        public async Task<SendMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
+        public async Task<SentMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(JSONSendMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONSendMessage.DestinationId))
                 {
 
                     JSONSendMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1300,18 +1275,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1325,18 +1300,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP request message.
         /// </summary>
         /// <param name="BinaryRequestMessage">A binary OCPP request message.</param>
-        public async Task<SendMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        public async Task<SentMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(BinaryRequestMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(BinaryRequestMessage.DestinationId))
                 {
 
                     BinaryRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1382,18 +1352,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1406,18 +1376,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP response message.
         /// </summary>
         /// <param name="BinaryResponseMessage">A binary OCPP response message.</param>
-        public async Task<SendMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(BinaryResponseMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(BinaryResponseMessage.DestinationId))
                 {
 
                     BinaryResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1463,18 +1428,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1487,18 +1452,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP error message.
         /// </summary>
         /// <param name="BinaryRequestErrorMessage">A binary OCPP error message.</param>
-        public async Task<SendMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        public async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(BinaryRequestErrorMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(BinaryRequestErrorMessage.DestinationId))
                 {
 
                     BinaryRequestErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1544,18 +1504,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1568,18 +1528,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP error message.
         /// </summary>
         /// <param name="BinaryResponseErrorMessage">A binary OCPP error message.</param>
-        public async Task<SendMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
+        public async Task<SentMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(BinaryResponseErrorMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(BinaryResponseErrorMessage.DestinationId))
                 {
 
                     BinaryResponseErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1625,18 +1580,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1649,18 +1604,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Send (and forget) the given binary OCPP send message.
         /// </summary>
         /// <param name="BinarySendMessage">A binary OCPP send message.</param>
-        public async Task<SendMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
+        public async Task<SentMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(BinarySendMessage.DestinationId).ToArray();
-
-                if (webSocketConnections.Length == 0)
-                    return SendMessageResult.UnknownClient;
-
-                foreach (var webSocketConnection in webSocketConnections)
+                foreach (var webSocketConnection in LookupNetworkingNode(BinarySendMessage.DestinationId))
                 {
 
                     BinarySendMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1706,18 +1656,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     #endregion
 
                     if (sendStatus == SendStatus.Success)
-                        break;
+                        return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
 
                 }
 
-                return SendMessageResult.Success;
+                return SentMessageResult.UnknownClient();
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return SendMessageResult.TransmissionFailed;
+                return SentMessageResult.TransmissionFailed(e);
             }
 
         }
@@ -1746,7 +1696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey) == lookUpNetworkingNodeId);
             }
 
-            return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey) == lookUpNetworkingNodeId);
+            return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).ToArray();
                             //            Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingNodeId == lookUpNetworkingNodeId ? NetworkingMode.Standard : NetworkingMode.OverlayNetwork));
 
         }

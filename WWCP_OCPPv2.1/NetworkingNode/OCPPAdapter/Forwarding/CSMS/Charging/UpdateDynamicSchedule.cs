@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnUpdateDynamicScheduleRequestFilterDelegate?      OnUpdateDynamicScheduleRequest;
+        public event OnUpdateDynamicScheduleRequestReceivedDelegate?    OnUpdateDynamicScheduleRequestReceived;
+        public event OnUpdateDynamicScheduleRequestFilterDelegate?      OnUpdateDynamicScheduleRequestFilter;
+        public event OnUpdateDynamicScheduleRequestFilteredDelegate?    OnUpdateDynamicScheduleRequestFiltered;
+        public event OnUpdateDynamicScheduleRequestSentDelegate?        OnUpdateDynamicScheduleRequestSent;
 
-        public event OnUpdateDynamicScheduleRequestFilteredDelegate?    OnUpdateDynamicScheduleRequestLogging;
+        public event OnUpdateDynamicScheduleResponseReceivedDelegate?   OnUpdateDynamicScheduleResponseReceived;
+        public event OnUpdateDynamicScheduleResponseSentDelegate?       OnUpdateDynamicScheduleResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<UpdateDynamicScheduleRequest, UpdateDynamicScheduleResponse>? forwardingDecision = null;
 
-            #region Send OnUpdateDynamicScheduleRequest event
+            #region Send OnUpdateDynamicScheduleRequestReceived event
 
-            var requestFilter = OnUpdateDynamicScheduleRequest;
+            var receivedLogging = OnUpdateDynamicScheduleRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnUpdateDynamicScheduleRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnUpdateDynamicScheduleRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnUpdateDynamicScheduleRequestFilter event
+
+            var requestFilter = OnUpdateDynamicScheduleRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnUpdateDynamicScheduleRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnUpdateDynamicScheduleRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnUpdateDynamicScheduleRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnUpdateDynamicScheduleRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomUpdateDynamicScheduleRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnUpdateDynamicScheduleRequestLogging event
+            #region Send OnUpdateDynamicScheduleRequestFiltered event
 
-            var logger = OnUpdateDynamicScheduleRequestLogging;
+            var logger = OnUpdateDynamicScheduleRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnUpdateDynamicScheduleRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnUpdateDynamicScheduleRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnUpdateDynamicScheduleRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnUpdateDynamicScheduleRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnUpdateDynamicScheduleRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnUpdateDynamicScheduleRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnUpdateDynamicScheduleRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnUpdateDynamicScheduleRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

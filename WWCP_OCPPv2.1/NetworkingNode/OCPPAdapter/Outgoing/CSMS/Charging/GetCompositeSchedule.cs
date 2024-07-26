@@ -72,8 +72,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 OnGetCompositeScheduleRequestSent?.Invoke(startTime,
                                                       parentNetworkingNode,
+                                                      null,
                                                       Request,
-                                                SendMessageResult.Success);
+                                                SentMessageResults.Success);
             }
             catch (Exception e)
             {

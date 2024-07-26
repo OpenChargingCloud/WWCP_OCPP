@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnNotifyAllowedEnergyTransferRequestFilterDelegate?      OnNotifyAllowedEnergyTransferRequest;
+        public event OnNotifyAllowedEnergyTransferRequestReceivedDelegate?    OnNotifyAllowedEnergyTransferRequestReceived;
+        public event OnNotifyAllowedEnergyTransferRequestFilterDelegate?      OnNotifyAllowedEnergyTransferRequestFilter;
+        public event OnNotifyAllowedEnergyTransferRequestFilteredDelegate?    OnNotifyAllowedEnergyTransferRequestFiltered;
+        public event OnNotifyAllowedEnergyTransferRequestSentDelegate?        OnNotifyAllowedEnergyTransferRequestSent;
 
-        public event OnNotifyAllowedEnergyTransferRequestFilteredDelegate?    OnNotifyAllowedEnergyTransferRequestLogging;
+        public event OnNotifyAllowedEnergyTransferResponseReceivedDelegate?   OnNotifyAllowedEnergyTransferResponseReceived;
+        public event OnNotifyAllowedEnergyTransferResponseSentDelegate?       OnNotifyAllowedEnergyTransferResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<NotifyAllowedEnergyTransferRequest, NotifyAllowedEnergyTransferResponse>? forwardingDecision = null;
 
-            #region Send OnNotifyAllowedEnergyTransferRequest event
+            #region Send OnNotifyAllowedEnergyTransferRequestReceived event
 
-            var requestFilter = OnNotifyAllowedEnergyTransferRequest;
+            var receivedLogging = OnNotifyAllowedEnergyTransferRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnNotifyAllowedEnergyTransferRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnNotifyAllowedEnergyTransferRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnNotifyAllowedEnergyTransferRequestFilter event
+
+            var requestFilter = OnNotifyAllowedEnergyTransferRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnNotifyAllowedEnergyTransferRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnNotifyAllowedEnergyTransferRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnNotifyAllowedEnergyTransferRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnNotifyAllowedEnergyTransferRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomNotifyAllowedEnergyTransferRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnNotifyAllowedEnergyTransferRequestLogging event
+            #region Send OnNotifyAllowedEnergyTransferRequestFiltered event
 
-            var logger = OnNotifyAllowedEnergyTransferRequestLogging;
+            var logger = OnNotifyAllowedEnergyTransferRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnNotifyAllowedEnergyTransferRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnNotifyAllowedEnergyTransferRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnNotifyAllowedEnergyTransferRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnNotifyAllowedEnergyTransferRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnNotifyAllowedEnergyTransferRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnNotifyAllowedEnergyTransferRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnNotifyAllowedEnergyTransferRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnNotifyAllowedEnergyTransferRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

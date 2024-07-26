@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnGetMonitoringReportRequestFilterDelegate?      OnGetMonitoringReportRequest;
+        public event OnGetMonitoringReportRequestReceivedDelegate?    OnGetMonitoringReportRequestReceived;
+        public event OnGetMonitoringReportRequestFilterDelegate?      OnGetMonitoringReportRequestFilter;
+        public event OnGetMonitoringReportRequestFilteredDelegate?    OnGetMonitoringReportRequestFiltered;
+        public event OnGetMonitoringReportRequestSentDelegate?        OnGetMonitoringReportRequestSent;
 
-        public event OnGetMonitoringReportRequestFilteredDelegate?    OnGetMonitoringReportRequestLogging;
+        public event OnGetMonitoringReportResponseReceivedDelegate?   OnGetMonitoringReportResponseReceived;
+        public event OnGetMonitoringReportResponseSentDelegate?       OnGetMonitoringReportResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<GetMonitoringReportRequest, GetMonitoringReportResponse>? forwardingDecision = null;
 
-            #region Send OnGetMonitoringReportRequest event
+            #region Send OnGetMonitoringReportRequestReceived event
 
-            var requestFilter = OnGetMonitoringReportRequest;
+            var receivedLogging = OnGetMonitoringReportRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnGetMonitoringReportRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnGetMonitoringReportRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnGetMonitoringReportRequestFilter event
+
+            var requestFilter = OnGetMonitoringReportRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnGetMonitoringReportRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnGetMonitoringReportRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnGetMonitoringReportRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnGetMonitoringReportRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,89 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomGetMonitoringReportRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomComponentVariableSerializer,
+                                                        parentNetworkingNode.OCPP.CustomComponentSerializer,
+                                                        parentNetworkingNode.OCPP.CustomEVSESerializer,
+                                                        parentNetworkingNode.OCPP.CustomVariableSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnGetMonitoringReportRequestLogging event
+            #region Send OnGetMonitoringReportRequestFiltered event
 
-            var logger = OnGetMonitoringReportRequestLogging;
+            var logger = OnGetMonitoringReportRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnGetMonitoringReportRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnGetMonitoringReportRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnGetMonitoringReportRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnGetMonitoringReportRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnGetMonitoringReportRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnGetMonitoringReportRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnGetMonitoringReportRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnGetMonitoringReportRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

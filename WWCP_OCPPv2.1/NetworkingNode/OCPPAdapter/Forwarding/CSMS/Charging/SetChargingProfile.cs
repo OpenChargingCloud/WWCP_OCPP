@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnSetChargingProfileRequestFilterDelegate?      OnSetChargingProfileRequest;
+        public event OnSetChargingProfileRequestReceivedDelegate?    OnSetChargingProfileRequestReceived;
+        public event OnSetChargingProfileRequestFilterDelegate?      OnSetChargingProfileRequestFilter;
+        public event OnSetChargingProfileRequestFilteredDelegate?    OnSetChargingProfileRequestFiltered;
+        public event OnSetChargingProfileRequestSentDelegate?        OnSetChargingProfileRequestSent;
 
-        public event OnSetChargingProfileRequestFilteredDelegate?    OnSetChargingProfileRequestLogging;
+        public event OnSetChargingProfileResponseReceivedDelegate?   OnSetChargingProfileResponseReceived;
+        public event OnSetChargingProfileResponseSentDelegate?       OnSetChargingProfileResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<SetChargingProfileRequest, SetChargingProfileResponse>? forwardingDecision = null;
 
-            #region Send OnSetChargingProfileRequest event
+            #region Send OnSetChargingProfileRequestReceived event
 
-            var requestFilter = OnSetChargingProfileRequest;
+            var receivedLogging = OnSetChargingProfileRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnSetChargingProfileRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnSetChargingProfileRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnSetChargingProfileRequestFilter event
+
+            var requestFilter = OnSetChargingProfileRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnSetChargingProfileRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnSetChargingProfileRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnSetChargingProfileRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnSetChargingProfileRequestFilter),
                               e
                           );
                 }
@@ -170,33 +212,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
 
-            #region Send OnSetChargingProfileRequestLogging event
+                                                        parentNetworkingNode.OCPP.CustomSetChargingProfileRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomChargingProfileSerializer,
+                                                        parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                                                        parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
+                                                        parentNetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomSalesTariffSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSalesTariffEntrySerializer,
+                                                        parentNetworkingNode.OCPP.CustomRelativeTimeIntervalSerializer,
+                                                        parentNetworkingNode.OCPP.CustomConsumptionCostSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCostSerializer,
 
-            var logger = OnSetChargingProfileRequestLogging;
+                                                        parentNetworkingNode.OCPP.CustomAbsolutePriceScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomPriceRuleStackSerializer,
+                                                        parentNetworkingNode.OCPP.CustomPriceRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomTaxRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomOverstayRuleListSerializer,
+                                                        parentNetworkingNode.OCPP.CustomOverstayRuleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomAdditionalServiceSerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomPriceLevelScheduleSerializer,
+                                                        parentNetworkingNode.OCPP.CustomPriceLevelScheduleEntrySerializer,
+
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+
+                                                    );
+
+            #region Send OnSetChargingProfileRequestFiltered event
+
+            var logger = OnSetChargingProfileRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnSetChargingProfileRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnSetChargingProfileRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnSetChargingProfileRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnSetChargingProfileRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnSetChargingProfileRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnSetChargingProfileRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnSetChargingProfileRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnSetChargingProfileRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 

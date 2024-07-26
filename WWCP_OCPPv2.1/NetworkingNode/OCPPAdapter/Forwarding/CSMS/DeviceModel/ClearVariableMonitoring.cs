@@ -72,9 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnClearVariableMonitoringRequestFilterDelegate?      OnClearVariableMonitoringRequest;
+        public event OnClearVariableMonitoringRequestReceivedDelegate?    OnClearVariableMonitoringRequestReceived;
+        public event OnClearVariableMonitoringRequestFilterDelegate?      OnClearVariableMonitoringRequestFilter;
+        public event OnClearVariableMonitoringRequestFilteredDelegate?    OnClearVariableMonitoringRequestFiltered;
+        public event OnClearVariableMonitoringRequestSentDelegate?        OnClearVariableMonitoringRequestSent;
 
-        public event OnClearVariableMonitoringRequestFilteredDelegate?    OnClearVariableMonitoringRequestLogging;
+        public event OnClearVariableMonitoringResponseReceivedDelegate?   OnClearVariableMonitoringResponseReceived;
+        public event OnClearVariableMonitoringResponseSentDelegate?       OnClearVariableMonitoringResponseSent;
 
         #endregion
 
@@ -102,22 +106,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<ClearVariableMonitoringRequest, ClearVariableMonitoringResponse>? forwardingDecision = null;
 
-            #region Send OnClearVariableMonitoringRequest event
+            #region Send OnClearVariableMonitoringRequestReceived event
 
-            var requestFilter = OnClearVariableMonitoringRequest;
+            var receivedLogging = OnClearVariableMonitoringRequestReceived;
+            if (receivedLogging is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              receivedLogging.GetInvocationList().
+                                  OfType<OnClearVariableMonitoringRequestReceivedDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               Connection,
+                                                               request
+                                                           )).
+                                  ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnClearVariableMonitoringRequestReceived),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            #region Send OnClearVariableMonitoringRequestFilter event
+
+            var requestFilter = OnClearVariableMonitoringRequestFilter;
             if (requestFilter is not null)
             {
                 try
                 {
 
-                    var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnClearVariableMonitoringRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnClearVariableMonitoringRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             Connection,
+                                                                             request,
+                                                                             CancellationToken
+                                                                         )).
+                                                ToArray()
+                                        );
 
                     //ToDo: Find a good result!
                     forwardingDecision = results.First();
@@ -126,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnClearVariableMonitoringRequest),
+                              nameof(NetworkingNode),
+                              nameof(OnClearVariableMonitoringRequestFilter),
                               e
                           );
                 }
@@ -171,33 +213,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            if (forwardingDecision.NewRequest is not null)
+                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        parentNetworkingNode.OCPP.CustomClearVariableMonitoringRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                    );
 
-            #region Send OnClearVariableMonitoringRequestLogging event
+            #region Send OnClearVariableMonitoringRequestFiltered event
 
-            var logger = OnClearVariableMonitoringRequestLogging;
+            var logger = OnClearVariableMonitoringRequestFiltered;
             if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                       OfType <OnClearVariableMonitoringRequestFilteredDelegate>().
-                                       Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                         parentNetworkingNode,
-                                                                                         Connection,
-                                                                                         request,
-                                                                                         forwardingDecision)).
-                                       ToArray());
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnClearVariableMonitoringRequestFilteredDelegate>().
+                                  Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                Timestamp.Now,
+                                                                parentNetworkingNode,
+                                                                Connection,
+                                                                request,
+                                                                forwardingDecision
+                                                            )).
+                                  ToArray()
+                          );
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              "NetworkingNode",
-                              nameof(OnClearVariableMonitoringRequestLogging),
+                              nameof(NetworkingNode),
+                              nameof(OnClearVariableMonitoringRequestFiltered),
                               e
                           );
                 }
+
+            }
+
+            #endregion
+
+
+            #region Attach OnClearVariableMonitoringRequestSent event
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var sentLogging = OnClearVariableMonitoringRequestSent;
+                if (sentLogging is not null)
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
+
+                        try
+                        {
+
+                            await Task.WhenAll(
+                                      sentLogging.GetInvocationList().
+                                          OfType<OnClearVariableMonitoringRequestSentDelegate>().
+                                          Select(filterDelegate => filterDelegate.Invoke(
+                                                                       Timestamp.Now,
+                                                                       parentNetworkingNode,
+                                                                       sentMessageResult.Connection,
+                                                                       request,
+                                                                       sentMessageResult.Result
+                                                                   )).
+                                          ToArray()
+                                  );
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                      nameof(NetworkingNode),
+                                      nameof(OnClearVariableMonitoringRequestSent),
+                                      e
+                                  );
+                        }
+
+                    };
 
             }
 
