@@ -165,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                              Connection,
                                                                              request,
                                                                              CancellationToken
-                                                                         )).
-                                                ToArray()
+                                                                         ))
                                         );
 
                     //ToDo: Find a good result!
@@ -245,8 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                 Connection,
                                                                 request,
                                                                 forwardingDecision
-                                                            )).
-                                  ToArray()
+                                                            ))
                           );
 
                 }
@@ -285,8 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                        sentMessageResult.Connection,
                                                                        request,
                                                                        sentMessageResult.Result
-                                                                   )).
-                                          ToArray()
+                                                                   ))
                                   );
 
                         }

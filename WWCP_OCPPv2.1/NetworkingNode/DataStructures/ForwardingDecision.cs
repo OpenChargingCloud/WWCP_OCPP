@@ -390,24 +390,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region (static) FORWARD (LogMessage = null, RequestContext = null)
+        #region (static) FORWARD (LogMessage = null)
 
         /// <summary>
         /// FORWARD the request.
         /// </summary>
         /// <param name="LogMessage">An optional log message.</param>
-        /// <param name="RequestContext">The JSON-LD context of the request.</param>
-        public static ForwardingDecision<TRequest, TResponse> FORWARD(TRequest        Request,
-                                                                      String?         LogMessage       = null,
-                                                                      JSONLDContext?  RequestContext   = null)
+        public static ForwardingDecision<TRequest, TResponse> FORWARD(TRequest            Request,
+                                                                      NetworkingNode_Id?  NewDestinationId   = null,
+                                                                      String?             LogMessage         = null)
 
             => new (
                    Request,
                    ForwardingResults.FORWARD,
                    null,
                    null,
-                   null,
-                   //RequestContext,
+                   NewDestinationId,
                    String.Empty,
                    null,
                    LogMessage
@@ -415,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) REJECT  (LogMessage = null, RequestContext = null)
+        #region (static) REJECT  (LogMessage = null)
 
         /// <summary>
         /// REJECT the request.
@@ -423,12 +421,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        /// <param name="RequestContext">The JSON-LD context of the request.</param>
-        public static ForwardingDecision<TRequest, TResponse> REJECT(TRequest        Request,
-                                                                     String?         RejectMessage    = null,
-                                                                     JObject?        RejectDetails    = null,
-                                                                     String?         LogMessage       = null,
-                                                                     JSONLDContext?  RequestContext   = null)
+        public static ForwardingDecision<TRequest, TResponse> REJECT(TRequest  Request,
+                                                                     String?   RejectMessage   = null,
+                                                                     JObject?  RejectDetails   = null,
+                                                                     String?   LogMessage      = null)
 
             => new (
                    Request,
@@ -471,19 +467,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region (static) REPLACE (Request, NewRequest, NewAction = null, NewDestinationId = null, LogMessage = null, RequestContext = null)
+        #region (static) REPLACE (Request, NewRequest, NewAction = null, NewDestinationId = null, LogMessage = null)
 
         /// <summary>
         /// REPLACE the request.
         /// </summary>
         /// <param name="LogMessage">An optional log message.</param>
-        /// <param name="RequestContext">The JSON-LD context of the request.</param>
         public static ForwardingDecision<TRequest, TResponse> REPLACE(TRequest            Request,
                                                                       TRequest            NewRequest,
                                                                       String?             NewAction          = null,
                                                                       NetworkingNode_Id?  NewDestinationId   = null,
-                                                                      String?             LogMessage         = null,
-                                                                      JSONLDContext?      RequestContext     = null)
+                                                                      String?             LogMessage         = null)
 
             => new (
                    Request,

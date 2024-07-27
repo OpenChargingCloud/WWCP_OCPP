@@ -147,6 +147,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                         var newJSONRequestMessage = JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
 
+                        if (forwardingDecision.NewDestinationId.HasValue)
+                            newJSONRequestMessage = newJSONRequestMessage.ChangeNetworking(forwardingDecision.NewDestinationId.Value);
+
                         expectedResponses.TryAdd(
                             newJSONRequestMessage.RequestId,
                             new ResponseInfo(
