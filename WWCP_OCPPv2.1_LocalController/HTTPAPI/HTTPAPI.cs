@@ -5585,9 +5585,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnDataTransfer
 
             LocalController.OCPP.IN.OnDataTransferRequestReceived += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      cancellationToken) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnDataTransferRequestReceived),
                                      new JObject(
@@ -5614,48 +5615,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.IN.OnDataTransferResponseReceived += (timestamp,
-                                                                      sender,
-                                                                      //connection,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime,
+                                                                       cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnDataTransferResponseReceived),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
-                                     ));
+                EventLog.SubmitEvent(
+                    nameof(LocalController.OCPP.IN.OnBinaryDataTransferResponseReceived),
+                    JSONObject.Create(
+                              new JProperty("timestamp",   timestamp. ToIso8601()),
+                              new JProperty("sender",      sender.Id),
+                              new JProperty("connection",  connection.ToJSON()),
+                        request is not null
+                            ? new JProperty("request",     request.   ToJSON())
+                            : null,
+                              new JProperty("response",    response.  ToJSON()),
+                        runtime.HasValue
+                            ? new JProperty("runtime",     runtime.Value.TotalMilliseconds)
+                            : null
+                    )
+                );
 
 
             LocalController.OCPP.OUT.OnDataTransferResponseSent += (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
-                EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnDataTransferResponseSent),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
-                                     ));
+                EventLog.SubmitEvent(
+                    nameof(LocalController.OCPP.OUT.OnBinaryDataTransferResponseSent),
+                    JSONObject.Create(
+                              new JProperty("timestamp",   timestamp. ToIso8601()),
+                              new JProperty("sender",      sender.Id),
+                              new JProperty("connection",  connection.ToJSON()),
+                        request is not null
+                            ? new JProperty("request",     request.   ToJSON())
+                            : null,
+                              new JProperty("response",    response.  ToJSON()),
+                        runtime.HasValue
+                            ? new JProperty("runtime", runtime.Value.TotalMilliseconds)
+                            : null
+                    )
+                );
 
             #endregion
 
             #region OnBinaryDataTransfer
 
             LocalController.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            cancellationToken) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnBinaryDataTransferRequestReceived),
                                      new JObject(
@@ -5676,7 +5691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToBinary().ToBase64())
                                      ));
 
@@ -5686,35 +5701,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              connection,
                                                                              request,
                                                                              response,
-                                                                             runtime) =>
+                                                                             runtime,
+                                                                             cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnBinaryDataTransferResponseReceived),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToBinary().ToBase64()),
-                                         new JProperty("response",    response.  ToBinary().ToBase64()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
-                                     ));
+                EventLog.SubmitEvent(
+                    nameof(LocalController.OCPP.IN.OnBinaryDataTransferResponseReceived),
+                    JSONObject.Create(
+                              new JProperty("timestamp",   timestamp. ToIso8601()),
+                              new JProperty("sender",      sender.Id),
+                              new JProperty("connection",  connection.ToJSON()),
+                        request is not null
+                            ? new JProperty("request",     request.   ToBinary().ToBase64())
+                            : null,
+                              new JProperty("response",    response.  ToBinary().ToBase64()),
+                        runtime.HasValue
+                            ? new JProperty("runtime",     runtime.Value.TotalMilliseconds)
+                            : null
+                    )
+                );
 
 
             LocalController.OCPP.OUT.OnBinaryDataTransferResponseSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnBinaryDataTransferResponseSent),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToBinary().ToBase64()),
-                                         new JProperty("response",    response.  ToBinary().ToBase64()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
-                                     ));
+                EventLog.SubmitEvent(
+                    nameof(LocalController.OCPP.OUT.OnBinaryDataTransferResponseSent),
+                    JSONObject.Create(
+                              new JProperty("timestamp",   timestamp. ToIso8601()),
+                              new JProperty("sender",      sender.Id),
+                              new JProperty("connection",  connection.ToJSON()),
+                        request is not null
+                            ? new JProperty("request",     request.   ToBinary().ToBase64())
+                            : null,
+                              new JProperty("response",    response.  ToBinary().ToBase64()),
+                        runtime.HasValue
+                            ? new JProperty("runtime", runtime.Value.TotalMilliseconds)
+                            : null
+                    )
+                );
 
             #endregion
 

@@ -5588,7 +5588,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnDataTransferRequestReceived += (timestamp,
                                                                      sender,
                                                                      connection,
-                                                                     request) =>
+                                                                     request,
+                                                                     cancellationToken) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDataTransferRequestReceived),
                                      new JObject(
@@ -5616,38 +5617,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.IN.OnDataTransferResponseReceived += (timestamp,
                                                                       sender,
-                                                                      //connection,
+                                                                      connection,
                                                                       request,
                                                                       response,
-                                                                      runtime) =>
+                                                                      runtime,
+                                                                      cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDataTransferResponseReceived),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
-                                     ));
+                EventLog.SubmitEvent(
+                    nameof(NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived),
+                    JSONObject.Create(
+                              new JProperty("timestamp",   timestamp. ToIso8601()),
+                              new JProperty("sender",      sender.Id),
+                              new JProperty("connection",  connection.ToJSON()),
+                        request is not null
+                            ? new JProperty("request",     request.   ToJSON())
+                            : null,
+                              new JProperty("response",    response.  ToJSON()),
+                        runtime.HasValue
+                            ? new JProperty("runtime",     runtime.Value.TotalMilliseconds)
+                            : null
+                    )
+                );
 
 
             NetworkingNode.OCPP.OUT.OnDataTransferResponseSent += (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDataTransferResponseSent),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
-                                     ));
+                EventLog.SubmitEvent(
+                    nameof(NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent),
+                    JSONObject.Create(
+                              new JProperty("timestamp",   timestamp. ToIso8601()),
+                              new JProperty("sender",      sender.Id),
+                              new JProperty("connection",  connection.ToJSON()),
+                        request is not null
+                            ? new JProperty("request",     request.   ToJSON())
+                            : null,
+                              new JProperty("response",    response.  ToJSON()),
+                        runtime.HasValue
+                            ? new JProperty("runtime", runtime.Value.TotalMilliseconds)
+                            : null
+                    )
+                );
 
             #endregion
 
@@ -5656,7 +5670,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
-                                                                           request) =>
+                                                                           request,
+                                                                           cancellationToken) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnBinaryDataTransferRequestReceived),
                                      new JObject(
@@ -5677,7 +5692,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToBinary().ToBase64())
                                      ));
 
@@ -5687,17 +5702,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             connection,
                                                                             request,
                                                                             response,
-                                                                            runtime) =>
+                                                                            runtime,
+                                                                            cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToBinary().ToBase64()),
-                                         new JProperty("response",    response.  ToBinary().ToBase64()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
-                                     ));
+                EventLog.SubmitEvent(
+                    nameof(NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived),
+                    JSONObject.Create(
+                              new JProperty("timestamp",   timestamp. ToIso8601()),
+                              new JProperty("sender",      sender.Id),
+                              new JProperty("connection",  connection.ToJSON()),
+                        request is not null
+                            ? new JProperty("request",     request.   ToBinary().ToBase64())
+                            : null,
+                              new JProperty("response",    response.  ToBinary().ToBase64()),
+                        runtime.HasValue
+                            ? new JProperty("runtime",     runtime.Value.TotalMilliseconds)
+                            : null
+                    )
+                );
 
 
             NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent += (timestamp,
@@ -5707,15 +5729,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          response,
                                                                          runtime) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToBinary().ToBase64()),
-                                         new JProperty("response",    response.  ToBinary().ToBase64()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
-                                     ));
+                EventLog.SubmitEvent(
+                    nameof(NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent),
+                    JSONObject.Create(
+                              new JProperty("timestamp",   timestamp. ToIso8601()),
+                              new JProperty("sender",      sender.Id),
+                              new JProperty("connection",  connection.ToJSON()),
+                        request is not null
+                            ? new JProperty("request",     request.   ToBinary().ToBase64())
+                            : null,
+                              new JProperty("response",    response.  ToBinary().ToBase64()),
+                        runtime.HasValue
+                            ? new JProperty("runtime", runtime.Value.TotalMilliseconds)
+                            : null
+                    )
+                );
 
             #endregion
 

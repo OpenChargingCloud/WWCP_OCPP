@@ -1608,7 +1608,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                chargingStation1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1664,7 +1664,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                chargingStation1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1727,7 +1727,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                chargingStation1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1787,7 +1787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                chargingStation1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };

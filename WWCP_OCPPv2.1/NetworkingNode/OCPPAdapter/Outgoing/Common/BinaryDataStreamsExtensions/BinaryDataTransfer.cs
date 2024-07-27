@@ -28,12 +28,12 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    #region Delegates
+    #region Logging Delegates
 
     /// <summary>
-    /// A delegate called whenever a BinaryDataTransfer request was sent.
+    /// A logging delegate called whenever a BinaryDataTransfer request was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The request.</param>
@@ -46,37 +46,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
     /// <summary>
-    /// A delegate called whenever a response to a BinaryDataTransfer request was received.
+    /// A logging delegate called whenever a BinaryDataTransfer response was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The connection of the request.</param>
-    /// <param name="Request">The request.</param>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The connection of the response.</param>
+    /// <param name="Request">The optional request.</param>
     /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnBinaryDataTransferResponseReceivedDelegate(DateTime                     Timestamp,
-                                                                      IEventSender                 Sender,
-                                                                      IWebSocketConnection         Connection,
-                                                                      BinaryDataTransferRequest    Request,
-                                                                      BinaryDataTransferResponse   Response,
-                                                                      TimeSpan                     Runtime);
+    /// <param name="Runtime">The optional runtime of the response.</param>
+    public delegate Task
+
+        OnBinaryDataTransferResponseSentDelegate(DateTime                     Timestamp,
+                                                 IEventSender                 Sender,
+                                                 IWebSocketConnection         Connection,
+                                                 BinaryDataTransferRequest?   Request,
+                                                 BinaryDataTransferResponse   Response,
+                                                 TimeSpan?                    Runtime);
 
 
     /// <summary>
-    /// A delegate called whenever a RequestError to a BinaryDataTransfer request was received.
+    /// A logging delegate called whenever a BinaryDataTransfer request error was sent.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The connection of the request.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="RequestErrorMessage">The RequestErrorMessage.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnBinaryDataTransferRequestErrorReceivedDelegate(DateTime                         Timestamp,
-                                                                          IEventSender                     Sender,
-                                                                          IWebSocketConnection             Connection,
-                                                                          BinaryDataTransferRequest        Request,
-                                                                          OCPP_BinaryRequestErrorMessage   RequestErrorMessage,
-                                                                          TimeSpan                         Runtime);
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request error.</param>
+    /// <param name="Connection">The connection of the request error.</param>
+    /// <param name="Request">The optional request (when parsable).</param>
+    /// <param name="RequestErrorMessage">The request error message.</param>
+    /// <param name="Runtime">The optional runtime of the request error messag.</param>
+    public delegate Task
+
+        OnBinaryDataTransferRequestErrorSentDelegate(DateTime                       Timestamp,
+                                                     IEventSender                   Sender,
+                                                     IWebSocketConnection           Connection,
+                                                     BinaryDataTransferRequest?     Request,
+                                                     OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                     TimeSpan?                      Runtime);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a BinaryDataTransfer response error was sent.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response error.</param>
+    /// <param name="Connection">The connection of the response error.</param>
+    /// <param name="Request">The optional request.</param>
+    /// <param name="Response">The optional response.</param>
+    /// <param name="ResponseErrorMessage">The response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response error message.</param>
+    public delegate Task
+
+        OnBinaryDataTransferResponseErrorSentDelegate(DateTime                        Timestamp,
+                                                      IEventSender                    Sender,
+                                                      IWebSocketConnection            Connection,
+                                                      BinaryDataTransferRequest?      Request,
+                                                      BinaryDataTransferResponse?     Response,
+                                                      OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                      TimeSpan?                       Runtime);
 
     #endregion
 
@@ -84,21 +109,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
-        #region Events
+        #region Send BinaryDataTransfer (request)
 
         /// <summary>
-        /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
+        /// An event fired whenever a BinaryDataTransfer request will be sent.
         /// </summary>
-        public event OnBinaryDataTransferRequestSentDelegate?         OnBinaryDataTransferRequestSent;
+        public event OnBinaryDataTransferRequestSentDelegate?  OnBinaryDataTransferRequestSent;
 
-        /// <summary>
-        /// An event fired whenever a response to a BinaryDataTransfer request was received.
-        /// </summary>
-        public event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponse;
-
-        #endregion
-
-        #region BinaryDataTransfer(Request)
 
         /// <summary>
         /// Send vendor-specific binary data.
@@ -212,182 +229,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-    }
-
-    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
-    {
-
-        #region Receive BinaryDataTransferResponse (wired via reflection!)
+        #region Send OnBinaryDataTransferResponseSent event
 
         /// <summary>
-        /// An event fired whenever a BinaryDataTransfer response was received.
+        /// An event sent whenever a BinaryDataTransfer response was sent.
         /// </summary>
-        public event OnBinaryDataTransferResponseReceivedDelegate? OnBinaryDataTransferResponseReceived;
+        public event OnBinaryDataTransferResponseSentDelegate?  OnBinaryDataTransferResponseSent;
 
 
-        public async Task<BinaryDataTransferResponse>
+        public Task SendOnBinaryDataTransferResponseSent(DateTime                    Timestamp,
+                                                         IEventSender                Sender,
+                                                         IWebSocketConnection        Connection,
+                                                         BinaryDataTransferRequest   Request,
+                                                         BinaryDataTransferResponse  Response,
+                                                         TimeSpan                    Runtime)
 
-            Receive_BinaryDataTransferResponse(BinaryDataTransferRequest  Request,
-                                               Byte[]                     ResponseBytes,
-                                               IWebSocketConnection       WebSocketConnection,
-                                               NetworkingNode_Id          DestinationId,
-                                               NetworkPath                NetworkPath,
-                                               EventTracking_Id           EventTrackingId,
-                                               Request_Id                 RequestId,
-                                               DateTime?                  ResponseTimestamp   = null,
-                                               CancellationToken          CancellationToken   = default)
-
-        {
-
-            var response = BinaryDataTransferResponse.Failed(Request);
-
-            try
-            {
-
-                if (BinaryDataTransferResponse.TryParse(Request,
-                                                        ResponseBytes,
-                                                        DestinationId,
-                                                        NetworkPath,
-                                                        out response,
-                                                        out var errorResponse,
-                                                        ResponseTimestamp,
-                                                        parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseParser)) {
-
-                    parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-                        response,
-                        response.ToBinary(
-                            parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseSerializer,
-                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
-                            IncludeSignatures: true
-                        ),
-                        out errorResponse
-                    );
-
-                    #region Send OnBinaryDataTransferResponseReceived event
-
-                    await LogEvent(
-                              OnBinaryDataTransferResponseReceived,
-                              loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
-                                  parentNetworkingNode,
-                                  WebSocketConnection,
-                                  Request,
-                                  response,
-                                  response.Runtime
-                              )
-                          );
-
-                    #endregion
-
-                }
-
-                else
-                    response = new BinaryDataTransferResponse(
-                                   Request,
-                                   Result.Format(errorResponse)
-                               );
-
-            }
-            catch (Exception e)
-            {
-
-                response = new BinaryDataTransferResponse(
-                               Request,
-                               Result.FromException(e)
-                           );
-
-            }
-
-            return response;
-
-        }
+            => LogEvent(
+                   OnBinaryDataTransferResponseSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       Runtime
+                   )
+               );
 
         #endregion
 
-        #region Receive BinaryDataTransferRequestError
+        #region Send OnBinaryDataTransferRequestErrorSent event
 
         /// <summary>
-        /// An event fired whenever a BinaryDataTransfer RequestError was received.
+        /// An event sent whenever a BinaryDataTransfer request error was sent.
         /// </summary>
-        public event OnBinaryDataTransferRequestErrorReceivedDelegate? BinaryDataTransferRequestErrorReceived;
+        public event OnBinaryDataTransferRequestErrorSentDelegate? OnBinaryDataTransferRequestErrorSent;
 
 
-        public async Task<BinaryDataTransferResponse>
+        public Task SendOnBinaryDataTransferRequestErrorSent(DateTime                      Timestamp,
+                                                             IEventSender                  Sender,
+                                                             IWebSocketConnection          Connection,
+                                                             BinaryDataTransferRequest?    Request,
+                                                             OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                             TimeSpan                      Runtime)
+            => LogEvent(
+                   OnBinaryDataTransferRequestErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       RequestErrorMessage,
+                       Runtime
+                   )
+               );
 
-            Receive_BinaryDataTransferRequestError(BinaryDataTransferRequest       Request,
-                                                   OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
-                                                   IWebSocketConnection            WebSocketConnection,
-                                                   NetworkingNode_Id               DestinationId,
-                                                   NetworkPath                     NetworkPath,
-                                                   EventTracking_Id                EventTrackingId,
-                                                   Request_Id                      RequestId,
-                                                   DateTime?                       ResponseTimestamp   = null,
-                                                   CancellationToken               CancellationToken   = default)
-        {
+        #endregion
 
-            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-            //    response,
-            //    response.ToJSON(
-            //        parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
-            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-            //    ),
-            //    out errorResponse
-            //);
+        #region Send OnBinaryDataTransferResponseErrorSent event
 
-            #region Send BinaryDataTransferRequestErrorReceived event
-
-            await LogEvent(
-                      BinaryDataTransferRequestErrorReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          WebSocketConnection,
-                          Request,
-                          RequestErrorMessage,
-                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp
-                      )
-                  );
-
-            #endregion
+        /// <summary>
+        /// An event sent whenever a BinaryDataTransfer response error was sent.
+        /// </summary>
+        public event OnBinaryDataTransferResponseErrorSentDelegate? OnBinaryDataTransferResponseErrorSent;
 
 
-            var response = BinaryDataTransferResponse.RequestError(
-                               Request,
-                               RequestErrorMessage.EventTrackingId,
-                               RequestErrorMessage.ErrorCode,
-                               RequestErrorMessage.ErrorDescription,
-                               RequestErrorMessage.ErrorDetails,
-                               RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
-                               RequestErrorMessage.NetworkPath
-                           );
-
-            #region Send OnBinaryDataTransferResponseReceived event
-
-            await LogEvent(
-                      OnBinaryDataTransferResponseReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          WebSocketConnection,
-                          Request,
-                          response,
-                          response.Runtime
-                      )
-                  );
-
-            #endregion
-
-            return response;
-
-        }
+        public Task SendOnBinaryDataTransferResponseErrorSent(DateTime                       Timestamp,
+                                                              IEventSender                   Sender,
+                                                              IWebSocketConnection           Connection,
+                                                              BinaryDataTransferRequest?     Request,
+                                                              BinaryDataTransferResponse?    Response,
+                                                              OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                              TimeSpan                       Runtime)
+            => LogEvent(
+                   OnBinaryDataTransferResponseErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       ResponseErrorMessage,
+                       Runtime
+                   )
+               );
 
         #endregion
 

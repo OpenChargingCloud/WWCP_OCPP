@@ -94,6 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     BinaryRequestMessage.NetworkPath,
                                                     out var request,
                                                     out var errorResponse,
+                                                    BinaryRequestMessage.RequestTimestamp,
+                                                    BinaryRequestMessage.RequestTimeout - Timestamp.Now,
+                                                    BinaryRequestMessage.EventTrackingId,
                                                     parentNetworkingNode.OCPP.CustomBinaryDataTransferRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);

@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var binaryDataTransferRequests = new ConcurrentList<BinaryDataTransferRequest>();
 
-                chargingStation1.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, binaryDataTransferRequest) => {
+                chargingStation1.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, binaryDataTransferRequest, ct) => {
                     binaryDataTransferRequests.TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };

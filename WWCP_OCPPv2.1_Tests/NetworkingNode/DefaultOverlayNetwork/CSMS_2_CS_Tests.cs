@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                chargingStation.OCPP.IN.     OnDataTransferRequestReceived  += (timestamp, sender, connection, DataTransferRequest) => {
+                chargingStation.OCPP.IN.     OnDataTransferRequestReceived  += (timestamp, sender, connection, DataTransferRequest, ct) => {
                     csDataTransferRequests.           TryAdd(DataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.IN.     OnDataTransferResponseReceived += (timestamp, sender, DataTransferRequest, DataTransferResponse, runtime) => {
+                CSMS.           OCPP.IN.     OnDataTransferResponseReceived += (timestamp, sender, connection, DataTransferRequest, DataTransferResponse, runtime, ct) => {
                     csmsDataTransferResponsesReceived.TryAdd(DataTransferResponse);
                     return Task.CompletedTask;
                 };

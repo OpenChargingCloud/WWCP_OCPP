@@ -165,11 +165,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom BinaryDataTransfer requests.</param>
         public static BinaryDataTransferRequest Parse(Byte[]                                                  Binary,
                                                       Request_Id                                              RequestId,
                                                       NetworkingNode_Id                                       DestinationId,
                                                       NetworkPath                                             NetworkPath,
+                                                      DateTime?                                               RequestTimestamp                  = null,
+                                                      TimeSpan?                                               RequestTimeout                    = null,
+                                                      EventTracking_Id?                                       EventTrackingId                   = null,
                                                       CustomBinaryParserDelegate<BinaryDataTransferRequest>?  CustomDataTransferRequestParser   = null)
         {
 
@@ -179,6 +185,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                          NetworkPath,
                          out var binaryDataTransferRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomDataTransferRequestParser))
             {
                 return binaryDataTransferRequest;
@@ -202,6 +211,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BinaryDataTransferRequest">The parsed BinaryDataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomBinaryDataTransferRequestParser">An optional delegate to parse custom BinaryDataTransfer requests.</param>
         public static Boolean TryParse(Byte[]                                                  Binary,
                                        Request_Id                                              RequestId,
@@ -209,6 +221,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out BinaryDataTransferRequest?     BinaryDataTransferRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
+                                       DateTime?                                               RequestTimestamp                        = null,
+                                       TimeSpan?                                               RequestTimeout                          = null,
+                                       EventTracking_Id?                                       EventTrackingId                         = null,
                                        CustomBinaryParserDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser   = null)
         {
 
@@ -317,9 +332,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     null, //signatures,
 
                                                     RequestId,
-                                                    null,
-                                                    null,
-                                                    null,
+                                                    RequestTimestamp,
+                                                    RequestTimeout,
+                                                    EventTrackingId,
                                                     NetworkPath
 
                                                 );

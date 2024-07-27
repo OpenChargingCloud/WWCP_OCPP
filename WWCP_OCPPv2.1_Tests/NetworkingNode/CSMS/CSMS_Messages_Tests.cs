@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                chargingStation1.OCPP.IN.     OnDataTransferRequestReceived += (timestamp, sender, connection, incomingDataTransferRequest) => {
+                chargingStation1.OCPP.IN.     OnDataTransferRequestReceived += (timestamp, sender, connection, incomingDataTransferRequest, ct) => {
                     csIncomingDataTransferRequests.TryAdd(incomingDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                chargingStation1.OCPP.IN.     OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
+                chargingStation1.OCPP.IN.     OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest, ct) => {
                     csIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
