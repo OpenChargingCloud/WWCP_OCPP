@@ -47,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 IEventSender              Sender,
                                                 IWebSocketConnection      Connection,
                                                 BootNotificationRequest   Request,
+                                                ForwardingDecision?       PreviousFilterStep,
                                                 CancellationToken         CancellationToken);
 
 
@@ -94,6 +95,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      CancellationToken        CancellationToken   = default)
 
         {
+
+            ForwardingDecision? previousFilterStep = null;
 
             if (!BootNotificationRequest.TryParse(JSONRequestMessage.Payload,
                                                   JSONRequestMessage.RequestId,
@@ -164,6 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                              parentNetworkingNode,
                                                                              Connection,
                                                                              request,
+                                                                             previousFilterStep,
                                                                              CancellationToken
                                                                          ))
                                         );

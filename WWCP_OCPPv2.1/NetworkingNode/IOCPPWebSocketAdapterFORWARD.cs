@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -27,6 +28,46 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
+
+    #region Delegates
+
+    /// <summary>
+    /// A delegate called whenever any JSON request should be forwarded or filtered.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The DataTransfer request.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task<ForwardingDecision>
+
+        OnAnyJSONRequestFilterDelegate(DateTime                  Timestamp,
+                                       IEventSender              Sender,
+                                       IWebSocketConnection      Connection,
+                                       OCPP_JSONRequestMessage   Request,
+                                       CancellationToken         CancellationToken = default);
+
+
+    /// <summary>
+    /// A delegate called whenever any JSON request was forwarded or filtered.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The DataTransfer request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnAnyJSONRequestFilteredDelegate(DateTime                  Timestamp,
+                                         IEventSender              Sender,
+                                         IWebSocketConnection      Connection,
+                                         OCPP_JSONRequestMessage   Request,
+                                         ForwardingDecision        ForwardingDecision,
+                                         CancellationToken         CancellationToken = default);
+
+    #endregion
+
 
     /// <summary>
     /// The common interface of all forwarding OCPP messages processors.
@@ -47,6 +88,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         #region Common
+
+        event OnAnyJSONRequestFilterDelegate    OnAnyJSONRequestFilter;
+        event OnAnyJSONRequestFilteredDelegate  OnAnyJSONRequestFiltered;
 
         #region BinaryDataStreamsExtensions
 

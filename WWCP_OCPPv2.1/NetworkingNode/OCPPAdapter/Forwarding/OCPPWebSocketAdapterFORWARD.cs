@@ -57,6 +57,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region Events
+
+        public event OnAnyJSONRequestFilterDelegate    OnAnyJSONRequestFilter;
+        public event OnAnyJSONRequestFilteredDelegate  OnAnyJSONRequestFiltered;
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>
@@ -119,160 +126,252 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return;
 
 
-            #region Try to call the matching 'incoming message processor'...
+            #region Do we have a general filter rule for any JSON request?
 
-            if (forwardingMessageProcessorsLookup.TryGetValue(JSONRequestMessage.Action, out var methodInfo) &&
-                methodInfo is not null)
+            ForwardingDecision? forwardingDecision = null;
+
+            var requestFilter = OnAnyJSONRequestFilter;
+            if (requestFilter is not null)
             {
-
-                //ToDo: Maybe this could be done via code generation!
-                var result = methodInfo.Invoke(
-                                 this,
-                                 [
-                                     JSONRequestMessage,
-                                     WebSocketConnection,
-                                     JSONRequestMessage.CancellationToken
-                                 ]
-                             );
-
-                if (result is Task<ForwardingDecision> forwardingProcessor)
+                try
                 {
 
-                    var forwardingDecision = await forwardingProcessor;
+                    var results = await Task.WhenAll(
+                                            requestFilter.GetInvocationList().
+                                                OfType<OnAnyJSONRequestFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             WebSocketConnection,
+                                                                             JSONRequestMessage,
+                                                                             JSONRequestMessage.CancellationToken
+                                                                         ))
+                                        );
 
-                    #region FORWARD
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
-                    if (forwardingDecision.Result == ForwardingResults.FORWARD)
-                    {
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnAnyJSONRequestFilter),
+                              e
+                          );
+                }
+            }
 
-                        var newJSONRequestMessage = JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
+            #endregion
 
-                        if (forwardingDecision.NewDestinationId.HasValue)
-                            newJSONRequestMessage = newJSONRequestMessage.ChangeNetworking(forwardingDecision.NewDestinationId.Value);
+            #region In case: Try to call the matching 'incoming message processor'...
 
-                        expectedResponses.TryAdd(
-                            newJSONRequestMessage.RequestId,
-                            new ResponseInfo(
-                                newJSONRequestMessage.RequestId,
-                                forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
-                                newJSONRequestMessage.NetworkPath.Source,
-                                newJSONRequestMessage.RequestTimeout
-                            )
-                        );
+            if (forwardingDecision is null ||
+                forwardingDecision.Result == ForwardingResults.NEXT)
+            {
 
-                        await parentNetworkingNode.OCPP.OUT.SendJSONRequest(
-                                  newJSONRequestMessage,
-                                  forwardingDecision.SentMessageLogger
-                              );
+                #region A filter rule for the OCPP action was found...
 
-                    }
+                if (forwardingMessageProcessorsLookup.TryGetValue(JSONRequestMessage.Action, out var methodInfo) &&
+                    methodInfo is not null)
+                {
 
-                    #endregion
+                    //ToDo: Maybe this could be done via code generation!
+                    var result = methodInfo.Invoke(
+                                     this,
+                                     [
+                                         JSONRequestMessage,
+                                         WebSocketConnection,
+                                         JSONRequestMessage.CancellationToken
+                                     ]
+                                 );
 
-                    #region REPLACE
-
-                    if (forwardingDecision.Result == ForwardingResults.REPLACE)
-                    {
-
-                        var newJSONRequestMessage = forwardingDecision.NewJSONRequest is null
-                                                        ? JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id)
-                                                        : new OCPP_JSONRequestMessage(
-                                                              JSONRequestMessage.RequestTimestamp,
-                                                              JSONRequestMessage.EventTrackingId,
-                                                              JSONRequestMessage.NetworkingMode,
-                                                              forwardingDecision.NewDestinationId ?? JSONRequestMessage.DestinationId,
-                                                              JSONRequestMessage.NetworkPath.Append(parentNetworkingNode.Id),
-                                                              JSONRequestMessage.RequestId,
-                                                              forwardingDecision.NewAction        ?? JSONRequestMessage.Action,
-                                                              forwardingDecision.NewJSONRequest, // <-- !!!
-                                                              JSONRequestMessage.RequestTimeout,
-                                                              JSONRequestMessage.ErrorMessage,
-                                                              JSONRequestMessage.CancellationToken
-                                                          );
-
-                        expectedResponses.TryAdd(
-                            newJSONRequestMessage.RequestId,
-                            new ResponseInfo(
-                                newJSONRequestMessage.RequestId,
-                                forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
-                                newJSONRequestMessage.NetworkPath.Source,
-                                newJSONRequestMessage.RequestTimeout
-                            )
-                        );
-
-                        await parentNetworkingNode.OCPP.OUT.SendJSONRequest(newJSONRequestMessage);
-
-                    }
-
-                    #endregion
-
-                    #region REJECT
-
-                    else if (forwardingDecision.Result == ForwardingResults.REJECT &&
-                             forwardingDecision.JSONRejectResponse is not null)
-                    {
-
-                        await parentNetworkingNode.OCPP.SendJSONRequestError(
-                                  new OCPP_JSONRequestErrorMessage(
-                                      Timestamp.Now,
-                                      JSONRequestMessage.EventTrackingId,
-                                      NetworkingMode.Unknown,
-                                      JSONRequestMessage.NetworkPath.Source,
-                                      NetworkPath.From(parentNetworkingNode.Id),
-                                      JSONRequestMessage.RequestId,
-                                      ResultCode.Filtered,
-                                      forwardingDecision.RejectMessage,
-                                      forwardingDecision.RejectDetails,
-                                      JSONRequestMessage.CancellationToken
-                                  )
-                              );
-
-                    }
-
-                    #endregion
-
-                    #region DROP
+                    if (result is Task<ForwardingDecision> forwardingProcessor)
+                        forwardingDecision = await forwardingProcessor;
 
                     else
-                    {
-                        // Just ignore the request!
-                    }
-
-                    #endregion
+                        DebugX.Log($"Received undefined '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
 
                 }
 
+                #endregion
+
+                #region ...or error!
+
                 else
-                    DebugX.Log($"Received undefined '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+                {
+
+
+                    DebugX.Log($"Received unknown '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+
+                    //OCPPErrorResponse = new OCPP_JSONErrorMessage(
+                    //                        Timestamp.Now,
+                    //                        EventTracking_Id.New,
+                    //                        NetworkingMode.Unknown,
+                    //                        NetworkingNode_Id.Zero,
+                    //                        NetworkPath.Empty,
+                    //                        jsonRequest.RequestId,
+                    //                        ResultCode.ProtocolError,
+                    //                        $"The OCPP message '{jsonRequest.Action}' is unkown!",
+                    //                        new JObject(
+                    //                            new JProperty("request", JSONMessage)
+                    //                        )
+                    //                    );
+
+                }
+
+                #endregion
 
             }
 
             #endregion
 
-            #region ...or error!
+
+            forwardingDecision ??= new ForwardingDecision(DefaultForwardingResult);
+
+
+
+
+
+
+            #region Send OnAnyJSONRequestFilter event
+
+            var logger = OnAnyJSONRequestFiltered;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              logger.GetInvocationList().
+                                  OfType<OnAnyJSONRequestFilteredDelegate>().
+                                  Select(filterDelegate => filterDelegate.Invoke(
+                                                               Timestamp.Now,
+                                                               parentNetworkingNode,
+                                                               WebSocketConnection,
+                                                               JSONRequestMessage,
+                                                               forwardingDecision,
+                                                               JSONRequestMessage.CancellationToken
+                                                           ))
+                          );
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(NetworkingNode),
+                              nameof(OnAnyJSONRequestFiltered),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+
+            #region FORWARD
+
+            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            {
+
+                var newJSONRequestMessage = JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
+
+                if (forwardingDecision.NewDestinationId.HasValue)
+                    newJSONRequestMessage = newJSONRequestMessage.ChangeNetworking(forwardingDecision.NewDestinationId.Value);
+
+                expectedResponses.TryAdd(
+                    newJSONRequestMessage.RequestId,
+                    new ResponseInfo(
+                        newJSONRequestMessage.RequestId,
+                        forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                        newJSONRequestMessage.NetworkPath.Source,
+                        newJSONRequestMessage.RequestTimeout
+                    )
+                );
+
+                await parentNetworkingNode.OCPP.OUT.SendJSONRequest(
+                          newJSONRequestMessage,
+                          forwardingDecision.SentMessageLogger
+                      );
+
+            }
+
+            #endregion
+
+            #region REPLACE
+
+            if (forwardingDecision.Result == ForwardingResults.REPLACE)
+            {
+
+                var newJSONRequestMessage = forwardingDecision.NewJSONRequest is null
+                                                ? JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id)
+                                                : new OCPP_JSONRequestMessage(
+                                                      JSONRequestMessage.RequestTimestamp,
+                                                      JSONRequestMessage.EventTrackingId,
+                                                      JSONRequestMessage.NetworkingMode,
+                                                      forwardingDecision.NewDestinationId ?? JSONRequestMessage.DestinationId,
+                                                      JSONRequestMessage.NetworkPath.Append(parentNetworkingNode.Id),
+                                                      JSONRequestMessage.RequestId,
+                                                      forwardingDecision.NewAction        ?? JSONRequestMessage.Action,
+                                                      forwardingDecision.NewJSONRequest, // <-- !!!
+                                                      JSONRequestMessage.RequestTimeout,
+                                                      JSONRequestMessage.ErrorMessage,
+                                                      JSONRequestMessage.CancellationToken
+                                                  );
+
+                expectedResponses.TryAdd(
+                    newJSONRequestMessage.RequestId,
+                    new ResponseInfo(
+                        newJSONRequestMessage.RequestId,
+                        forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                        newJSONRequestMessage.NetworkPath.Source,
+                        newJSONRequestMessage.RequestTimeout
+                    )
+                );
+
+                await parentNetworkingNode.OCPP.OUT.SendJSONRequest(newJSONRequestMessage);
+
+            }
+
+            #endregion
+
+            #region REJECT
+
+            else if (forwardingDecision.Result == ForwardingResults.REJECT &&
+                     forwardingDecision.JSONRejectResponse is not null)
+            {
+
+                await parentNetworkingNode.OCPP.SendJSONRequestError(
+                          new OCPP_JSONRequestErrorMessage(
+                              Timestamp.Now,
+                              JSONRequestMessage.EventTrackingId,
+                              NetworkingMode.Unknown,
+                              JSONRequestMessage.NetworkPath.Source,
+                              NetworkPath.From(parentNetworkingNode.Id),
+                              JSONRequestMessage.RequestId,
+                              ResultCode.Filtered,
+                              forwardingDecision.RejectMessage,
+                              forwardingDecision.RejectDetails,
+                              JSONRequestMessage.CancellationToken
+                          )
+                      );
+
+            }
+
+            #endregion
+
+            #region DROP
 
             else
             {
-
-                DebugX.Log($"Received unknown '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
-
-                //OCPPErrorResponse = new OCPP_JSONErrorMessage(
-                //                        Timestamp.Now,
-                //                        EventTracking_Id.New,
-                //                        NetworkingMode.Unknown,
-                //                        NetworkingNode_Id.Zero,
-                //                        NetworkPath.Empty,
-                //                        jsonRequest.RequestId,
-                //                        ResultCode.ProtocolError,
-                //                        $"The OCPP message '{jsonRequest.Action}' is unkown!",
-                //                        new JObject(
-                //                            new JProperty("request", JSONMessage)
-                //                        )
-                //                    );
-
+                // Just ignore the request!
             }
 
             #endregion
+
+
 
         }
 

@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Delegates
 
     /// <summary>
-    /// A DataTransfer request.
+    /// A delegate called whenever a DataTransfer request should be forwarded or filtered.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -48,20 +48,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
     /// <summary>
-    /// A filtered DataTransfer request.
+    /// A delegate called whenever a DataTransfer request was forwarded or filtered.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
         OnDataTransferRequestFilteredDelegate(DateTime                                                        Timestamp,
                                               IEventSender                                                    Sender,
                                               IWebSocketConnection                                            Connection,
                                               DataTransferRequest                                             Request,
-                                              ForwardingDecision<DataTransferRequest, DataTransferResponse>   ForwardingDecision);
+                                              ForwardingDecision<DataTransferRequest, DataTransferResponse>   ForwardingDecision,
+                                              CancellationToken                                               CancellationToken = default);
 
     #endregion
 

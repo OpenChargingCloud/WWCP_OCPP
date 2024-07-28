@@ -538,6 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                              sender,
                                                              connection,
                                                              request,
+                                                             previousFilterStep,
                                                              cancellationToken) =>
 
                 Task.FromResult(

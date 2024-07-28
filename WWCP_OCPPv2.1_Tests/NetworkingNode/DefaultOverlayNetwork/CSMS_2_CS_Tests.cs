@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnDataTransferRequestFiltered  += (timestamp, sender, connection, DataTransferRequest, forwardingDecision) => {
+                localController.OCPP.FORWARD.OnDataTransferRequestFiltered  += (timestamp, sender, connection, DataTransferRequest, forwardingDecision, ct) => {
                     nnDataTransferRequestsForwarded.  TryAdd(forwardingDecision);
                     return Task.CompletedTask;
                 };

@@ -42,7 +42,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// REPLACE the received message and sent a new message instead.
         /// </summary>
-        REPLACE
+        REPLACE,
+
+        /// <summary>
+        /// Let the next processing step handle the message.
+        /// </summary>
+        NEXT
 
     }
 
