@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "GetCertificateStatusEnumType": {
-        //       "description": "This indicates whether the charging station was able to retrieve the OCSP certificate status.\r\n",
+        //       "description": "This indicates whether the charging station was able to retrieve the OCSP certificate status.",
         //       "javaType": "GetCertificateStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.\r\n",
+        //       "description": "Element providing more information about the status.",
         //       "javaType": "StatusInfo",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -210,12 +210,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //           "type": "string",
         //           "maxLength": 20
         //         },
         //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "description": "Additional text to provide detailed information.",
         //           "type": "string",
         //           "maxLength": 512
         //         }
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/StatusInfoType"
         //     },
         //     "ocspResult": {
-        //       "description": "OCSPResponse class as defined in &lt;&lt;ref-ocpp_security_24, IETF RFC 6960&gt;&gt;. DER encoded (as defined in &lt;&lt;ref-ocpp_security_24, IETF RFC 6960&gt;&gt;), and then base64 encoded. MAY only be omitted when status is not Accepted.\r\n",
+        //       "description": "OCSPResponse class as defined in &lt;&lt;ref-ocpp_security_24, IETF RFC 6960&gt;&gt;. DER encoded (as defined in &lt;&lt;ref-ocpp_security_24, IETF RFC 6960&gt;&gt;), and then base64 encoded. MAY only be omitted when status is not Accepted.",
         //       "type": "string",
         //       "maxLength": 5500
         //     }

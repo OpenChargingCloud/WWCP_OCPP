@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //   "$schema": "http://json-schema.org/draft-06/schema#",
         //   "$id": "urn:OCPP:Cp:2:2020:3:MeterValueType",
         //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": "Meter_ Value\r\nurn:x-oca:ocpp:uid:2:233265\r\nCollection of one or more sampled values in MeterValuesRequest and TransactionEvent. All sampled values in a MeterValue are sampled at the same point in time.\r\n",
+        //   "description": "Meter_ Value\r\nurn:x-oca:ocpp:uid:2:233265\r\nCollection of one or more sampled values in MeterValuesRequest and TransactionEvent. All sampled values in a MeterValue are sampled at the same point in time.",
         //   "javaType": "MeterValue",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "minItems": 1
         //     },
         //     "timestamp": {
-        //       "description": "Meter_ Value. Timestamp. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569259\r\nTimestamp for measured value(s).\r\n",
+        //       "description": "Meter_ Value. Timestamp. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569259\r\nTimestamp for measured value(s).",
         //       "type": "string",
         //       "format": "date-time"
         //     }

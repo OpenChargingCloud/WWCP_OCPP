@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "versionNumber": {
-        //       "description": "This contains the current version number of the local authorization list in the Charging Station.\r\n",
+        //       "description": "This contains the current version number of the local authorization list in the Charging Station.",
         //       "type": "integer"
         //     }
         //   },

@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "NetworkConnectionProfileType": {
-        //   "description": "Communication_ Function\r\nurn:x-oca:ocpp:uid:2:233304\r\nThe NetworkConnectionProfile defines the functional and technical parameters of a communication link.\r\n",
+        //   "description": "Communication_ Function\r\nurn:x-oca:ocpp:uid:2:233304\r\nThe NetworkConnectionProfile defines the functional and technical parameters of a communication link.",
         //   "javaType": "NetworkConnectionProfile",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -153,16 +153,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/OCPPTransportEnumType"
         //     },
         //     "ocppCsmsUrl": {
-        //       "description": "Communication_ Function. OCPP_ Central_ System_ URL. URI\r\nurn:x-oca:ocpp:uid:1:569357\r\nURL of the CSMS(s) that this Charging Station  communicates with.\r\n",
+        //       "description": "Communication_ Function. OCPP_ Central_ System_ URL. URI\r\nurn:x-oca:ocpp:uid:1:569357\r\nURL of the CSMS(s) that this Charging Station  communicates with.",
         //       "type": "string",
         //       "maxLength": 512
         //     },
         //     "messageTimeout": {
-        //       "description": "Duration in seconds before a message send by the Charging Station via this network connection times-out.\r\nThe best setting depends on the underlying network and response times of the CSMS.\r\nIf you are looking for a some guideline: use 30 seconds as a starting point.\r\n",
+        //       "description": "Duration in seconds before a message send by the Charging Station via this network connection times-out.\r\nThe best setting depends on the underlying network and response times of the CSMS.\r\nIf you are looking for a some guideline: use 30 seconds as a starting point.",
         //       "type": "integer"
         //     },
         //     "securityProfile": {
-        //       "description": "This field specifies the security profile used when connecting to the CSMS with this NetworkConnectionProfile.\r\n",
+        //       "description": "This field specifies the security profile used when connecting to the CSMS with this NetworkConnectionProfile.",
         //       "type": "integer"
         //     },
         //     "ocppInterface": {

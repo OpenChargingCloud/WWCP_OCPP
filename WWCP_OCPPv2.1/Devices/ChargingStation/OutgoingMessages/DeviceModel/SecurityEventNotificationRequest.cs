@@ -178,17 +178,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "type": {
-        //       "description": "Type of the security event. This value should be taken from the Security events list.\r\n",
+        //       "description": "Type of the security event. This value should be taken from the Security events list.",
         //       "type": "string",
         //       "maxLength": 50
         //     },
         //     "timestamp": {
-        //       "description": "Date and time at which the event occurred.\r\n",
+        //       "description": "Date and time at which the event occurred.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
         //     "techInfo": {
-        //       "description": "Additional information about the occurred security event.\r\n",
+        //       "description": "Additional information about the occurred security event.",
         //       "type": "string",
         //       "maxLength": 255
         //     }

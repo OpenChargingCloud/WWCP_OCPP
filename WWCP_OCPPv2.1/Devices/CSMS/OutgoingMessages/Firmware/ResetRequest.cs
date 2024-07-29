@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ResetEnumType": {
-        //       "description": "This contains the type of Reset that the Charging Station or EVSE should perform.\r\n",
+        //       "description": "This contains the type of Reset that the Charging Station or EVSE should perform.",
         //       "javaType": "ResetEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/ResetEnumType"
         //     },
         //     "evseId": {
-        //       "description": "This contains the ID of a specific EVSE that needs to be Reset, instead of the entire Charging Station.\r\n",
+        //       "description": "This contains the ID of a specific EVSE that needs to be Reset, instead of the entire Charging Station.",
         //       "type": "integer"
         //     }
         //   },

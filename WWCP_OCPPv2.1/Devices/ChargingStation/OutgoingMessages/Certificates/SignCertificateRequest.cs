@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "csr": {
-        //       "description": "The Charging Station SHALL send the public key in form of a Certificate Signing Request (CSR) as described in RFC 2986 [22] and then PEM encoded, using the &lt;&lt;signcertificaterequest,SignCertificateRequest&gt;&gt; message.\r\n",
+        //       "description": "The Charging Station SHALL send the public key in form of a Certificate Signing Request (CSR) as described in RFC 2986 [22] and then PEM encoded, using the &lt;&lt;signcertificaterequest,SignCertificateRequest&gt;&gt; message.",
         //       "type": "string",
         //       "maxLength": 5500
         //     },

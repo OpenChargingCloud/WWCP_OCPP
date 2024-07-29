@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "ComponentVariableType": {
-        //   "description": "Class to report components, variables and variable attributes and characteristics.\r\n",
+        //   "description": "Class to report components, variables and variable attributes and characteristics.",
         //   "javaType": "ComponentVariable",
         //   "type": "object",
         //   "additionalProperties": false,

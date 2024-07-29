@@ -202,12 +202,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/EVSEType"
         //         },
         //         "name": {
-        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         },
         //         "instance": {
-        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ComponentVariableType": {
-        //       "description": "Class to report components, variables and variable attributes and characteristics.\r\n",
+        //       "description": "Class to report components, variables and variable attributes and characteristics.",
         //       "javaType": "ComponentVariable",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -246,11 +246,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
         //           "type": "integer"
         //         },
         //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
         //           "type": "integer"
         //         }
         //       },
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "VariableType": {
-        //       "description": "Reference key to a component-variable.\r\n",
+        //       "description": "Reference key to a component-variable.",
         //       "javaType": "Variable",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -268,12 +268,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "name": {
-        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         },
         //         "instance": {
-        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "minItems": 1
         //     },
         //     "requestId": {
-        //       "description": "The Id of the request.\r\n",
+        //       "description": "The Id of the request.",
         //       "type": "integer"
         //     },
         //     "monitoringCriteria": {

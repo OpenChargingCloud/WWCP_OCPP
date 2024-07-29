@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "VariableAttributeType": {
-        //   "description": "Attribute data of a variable.\r\n",
+        //   "description": "Attribute data of a variable.",
         //   "javaType": "VariableAttribute",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -145,12 +145,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/MutabilityEnumType"
         //     },
         //     "persistent": {
-        //       "description": "If true, value will be persistent across system reboots or power down. Default when omitted is false.\r\n",
+        //       "description": "If true, value will be persistent across system reboots or power down. Default when omitted is false.",
         //       "type": "boolean",
         //       "default": false
         //     },
         //     "constant": {
-        //       "description": "If true, value that will never be changed by the Charging Station at runtime. Default when omitted is false.\r\n",
+        //       "description": "If true, value that will never be changed by the Charging Station at runtime. Default when omitted is false.",
         //       "type": "boolean",
         //       "default": false
         //     }

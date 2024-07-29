@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "AttributeEnumType": {
-        //       "description": "Attribute: Actual, MinSet, MaxSet, etc.\r\nDefaults to Actual if absent.\r\n",
+        //       "description": "Attribute: Actual, MinSet, MaxSet, etc.\r\nDefaults to Actual if absent.",
         //       "javaType": "AttributeEnum",
         //       "type": "string",
         //       "default": "Actual",
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "DataEnumType": {
-        //       "description": "Data type of this variable.\r\n",
+        //       "description": "Data type of this variable.",
         //       "javaType": "DataEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "MutabilityEnumType": {
-        //       "description": "Defines the mutability of this attribute. Default is ReadWrite when omitted.\r\n",
+        //       "description": "Defines the mutability of this attribute. Default is ReadWrite when omitted.",
         //       "javaType": "MutabilityEnum",
         //       "type": "string",
         //       "default": "ReadWrite",
@@ -254,12 +254,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/EVSEType"
         //         },
         //         "name": {
-        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         },
         //         "instance": {
-        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -278,11 +278,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
         //           "type": "integer"
         //         },
         //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
         //           "type": "integer"
         //         }
         //       },
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ReportDataType": {
-        //       "description": "Class to report components, variables and variable attributes and characteristics.\r\n",
+        //       "description": "Class to report components, variables and variable attributes and characteristics.",
         //       "javaType": "ReportData",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "VariableAttributeType": {
-        //       "description": "Attribute data of a variable.\r\n",
+        //       "description": "Attribute data of a variable.",
         //       "javaType": "VariableAttribute",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -345,19 +345,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/MutabilityEnumType"
         //         },
         //         "persistent": {
-        //           "description": "If true, value will be persistent across system reboots or power down. Default when omitted is false.\r\n",
+        //           "description": "If true, value will be persistent across system reboots or power down. Default when omitted is false.",
         //           "type": "boolean",
         //           "default": false
         //         },
         //         "constant": {
-        //           "description": "If true, value that will never be changed by the Charging Station at runtime. Default when omitted is false.\r\n",
+        //           "description": "If true, value that will never be changed by the Charging Station at runtime. Default when omitted is false.",
         //           "type": "boolean",
         //           "default": false
         //         }
         //       }
         //     },
         //     "VariableCharacteristicsType": {
-        //       "description": "Fixed read-only parameters of a variable.\r\n",
+        //       "description": "Fixed read-only parameters of a variable.",
         //       "javaType": "VariableCharacteristics",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "unit": {
-        //           "description": "Unit of the variable. When the transmitted value has a unit, this field SHALL be included.\r\n",
+        //           "description": "Unit of the variable. When the transmitted value has a unit, this field SHALL be included.",
         //           "type": "string",
         //           "maxLength": 16
         //         },
@@ -374,11 +374,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/DataEnumType"
         //         },
         //         "minLimit": {
-        //           "description": "Minimum possible value of this variable.\r\n",
+        //           "description": "Minimum possible value of this variable.",
         //           "type": "number"
         //         },
         //         "maxLimit": {
-        //           "description": "Maximum possible value of this variable. When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.\r\n",
+        //           "description": "Maximum possible value of this variable. When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.",
         //           "type": "number"
         //         },
         //         "valuesList": {
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "VariableType": {
-        //       "description": "Reference key to a component-variable.\r\n",
+        //       "description": "Reference key to a component-variable.",
         //       "javaType": "Variable",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -406,12 +406,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "name": {
-        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         },
         //         "instance": {
-        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "type": "integer"
         //     },
         //     "generatedAt": {
-        //       "description": "Timestamp of the moment this message was generated at the Charging Station.\r\n",
+        //       "description": "Timestamp of the moment this message was generated at the Charging Station.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
@@ -450,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "default": false
         //     },
         //     "seqNo": {
-        //       "description": "Sequence number of this message. First message starts at 0.\r\n",
+        //       "description": "Sequence number of this message. First message starts at 0.",
         //       "type": "integer"
         //     }
         //   },

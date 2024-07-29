@@ -165,11 +165,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "evseId": {
-        //       "description": "This contains the identifier of the EVSE for which a connector needs to be unlocked.\r\n",
+        //       "description": "This contains the identifier of the EVSE for which a connector needs to be unlocked.",
         //       "type": "integer"
         //     },
         //     "connectorId": {
-        //       "description": "This contains the identifier of the connector that needs to be unlocked.\r\n",
+        //       "description": "This contains the identifier of the connector that needs to be unlocked.",
         //       "type": "integer"
         //     }
         //   },

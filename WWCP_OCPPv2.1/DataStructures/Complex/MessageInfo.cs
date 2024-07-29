@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "MessageInfoType": {
-        //   "description": "Message_ Info\r\nurn:x-enexis:ecdm:uid:2:233264\r\nContains message details, for a message to be displayed on a Charging Station.\r\n",
+        //   "description": "Message_ Info\r\nurn:x-enexis:ecdm:uid:2:233264\r\nContains message details, for a message to be displayed on a Charging Station.",
         //   "javaType": "MessageInfo",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/ComponentType"
         //     },
         //     "id": {
-        //       "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nMaster resource identifier, unique within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).\r\n",
+        //       "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nMaster resource identifier, unique within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).",
         //       "type": "integer"
         //     },
         //     "priority": {
@@ -149,17 +149,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/MessageStateEnumType"
         //     },
         //     "startDateTime": {
-        //       "description": "Message_ Info. Start. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569256\r\nFrom what date-time should this message be shown. If omitted: directly.\r\n",
+        //       "description": "Message_ Info. Start. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569256\r\nFrom what date-time should this message be shown. If omitted: directly.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
         //     "endDateTime": {
-        //       "description": "Message_ Info. End. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569257\r\nUntil what date-time should this message be shown, after this date/time this message SHALL be removed.\r\n",
+        //       "description": "Message_ Info. End. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569257\r\nUntil what date-time should this message be shown, after this date/time this message SHALL be removed.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
         //     "transactionId": {
-        //       "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.\r\n",
+        //       "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.",
         //       "type": "string",
         //       "maxLength": 36
         //     },

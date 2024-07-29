@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "UnpublishFirmwareStatusEnumType": {
-        //       "description": "Indicates whether the Local Controller succeeded in unpublishing the firmware.\r\n",
+        //       "description": "Indicates whether the Local Controller succeeded in unpublishing the firmware.",
         //       "javaType": "UnpublishFirmwareStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,

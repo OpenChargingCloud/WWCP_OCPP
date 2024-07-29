@@ -226,12 +226,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/EVSEType"
         //         },
         //         "name": {
-        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         },
         //         "instance": {
-        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "EventDataType": {
-        //       "description": "Class to report an event notification for a component-variable.\r\n",
+        //       "description": "Class to report an event notification for a component-variable.",
         //       "javaType": "EventData",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "type": "integer"
         //         },
         //         "timestamp": {
-        //           "description": "Timestamp of the moment the report was generated.\r\n",
+        //           "description": "Timestamp of the moment the report was generated.",
         //           "type": "string",
         //           "format": "date-time"
         //         },
@@ -271,12 +271,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "maxLength": 2500
         //         },
         //         "techCode": {
-        //           "description": "Technical (error) code as reported by component.\r\n",
+        //           "description": "Technical (error) code as reported by component.",
         //           "type": "string",
         //           "maxLength": 50
         //         },
         //         "techInfo": {
-        //           "description": "Technical detail information as reported by component.\r\n",
+        //           "description": "Technical detail information as reported by component.",
         //           "type": "string",
         //           "maxLength": 500
         //         },
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "type": "boolean"
         //         },
         //         "transactionId": {
-        //           "description": "If an event notification is linked to a specific transaction, this field can be used to specify its transactionId.\r\n",
+        //           "description": "If an event notification is linked to a specific transaction, this field can be used to specify its transactionId.",
         //           "type": "string",
         //           "maxLength": 36
         //         },
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/ComponentType"
         //         },
         //         "variableMonitoringId": {
-        //           "description": "Identifies the VariableMonitoring which triggered the event.\r\n",
+        //           "description": "Identifies the VariableMonitoring which triggered the event.",
         //           "type": "integer"
         //         },
         //         "eventNotificationType": {
@@ -323,11 +323,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
         //           "type": "integer"
         //         },
         //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
         //           "type": "integer"
         //         }
         //       },
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "VariableType": {
-        //       "description": "Reference key to a component-variable.\r\n",
+        //       "description": "Reference key to a component-variable.",
         //       "javaType": "Variable",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -345,12 +345,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "name": {
-        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         },
         //         "instance": {
-        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "generatedAt": {
-        //       "description": "Timestamp of the moment this message was generated at the Charging Station.\r\n",
+        //       "description": "Timestamp of the moment this message was generated at the Charging Station.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "default": false
         //     },
         //     "seqNo": {
-        //       "description": "Sequence number of this message. First message starts at 0.\r\n",
+        //       "description": "Sequence number of this message. First message starts at 0.",
         //       "type": "integer"
         //     },
         //     "eventData": {

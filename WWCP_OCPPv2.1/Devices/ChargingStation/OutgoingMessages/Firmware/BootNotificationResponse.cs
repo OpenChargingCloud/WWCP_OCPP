@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "RegistrationStatusEnumType": {
-        //       "description": "This contains whether the Charging Station has been registered\r\nwithin the CSMS.\r\n",
+        //       "description": "This contains whether the Charging Station has been registered\r\nwithin the CSMS.",
         //       "javaType": "RegistrationStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.\r\n",
+        //       "description": "Element providing more information about the status.",
         //       "javaType": "StatusInfo",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -234,12 +234,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //           "type": "string",
         //           "maxLength": 20
         //         },
         //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "description": "Additional text to provide detailed information.",
         //           "type": "string",
         //           "maxLength": 512
         //         }
@@ -256,12 +256,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "currentTime": {
-        //       "description": "This contains the CSMS’s current time.\r\n",
+        //       "description": "This contains the CSMS’s current time.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
         //     "interval": {
-        //       "description": "When &lt;&lt;cmn_registrationstatusenumtype,Status&gt;&gt; is Accepted, this contains the heartbeat interval in seconds. If the CSMS returns something other than Accepted, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.\r\n",
+        //       "description": "When &lt;&lt;cmn_registrationstatusenumtype,Status&gt;&gt; is Accepted, this contains the heartbeat interval in seconds. If the CSMS returns something other than Accepted, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.",
         //       "type": "integer"
         //     },
         //     "status": {

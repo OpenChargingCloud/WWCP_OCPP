@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "LogEnumType": {
-        //       "description": "This contains the type of log file that the Charging Station\r\nshould send.\r\n",
+        //       "description": "This contains the type of log file that the Charging Station\r\nshould send.",
         //       "javaType": "LogEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "LogParametersType": {
-        //       "description": "Log\r\nurn:x-enexis:ecdm:uid:2:233373\r\nGeneric class for the configuration of logging entries.\r\n",
+        //       "description": "Log\r\nurn:x-enexis:ecdm:uid:2:233373\r\nGeneric class for the configuration of logging entries.",
         //       "javaType": "LogParameters",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -212,17 +212,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "remoteLocation": {
-        //           "description": "Log. Remote_ Location. URI\r\nurn:x-enexis:ecdm:uid:1:569484\r\nThe URL of the location at the remote system where the log should be stored.\r\n",
+        //           "description": "Log. Remote_ Location. URI\r\nurn:x-enexis:ecdm:uid:1:569484\r\nThe URL of the location at the remote system where the log should be stored.",
         //           "type": "string",
         //           "maxLength": 512
         //         },
         //         "oldestTimestamp": {
-        //           "description": "Log. Oldest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569477\r\nThis contains the date and time of the oldest logging information to include in the diagnostics.\r\n",
+        //           "description": "Log. Oldest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569477\r\nThis contains the date and time of the oldest logging information to include in the diagnostics.",
         //           "type": "string",
         //           "format": "date-time"
         //         },
         //         "latestTimestamp": {
-        //           "description": "Log. Latest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569482\r\nThis contains the date and time of the latest logging information to include in the diagnostics.\r\n",
+        //           "description": "Log. Latest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569482\r\nThis contains the date and time of the latest logging information to include in the diagnostics.",
         //           "type": "string",
         //           "format": "date-time"
         //         }
@@ -249,11 +249,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "type": "integer"
         //     },
         //     "retries": {
-        //       "description": "This specifies how many times the Charging Station must try to upload the log before giving up. If this field is not present, it is left to Charging Station to decide how many times it wants to retry.\r\n",
+        //       "description": "This specifies how many times the Charging Station must try to upload the log before giving up. If this field is not present, it is left to Charging Station to decide how many times it wants to retry.",
         //       "type": "integer"
         //     },
         //     "retryInterval": {
-        //       "description": "The interval in seconds after which a retry may be attempted. If this field is not present, it is left to Charging Station to decide how long to wait between attempts.\r\n",
+        //       "description": "The interval in seconds after which a retry may be attempted. If this field is not present, it is left to Charging Station to decide how long to wait between attempts.",
         //       "type": "integer"
         //     }
         //   },

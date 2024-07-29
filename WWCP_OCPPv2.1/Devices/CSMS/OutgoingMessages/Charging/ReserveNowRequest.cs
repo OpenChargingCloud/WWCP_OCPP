@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ConnectorEnumType": {
-        //       "description": "This field specifies the connector type.\r\n",
+        //       "description": "This field specifies the connector type.",
         //       "javaType": "ConnectorEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "IdTokenEnumType": {
-        //       "description": "Enumeration of possible idToken types.\r\n",
+        //       "description": "Enumeration of possible idToken types.",
         //       "javaType": "IdTokenEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "AdditionalInfoType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //       "javaType": "AdditionalInfo",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -260,12 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "additionalIdToken": {
-        //           "description": "This field specifies the additional IdToken.\r\n",
+        //           "description": "This field specifies the additional IdToken.",
         //           "type": "string",
         //           "maxLength": 36
         //         },
         //         "type": {
-        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.\r\n",
+        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "IdTokenType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //       "javaType": "IdToken",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "minItems": 1
         //         },
         //         "idToken": {
-        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.\r\n",
+        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
         //           "type": "string",
         //           "maxLength": 36
         //         },
@@ -314,11 +314,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "id": {
-        //       "description": "Id of reservation.\r\n",
+        //       "description": "Id of reservation.",
         //       "type": "integer"
         //     },
         //     "expiryDateTime": {
-        //       "description": "Date and time at which the reservation expires.\r\n",
+        //       "description": "Date and time at which the reservation expires.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/IdTokenType"
         //     },
         //     "evseId": {
-        //       "description": "This contains ID of the evse to be reserved.\r\n",
+        //       "description": "This contains ID of the evse to be reserved.",
         //       "type": "integer"
         //     },
         //     "groupIdToken": {

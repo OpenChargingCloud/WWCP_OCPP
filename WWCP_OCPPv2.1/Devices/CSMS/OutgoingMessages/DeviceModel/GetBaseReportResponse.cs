@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "GenericDeviceModelStatusEnumType": {
-        //       "description": "This indicates whether the Charging Station is able to accept this request.\r\n",
+        //       "description": "This indicates whether the Charging Station is able to accept this request.",
         //       "javaType": "GenericDeviceModelStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.\r\n",
+        //       "description": "Element providing more information about the status.",
         //       "javaType": "StatusInfo",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -202,12 +202,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //           "type": "string",
         //           "maxLength": 20
         //         },
         //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "description": "Additional text to provide detailed information.",
         //           "type": "string",
         //           "maxLength": 512
         //         }

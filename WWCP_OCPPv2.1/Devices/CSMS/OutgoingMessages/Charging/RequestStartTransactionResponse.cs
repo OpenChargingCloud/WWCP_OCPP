@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "RequestStartStopStatusEnumType": {
-        //       "description": "Status indicating whether the Charging Station accepts the request to start a transaction.\r\n",
+        //       "description": "Status indicating whether the Charging Station accepts the request to start a transaction.",
         //       "javaType": "RequestStartStopStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.\r\n",
+        //       "description": "Element providing more information about the status.",
         //       "javaType": "StatusInfo",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -213,12 +213,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //           "type": "string",
         //           "maxLength": 20
         //         },
         //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "description": "Additional text to provide detailed information.",
         //           "type": "string",
         //           "maxLength": 512
         //         }
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/StatusInfoType"
         //     },
         //     "transactionId": {
-        //       "description": "When the transaction was already started by the Charging Station before the RequestStartTransactionRequest was received, for example: cable plugged in first. This contains the transactionId of the already started transaction.\r\n",
+        //       "description": "When the transaction was already started by the Charging Station before the RequestStartTransactionRequest was received, for example: cable plugged in first. This contains the transactionId of the already started transaction.",
         //       "type": "string",
         //       "maxLength": 36
         //     }

@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "transactionId": {
-        //       "description": "The identifier of the transaction which the Charging Station is requested to stop.\r\n",
+        //       "description": "The identifier of the transaction which the Charging Station is requested to stop.",
         //       "type": "string",
         //       "maxLength": 36
         //     }

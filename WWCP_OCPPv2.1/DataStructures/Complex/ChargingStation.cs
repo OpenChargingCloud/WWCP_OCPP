@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "ChargingStationType": {
-        //   "description": "Charge_ Point\r\nurn:x-oca:ocpp:uid:2:233122\r\nThe physical system where an Electrical Vehicle (EV) can be charged.\r\n",
+        //   "description": "Charge_ Point\r\nurn:x-oca:ocpp:uid:2:233122\r\nThe physical system where an Electrical Vehicle (EV) can be charged.",
         //   "javaType": "ChargingStation",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -126,12 +126,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "serialNumber": {
-        //       "description": "Device. Serial_ Number. Serial_ Number\r\nurn:x-oca:ocpp:uid:1:569324\r\nVendor-specific device identifier.\r\n",
+        //       "description": "Device. Serial_ Number. Serial_ Number\r\nurn:x-oca:ocpp:uid:1:569324\r\nVendor-specific device identifier.",
         //       "type": "string",
         //       "maxLength": 25
         //     },
         //     "model": {
-        //       "description": "Device. Model. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569325\r\nDefines the model of the device.\r\n",
+        //       "description": "Device. Model. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569325\r\nDefines the model of the device.",
         //       "type": "string",
         //       "maxLength": 20
         //     },
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/ModemType"
         //     },
         //     "vendorName": {
-        //       "description": "Identifies the vendor (not necessarily in a unique manner).\r\n",
+        //       "description": "Identifies the vendor (not necessarily in a unique manner).",
         //       "type": "string",
         //       "maxLength": 50
         //     },

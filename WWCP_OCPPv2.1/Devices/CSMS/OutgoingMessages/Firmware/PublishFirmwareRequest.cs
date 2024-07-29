@@ -206,12 +206,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "location": {
-        //       "description": "This contains a string containing a URI pointing to a\r\nlocation from which to retrieve the firmware.\r\n",
+        //       "description": "This contains a string containing a URI pointing to a\r\nlocation from which to retrieve the firmware.",
         //       "type": "string",
         //       "maxLength": 512
         //     },
         //     "retries": {
-        //       "description": "This specifies how many times Charging Station must try\r\nto download the firmware before giving up. If this field is not\r\npresent, it is left to Charging Station to decide how many times it wants to retry.\r\n",
+        //       "description": "This specifies how many times Charging Station must try\r\nto download the firmware before giving up. If this field is not\r\npresent, it is left to Charging Station to decide how many times it wants to retry.",
         //       "type": "integer"
         //     },
         //     "checksum": {
@@ -220,11 +220,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "maxLength": 32
         //     },
         //     "requestId": {
-        //       "description": "The Id of the request.\r\n",
+        //       "description": "The Id of the request.",
         //       "type": "integer"
         //     },
         //     "retryInterval": {
-        //       "description": "The interval in seconds\r\nafter which a retry may be\r\nattempted. If this field is not\r\npresent, it is left to Charging\r\nStation to decide how long to wait\r\nbetween attempts.\r\n",
+        //       "description": "The interval in seconds\r\nafter which a retry may be\r\nattempted. If this field is not\r\npresent, it is left to Charging\r\nStation to decide how long to wait\r\nbetween attempts.",
         //       "type": "integer"
         //     }
         //   },

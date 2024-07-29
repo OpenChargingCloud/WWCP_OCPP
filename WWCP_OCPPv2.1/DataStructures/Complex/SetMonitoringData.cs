@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "SetMonitoringDataType": {
-        //   "description": "Class to hold parameters of SetVariableMonitoring request.\r\n",
+        //   "description": "Class to hold parameters of SetVariableMonitoring request.",
         //   "javaType": "SetMonitoringData",
         //   "type": "object",
         //   "additionalProperties": false,

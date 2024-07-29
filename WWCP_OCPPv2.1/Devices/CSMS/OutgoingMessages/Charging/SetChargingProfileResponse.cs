@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ChargingProfileStatusEnumType": {
-        //       "description": "Returns whether the Charging Station has been able to process the message successfully. This does not guarantee the schedule will be followed to the letter. There might be other constraints the Charging Station may need to take into account.\r\n",
+        //       "description": "Returns whether the Charging Station has been able to process the message successfully. This does not guarantee the schedule will be followed to the letter. There might be other constraints the Charging Station may need to take into account.",
         //       "javaType": "ChargingProfileStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.\r\n",
+        //       "description": "Element providing more information about the status.",
         //       "javaType": "StatusInfo",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -200,12 +200,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //           "type": "string",
         //           "maxLength": 20
         //         },
         //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "description": "Additional text to provide detailed information.",
         //           "type": "string",
         //           "maxLength": 512
         //         }

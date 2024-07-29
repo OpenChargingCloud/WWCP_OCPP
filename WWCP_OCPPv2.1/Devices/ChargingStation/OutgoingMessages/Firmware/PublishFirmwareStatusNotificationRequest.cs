@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "PublishFirmwareStatusEnumType": {
-        //       "description": "This contains the progress status of the publishfirmware\r\ninstallation.\r\n",
+        //       "description": "This contains the progress status of the publishfirmware\r\ninstallation.",
         //       "javaType": "PublishFirmwareStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/PublishFirmwareStatusEnumType"
         //     },
         //     "location": {
-        //       "description": "Required if status is Published. Can be multiple URI’s, if the Local Controller supports e.g. HTTP, HTTPS, and FTP.\r\n",
+        //       "description": "Required if status is Published. Can be multiple URI’s, if the Local Controller supports e.g. HTTP, HTTPS, and FTP.",
         //       "type": "array",
         //       "additionalItems": false,
         //       "items": {
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "minItems": 1
         //     },
         //     "requestId": {
-        //       "description": "The request id that was\r\nprovided in the\r\nPublishFirmwareRequest which\r\ntriggered this action.\r\n",
+        //       "description": "The request id that was\r\nprovided in the\r\nPublishFirmwareRequest which\r\ntriggered this action.",
         //       "type": "integer"
         //     }
         //   },

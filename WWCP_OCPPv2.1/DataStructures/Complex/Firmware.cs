@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "FirmwareType": {
-        //   "description": "Firmware\r\nurn:x-enexis:ecdm:uid:2:233291\r\nRepresents a copy of the firmware that can be loaded/updated on the Charging Station.\r\n",
+        //   "description": "Firmware\r\nurn:x-enexis:ecdm:uid:2:233291\r\nRepresents a copy of the firmware that can be loaded/updated on the Charging Station.",
         //   "javaType": "Firmware",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -115,27 +115,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "location": {
-        //       "description": "Firmware. Location. URI\r\nurn:x-enexis:ecdm:uid:1:569460\r\nURI defining the origin of the firmware.\r\n",
+        //       "description": "Firmware. Location. URI\r\nurn:x-enexis:ecdm:uid:1:569460\r\nURI defining the origin of the firmware.",
         //       "type": "string",
         //       "maxLength": 512
         //     },
         //     "retrieveDateTime": {
-        //       "description": "Firmware. Retrieve. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569461\r\nDate and time at which the firmware shall be retrieved.\r\n",
+        //       "description": "Firmware. Retrieve. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569461\r\nDate and time at which the firmware shall be retrieved.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
         //     "installDateTime": {
-        //       "description": "Firmware. Install. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569462\r\nDate and time at which the firmware shall be installed.\r\n",
+        //       "description": "Firmware. Install. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569462\r\nDate and time at which the firmware shall be installed.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
         //     "signingCertificate": {
-        //       "description": "Certificate with which the firmware was signed.\r\nPEM encoded X.509 certificate.\r\n",
+        //       "description": "Certificate with which the firmware was signed.\r\nPEM encoded X.509 certificate.",
         //       "type": "string",
         //       "maxLength": 5500
         //     },
         //     "signature": {
-        //       "description": "Firmware. Signature. Signature\r\nurn:x-enexis:ecdm:uid:1:569464\r\nBase64 encoded firmware signature.\r\n",
+        //       "description": "Firmware. Signature. Signature\r\nurn:x-enexis:ecdm:uid:1:569464\r\nBase64 encoded firmware signature.",
         //       "type": "string",
         //       "maxLength": 800
         //     }

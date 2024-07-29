@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "id": {
-        //       "description": "Id of the message that SHALL be removed from the Charging Station.\r\n",
+        //       "description": "Id of the message that SHALL be removed from the Charging Station.",
         //       "type": "integer"
         //     }
         //   },

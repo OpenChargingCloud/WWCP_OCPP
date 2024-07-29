@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "HashAlgorithmEnumType": {
-        //       "description": "Used algorithms for the hashes provided.\r\n",
+        //       "description": "Used algorithms for the hashes provided.",
         //       "javaType": "HashAlgorithmEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "maxLength": 128
         //         },
         //         "serialNumber": {
-        //           "description": "The serial number of the certificate.\r\n",
+        //           "description": "The serial number of the certificate.",
         //           "type": "string",
         //           "maxLength": 40
         //         }

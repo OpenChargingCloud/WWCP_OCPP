@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "MessageTriggerEnumType": {
-        //       "description": "Type of message to be triggered.\r\n",
+        //       "description": "Type of message to be triggered.",
         //       "javaType": "MessageTriggerEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -201,11 +201,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
         //           "type": "integer"
         //         },
         //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
         //           "type": "integer"
         //         }
         //       },

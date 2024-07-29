@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "messageId": {
-        //       "description": "May be used to indicate a specific message or implementation.\r\n",
+        //       "description": "May be used to indicate a specific message or implementation.",
         //       "type": "string",
         //       "maxLength": 50
         //     },

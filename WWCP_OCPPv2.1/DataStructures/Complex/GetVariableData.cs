@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "GetVariableDataType": {
-        //   "description": "Class to hold parameters for GetVariables request.\r\n",
+        //   "description": "Class to hold parameters for GetVariables request.",
         //   "javaType": "GetVariableData",
         //   "type": "object",
         //   "additionalProperties": false,

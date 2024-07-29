@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "GetCertificateIdUseEnumType": {
-        //       "description": "Indicates the type of the requested certificate(s).\r\n",
+        //       "description": "Indicates the type of the requested certificate(s).",
         //       "javaType": "GetCertificateIdUseEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "GetInstalledCertificateStatusEnumType": {
-        //       "description": "Charging Station indicates if it can process the request.\r\n",
+        //       "description": "Charging Station indicates if it can process the request.",
         //       "javaType": "GetInstalledCertificateStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "HashAlgorithmEnumType": {
-        //       "description": "Used algorithms for the hashes provided.\r\n",
+        //       "description": "Used algorithms for the hashes provided.",
         //       "javaType": "HashAlgorithmEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "maxLength": 128
         //         },
         //         "serialNumber": {
-        //           "description": "The serial number of the certificate.\r\n",
+        //           "description": "The serial number of the certificate.",
         //           "type": "string",
         //           "maxLength": 40
         //         }
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.\r\n",
+        //       "description": "Element providing more information about the status.",
         //       "javaType": "StatusInfo",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -301,12 +301,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //           "type": "string",
         //           "maxLength": 20
         //         },
         //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "description": "Additional text to provide detailed information.",
         //           "type": "string",
         //           "maxLength": 512
         //         }

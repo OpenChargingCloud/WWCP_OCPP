@@ -17,12 +17,12 @@
 
 #region Usings
 
+using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPP;
-using System.Text.RegularExpressions;
 
 #endregion
 
@@ -36,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            IEquatable<IdToken>
     {
 
-        #region
+        #region Data
 
-        private const String rfidUIDPattern = @"^([A-Fa-f0-9]{4}|[A-Fa-f0-9]{7}|[A-Fa-f0-9]{10})$";
+        private const String rfidUIDPattern = @"^([A-F0-9]{8}|[A-F0-9]{14}|[A-F0-9]{20})$";
 
         #endregion
 
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "IdTokenType": {
-        //   "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //   "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //   "javaType": "IdToken",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "minItems": 1
         //     },
         //     "idToken": {
-        //       "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.\r\n",
+        //       "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
         //       "type": "string",
         //       "maxLength": 36
         //     },
@@ -149,13 +149,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="UID">The RFID UID as hex values.</param>
         public static IdToken? TryParseRFID(String UID)
+        {
 
-            => Regex.IsMatch(UID, rfidUIDPattern)
-                   ? new(
-                         UID.ToUpper(),
-                         IdTokenType.ISO14443
-                     )
-                   : null;
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            return Regex.IsMatch(uid, rfidUIDPattern)
+                       ? new(
+                             uid,
+                             IdTokenType.ISO14443
+                         )
+                       : null;
+
+        }
 
         #endregion
 
@@ -196,9 +201,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="IdToken">The parsed identification token.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject       JSON,
-                                       out IdToken?  IdToken,
-                                       out String?   ErrorResponse)
+        public static Boolean TryParse(JObject                            JSON,
+                                       [NotNullWhen(true)]  out IdToken?  IdToken,
+                                       [NotNullWhen(false)] out String?   ErrorResponse)
 
             => TryParse(JSON,
                         out IdToken,
@@ -214,8 +219,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomIdTokenParser">A delegate to parse custom identification tokens.</param>
         public static Boolean TryParse(JObject                                JSON,
-                                       out IdToken?                           IdToken,
-                                       out String?                            ErrorResponse,
+                                       [NotNullWhen(true)]  out IdToken?      IdToken,
+                                       [NotNullWhen(false)] out String?       ErrorResponse,
                                        CustomJObjectParserDelegate<IdToken>?  CustomIdTokenParser)
 
 

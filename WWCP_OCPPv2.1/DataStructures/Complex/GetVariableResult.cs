@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "GetVariableResultType": {
-        //   "description": "Class to hold results of GetVariables request.\r\n",
+        //   "description": "Class to hold results of GetVariables request.",
         //   "javaType": "GetVariableResult",
         //   "type": "object",
         //   "additionalProperties": false,

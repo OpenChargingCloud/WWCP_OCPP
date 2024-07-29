@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //       ]
         //     },
         //     "BootReasonEnumType": {
-        //       "description": "This contains the reason for sending this message to the CSMS.\r\n",
+        //       "description": "This contains the reason for sending this message to the CSMS.",
         //       "javaType": "BootReasonEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //       ]
         //     },
         //     "ChargingStationType": {
-        //       "description": "Charge_ Point\r\nurn:x-oca:ocpp:uid:2:233122\r\nThe physical system where an Electrical Vehicle (EV) can be charged.\r\n",
+        //       "description": "Charge_ Point\r\nurn:x-oca:ocpp:uid:2:233122\r\nThe physical system where an Electrical Vehicle (EV) can be charged.",
         //       "javaType": "ChargingStation",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -166,12 +166,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "serialNumber": {
-        //           "description": "Device. Serial_ Number. Serial_ Number\r\nurn:x-oca:ocpp:uid:1:569324\r\nVendor-specific device identifier.\r\n",
+        //           "description": "Device. Serial_ Number. Serial_ Number\r\nurn:x-oca:ocpp:uid:1:569324\r\nVendor-specific device identifier.",
         //           "type": "string",
         //           "maxLength": 25
         //         },
         //         "model": {
-        //           "description": "Device. Model. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569325\r\nDefines the model of the device.\r\n",
+        //           "description": "Device. Model. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569325\r\nDefines the model of the device.",
         //           "type": "string",
         //           "maxLength": 20
         //         },
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //           "$ref": "#/definitions/ModemType"
         //         },
         //         "vendorName": {
-        //           "description": "Identifies the vendor (not necessarily in a unique manner).\r\n",
+        //           "description": "Identifies the vendor (not necessarily in a unique manner).",
         //           "type": "string",
         //           "maxLength": 50
         //         },
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //       ]
         //     },
         //     "ModemType": {
-        //       "description": "Wireless_ Communication_ Module\r\nurn:x-oca:ocpp:uid:2:233306\r\nDefines parameters required for initiating and maintaining wireless communication with other devices.\r\n",
+        //       "description": "Wireless_ Communication_ Module\r\nurn:x-oca:ocpp:uid:2:233306\r\nDefines parameters required for initiating and maintaining wireless communication with other devices.",
         //       "javaType": "Modem",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -204,12 +204,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "iccid": {
-        //           "description": "Wireless_ Communication_ Module. ICCID. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569327\r\nThis contains the ICCID of the modem’s SIM card.\r\n",
+        //           "description": "Wireless_ Communication_ Module. ICCID. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569327\r\nThis contains the ICCID of the modem’s SIM card.",
         //           "type": "string",
         //           "maxLength": 20
         //         },
         //         "imsi": {
-        //           "description": "Wireless_ Communication_ Module. IMSI. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569328\r\nThis contains the IMSI of the modem’s SIM card.\r\n",
+        //           "description": "Wireless_ Communication_ Module. IMSI. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569328\r\nThis contains the IMSI of the modem’s SIM card.",
         //           "type": "string",
         //           "maxLength": 20
         //         }

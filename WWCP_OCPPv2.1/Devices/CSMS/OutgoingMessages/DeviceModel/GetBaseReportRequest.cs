@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ReportBaseEnumType": {
-        //       "description": "This field specifies the report base.\r\n",
+        //       "description": "This field specifies the report base.",
         //       "javaType": "ReportBaseEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "requestId": {
-        //       "description": "The Id of the request.\r\n",
+        //       "description": "The Id of the request.",
         //       "type": "integer"
         //     },
         //     "reportBase": {

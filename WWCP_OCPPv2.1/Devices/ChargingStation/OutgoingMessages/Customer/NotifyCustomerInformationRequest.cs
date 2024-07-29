@@ -202,21 +202,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "data": {
-        //       "description": "(Part of) the requested data. No format specified in which the data is returned. Should be human readable.\r\n",
+        //       "description": "(Part of) the requested data. No format specified in which the data is returned. Should be human readable.",
         //       "type": "string",
         //       "maxLength": 512
         //     },
         //     "tbc": {
-        //       "description": "“to be continued” indicator. Indicates whether another part of the monitoringData follows in an upcoming notifyMonitoringReportRequest message. Default value when omitted is false.\r\n",
+        //       "description": "“to be continued” indicator. Indicates whether another part of the monitoringData follows in an upcoming notifyMonitoringReportRequest message. Default value when omitted is false.",
         //       "type": "boolean",
         //       "default": false
         //     },
         //     "seqNo": {
-        //       "description": "Sequence number of this message. First message starts at 0.\r\n",
+        //       "description": "Sequence number of this message. First message starts at 0.",
         //       "type": "integer"
         //     },
         //     "generatedAt": {
-        //       "description": " Timestamp of the moment this message was generated at the Charging Station.\r\n",
+        //       "description": " Timestamp of the moment this message was generated at the Charging Station.",
         //       "type": "string",
         //       "format": "date-time"
         //     },

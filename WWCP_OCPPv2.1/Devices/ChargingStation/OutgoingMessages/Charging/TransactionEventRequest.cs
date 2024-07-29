@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ChargingStateEnumType": {
-        //       "description": "Transaction. State. Transaction_ State_ Code\r\nurn:x-oca:ocpp:uid:1:569419\r\nCurrent charging state, is required when state\r\nhas changed.\r\n",
+        //       "description": "Transaction. State. Transaction_ State_ Code\r\nurn:x-oca:ocpp:uid:1:569419\r\nCurrent charging state, is required when state\r\nhas changed.",
         //       "javaType": "ChargingStateEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "IdTokenEnumType": {
-        //       "description": "Enumeration of possible idToken types.\r\n",
+        //       "description": "Enumeration of possible idToken types.",
         //       "javaType": "IdTokenEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "PhaseEnumType": {
-        //       "description": "Sampled_ Value. Phase. Phase_ Code\r\nurn:x-oca:ocpp:uid:1:569264\r\nIndicates how the measured value is to be interpreted. For instance between L1 and neutral (L1-N) Please note that not all values of phase are applicable to all Measurands. When phase is absent, the measured value is interpreted as an overall value.\r\n",
+        //       "description": "Sampled_ Value. Phase. Phase_ Code\r\nurn:x-oca:ocpp:uid:1:569264\r\nIndicates how the measured value is to be interpreted. For instance between L1 and neutral (L1-N) Please note that not all values of phase are applicable to all Measurands. When phase is absent, the measured value is interpreted as an overall value.",
         //       "javaType": "PhaseEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ReasonEnumType": {
-        //       "description": "Transaction. Stopped_ Reason. EOT_ Reason_ Code\r\nurn:x-oca:ocpp:uid:1:569413\r\nThis contains the reason why the transaction was stopped. MAY only be omitted when Reason is \"Local\".\r\n",
+        //       "description": "Transaction. Stopped_ Reason. EOT_ Reason_ Code\r\nurn:x-oca:ocpp:uid:1:569413\r\nThis contains the reason why the transaction was stopped. MAY only be omitted when Reason is \"Local\".",
         //       "javaType": "ReasonEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "AdditionalInfoType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //       "javaType": "AdditionalInfo",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -464,12 +464,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "additionalIdToken": {
-        //           "description": "This field specifies the additional IdToken.\r\n",
+        //           "description": "This field specifies the additional IdToken.",
         //           "type": "string",
         //           "maxLength": 36
         //         },
         //         "type": {
-        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.\r\n",
+        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -489,11 +489,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
         //           "type": "integer"
         //         },
         //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
         //           "type": "integer"
         //         }
         //       },
@@ -502,7 +502,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "IdTokenType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //       "javaType": "IdToken",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -519,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "minItems": 1
         //         },
         //         "idToken": {
-        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.\r\n",
+        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
         //           "type": "string",
         //           "maxLength": 36
         //         },
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "MeterValueType": {
-        //       "description": "Meter_ Value\r\nurn:x-oca:ocpp:uid:2:233265\r\nCollection of one or more sampled values in MeterValuesRequest and TransactionEvent. All sampled values in a MeterValue are sampled at the same point in time.\r\n",
+        //       "description": "Meter_ Value\r\nurn:x-oca:ocpp:uid:2:233265\r\nCollection of one or more sampled values in MeterValuesRequest and TransactionEvent. All sampled values in a MeterValue are sampled at the same point in time.",
         //       "javaType": "MeterValue",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "minItems": 1
         //         },
         //         "timestamp": {
-        //           "description": "Meter_ Value. Timestamp. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569259\r\nTimestamp for measured value(s).\r\n",
+        //           "description": "Meter_ Value. Timestamp. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569259\r\nTimestamp for measured value(s).",
         //           "type": "string",
         //           "format": "date-time"
         //         }
@@ -561,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "SampledValueType": {
-        //       "description": "Sampled_ Value\r\nurn:x-oca:ocpp:uid:2:233266\r\nSingle sampled value in MeterValues. Each value can be accompanied by optional fields.\r\n\r\nTo save on mobile data usage, default values of all of the optional fields are such that. The value without any additional fields will be interpreted, as a register reading of active import energy in Wh (Watt-hour) units.\r\n",
+        //       "description": "Sampled_ Value\r\nurn:x-oca:ocpp:uid:2:233266\r\nSingle sampled value in MeterValues. Each value can be accompanied by optional fields.\r\n\r\nTo save on mobile data usage, default values of all of the optional fields are such that. The value without any additional fields will be interpreted, as a register reading of active import energy in Wh (Watt-hour) units.",
         //       "javaType": "SampledValue",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -597,7 +597,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "SignedMeterValueType": {
-        //       "description": "Represent a signed version of the meter value.\r\n",
+        //       "description": "Represent a signed version of the meter value.",
         //       "javaType": "SignedMeterValue",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -606,22 +606,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "signedMeterData": {
-        //           "description": "Base64 encoded, contains the signed data which might contain more then just the meter value. It can contain information like timestamps, reference to a customer etc.\r\n",
+        //           "description": "Base64 encoded, contains the signed data which might contain more then just the meter value. It can contain information like timestamps, reference to a customer etc.",
         //           "type": "string",
         //           "maxLength": 2500
         //         },
         //         "signingMethod": {
-        //           "description": "Method used to create the digital signature.\r\n",
+        //           "description": "Method used to create the digital signature.",
         //           "type": "string",
         //           "maxLength": 50
         //         },
         //         "encodingMethod": {
-        //           "description": "Method used to encode the meter values before applying the digital signature algorithm.\r\n",
+        //           "description": "Method used to encode the meter values before applying the digital signature algorithm.",
         //           "type": "string",
         //           "maxLength": 50
         //         },
         //         "publicKey": {
-        //           "description": "Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.\r\n",
+        //           "description": "Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.",
         //           "type": "string",
         //           "maxLength": 2500
         //         }
@@ -643,7 +643,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "transactionId": {
-        //           "description": "This contains the Id of the transaction.\r\n",
+        //           "description": "This contains the Id of the transaction.",
         //           "type": "string",
         //           "maxLength": 36
         //         },
@@ -651,14 +651,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/ChargingStateEnumType"
         //         },
         //         "timeSpentCharging": {
-        //           "description": "Transaction. Time_ Spent_ Charging. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569415\r\nContains the total time that energy flowed from EVSE to EV during the transaction (in seconds). Note that timeSpentCharging is smaller or equal to the duration of the transaction.\r\n",
+        //           "description": "Transaction. Time_ Spent_ Charging. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569415\r\nContains the total time that energy flowed from EVSE to EV during the transaction (in seconds). Note that timeSpentCharging is smaller or equal to the duration of the transaction.",
         //           "type": "integer"
         //         },
         //         "stoppedReason": {
         //           "$ref": "#/definitions/ReasonEnumType"
         //         },
         //         "remoteStartId": {
-        //           "description": "The ID given to remote start request (&lt;&lt;requeststarttransactionrequest, RequestStartTransactionRequest&gt;&gt;. This enables to CSMS to match the started transaction to the given start request.\r\n",
+        //           "description": "The ID given to remote start request (&lt;&lt;requeststarttransactionrequest, RequestStartTransactionRequest&gt;&gt;. This enables to CSMS to match the started transaction to the given start request.",
         //           "type": "integer"
         //         }
         //       },
@@ -676,13 +676,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "unit": {
-        //           "description": "Unit of the value. Default = \"Wh\" if the (default) measurand is an \"Energy\" type.\r\nThis field SHALL use a value from the list Standardized Units of Measurements in Part 2 Appendices. \r\nIf an applicable unit is available in that list, otherwise a \"custom\" unit might be used.\r\n",
+        //           "description": "Unit of the value. Default = \"Wh\" if the (default) measurand is an \"Energy\" type.\r\nThis field SHALL use a value from the list Standardized Units of Measurements in Part 2 Appendices. \r\nIf an applicable unit is available in that list, otherwise a \"custom\" unit might be used.",
         //           "type": "string",
         //           "default": "Wh",
         //           "maxLength": 20
         //         },
         //         "multiplier": {
-        //           "description": "Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power. Default is 0.\r\n",
+        //           "description": "Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power. Default is 0.",
         //           "type": "integer",
         //           "default": 0
         //         }
@@ -707,7 +707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "minItems": 1
         //     },
         //     "timestamp": {
-        //       "description": "The date and time at which this transaction event occurred.\r\n",
+        //       "description": "The date and time at which this transaction event occurred.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
@@ -715,24 +715,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/TriggerReasonEnumType"
         //     },
         //     "seqNo": {
-        //       "description": "Incremental sequence number, helps with determining if all messages of a transaction have been received.\r\n",
+        //       "description": "Incremental sequence number, helps with determining if all messages of a transaction have been received.",
         //       "type": "integer"
         //     },
         //     "offline": {
-        //       "description": "Indication that this transaction event happened when the Charging Station was offline. Default = false, meaning: the event occurred when the Charging Station was online.\r\n",
+        //       "description": "Indication that this transaction event happened when the Charging Station was offline. Default = false, meaning: the event occurred when the Charging Station was online.",
         //       "type": "boolean",
         //       "default": false
         //     },
         //     "numberOfPhasesUsed": {
-        //       "description": "If the Charging Station is able to report the number of phases used, then it SHALL provide it. When omitted the CSMS may be able to determine the number of phases used via device management.\r\n",
+        //       "description": "If the Charging Station is able to report the number of phases used, then it SHALL provide it. When omitted the CSMS may be able to determine the number of phases used via device management.",
         //       "type": "integer"
         //     },
         //     "cableMaxCurrent": {
-        //       "description": "The maximum current of the connected cable in Ampere (A).\r\n",
+        //       "description": "The maximum current of the connected cable in Ampere (A).",
         //       "type": "integer"
         //     },
         //     "reservationId": {
-        //       "description": "This contains the Id of the reservation that terminates as a result of this transaction.\r\n",
+        //       "description": "This contains the Id of the reservation that terminates as a result of this transaction.",
         //       "type": "integer"
         //     },
         //     "transactionInfo": {

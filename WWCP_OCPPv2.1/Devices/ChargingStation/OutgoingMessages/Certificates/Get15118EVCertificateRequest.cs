@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "CertificateActionEnumType": {
-        //       "description": "Defines whether certificate needs to be installed or updated.\r\n",
+        //       "description": "Defines whether certificate needs to be installed or updated.",
         //       "javaType": "CertificateActionEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CertificateActionEnumType"
         //     },
         //     "exiRequest": {
-        //       "description": "Raw CertificateInstallationReq request from EV, Base64 encoded.\r\n",
+        //       "description": "Raw CertificateInstallationReq request from EV, Base64 encoded.",
         //       "type": "string",
         //       "maxLength": 5600
         //     }

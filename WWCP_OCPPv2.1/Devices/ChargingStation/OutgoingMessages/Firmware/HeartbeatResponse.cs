@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "currentTime": {
-        //       "description": "Contains the current time of the CSMS.\r\n",
+        //       "description": "Contains the current time of the CSMS.",
         //       "type": "string",
         //       "format": "date-time"
         //     }

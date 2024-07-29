@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "FirmwareStatusEnumType": {
-        //       "description": "This contains the progress status of the firmware installation.\r\n",
+        //       "description": "This contains the progress status of the firmware installation.",
         //       "javaType": "FirmwareStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/FirmwareStatusEnumType"
         //     },
         //     "requestId": {
-        //       "description": "The request id that was provided in the\r\nUpdateFirmwareRequest that started this firmware update.\r\nThis field is mandatory, unless the message was triggered by a TriggerMessageRequest AND there is no firmware update ongoing.\r\n",
+        //       "description": "The request id that was provided in the\r\nUpdateFirmwareRequest that started this firmware update.\r\nThis field is mandatory, unless the message was triggered by a TriggerMessageRequest AND there is no firmware update ongoing.",
         //       "type": "integer"
         //     }
         //   },

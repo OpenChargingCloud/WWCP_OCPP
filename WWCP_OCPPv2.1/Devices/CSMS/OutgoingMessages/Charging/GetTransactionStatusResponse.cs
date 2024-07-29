@@ -188,11 +188,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "ongoingIndicator": {
-        //       "description": "Whether the transaction is still ongoing.\r\n",
+        //       "description": "Whether the transaction is still ongoing.",
         //       "type": "boolean"
         //     },
         //     "messagesInQueue": {
-        //       "description": "Whether there are still message to be delivered.\r\n",
+        //       "description": "Whether there are still message to be delivered.",
         //       "type": "boolean"
         //     }
         //   },

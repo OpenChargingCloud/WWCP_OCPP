@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "SetMonitoringResultType": {
-        //   "description": "Class to hold result of SetVariableMonitoring request.\r\n",
+        //   "description": "Class to hold result of SetVariableMonitoring request.",
         //   "javaType": "SetMonitoringResult",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "id": {
-        //       "description": "Id given to the VariableMonitor by the Charging Station. The Id is only returned when status is accepted. Installed VariableMonitors should have unique id's but the id's of removed Installed monitors should have unique id's but the id's of removed monitors MAY be reused.\r\n",
+        //       "description": "Id given to the VariableMonitor by the Charging Station. The Id is only returned when status is accepted. Installed VariableMonitors should have unique id's but the id's of removed Installed monitors should have unique id's but the id's of removed monitors MAY be reused.",
         //       "type": "integer"
         //     },
         //     "statusInfo": {

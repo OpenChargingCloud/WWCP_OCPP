@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ConnectorStatusEnumType": {
-        //       "description": "This contains the current status of the Connector.\r\n",
+        //       "description": "This contains the current status of the Connector.",
         //       "javaType": "ConnectorStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "timestamp": {
-        //       "description": "The time for which the status is reported. If absent time of receipt of the message will be assumed.\r\n",
+        //       "description": "The time for which the status is reported. If absent time of receipt of the message will be assumed.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
@@ -209,11 +209,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/ConnectorStatusEnumType"
         //     },
         //     "evseId": {
-        //       "description": "The id of the EVSE to which the connector belongs for which the the status is reported.\r\n",
+        //       "description": "The id of the EVSE to which the connector belongs for which the the status is reported.",
         //       "type": "integer"
         //     },
         //     "connectorId": {
-        //       "description": "The id of the connector within the EVSE for which the status is reported.\r\n",
+        //       "description": "The id of the connector within the EVSE for which the status is reported.",
         //       "type": "integer"
         //     }
         //   },

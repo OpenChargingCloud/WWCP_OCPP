@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "EventDataType": {
-        //   "description": "Class to report an event notification for a component-variable.\r\n",
+        //   "description": "Class to report an event notification for a component-variable.",
         //   "javaType": "EventData",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "type": "integer"
         //     },
         //     "timestamp": {
-        //       "description": "Timestamp of the moment the report was generated.\r\n",
+        //       "description": "Timestamp of the moment the report was generated.",
         //       "type": "string",
         //       "format": "date-time"
         //     },
@@ -248,12 +248,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "maxLength": 2500
         //     },
         //     "techCode": {
-        //       "description": "Technical (error) code as reported by component.\r\n",
+        //       "description": "Technical (error) code as reported by component.",
         //       "type": "string",
         //       "maxLength": 50
         //     },
         //     "techInfo": {
-        //       "description": "Technical detail information as reported by component.\r\n",
+        //       "description": "Technical detail information as reported by component.",
         //       "type": "string",
         //       "maxLength": 500
         //     },
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "type": "boolean"
         //     },
         //     "transactionId": {
-        //       "description": "If an event notification is linked to a specific transaction, this field can be used to specify its transactionId.\r\n",
+        //       "description": "If an event notification is linked to a specific transaction, this field can be used to specify its transactionId.",
         //       "type": "string",
         //       "maxLength": 36
         //     },
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/ComponentType"
         //     },
         //     "variableMonitoringId": {
-        //       "description": "Identifies the VariableMonitoring which triggered the event.\r\n",
+        //       "description": "Identifies the VariableMonitoring which triggered the event.",
         //       "type": "integer"
         //     },
         //     "eventNotificationType": {

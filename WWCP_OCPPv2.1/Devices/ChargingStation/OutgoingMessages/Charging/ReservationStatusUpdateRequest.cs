@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ReservationUpdateStatusEnumType": {
-        //       "description": "The updated reservation status.\r\n",
+        //       "description": "The updated reservation status.",
         //       "javaType": "ReservationUpdateStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "reservationId": {
-        //       "description": "The ID of the reservation.\r\n",
+        //       "description": "The ID of the reservation.",
         //       "type": "integer"
         //     },
         //     "reservationUpdateStatus": {

@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ChargingLimitSourceEnumType": {
-        //       "description": "Source of the charging limit.\r\n",
+        //       "description": "Source of the charging limit.",
         //       "javaType": "ChargingLimitSourceEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/ChargingLimitSourceEnumType"
         //     },
         //     "evseId": {
-        //       "description": "EVSE Identifier.\r\n",
+        //       "description": "EVSE Identifier.",
         //       "type": "integer"
         //     }
         //   },

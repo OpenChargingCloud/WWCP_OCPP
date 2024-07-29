@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "maxLength": 128
         //     },
         //     "serialNumber": {
-        //       "description": "The serial number of the certificate.\r\n",
+        //       "description": "The serial number of the certificate.",
         //       "type": "string",
         //       "maxLength": 40
         //     },

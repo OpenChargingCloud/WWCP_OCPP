@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "reservationId": {
-        //       "description": "Id of the reservation to cancel.\r\n",
+        //       "description": "Id of the reservation to cancel.",
         //       "type": "integer"
         //     }
         //   },

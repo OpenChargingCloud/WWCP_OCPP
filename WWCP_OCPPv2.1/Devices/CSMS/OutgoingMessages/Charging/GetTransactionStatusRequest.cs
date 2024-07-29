@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "transactionId": {
-        //       "description": "The Id of the transaction for which the status is requested.\r\n",
+        //       "description": "The Id of the transaction for which the status is requested.",
         //       "type": "string",
         //       "maxLength": 36
         //     }

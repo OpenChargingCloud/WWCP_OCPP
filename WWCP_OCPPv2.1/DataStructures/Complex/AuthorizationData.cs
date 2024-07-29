@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "AuthorizationData": {
-        //   "description": "Contains the identifier to use for authorization.\r\n",
+        //   "description": "Contains the identifier to use for authorization.",
         //   "javaType": "AuthorizationData",
         //   "type": "object",
         //   "additionalProperties": false,

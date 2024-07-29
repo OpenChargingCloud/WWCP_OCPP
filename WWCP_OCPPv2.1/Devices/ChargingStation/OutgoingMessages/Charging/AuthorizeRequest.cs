@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "HashAlgorithmEnumType": {
-        //       "description": "Used algorithms for the hashes provided.\r\n",
+        //       "description": "Used algorithms for the hashes provided.",
         //       "javaType": "HashAlgorithmEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "IdTokenEnumType": {
-        //       "description": "Enumeration of possible idToken types.\r\n",
+        //       "description": "Enumeration of possible idToken types.",
         //       "javaType": "IdTokenEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "AdditionalInfoType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //       "javaType": "AdditionalInfo",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -207,12 +207,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "additionalIdToken": {
-        //           "description": "This field specifies the additional IdToken.\r\n",
+        //           "description": "This field specifies the additional IdToken.",
         //           "type": "string",
         //           "maxLength": 36
         //         },
         //         "type": {
-        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.\r\n",
+        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "IdTokenType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //       "javaType": "IdToken",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "minItems": 1
         //         },
         //         "idToken": {
-        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.\r\n",
+        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
         //           "type": "string",
         //           "maxLength": 36
         //         },
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "maxLength": 128
         //         },
         //         "serialNumber": {
-        //           "description": "The serial number of the certificate.\r\n",
+        //           "description": "The serial number of the certificate.",
         //           "type": "string",
         //           "maxLength": 40
         //         },
@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/IdTokenType"
         //     },
         //     "certificate": {
-        //       "description": "The X.509 certificated presented by EV and encoded in PEM format.\r\n",
+        //       "description": "The X.509 certificated presented by EV and encoded in PEM format.",
         //       "type": "string",
         //       "maxLength": 5500
         //     },

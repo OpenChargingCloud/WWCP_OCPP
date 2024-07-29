@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "AdditionalInfoType": {
-        //   "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //   "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //   "javaType": "AdditionalInfo",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -95,12 +95,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "additionalIdToken": {
-        //       "description": "This field specifies the additional IdToken.\r\n",
+        //       "description": "This field specifies the additional IdToken.",
         //       "type": "string",
         //       "maxLength": 36
         //     },
         //     "type": {
-        //       "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.\r\n",
+        //       "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
         //       "type": "string",
         //       "maxLength": 50
         //     }

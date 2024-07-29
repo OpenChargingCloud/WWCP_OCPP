@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "UploadLogStatusEnumType": {
-        //       "description": "This contains the status of the log upload.\r\n",
+        //       "description": "This contains the status of the log upload.",
         //       "javaType": "UploadLogStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/UploadLogStatusEnumType"
         //     },
         //     "requestId": {
-        //       "description": "The request id that was provided in GetLogRequest that started this log upload. This field is mandatory,\r\nunless the message was triggered by a TriggerMessageRequest AND there is no log upload ongoing.\r\n",
+        //       "description": "The request id that was provided in GetLogRequest that started this log upload. This field is mandatory,\r\nunless the message was triggered by a TriggerMessageRequest AND there is no log upload ongoing.",
         //       "type": "integer"
         //     }
         //   },

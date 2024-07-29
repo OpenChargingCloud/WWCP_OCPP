@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "MessagePriorityEnumType": {
-        //       "description": "If provided the Charging Station shall return Display Messages with the given priority only.\r\n",
+        //       "description": "If provided the Charging Station shall return Display Messages with the given priority only.",
         //       "javaType": "MessagePriorityEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "minItems": 1
         //     },
         //     "requestId": {
-        //       "description": "The Id of this request.\r\n",
+        //       "description": "The Id of this request.",
         //       "type": "integer"
         //     },
         //     "priority": {
