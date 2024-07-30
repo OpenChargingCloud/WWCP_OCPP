@@ -13,6 +13,11 @@
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
     <ProjectReference Include="..\..\WWCP_Core\WWCP_Core\WWCP_Core.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1_ChargingStation\WWCP_OCPPv2.1_ChargingStation.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1_CSMS\WWCP_OCPPv2.1_CSMS.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1_EnergyMeter\WWCP_OCPPv2.1_EnergyMeter.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1_Gateway\WWCP_OCPPv2.1_Gateway.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1_LocalController\WWCP_OCPPv2.1_LocalController.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
   </ItemGroup>
 
