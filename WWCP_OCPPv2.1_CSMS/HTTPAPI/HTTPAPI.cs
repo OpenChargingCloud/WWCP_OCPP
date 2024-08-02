@@ -942,7 +942,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.IN.OnAuthorizeResponseReceived += (timestamp,
                                                                    sender,
-                                                                   //connection,
+                                                                   connection,
                                                                    request,
                                                                    response,
                                                                    runtime) =>
@@ -951,7 +951,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)

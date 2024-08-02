@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         loggingDelegate => loggingDelegate.Invoke(
                             Timestamp.Now,
                             parentNetworkingNode,
-                            //sendMessageResult.Connection,
+                            WebSocketConnection,
                             Request,
                             response,
                             response.Runtime
@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                       loggingDelegate => loggingDelegate.Invoke(
                           Timestamp.Now,
                           parentNetworkingNode,
-                          //WebSocketConnection,
+                          WebSocketConnection,
                           Request,
                           response,
                           response.Runtime

@@ -940,17 +940,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.IN.OnAuthorizeResponseReceived += (timestamp,
-                                                                   sender,
-                                                                   //connection,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnAuthorizeResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)

@@ -163,6 +163,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public IEnumerable<ChargingSession> ChargingSessions => throw new NotImplementedException();
 
+        public bool DisableAuthorization { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public IId AuthId => throw new NotImplementedException();
 
         event OnChargingPoolDataChangedDelegate IChargingPool.OnDataChanged
         {
@@ -225,6 +228,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public event OnRemoteStopResponseDelegate OnRemoteStopResponse;
         public event OnNewChargingSessionDelegate OnNewChargingSession;
         public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
+        public event OnAuthorizeStartRequestDelegate OnAuthorizeStartRequest;
+        public event OnAuthorizeStartResponseDelegate OnAuthorizeStartResponse;
+        public event OnAuthorizeStopRequestDelegate OnAuthorizeStopRequest;
+        public event OnAuthorizeStopResponseDelegate OnAuthorizeStopResponse;
 
         public IEnumerable<WWCP.ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate? IncludeStations = null)
         {
@@ -622,6 +629,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthStartResult> AuthorizeStart(LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingProduct? ChargingProduct = null, ChargingSession_Id? SessionId = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthStopResult> AuthorizeStop(ChargingSession_Id SessionId, LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
         {
             throw new NotImplementedException();
         }

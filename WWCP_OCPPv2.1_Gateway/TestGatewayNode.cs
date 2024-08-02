@@ -526,6 +526,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #endregion
 
+            #region OnRequestStartTransaction
+
+            OCPP.FORWARD.OnRequestStartTransactionRequestFilter += (timestamp,
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<RequestStartTransactionRequest, CS.RequestStartTransactionResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+            #region OnRequestStopTransaction
+
+            OCPP.FORWARD.OnRequestStopTransactionRequestFilter += (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<RequestStopTransactionRequest, CS.RequestStopTransactionResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
 
             // CS -> CSMS
 

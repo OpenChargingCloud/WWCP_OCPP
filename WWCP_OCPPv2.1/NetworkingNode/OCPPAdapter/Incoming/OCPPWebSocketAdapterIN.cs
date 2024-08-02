@@ -1257,7 +1257,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             where TDelegate : Delegate
 
-            => parentNetworkingNode.LogEvent(nameof(OCPPWebSocketAdapterIN), Logger, LogHandler, EventName, OCPPCommand);
+            => parentNetworkingNode.LogEvent(
+                   nameof(OCPPWebSocketAdapterIN),
+                   Logger,
+                   LogHandler,
+                   EventName,
+                   OCPPCommand
+               );
 
         #endregion
 

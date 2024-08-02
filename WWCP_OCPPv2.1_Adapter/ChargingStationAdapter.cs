@@ -167,6 +167,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public IEnumerable<ChargingSession> ChargingSessions => throw new NotImplementedException();
 
+        public bool DisableAuthorization { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public IId AuthId => throw new NotImplementedException();
 
         public event OnChargingStationDataChangedDelegate? OnDataChanged;
         public event OnChargingStationStatusChangedDelegate? OnStatusChanged;
@@ -187,6 +190,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public event OnReservationCanceledDelegate? OnReservationCanceled;
         public event OnNewChargingSessionDelegate OnNewChargingSession;
         public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
+        public event OnAuthorizeStartRequestDelegate OnAuthorizeStartRequest;
+        public event OnAuthorizeStartResponseDelegate OnAuthorizeStartResponse;
+        public event OnAuthorizeStopRequestDelegate OnAuthorizeStopRequest;
+        public event OnAuthorizeStopResponseDelegate OnAuthorizeStopResponse;
 
         public Task<RemoteStartResult> RemoteStart(ChargingProduct?         ChargingProduct          = null,
                                                    ChargingReservation_Id?  ReservationId            = null,
@@ -230,11 +237,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          CancellationToken        CancellationToken        = default)
         {
 
+            #region Initial checks
+
+            if (ChargingLocation.IsNull())
+                return RemoteStartResult.UnknownLocation(System_Id.Local);
+
+            var eMAId = RemoteAuthentication?.RemoteIdentification?.ToString();
+
+            if (eMAId.IsNullOrEmpty())
+                return RemoteStartResult.InvalidCredentials(System_Id.Local);
+
+            #endregion
+
+
             var response = await CSMS.StartCharging(
                                      DestinationId:                      ChargingStationNode.Id,
                                      RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
                                      IdToken:                            new IdToken(
-                                                                             Value:             RemoteAuthentication.RemoteIdentification.Value.ToString(),
+                                                                             Value:             eMAId,
                                                                              Type:              IdTokenType.eMAID,
                                                                              AdditionalInfos:   null,
                                                                              CustomData:        null
@@ -554,6 +574,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         public bool TryGetChargingSessionById(ChargingSession_Id ChargingSessionId, [NotNullWhen(true)] out ChargingSession? ChargingSession)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthStartResult> AuthorizeStart(LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingProduct? ChargingProduct = null, ChargingSession_Id? SessionId = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthStopResult> AuthorizeStop(ChargingSession_Id SessionId, LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
         {
             throw new NotImplementedException();
         }

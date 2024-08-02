@@ -47,13 +47,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the response logging.</param>
     /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Connection">The connection of the request/response.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request/response.</param>
-    public delegate Task OnAuthorizeResponseReceivedDelegate(DateTime            Timestamp,
-                                                             IEventSender        Sender,
-                                                             AuthorizeRequest    Request,
-                                                             AuthorizeResponse   Response,
-                                                             TimeSpan            Runtime);
+    public delegate Task OnAuthorizeResponseReceivedDelegate(DateTime               Timestamp,
+                                                             IEventSender           Sender,
+                                                             IWebSocketConnection   Connection,
+                                                             AuthorizeRequest       Request,
+                                                             AuthorizeResponse      Response,
+                                                             TimeSpan               Runtime);
 
 }
