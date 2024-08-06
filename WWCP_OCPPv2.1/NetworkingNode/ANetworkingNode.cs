@@ -248,8 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region ConnectWebSocketClient(...)
 
-        public async Task<HTTPResponse> ConnectWebSocketClient(NetworkingNode_Id                                               NetworkingNodeId,
-                                                               URL                                                             RemoteURL,
+        public async Task<HTTPResponse> ConnectWebSocketClient(URL                                                             RemoteURL,
                                                                HTTPHostname?                                                   VirtualHostname              = null,
                                                                String?                                                         Description                  = null,
                                                                Boolean?                                                        PreferIPv4                   = null,
@@ -266,6 +265,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                                                IEnumerable<String>?                                            SecWebSocketProtocols        = null,
                                                                NetworkingMode?                                                 NetworkingMode               = null,
+                                                               NetworkingNode_Id?                                              NextHopNetworkingNodeId      = null,
+                                                               IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds     = null,
 
                                                                Boolean                                                         DisableWebSocketPings        = false,
                                                                TimeSpan?                                                       WebSocketPingEvery           = null,
@@ -283,6 +284,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                EventTracking_Id?                                               EventTrackingId              = null,
                                                                CancellationToken                                               CancellationToken            = default)
         {
+
+            NextHopNetworkingNodeId ??= NetworkingNode_Id.CSMS;
 
             var ocppWebSocketClient = new OCPPWebSocketClient(
 
@@ -341,13 +344,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 connectResponse.Item1 is not null)
             {
 
-                connectResponse.Item1.TryAddCustomData(OCPPAdapter.NetworkingNodeId_WebSocketKey,
-                                                       NetworkingNodeId);
+                if (NextHopNetworkingNodeId is not null)
+                {
 
-                OCPP.AddStaticRouting(NetworkingNodeId,
-                                      ocppWebSocketClient,
-                                      0,
-                                      Timestamp.Now);
+                    connectResponse.Item1.TryAddCustomData(
+                        OCPPAdapter.NetworkingNodeId_WebSocketKey,
+                        NextHopNetworkingNodeId
+                    );
+
+                    OCPP.AddStaticRouting(
+                        NextHopNetworkingNodeId.Value,
+                        ocppWebSocketClient,
+                        0,
+                        Timestamp.Now
+                    );
+
+                }
+
+                if (RoutingNetworkingNodeIds is not null && RoutingNetworkingNodeIds.Any())
+                    OCPP.AddStaticRouting(
+                        RoutingNetworkingNodeIds,
+                        ocppWebSocketClient,
+                        0,
+                        Timestamp.Now
+                    );
 
             }
 

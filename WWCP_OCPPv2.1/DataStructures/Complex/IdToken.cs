@@ -38,7 +38,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private const String rfidUIDPattern = @"^([A-F0-9]{8}|[A-F0-9]{14}|[A-F0-9]{20})$";
+        private static readonly Regex rfid_UIDPattern    = new Regex(@"^([A-F0-9]{8}|[A-F0-9]{14}|[A-F0-9]{20})$");
+        private static readonly Regex rfid4_UIDPattern   = new Regex(@"^([A-F0-9]{8})$");
+        private static readonly Regex rfid7_UIDPattern   = new Regex(@"^([A-F0-9]{14})$");
+        private static readonly Regex rfid10_UIDPattern  = new Regex(@"^([A-F0-9]{20})$");
 
         #endregion
 
@@ -127,13 +130,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) NewRandomRFID(Length)
+        #region (static) NewRandomRFID  (Length)
 
         /// <summary>
         /// Create a new random identification token.
         /// </summary>
         /// <param name="Length">The expected length of the random identification token.</param>
-        public static IdToken NewRandomRFID(Byte Length = 8)
+        public static IdToken NewRandomRFID(Byte Length = 14)
 
             => new (
                    RandomExtensions.RandomString(Length).ToUpper(),
@@ -142,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParseRFID(UID)
+        #region (static) TryParseRFID   (UID)
 
         /// <summary>
         /// Create a new identification token based on the given RFID UID.
@@ -153,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
 
-            return Regex.IsMatch(uid, rfidUIDPattern)
+            return rfid_UIDPattern.IsMatch(uid)
                        ? new(
                              uid,
                              IdTokenType.ISO14443
@@ -163,6 +166,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
+
+        #region (static) TryParseRFID4  (UID)
+
+        /// <summary>
+        /// Create a new identification token based on the given 4 byte RFID UID.
+        /// </summary>
+        /// <param name="UID">The 4 byte RFID UID as hex values.</param>
+        public static IdToken? TryParseRFID4(String UID)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            return rfid4_UIDPattern.IsMatch(uid)
+                       ? new(
+                             uid,
+                             IdTokenType.ISO14443
+                         )
+                       : null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseRFID7  (UID)
+
+        /// <summary>
+        /// Create a new identification token based on the given 7 byte RFID UID.
+        /// </summary>
+        /// <param name="UID">The 7 byte RFID UID as hex values.</param>
+        public static IdToken? TryParseRFID7(String UID)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            return rfid7_UIDPattern.IsMatch(uid)
+                       ? new(
+                             uid,
+                             IdTokenType.ISO14443
+                         )
+                       : null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseRFID10 (UID)
+
+        /// <summary>
+        /// Create a new identification token based on the given 10 byte RFID UID.
+        /// </summary>
+        /// <param name="UID">The 10 byteRFID UID as hex values.</param>
+        public static IdToken? TryParseRFID10(String UID)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            return rfid10_UIDPattern.IsMatch(uid)
+                       ? new(
+                             uid,
+                             IdTokenType.ISO14443
+                         )
+                       : null;
+
+        }
+
+        #endregion
+
 
         #region (static) Parse   (JSON, CustomIdTokenParser = null)
 
@@ -235,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("idToken",
                                              "identification token",
-                                             out String Value,
+                                             out var Value,
                                              out ErrorResponse))
                 {
                     return false;
@@ -261,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptionalJSON("additionalInfo",
                                            "additional information",
                                            AdditionalInfo.TryParse,
-                                           out IEnumerable<AdditionalInfo> AdditionalInfos,
+                                           out IEnumerable<AdditionalInfo>? AdditionalInfos,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

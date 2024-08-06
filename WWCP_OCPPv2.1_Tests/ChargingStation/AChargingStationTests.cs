@@ -149,10 +149,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 lcOCPPWebSocketServer01?.AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
 
                 var response = chargingStation1.ConnectWebSocketClient(
-                                   NetworkingNodeId:        NetworkingNode_Id.CSMS,
-                                   RemoteURL:               URL.Parse("http://127.0.0.1:" + (lcOCPPWebSocketServer01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
-                                   HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation1Id.ToString(), "1234abcd"),
-                                   DisableWebSocketPings:   true
+                                   NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
+                                   RemoteURL:                URL.Parse("http://127.0.0.1:" + (lcOCPPWebSocketServer01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
+                                   HTTPAuthentication:       HTTPBasicAuthentication.Create(chargingStation1Id.ToString(), "1234abcd"),
+                                   DisableWebSocketPings:    true
                                ).Result;
 
                 ClassicAssert.IsNotNull(response);
@@ -279,10 +279,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 testCSMS01.AddOrUpdateHTTPBasicAuth(chargingStation2Id, "1234abcd");
 
                 var response = chargingStation2.ConnectWebSocketClient(
-                                   NetworkingNodeId:        NetworkingNode_Id.CSMS,
-                                   RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation2.Id),
-                                   HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation2Id.ToString(), "1234abcd"),
-                                   DisableWebSocketPings:   true
+                                   NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
+                                   RemoteURL:                URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation2.Id),
+                                   HTTPAuthentication:       HTTPBasicAuthentication.Create(chargingStation2Id.ToString(), "1234abcd"),
+                                   DisableWebSocketPings:    true
                                ).Result;
 
                 ClassicAssert.IsNotNull(response);

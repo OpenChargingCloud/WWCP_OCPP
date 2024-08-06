@@ -148,11 +148,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
                     testCSMS01.AddOrUpdateHTTPBasicAuth(networkingNode1Id, "1234abcd");
 
                     var response = localController1.ConnectWebSocketClient(
-                                       NetworkingNodeId:        NetworkingNode_Id.CSMS,
-                                       RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + localController1.Id),
-                                       HTTPAuthentication:      HTTPBasicAuthentication.Create(networkingNode1Id.ToString(), "1234abcd"),
-                                       DisableWebSocketPings:   true,
-                                       NetworkingMode:          NetworkingMode.OverlayNetwork
+                                       NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
+                                       RemoteURL:                URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + localController1.Id),
+                                       HTTPAuthentication:       HTTPBasicAuthentication.Create(networkingNode1Id.ToString(), "1234abcd"),
+                                       DisableWebSocketPings:    true,
+                                       NetworkingMode:           NetworkingMode.OverlayNetwork
                                    ).Result;
 
                     ClassicAssert.IsNotNull(response);

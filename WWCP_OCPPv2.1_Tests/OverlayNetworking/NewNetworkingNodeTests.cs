@@ -95,11 +95,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
 
 
             var xxx = await tn01.ConnectWebSocketClient(
-                                NetworkingNodeId:        NetworkingNode_Id.CSMS,
-                                RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + tn01.Id),
-                                HTTPAuthentication:      HTTPBasicAuthentication.Create(tn01.Id.ToString(), "1234abcd"),
-                                DisableWebSocketPings:   true,
-                                NetworkingMode:          NetworkingMode.OverlayNetwork
+                                NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
+                                RemoteURL:                URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + tn01.Id),
+                                HTTPAuthentication:       HTTPBasicAuthentication.Create(tn01.Id.ToString(), "1234abcd"),
+                                DisableWebSocketPings:    true,
+                                NetworkingMode:           NetworkingMode.OverlayNetwork
                             );
 
 
@@ -154,10 +154,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
             server1.AddOrUpdateHTTPBasicAuth(chargingStation1.Id, "1234abcd");
 
             var response = await chargingStation1.ConnectWebSocketClient(
-                                     NetworkingNodeId:       NetworkingNode_Id.CSMS,
-                                     RemoteURL:              URL.Parse($"http://127.0.0.1:{server1.IPPort}/{chargingStation1.Id}"),
-                                     HTTPAuthentication:     HTTPBasicAuthentication.Create(chargingStation1.Id.ToString(), "1234abcd"),
-                                     DisableWebSocketPings:  true
+                                     NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
+                                     RemoteURL:                URL.Parse($"http://127.0.0.1:{server1.IPPort}/{chargingStation1.Id}"),
+                                     HTTPAuthentication:       HTTPBasicAuthentication.Create(chargingStation1.Id.ToString(), "1234abcd"),
+                                     DisableWebSocketPings:    true
                                  );
 
 

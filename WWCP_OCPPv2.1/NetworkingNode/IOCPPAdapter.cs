@@ -761,27 +761,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         Boolean LookupNetworkingNode(NetworkingNode_Id DestinationId, out Reachability? Reachability);
 
-        void AddStaticRouting    (NetworkingNode_Id     DestinationId,
-                                  IOCPPWebSocketClient  WebSocketClient,
-                                  Byte?                 Priority    = 0,
-                                  DateTime?             Timestamp   = null,
-                                  DateTime?             Timeout     = null);
+        void AddStaticRouting    (NetworkingNode_Id               DestinationId,
+                                  IOCPPWebSocketClient            WebSocketClient,
+                                  Byte?                           Priority    = 0,
+                                  DateTime?                       Timestamp   = null,
+                                  DateTime?                       Timeout     = null);
 
-        void AddStaticRouting    (NetworkingNode_Id     DestinationId,
-                                  IOCPPWebSocketServer  WebSocketServer,
-                                  Byte?                 Priority    = 0,
-                                  DateTime?             Timestamp   = null,
-                                  DateTime?             Timeout     = null);
+        void AddStaticRouting    (IEnumerable<NetworkingNode_Id>  DestinationIds,
+                                  IOCPPWebSocketClient            WebSocketClient,
+                                  Byte?                           Priority    = 0,
+                                  DateTime?                       Timestamp   = null,
+                                  DateTime?                       Timeout     = null);
 
-        void AddStaticRouting    (NetworkingNode_Id     DestinationId,
-                                  NetworkingNode_Id     NetworkingHubId,
-                                  Byte?                 Priority    = 0,
-                                  DateTime?             Timestamp   = null,
-                                  DateTime?             Timeout     = null);
+        void AddStaticRouting    (NetworkingNode_Id               DestinationId,
+                                  IOCPPWebSocketServer            WebSocketServer,
+                                  Byte?                           Priority    = 0,
+                                  DateTime?                       Timestamp   = null,
+                                  DateTime?                       Timeout     = null);
 
-        void RemoveStaticRouting (NetworkingNode_Id     DestinationId,
-                                  NetworkingNode_Id?    NetworkingHubId   = null,
-                                  Byte?                 Priority          = 0);
+        void AddStaticRouting    (IEnumerable<NetworkingNode_Id>  DestinationIds,
+                                  IOCPPWebSocketServer            WebSocketServer,
+                                  Byte?                           Priority    = 0,
+                                  DateTime?                       Timestamp   = null,
+                                  DateTime?                       Timeout     = null);
+
+        void AddStaticRouting    (NetworkingNode_Id               DestinationId,
+                                  NetworkingNode_Id               NetworkingHubId,
+                                  Byte?                           Priority    = 0,
+                                  DateTime?                       Timestamp   = null,
+                                  DateTime?                       Timeout     = null);
+
+        void AddStaticRouting    (IEnumerable<NetworkingNode_Id>  DestinationIds,
+                                  NetworkingNode_Id               NetworkingHubId,
+                                  Byte?                           Priority    = 0,
+                                  DateTime?                       Timestamp   = null,
+                                  DateTime?                       Timeout     = null);
+
+        void RemoveStaticRouting (NetworkingNode_Id               DestinationId,
+                                  NetworkingNode_Id?              NetworkingHubId   = null,
+                                  Byte?                           Priority          = 0);
 
 
     }

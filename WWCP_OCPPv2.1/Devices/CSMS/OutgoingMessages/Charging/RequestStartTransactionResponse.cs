@@ -308,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatory("status",
                                          "request start stop status",
-                                         RequestStartStopStatusExtensions.TryParse,
+                                         RequestStartStopStatus.TryParse,
                                          out RequestStartStopStatus Status,
                                          out ErrorResponse))
                 {
@@ -421,7 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",          Status.       AsText()),
+                                 new JProperty("status",          Status.       ToString()),
 
                            TransactionId.HasValue
                                ? new JProperty("transactionId",   TransactionId.Value.Value)
@@ -649,7 +649,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => Status.AsText();
+            => Status.ToString();
 
         #endregion
 

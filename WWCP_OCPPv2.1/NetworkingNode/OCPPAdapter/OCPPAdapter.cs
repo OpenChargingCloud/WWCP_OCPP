@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -825,8 +826,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONRequestMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(JSONRequestMessage.DestinationId, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
@@ -968,8 +968,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONResponseMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(JSONResponseMessage.DestinationId, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -993,8 +992,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONRequestErrorMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(JSONRequestErrorMessage.DestinationId, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1023,8 +1021,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONResponseErrorMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(JSONResponseErrorMessage.DestinationId, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1053,8 +1050,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONSendMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(JSONSendMessage.DestinationId, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
@@ -1084,8 +1080,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinaryRequestMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(BinaryRequestMessage.DestinationId, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
@@ -1226,8 +1221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinaryResponseMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(BinaryResponseMessage.DestinationId, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1251,8 +1245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinaryRequestErrorMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(BinaryRequestErrorMessage.DestinationId, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1281,8 +1274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinaryResponseErrorMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(BinaryResponseErrorMessage.DestinationId, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1311,8 +1303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sendMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinarySendMessage.DestinationId, out var reachability) &&
-                reachability is not null)
+            if (LookupNetworkingNode(BinarySendMessage.DestinationId, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
@@ -1497,7 +1488,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region LookupNetworkingNode (DestinationId, out Reachability)
 
-        public Boolean LookupNetworkingNode(NetworkingNode_Id DestinationId, out Reachability? Reachability)
+        public Boolean LookupNetworkingNode(NetworkingNode_Id                      DestinationId,
+                                            [NotNullWhen(true)] out Reachability?  Reachability)
         {
 
             if (reachableNetworkingNodes.TryGetValue(DestinationId, out var reachabilityList) &&
@@ -1550,7 +1542,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region AddStaticRouting     (DestinationId, WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
+
+        #region AddStaticRouting     (DestinationId,  WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
 
         public void AddStaticRouting(NetworkingNode_Id     DestinationId,
                                      IOCPPWebSocketClient  WebSocketClient,
@@ -1597,7 +1590,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region AddStaticRouting     (DestinationId, WebSocketServer,        Priority = 0, Timestamp = null, Timeout = null)
+        #region AddStaticRouting     (DestinationIds, WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
+
+        public void AddStaticRouting(IEnumerable<NetworkingNode_Id>  DestinationIds,
+                                     IOCPPWebSocketClient            WebSocketClient,
+                                     Byte?                           Priority    = 0,
+                                     DateTime?                       Timestamp   = null,
+                                     DateTime?                       Timeout     = null)
+        {
+
+            foreach (var destinationId in DestinationIds)
+                AddStaticRouting(
+                    destinationId,
+                    WebSocketClient,
+                    Priority,
+                    Timestamp,
+                    Timeout
+                );
+
+        }
+
+        #endregion
+
+
+        #region AddStaticRouting     (DestinationId,  WebSocketServer,        Priority = 0, Timestamp = null, Timeout = null)
 
         public void AddStaticRouting(NetworkingNode_Id     DestinationId,
                                      IOCPPWebSocketServer  WebSocketServer,
@@ -1644,7 +1660,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region AddStaticRouting     (DestinationId, NetworkingHubId,        Priority = 0, Timestamp = null, Timeout = null)
+        #region AddStaticRouting     (DestinationIds, WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
+
+        public void AddStaticRouting(IEnumerable<NetworkingNode_Id>  DestinationIds,
+                                     IOCPPWebSocketServer            WebSocketServer,
+                                     Byte?                           Priority    = 0,
+                                     DateTime?                       Timestamp   = null,
+                                     DateTime?                       Timeout     = null)
+        {
+
+            foreach (var destinationId in DestinationIds)
+                AddStaticRouting(
+                    destinationId,
+                    WebSocketServer,
+                    Priority,
+                    Timestamp,
+                    Timeout
+                );
+
+        }
+
+        #endregion
+
+
+        #region AddStaticRouting     (DestinationId,  NetworkingHubId,        Priority = 0, Timestamp = null, Timeout = null)
 
         public void AddStaticRouting(NetworkingNode_Id  DestinationId,
                                      NetworkingNode_Id  NetworkingHubId,
@@ -1691,7 +1730,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region RemoveStaticRouting  (DestinationId, NetworkingHubId = null, Priority = 0)
+        #region AddStaticRouting     (DestinationIds, NetworkingHubId,        Priority = 0, Timestamp = null, Timeout = null)
+
+        public void AddStaticRouting(IEnumerable<NetworkingNode_Id>  DestinationIds,
+                                     NetworkingNode_Id               NetworkingHubId,
+                                     Byte?                           Priority    = 0,
+                                     DateTime?                       Timestamp   = null,
+                                     DateTime?                       Timeout     = null)
+        {
+
+            foreach (var destinationId in DestinationIds)
+                AddStaticRouting(
+                    destinationId,
+                    NetworkingHubId,
+                    Priority,
+                    Timestamp,
+                    Timeout
+                );
+
+        }
+
+        #endregion
+
+
+        #region RemoveStaticRouting  (DestinationId,  NetworkingHubId = null, Priority = 0)
 
         public void RemoveStaticRouting(NetworkingNode_Id   DestinationId,
                                         NetworkingNode_Id?  NetworkingHubId   = null,

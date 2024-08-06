@@ -91,13 +91,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Initial checks
 
-            //if (ChargingLocation.IsNull())
-            //    return RemoteStartResult.UnknownLocation(System_Id.Local);
+            if (ChargingLocation.IsNull())
+                return RemoteStartResult.UnknownLocation(System_Id.Local);
 
-            //var eMAId = RemoteAuthentication?.RemoteIdentification?.ToString();
+            var eMAId = RemoteAuthentication?.RemoteIdentification?.ToString();
 
-            //if (eMAId.IsNullOrEmpty())
-            //    return RemoteStartResult.InvalidCredentials(System_Id.Local);
+            if (eMAId.IsNullOrEmpty())
+                return RemoteStartResult.InvalidCredentials(System_Id.Local);
 
             #endregion
 
