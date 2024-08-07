@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation2.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest) => {
+                chargingStation2.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };

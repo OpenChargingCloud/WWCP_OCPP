@@ -723,20 +723,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     IEnumerable<ChargingStationEVSE>?  EVSEs                       = null,
                                     IEnergyMeter?                      UplinkEnergyMeter           = null,
 
-                                    CustomData?                        CustomData                  = null,
+                                    TimeSpan?                          DefaultRequestTimeout       = null,
 
                                     SignaturePolicy?                   SignaturePolicy             = null,
                                     SignaturePolicy?                   ForwardingSignaturePolicy   = null,
 
                                     Boolean                            DisableSendHeartbeats       = false,
                                     TimeSpan?                          SendHeartbeatsEvery         = null,
-                                    TimeSpan?                          DefaultRequestTimeout       = null,
-
-                                    IPPort?                            HTTPUploadPort              = null,
-                                    IPPort?                            HTTPDownloadPort            = null,
 
                                     Boolean                            DisableMaintenanceTasks     = false,
                                     TimeSpan?                          MaintenanceEvery            = null,
+
+                                    CustomData?                        CustomData                  = null,
                                     DNSClient?                         DNSClient                   = null)
 
             : base(Id,

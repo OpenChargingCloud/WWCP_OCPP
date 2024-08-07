@@ -32,6 +32,57 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Delegates
+
+    /// <summary>
+    /// An Authorize request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the authorize request.</param>
+    /// <param name="Sender">The sender of the authorize request.</param>
+    /// <param name="Request">The authorize request.</param>
+    public delegate Task
+
+        OnAuthorizeRequestReceivedDelegate(DateTime               Timestamp,
+                                           IEventSender           Sender,
+                                           IWebSocketConnection   Connection,
+                                           AuthorizeRequest       Request);
+
+
+    /// <summary>
+    /// Authorize the given identification token.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the authorize request.</param>
+    /// <param name="Sender">The sender of the authorize request.</param>
+    /// <param name="Request">The authorize request.</param>
+    /// <param name="CancellationToken">A token to cancel this authorize request.</param>
+    public delegate Task<AuthorizeResponse>
+
+        OnAuthorizeDelegate(DateTime               Timestamp,
+                            IEventSender           Sender,
+                            IWebSocketConnection   Connection,
+                            AuthorizeRequest       Request,
+                            CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// An Authorize response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the authorize response.</param>
+    /// <param name="Sender">The sender of the authorize response.</param>
+    /// <param name="Request">The authorize request.</param>
+    /// <param name="Response">The authorize response.</param>
+    /// <param name="Runtime">The runtime of the authorize response.</param>
+    public delegate Task
+
+        OnAuthorizeResponseSentDelegate(DateTime               Timestamp,
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        AuthorizeRequest       Request,
+                                        AuthorizeResponse      Response,
+                                        TimeSpan               Runtime);
+
+    #endregion
+
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 

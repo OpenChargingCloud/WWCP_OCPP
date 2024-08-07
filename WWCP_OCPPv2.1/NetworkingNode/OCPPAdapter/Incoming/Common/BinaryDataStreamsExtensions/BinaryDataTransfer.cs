@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Wired via reflection!
 
-        #region Receive BinaryDataTransferRequest
+        #region Receive BinaryDataTransfer request
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
@@ -343,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Receive BinaryDataTransferResponse
+        #region Receive BinaryDataTransfer response
 
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer response was received.
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Receive BinaryDataTransferRequestError
+        #region Receive BinaryDataTransfer RequestError
 
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request error was received.
@@ -520,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Receive BinaryDataTransferResponseError
+        #region Receive BinaryDataTransfer ResponseError
 
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer response error was received.

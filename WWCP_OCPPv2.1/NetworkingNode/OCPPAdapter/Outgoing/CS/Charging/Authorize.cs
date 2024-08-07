@@ -35,6 +35,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Delegates
 
     /// <summary>
+    /// A delegate called whenever an Authorize request was sent.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    public delegate Task OnAuthorizeRequestSentDelegate(DateTime               Timestamp,
+                                                        IEventSender           Sender,
+                                                        IWebSocketConnection   Connection,
+                                                        AuthorizeRequest       Request,
+                                                        SentMessageResults     SendMessageResult);
+
+    /// <summary>
+    /// A delegate called whenever a response to an Authorize request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Connection">The connection of the request/response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request/response.</param>
+    public delegate Task OnAuthorizeResponseReceivedDelegate(DateTime               Timestamp,
+                                                             IEventSender           Sender,
+                                                             IWebSocketConnection   Connection,
+                                                             AuthorizeRequest       Request,
+                                                             AuthorizeResponse      Response,
+                                                             TimeSpan               Runtime);
+
+
+    /// <summary>
     /// A delegate called whenever a RequestError to a Authorize request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
@@ -51,7 +82,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                  TimeSpan                       Runtime);
 
     #endregion
-
 
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {

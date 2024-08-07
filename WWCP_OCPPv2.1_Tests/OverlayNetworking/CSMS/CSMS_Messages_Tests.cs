@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                chargingStation1.OCPP.IN.     OnResetRequestReceived += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.OCPP.IN.     OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
                     csResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };

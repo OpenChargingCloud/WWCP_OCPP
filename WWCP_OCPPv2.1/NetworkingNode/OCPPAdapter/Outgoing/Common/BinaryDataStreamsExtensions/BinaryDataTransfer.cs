@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
-        #region Send BinaryDataTransfer (request)
+        #region Send BinaryDataTransfer request
 
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent.

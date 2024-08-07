@@ -43,12 +43,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    IChargingStationNode
     {
 
+        #region Data
+
         private readonly ConcurrentDictionary<DisplayMessage_Id,     MessageInfo>     displayMessages   = new ();
         private readonly ConcurrentDictionary<Reservation_Id,        Reservation_Id>  reservations      = new ();
         private readonly ConcurrentDictionary<Transaction_Id,        Transaction>     transactions      = new ();
         private readonly ConcurrentDictionary<Transaction_Id,        Decimal>         totalCosts        = new ();
         private readonly ConcurrentDictionary<InstallCertificateUse, Certificate>     certificates      = new ();
 
+        #endregion
 
         #region Constructor(s)
 
@@ -67,23 +70,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        IEnumerable<ChargingStationEVSE>?  EVSEs                       = null,
                                        IEnergyMeter?                      UplinkEnergyMeter           = null,
 
-                                       CustomData?                        CustomData                  = null,
-
-                                       Boolean                            DisableSendHeartbeats       = false,
-                                       TimeSpan?                          SendHeartbeatsEvery         = null,
                                        TimeSpan?                          DefaultRequestTimeout       = null,
-
-                                       IPPort?                            HTTPUploadPort              = null,
-                                       IPPort?                            HTTPDownloadPort            = null,
 
                                        SignaturePolicy?                   SignaturePolicy             = null,
                                        SignaturePolicy?                   ForwardingSignaturePolicy   = null,
 
+                                       Boolean                            DisableSendHeartbeats       = false,
+                                       TimeSpan?                          SendHeartbeatsEvery         = null,
+
                                        Boolean                            DisableMaintenanceTasks     = false,
                                        TimeSpan?                          MaintenanceEvery            = null,
 
-                                       IHTTPAuthentication?               HTTPAuthentication          = null,
-
+                                       CustomData?                        CustomData                  = null,
                                        DNSClient?                         DNSClient                   = null)
 
             : base(Id,
@@ -95,23 +93,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Modem,
 
                    EVSEs,
-
                    UplinkEnergyMeter,
 
-                   CustomData,
+                   DefaultRequestTimeout,
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
-                   DefaultRequestTimeout,
-
-                   HTTPUploadPort,
-                   HTTPDownloadPort,
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
+
+                   CustomData,
                    DNSClient)
 
         {

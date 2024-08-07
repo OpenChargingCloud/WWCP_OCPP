@@ -5098,7 +5098,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnResetRequestReceived += (timestamp,
                                                               sender,
                                                               connection,
-                                                              request) =>
+                                                              request,
+                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnResetRequestReceived),
                                      new JObject(
@@ -5113,29 +5114,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                            sender,
                                                            connection,
                                                            request,
-                                                                sendMessageResult) =>
+                                                           sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnResetRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnResetResponseReceived += (timestamp,
                                                                sender,
-                                                               //connection,
+                                                               connection,
                                                                request,
                                                                response,
-                                                               runtime) =>
+                                                               runtime,
+                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnResetResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)

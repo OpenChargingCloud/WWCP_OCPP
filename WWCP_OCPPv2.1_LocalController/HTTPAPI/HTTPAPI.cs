@@ -5095,9 +5095,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnReset
 
             LocalController.OCPP.IN.OnResetRequestReceived += (timestamp,
-                                                              sender,
-                                                              connection,
-                                                              request) =>
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnResetRequestReceived),
                                      new JObject(
@@ -5109,32 +5110,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnResetRequestSent += (timestamp,
-                                                           sender,
-                                                           connection,
-                                                           request,
-                                                                sendMessageResult) =>
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            sendMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnResetRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnResetResponseReceived += (timestamp,
-                                                               sender,
-                                                               //connection,
-                                                               request,
-                                                               response,
-                                                               runtime) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                response,
+                                                                runtime,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnResetResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5142,11 +5144,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnResetResponseSent += (timestamp,
-                                                            sender,
-                                                            connection,
-                                                            request,
-                                                            response,
-                                                            runtime) =>
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnResetResponseSent),
                                      new JObject(

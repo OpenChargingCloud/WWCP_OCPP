@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                chargingStation.OCPP.IN.     OnResetRequestReceived     += (timestamp, sender, connection, resetRequest) => {
+                chargingStation.OCPP.IN.     OnResetRequestReceived     += (timestamp, sender, connection, resetRequest, ct) => {
                     csResetRequests.           TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.IN.     OnResetResponseReceived    += (timestamp, sender, resetRequest, resetResponse, runtime) => {
+                CSMS.           OCPP.IN.     OnResetResponseReceived    += (timestamp, sender, connection, resetRequest, resetResponse, runtime, ct) => {
                     csmsResetResponsesReceived.TryAdd(resetResponse);
                     return Task.CompletedTask;
                 };

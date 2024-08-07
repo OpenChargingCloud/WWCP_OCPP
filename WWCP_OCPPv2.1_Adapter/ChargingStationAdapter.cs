@@ -377,14 +377,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      CustomData:                         new CustomData(
                                                                              VendorId:     Vendor_Id.GraphDefined,
                                                                              CustomData:   JSONObject.Create(
+
                                                                                                ProviderId.HasValue
-                                                                                                   ? new JProperty("providerId", ProviderId.ToString())
+                                                                                                   ? new JProperty("providerId",              ProviderId.        ToString())
+                                                                                                   : null,
+
+                                                                                               AdditionalSessionInfos is not null
+                                                                                                   ? new JProperty("additionalSessionInfos",  AdditionalSessionInfos)
+                                                                                                   : null,
+
+                                                                                               AuthenticationPath.HasValue
+                                                                                                   ? new JProperty("authenticationPath",      AuthenticationPath.ToString())
                                                                                                    : null
+
                                                                                            )
                                                                          ),
 
                                      RequestId:                          null,
-                                     RequestTimestamp:                   null,
+                                     RequestTimestamp:                   RequestTimestamp,
                                      RequestTimeout:                     null,
                                      EventTrackingId:                    EventTrackingId,
                                      CancellationToken:                  CancellationToken
@@ -400,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     => RemoteStartResult.Success(
                            Session:   new ChargingSession(
-                                          Id:                        ChargingSession_Id.NewRandom(),
+                                          Id:                        SessionId ?? ChargingSession_Id.NewRandom(),
                                           EventTrackingId:           EventTracking_Id.New,
                                           RoamingNetwork:            RoamingNetwork,
                                           CSORoamingProviderStart:   null,
