@@ -541,7 +541,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The DataTransfer failed.
         /// </summary>
         /// <param name="Request">The DataTransfer request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static DataTransferResponse FormationViolation(DataTransferRequest  Request,
+                                                              String               ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The DataTransfer failed.
+        /// </summary>
+        /// <param name="Request">The DataTransfer request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static DataTransferResponse SignatureError(DataTransferRequest  Request,
                                                           String               ErrorDescription)
 
@@ -555,7 +569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The DataTransfer failed.
         /// </summary>
         /// <param name="Request">The DataTransfer request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static DataTransferResponse Failed(DataTransferRequest  Request,
                                                   String?              Description   = null)
 

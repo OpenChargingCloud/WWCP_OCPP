@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The OCPP adapter for sending messages.
     /// </summary>
-    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    public partial class OCPPWebSocketAdapterOUT
     {
 
         #region Custom binary serializer delegates
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
                         response = new SecureDataTransferResponse(
                                            Request,
-                                           Result.Format(errorResponse)
+                                           Result.FormationViolation(errorResponse)
                                        );
                     }
 
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The OCPP adapter for receiving messages.
     /// </summary>
-    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    public partial class OCPPWebSocketAdapterIN
     {
 
         /// <summary>

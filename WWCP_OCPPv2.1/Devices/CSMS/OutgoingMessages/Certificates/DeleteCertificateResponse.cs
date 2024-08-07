@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The DeleteCertificate failed.
         /// </summary>
         /// <param name="Request">The DeleteCertificate request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static DeleteCertificateResponse SignatureError(CSMS.DeleteCertificateRequest  Request,
                                                                String                         ErrorDescription)
 
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The DeleteCertificate failed.
         /// </summary>
         /// <param name="Request">The DeleteCertificate request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static DeleteCertificateResponse Failed(CSMS.DeleteCertificateRequest  Request,
                                                        String?                        Description   = null)
 

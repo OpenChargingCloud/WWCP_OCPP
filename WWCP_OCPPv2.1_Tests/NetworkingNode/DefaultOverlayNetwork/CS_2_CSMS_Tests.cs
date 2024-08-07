@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesSent           = new ConcurrentList<Tuple<OCPP_JSONResponseMessage, SentMessageResults>>();
                 var csBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
 
-                chargingStation.OCPP.OUT.    OnBootNotificationRequestSent      += (timestamp, sender, connection, bootNotificationRequest, sendMessageResult) => {
+                chargingStation.OCPP.OUT.    OnBootNotificationRequestSent      += (timestamp, sender, connection, bootNotificationRequest, sentMessageResult, ct) => {
                     csBootNotificationRequestsSent.     TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.IN.     OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
+                CSMS.           OCPP.IN.     OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest, ct) => {
                     csmsBootNotificationRequests.       TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                chargingStation.OCPP.IN.     OnBootNotificationResponseReceived += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
+                chargingStation.OCPP.IN.     OnBootNotificationResponseReceived += (timestamp, sender, connection, bootNotificationRequest, bootNotificationResponse, runtime, ct) => {
                     csBootNotificationResponsesReceived.   TryAdd(bootNotificationResponse);
                     return Task.CompletedTask;
                 };
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesSent       = new ConcurrentList<Tuple<OCPP_JSONResponseMessage, SentMessageResults>>();
                 var csDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
 
-                chargingStation.OCPP.OUT.    OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sendMessageResult) => {
+                chargingStation.OCPP.OUT.    OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sentMessageResult, ct) => {
                     csDataTransferRequestsSent.     TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesSent       = new ConcurrentList<Tuple<OCPP_JSONResponseMessage, SentMessageResults>>();
                 var csDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
 
-                chargingStation.OCPP.OUT.    OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sendMessageResult) => {
+                chargingStation.OCPP.OUT.    OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sentMessageResult, ct) => {
                     csDataTransferRequestsSent.     TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };

@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetBaseReport failed.
         /// </summary>
         /// <param name="Request">The GetBaseReport request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static GetBaseReportResponse SignatureError(CSMS.GetBaseReportRequest  Request,
                                                            String                     ErrorDescription)
 
@@ -479,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetBaseReport failed.
         /// </summary>
         /// <param name="Request">The GetBaseReport request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static GetBaseReportResponse Failed(CSMS.GetBaseReportRequest  Request,
                                                    String?                    Description   = null)
 

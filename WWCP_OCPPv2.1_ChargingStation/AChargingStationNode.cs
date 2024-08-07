@@ -880,7 +880,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
 
-            OCPP.IN.OnBootNotificationResponseReceived += (timestamp, sender, request, response, runtime) => {
+            OCPP.IN.OnBootNotificationResponseReceived += (timestamp, sender, connection, request, response, runtime, ct) => {
 
                 switch (response.Status)
                 {

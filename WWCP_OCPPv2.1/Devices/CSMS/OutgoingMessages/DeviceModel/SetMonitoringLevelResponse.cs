@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetMonitoringLevel failed.
         /// </summary>
         /// <param name="Request">The SetMonitoringLevel request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SetMonitoringLevelResponse SignatureError(CSMS.SetMonitoringLevelRequest  Request,
                                                                 String                          ErrorDescription)
 
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetMonitoringLevel failed.
         /// </summary>
         /// <param name="Request">The SetMonitoringLevel request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static SetMonitoringLevelResponse Failed(CSMS.SetMonitoringLevelRequest  Request,
                                                         String?                         Description   = null)
 

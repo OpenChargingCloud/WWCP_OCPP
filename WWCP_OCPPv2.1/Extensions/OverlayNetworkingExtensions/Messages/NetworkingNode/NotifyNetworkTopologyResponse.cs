@@ -371,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The NotifyNetworkTopology failed.
         /// </summary>
         /// <param name="Request">The NotifyNetworkTopology request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static NotifyNetworkTopologyResponse SignatureError(NotifyNetworkTopologyRequest  Request,
                                                                    String                        ErrorDescription)
 
@@ -385,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The NotifyNetworkTopology failed.
         /// </summary>
         /// <param name="Request">The NotifyNetworkTopology request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static NotifyNetworkTopologyResponse Failed(NotifyNetworkTopologyRequest  Request,
                                                            String?                       Description   = null)
 

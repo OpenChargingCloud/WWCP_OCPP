@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetMonitoringReport failed.
         /// </summary>
         /// <param name="Request">The GetMonitoringReport request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static GetMonitoringReportResponse SignatureError(CSMS.GetMonitoringReportRequest  Request,
                                                                  String                           ErrorDescription)
 
@@ -479,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetMonitoringReport failed.
         /// </summary>
         /// <param name="Request">The GetMonitoringReport request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static GetMonitoringReportResponse Failed(CSMS.GetMonitoringReportRequest  Request,
                                                          String?                          Description   = null)
 

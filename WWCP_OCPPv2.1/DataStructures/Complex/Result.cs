@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Unknown or unreachable networking node.
         /// </summary>
-        /// <param name="DestinationId">Th eunique identification of the unknown or unreachable networking node.</param>
+        /// <param name="DestinationId">The unique identification of the unknown or unreachable networking node.</param>
         public static Result UnknownOrUnreachable(NetworkingNode_Id DestinationId)
 
             => new (ResultCode.NetworkError,
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Data has technical errors.
         /// </summary>
         /// <param name="Description">A human-readable error description.</param>
-        public static Result Format(String? Description = null)
+        public static Result FormationViolation(String? Description = null)
 
             => new (ResultCode.FormationViolation,
                     Description);

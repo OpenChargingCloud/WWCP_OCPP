@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var bootNotificationRequests= new ConcurrentList<BootNotificationRequest>();
 
-                testCSMS01.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection,  bootNotificationRequest) => {
+                testCSMS01.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection,  bootNotificationRequest, ct) => {
                     bootNotificationRequests.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -1082,7 +1082,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var authorizeRequests= new ConcurrentList<CS.AuthorizeRequest>();
 
-                testCSMS01.OCPP.IN.OnAuthorizeRequestReceived += (timestamp, sender, connection, authorizeRequest) => {
+                testCSMS01.OCPP.IN.OnAuthorizeRequestReceived += (timestamp, sender, connection, authorizeRequest, ct) => {
                     authorizeRequests.TryAdd(authorizeRequest);
                     return Task.CompletedTask;
                 };

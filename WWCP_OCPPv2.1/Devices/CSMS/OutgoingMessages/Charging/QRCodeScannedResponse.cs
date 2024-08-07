@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The QRCodeScanned failed.
         /// </summary>
         /// <param name="Request">The QRCodeScanned request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static QRCodeScannedResponse SignatureError(CSMS.QRCodeScannedRequest  Request,
                                                            String                     ErrorDescription)
 
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The QRCodeScanned failed.
         /// </summary>
         /// <param name="Request">The QRCodeScanned request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static QRCodeScannedResponse Failed(CSMS.QRCodeScannedRequest  Request,
                                                    String?                    Description   = null)
 

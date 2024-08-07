@@ -599,7 +599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetVariables failed.
         /// </summary>
         /// <param name="Request">The GetVariables request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static GetVariablesResponse SignatureError(CSMS.GetVariablesRequest  Request,
                                                           String                    ErrorDescription)
 
@@ -613,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetVariables failed.
         /// </summary>
         /// <param name="Request">The GetVariables request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static GetVariablesResponse Failed(CSMS.GetVariablesRequest  Request,
                                                   String?                   Description   = null)
 

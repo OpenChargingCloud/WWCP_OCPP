@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SendLocalList failed.
         /// </summary>
         /// <param name="Request">The SendLocalList request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SendLocalListResponse SignatureError(CSMS.SendLocalListRequest  Request,
                                                            String                     ErrorDescription)
 
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SendLocalList failed.
         /// </summary>
         /// <param name="Request">The SendLocalList request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static SendLocalListResponse Failed(CSMS.SendLocalListRequest  Request,
                                                    String?                    Description   = null)
 

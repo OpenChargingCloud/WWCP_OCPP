@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ClearCache failed.
         /// </summary>
         /// <param name="Request">The ClearCache request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static ClearCacheResponse SignatureError(CSMS.ClearCacheRequest  Request,
                                                         String                  ErrorDescription)
 
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ClearCache failed.
         /// </summary>
         /// <param name="Request">The ClearCache request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static ClearCacheResponse Failed(CSMS.ClearCacheRequest  Request,
                                                 String?                 Description   = null)
 

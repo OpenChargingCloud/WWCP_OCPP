@@ -17,15 +17,13 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -42,11 +40,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnResetRequestSentDelegate(DateTime               Timestamp,
                                                     IEventSender           Sender,
                                                     IWebSocketConnection   Connection,
                                                     ResetRequest           Request,
-                                                    SentMessageResults     SendMessageResult);
+                                                    SentMessageResults     SendMessageResult,
+                                                    CancellationToken      CancellationToken = default);
 
 
     /// <summary>
@@ -58,6 +58,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The reserve now request.</param>
     /// <param name="Response">The reserve now response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
         OnResetResponseSentDelegate(DateTime               Timestamp,
@@ -65,7 +67,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                     IWebSocketConnection   Connection,
                                     ResetRequest           Request,
                                     ResetResponse          Response,
-                                    TimeSpan               Runtime);
+                                    TimeSpan               Runtime,
+                                    SentMessageResults     SendMessageResult,
+                                    CancellationToken      CancellationToken = default);
 
 
     /// <summary>
@@ -76,7 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request error.</param>
     /// <param name="Request">The optional request (when parsable).</param>
     /// <param name="RequestErrorMessage">The request error message.</param>
-    /// <param name="Runtime">The optional runtime of the request error messag.</param>
+    /// <param name="Runtime">The optional runtime of the request error message.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
         OnResetRequestErrorSentDelegate(DateTime                       Timestamp,
@@ -84,7 +90,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                         IWebSocketConnection           Connection,
                                         ResetRequest?                  Request,
                                         OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                        TimeSpan?                      Runtime);
+                                        TimeSpan?                      Runtime,
+                                        SentMessageResults             SendMessageResult,
+                                        CancellationToken              CancellationToken = default);
 
 
     /// <summary>
@@ -97,6 +105,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The optional response.</param>
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response error message.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
         OnResetResponseErrorSentDelegate(DateTime                        Timestamp,
@@ -105,18 +115,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          ResetRequest?                   Request,
                                          ResetResponse?                  Response,
                                          OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                         TimeSpan?                       Runtime);
+                                         TimeSpan?                       Runtime,
+                                         SentMessageResults              SendMessageResult,
+                                         CancellationToken               CancellationToken = default);
 
     #endregion
 
 
-    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    public partial class OCPPWebSocketAdapterOUT
     {
 
         #region Send Reset request
 
         /// <summary>
-        /// An event fired whenever a Reset request will be sent.
+        /// An event fired whenever a Reset request was sent.
         /// </summary>
         public event OnResetRequestSentDelegate?  OnResetRequestSent;
 
@@ -131,39 +143,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            #region Send OnResetRequestSent event
-
-            var logger = OnResetRequestSent;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(logger.GetInvocationList().
-                                            OfType<OnResetRequestSentDelegate>().
-                                            Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                          Timestamp.Now,
-                                                                          parentNetworkingNode,
-                                                                          null,
-                                                                          Request,
-                                                                          SentMessageResults.Success
-                                                                      )).
-                                            ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnResetRequestSent));
-                }
-            }
-
-            #endregion
-
-
             ResetResponse? response = null;
 
             try
             {
+
+                #region Sign request message
 
                 if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
                         Request,
@@ -175,16 +160,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         out var signingErrors
                     ))
                 {
-                    response = new ResetResponse(
+
+                    response = ResetResponse.SignatureError(
                                    Request,
-                                   Result.SignatureError(signingErrors)
+                                   signingErrors
                                );
+
                 }
+
+                #endregion
 
                 else
                 {
 
+                    #region Send request message
+
                     var sendRequestState = await SendJSONRequestAndWait(
+
                                                      OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
                                                          Request.ToJSON(
@@ -192,25 +184,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                          )
+                                                     ),
+
+                                                     sendMessageResult => LogEvent(
+                                                         OnResetRequestSent,
+                                                         loggingDelegate => loggingDelegate.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             sendMessageResult.Connection,
+                                                             Request,
+                                                             sendMessageResult.Result
+                                                         )
                                                      )
+
                                                  );
 
+                    #endregion
+
                     if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
-                    {
+                        response = await parentNetworkingNode.OCPP.IN.Receive_ResetResponse(
+                                             Request,
+                                             jsonResponse,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.         EventTrackingId,
+                                             Request.         RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.         CancellationToken
+                                         );
 
-                        response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_ResetResponse(
-                                                                                Request,
-                                                                                jsonResponse,
-                                                                                null,
-                                                                                sendRequestState.DestinationIdReceived,
-                                                                                sendRequestState.NetworkPathReceived,
-                                                                                Request.         EventTrackingId,
-                                                                                Request.         RequestId,
-                                                                                sendRequestState.ResponseTimestamp,
-                                                                                Request.         CancellationToken
-                                                                            );
-
-                    }
+                    if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_ResetRequestError(
+                                             Request,
+                                             jsonRequestError,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.CancellationToken
+                                         );
 
                     response ??= new ResetResponse(
                                      Request,
@@ -223,9 +238,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = new ResetResponse(
+                response = ResetResponse.ExceptionOccured(
                                Request,
-                               Result.FromException(e)
+                               e
                            );
 
             }
@@ -236,50 +251,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
         #region Send OnResetResponseSent event
 
         /// <summary>
-        /// An event sent whenever a response to a Reset was sent.
+        /// An event sent whenever a Reset response was sent.
         /// </summary>
         public event OnResetResponseSentDelegate?  OnResetResponseSent;
 
-        public async Task SendOnResetResponseSent(DateTime              Timestamp,
-                                                  IEventSender          Sender,
-                                                  IWebSocketConnection  Connection,
-                                                  ResetRequest          Request,
-                                                  ResetResponse         Response,
-                                                  TimeSpan              Runtime)
-        {
+        public Task SendOnResetResponseSent(DateTime              Timestamp,
+                                            IEventSender          Sender,
+                                            IWebSocketConnection  Connection,
+                                            ResetRequest          Request,
+                                            ResetResponse         Response,
+                                            TimeSpan              Runtime,
+                                            SentMessageResults    SendMessageResult,
+                                            CancellationToken     CancellationToken = default)
 
-            var logger = OnResetResponseSent;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(logger.GetInvocationList().
-                                              OfType<OnResetResponseSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
-                                                                                             Sender,
-                                                                                             Connection,
-                                                                                             Request,
-                                                                                             Response,
-                                                                                             Runtime)).
-                                              ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(OCPPWebSocketAdapterOUT),
-                              nameof(OnResetResponseSent),
-                              e
-                          );
-                }
-
-            }
-
-        }
+            => LogEvent(
+                   OnResetResponseSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
 
         #endregion
 
@@ -296,7 +297,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 IWebSocketConnection          Connection,
                                                 ResetRequest?                 Request,
                                                 OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                TimeSpan                      Runtime)
+                                                TimeSpan                      Runtime,
+                                                SentMessageResults            SendMessageResult,
+                                                CancellationToken             CancellationToken = default)
+
             => LogEvent(
                    OnResetRequestErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
@@ -305,7 +309,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Connection,
                        Request,
                        RequestErrorMessage,
-                       Runtime
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
                    )
                );
 
@@ -325,7 +331,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  ResetRequest?                  Request,
                                                  ResetResponse?                 Response,
                                                  OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                 TimeSpan                       Runtime)
+                                                 TimeSpan                       Runtime,
+                                                 SentMessageResults             SendMessageResult,
+                                                 CancellationToken              CancellationToken = default)
+
             => LogEvent(
                    OnResetResponseErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
@@ -335,7 +344,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Request,
                        Response,
                        ResponseErrorMessage,
-                       Runtime
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
                    )
                );
 

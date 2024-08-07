@@ -472,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ClearVariableMonitoring failed.
         /// </summary>
         /// <param name="Request">The ClearVariableMonitoring request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static ClearVariableMonitoringResponse SignatureError(CSMS.ClearVariableMonitoringRequest  Request,
                                                                      String                               ErrorDescription)
 
@@ -486,7 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ClearVariableMonitoring failed.
         /// </summary>
         /// <param name="Request">The ClearVariableMonitoring request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static ClearVariableMonitoringResponse Failed(CSMS.ClearVariableMonitoringRequest  Request,
                                                              String?                              Description   = null)
 

@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 var nnBootNotificationRequestsOUT  = new ConcurrentList<BootNotificationRequest>();
                 var csmsBootNotificationRequests   = new ConcurrentList<BootNotificationRequest>();
 
-                chargingStation1.OCPP.OUT.    OnBootNotificationRequestSent     += (timestamp, sender, connection, bootNotificationRequest, sendMessageResult) => {
+                chargingStation1.OCPP.OUT.    OnBootNotificationRequestSent     += (timestamp, sender, connection, bootNotificationRequest, sentMessageResult, ct) => {
                     csBootNotificationRequests.   TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 //    return Task.CompletedTask;
                 //};
 
-                testCSMS01.      OCPP.IN.     OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest) => {
+                testCSMS01.      OCPP.IN.     OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest, ct) => {
                     csmsBootNotificationRequests. TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                 var nnBinaryDataTransferRequestsOUT         = new ConcurrentList<BinaryDataTransferRequest>();
                 var csmsIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                chargingStation1.OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, connection, binaryDataTransferRequest, sendMessageResult) => {
+                chargingStation1.OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
                     csBinaryDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };

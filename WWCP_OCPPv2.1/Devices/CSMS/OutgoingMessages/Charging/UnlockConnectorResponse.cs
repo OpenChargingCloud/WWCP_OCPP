@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The UnlockConnector failed.
         /// </summary>
         /// <param name="Request">The UnlockConnector request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static UnlockConnectorResponse SignatureError(CSMS.UnlockConnectorRequest  Request,
                                                              String                       ErrorDescription)
 
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The UnlockConnector failed.
         /// </summary>
         /// <param name="Request">The UnlockConnector request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static UnlockConnectorResponse Failed(CSMS.UnlockConnectorRequest  Request,
                                                      String?                      Description   = null)
 

@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetChargingProfile failed.
         /// </summary>
         /// <param name="Request">The SetChargingProfile request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SetChargingProfileResponse SignatureError(CSMS.SetChargingProfileRequest  Request,
                                                                 String                          ErrorDescription)
 
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetChargingProfile failed.
         /// </summary>
         /// <param name="Request">The SetChargingProfile request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static SetChargingProfileResponse Failed(CSMS.SetChargingProfileRequest  Request,
                                                         String?                         Description   = null)
 

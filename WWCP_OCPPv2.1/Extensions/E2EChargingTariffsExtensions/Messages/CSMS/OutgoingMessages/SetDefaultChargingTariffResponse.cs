@@ -479,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetDefaultChargingTariff failed.
         /// </summary>
         /// <param name="Request">The SetDefaultChargingTariff request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SetDefaultChargingTariffResponse SignatureError(CSMS.SetDefaultChargingTariffRequest  Request,
                                                                       String                                ErrorDescription)
 
@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetDefaultChargingTariff failed.
         /// </summary>
         /// <param name="Request">The SetDefaultChargingTariff request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static SetDefaultChargingTariffResponse Failed(CSMS.SetDefaultChargingTariffRequest  Request,
                                                               String?                               Description   = null)
 

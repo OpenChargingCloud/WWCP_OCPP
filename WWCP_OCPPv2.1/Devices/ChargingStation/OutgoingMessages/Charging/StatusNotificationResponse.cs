@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The StatusNotification failed.
         /// </summary>
         /// <param name="Request">The StatusNotification request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static StatusNotificationResponse SignatureError(CS.StatusNotificationRequest  Request,
                                                                 String                        ErrorDescription)
 
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The StatusNotification failed.
         /// </summary>
         /// <param name="Request">The StatusNotification request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static StatusNotificationResponse Failed(CS.StatusNotificationRequest  Request,
                                                         String?                       Description   = null)
 

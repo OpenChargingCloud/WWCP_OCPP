@@ -412,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The AddSignaturePolicy failed.
         /// </summary>
         /// <param name="Request">The AddSignaturePolicy request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static AddSignaturePolicyResponse SignatureError(AddSignaturePolicyRequest  Request,
                                                                 String                     ErrorDescription)
 
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The AddSignaturePolicy failed.
         /// </summary>
         /// <param name="Request">The AddSignaturePolicy request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static AddSignaturePolicyResponse Failed(AddSignaturePolicyRequest  Request,
                                                         String?                    Description   = null)
 

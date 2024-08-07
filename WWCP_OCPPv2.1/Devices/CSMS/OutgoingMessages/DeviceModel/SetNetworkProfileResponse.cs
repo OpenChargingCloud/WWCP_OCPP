@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetNetworkProfile failed.
         /// </summary>
         /// <param name="Request">The SetNetworkProfile request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SetNetworkProfileResponse SignatureError(CSMS.SetNetworkProfileRequest  Request,
                                                                String                         ErrorDescription)
 
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetNetworkProfile failed.
         /// </summary>
         /// <param name="Request">The SetNetworkProfile request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static SetNetworkProfileResponse Failed(CSMS.SetNetworkProfileRequest  Request,
                                                        String?                        Description   = null)
 

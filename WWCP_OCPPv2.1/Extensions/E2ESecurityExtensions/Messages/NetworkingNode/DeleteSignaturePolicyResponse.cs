@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The DeleteSignaturePolicy failed.
         /// </summary>
         /// <param name="Request">The DeleteSignaturePolicy request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static DeleteSignaturePolicyResponse SignatureError(DeleteSignaturePolicyRequest  Request,
                                                                    String                        ErrorDescription)
 
@@ -554,7 +554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The DeleteSignaturePolicy failed.
         /// </summary>
         /// <param name="Request">The DeleteSignaturePolicy request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static DeleteSignaturePolicyResponse Failed(DeleteSignaturePolicyRequest  Request,
                                                            String?                       Description   = null)
 

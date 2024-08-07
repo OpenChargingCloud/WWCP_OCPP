@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The ClearedChargingLimit failed.
         /// </summary>
         /// <param name="Request">The ClearedChargingLimit request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static ClearedChargingLimitResponse SignatureError(CS.ClearedChargingLimitRequest  Request,
                                                                   String                          ErrorDescription)
 
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The ClearedChargingLimit failed.
         /// </summary>
         /// <param name="Request">The ClearedChargingLimit request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static ClearedChargingLimitResponse Failed(CS.ClearedChargingLimitRequest  Request,
                                                           String?                         Description   = null)
 

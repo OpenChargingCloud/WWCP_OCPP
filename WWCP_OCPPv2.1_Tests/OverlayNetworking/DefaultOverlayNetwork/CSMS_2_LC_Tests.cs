@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 var nnJSONResponseMessagesSent         = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var csmsDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
 
-                CSMS.           OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sendMessageResult) => {
+                CSMS.           OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sentMessageResult, ct) => {
                     csmsDataTransferRequestsSent.   TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -199,12 +199,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnDataTransferResponseSent     += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime) => {
+                localController.OCPP.OUT.OnDataTransferResponseSent     += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime, sentMessageResult, ct) => {
                     nnDataTransferResponsesSent.    TryAdd(dataTransferResponse);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONResponseMessageSent      += (timestamp, sender, connection, jsonResponseMessage, sendMessageResult) => {
+                localController.OCPP.OUT.OnJSONResponseMessageSent      += (timestamp, sender, connection, jsonResponseMessage, sentMessageResult) => {
                     nnJSONResponseMessagesSent.     TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 var nnBinaryResponseMessagesSent             = new ConcurrentList<OCPP_BinaryResponseMessage>();
                 var csmsSecureDataTransferResponsesReceived  = new ConcurrentList<SecureDataTransferResponse>();
 
-                CSMS.           OCPP.OUT.OnSecureDataTransferRequestSent      += (timestamp, sender, connection, secureDataTransferRequest, sendMessageResult) => {
+                CSMS.           OCPP.OUT.OnSecureDataTransferRequestSent      += (timestamp, sender, connection, secureDataTransferRequest, sentMessageResult) => {
                     csmsSecureDataTransferRequestsSent.     TryAdd(secureDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnBinaryResponseMessageSent          += (timestamp, sender, connection, binaryResponseMessage, sendMessageResult) => {
+                localController.OCPP.OUT.OnBinaryResponseMessageSent          += (timestamp, sender, connection, binaryResponseMessage, sentMessageResult) => {
                     nnBinaryResponseMessagesSent.           TryAdd(binaryResponseMessage);
                     return Task.CompletedTask;
                 };

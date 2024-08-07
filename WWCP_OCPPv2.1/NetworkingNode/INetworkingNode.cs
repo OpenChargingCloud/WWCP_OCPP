@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         CustomData?                CustomData               { get; }
 
-        IOCPPAdapter               OCPP                     { get; }
+        OCPPAdapter                OCPP                     { get; }
 
         new NetworkingNode_Id      Id                       { get; }
 

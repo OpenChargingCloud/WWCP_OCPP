@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnResetRequestsOUT  = new ConcurrentList<ResetRequest>();
                 var csResetRequests     = new ConcurrentList<ResetRequest>();
 
-                testCSMS01.      OCPP.OUT.    OnResetRequestSent     += (timestamp, sender, connection, resetRequest, sendMessageResult) => {
+                testCSMS01.      OCPP.OUT.    OnResetRequestSent     += (timestamp, sender, connection, resetRequest, sentMessageResult, ct) => {
                     csmsResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnDataTransferRequestsOUT       = new ConcurrentList<DataTransferRequest>();
                 var csIncomingDataTransferRequests  = new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.OCPP.OUT.  OnDataTransferRequestSent             += (timestamp, sender, connection, binaryDataTransferRequest, sendMessageResult) => {
+                testCSMS01.OCPP.OUT.  OnDataTransferRequestSent             += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
                     csmsDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnBinaryDataTransferRequestsOUT       = new ConcurrentList<BinaryDataTransferRequest>();
                 var csIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                testCSMS01.      OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, connection, binaryDataTransferRequest, sendMessageResult) => {
+                testCSMS01.      OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
                     csmsBinaryDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };

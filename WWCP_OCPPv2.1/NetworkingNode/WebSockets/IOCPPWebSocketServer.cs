@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     public interface IOCPPWebSocketServer : IWebSocketServer
     {
 
-        IOCPPAdapter                                      OCPPAdapter              { get; }
+        OCPPAdapter                                       OCPPAdapter              { get; }
         IEnumerable<NetworkingNode_Id>                    NetworkingNodeIds        { get; }
         ConcurrentDictionary<NetworkingNode_Id, String?>  NetworkingNodeLogins     { get; }
         TimeSpan?                                         RequestTimeout           { get; set; }

@@ -584,7 +584,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The BootNotification failed.
         /// </summary>
         /// <param name="Request">The BootNotification request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static BootNotificationResponse FormationViolation(CS.BootNotificationRequest  Request,
+                                                                  String                      ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The BootNotification failed.
+        /// </summary>
+        /// <param name="Request">The BootNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static BootNotificationResponse SignatureError(CS.BootNotificationRequest  Request,
                                                               String                      ErrorDescription)
 
@@ -599,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The BootNotification failed.
         /// </summary>
         /// <param name="Request">The BootNotification request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static BootNotificationResponse Failed(CS.BootNotificationRequest  Request,
                                                       String?                     Description   = null)
 

@@ -591,7 +591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetInstalledCertificateIds failed.
         /// </summary>
         /// <param name="Request">The GetInstalledCertificateIds request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static GetInstalledCertificateIdsResponse SignatureError(CSMS.GetInstalledCertificateIdsRequest  Request,
                                                                         String                                  ErrorDescription)
 
@@ -605,7 +605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetInstalledCertificateIds failed.
         /// </summary>
         /// <param name="Request">The GetInstalledCertificateIds request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static GetInstalledCertificateIdsResponse Failed(CSMS.GetInstalledCertificateIdsRequest  Request,
                                                                 String?                                 Description   = null)
 

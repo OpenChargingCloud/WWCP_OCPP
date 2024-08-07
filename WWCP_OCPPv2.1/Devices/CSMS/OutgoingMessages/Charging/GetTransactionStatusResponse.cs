@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetTransactionStatus failed.
         /// </summary>
         /// <param name="Request">The GetTransactionStatus request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static GetTransactionStatusResponse SignatureError(CSMS.GetTransactionStatusRequest  Request,
                                                                   String                            ErrorDescription)
 
@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetTransactionStatus failed.
         /// </summary>
         /// <param name="Request">The GetTransactionStatus request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static GetTransactionStatusResponse Failed(CSMS.GetTransactionStatusRequest  Request,
                                                           String?                           Description   = null)
 

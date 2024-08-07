@@ -466,7 +466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ReserveNow failed.
         /// </summary>
         /// <param name="Request">The ReserveNow request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static ReserveNowResponse SignatureError(CSMS.ReserveNowRequest  Request,
                                                         String                  ErrorDescription)
 
@@ -480,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ReserveNow failed.
         /// </summary>
         /// <param name="Request">The ReserveNow request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static ReserveNowResponse Failed(CSMS.ReserveNowRequest  Request,
                                                 String?                 Description   = null)
 

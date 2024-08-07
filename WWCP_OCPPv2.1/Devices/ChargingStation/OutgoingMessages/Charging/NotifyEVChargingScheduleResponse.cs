@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyEVChargingSchedule failed.
         /// </summary>
         /// <param name="Request">The NotifyEVChargingSchedule request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static NotifyEVChargingScheduleResponse SignatureError(CS.NotifyEVChargingScheduleRequest  Request,
                                                                       String                              ErrorDescription)
 
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyEVChargingSchedule failed.
         /// </summary>
         /// <param name="Request">The NotifyEVChargingSchedule request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static NotifyEVChargingScheduleResponse Failed(CS.NotifyEVChargingScheduleRequest  Request,
                                                               String?                             Description   = null)
 

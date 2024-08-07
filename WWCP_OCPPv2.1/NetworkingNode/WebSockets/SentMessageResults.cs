@@ -27,9 +27,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     public class SentMessageResult
     {
 
-        public SentMessageResults     Result                 { get; }
+        public SentMessageResults     Result        { get; }
         public IWebSocketConnection?  Connection    { get; }
-        public Exception?             Exception              { get; }
+        public Exception?             Exception     { get; }
 
 
         private SentMessageResult(SentMessageResults     SendMessageResult,
@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                   Exception?             Exception             = null)
         {
 
-            this.Result    = SendMessageResult;
+            this.Result      = SendMessageResult;
             this.Connection  = WebSocketConnection;
-            this.Exception            = Exception;
+            this.Exception   = Exception;
 
         }
 
@@ -53,18 +53,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (SentMessageResults.TransmissionFailed,
                     null,
                     Exception);
-        public static SentMessageResult TransmissionFailed (Exception              Exception,
-                                                                                 IWebSocketConnection?  WebSocketConnection)
+
+        public static SentMessageResult TransmissionFailed (Exception             Exception,
+                                                            IWebSocketConnection  WebSocketConnection)
 
             => new (SentMessageResults.TransmissionFailed,
                     WebSocketConnection,
                     Exception);
-        public static SentMessageResult Timeout            (IWebSocketConnection   WebSocketConnection)
+
+        public static SentMessageResult Timeout            (IWebSocketConnection  WebSocketConnection)
 
             => new (SentMessageResults.Timeout,
                     WebSocketConnection);
 
-        public static SentMessageResult Success            (IWebSocketConnection   WebSocketConnection)
+        public static SentMessageResult Success            (IWebSocketConnection  WebSocketConnection)
 
             => new (SentMessageResults.Success,
                     WebSocketConnection);

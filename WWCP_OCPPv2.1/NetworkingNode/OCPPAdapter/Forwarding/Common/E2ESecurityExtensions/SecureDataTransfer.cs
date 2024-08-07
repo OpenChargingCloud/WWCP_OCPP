@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     #endregion
 
-    public partial class OCPPWebSocketAdapterFORWARD : IOCPPWebSocketAdapterFORWARD
+    public partial class OCPPWebSocketAdapterFORWARD
     {
 
         #region Events

@@ -17,27 +17,38 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
+    /// <summary>
+    /// The OCPP response for a received OCPP request.
+    /// </summary>
+    /// <param name="JSONResponseMessage">A optional JSON response message.</param>
+    /// <param name="JSONRequestErrorMessage">A optional JSON request error message.</param>
+    /// <param name="BinaryResponseMessage">A optional binary response message.</param>
+    /// <param name="BinaryRequestErrorMessage">A optional binary request error message.</param>
     public class OCPP_Response(OCPP_JSONResponseMessage?        JSONResponseMessage,
                                OCPP_JSONRequestErrorMessage?    JSONRequestErrorMessage,
                                OCPP_BinaryResponseMessage?      BinaryResponseMessage,
                                OCPP_BinaryRequestErrorMessage?  BinaryRequestErrorMessage) : IEquatable<OCPP_Response>
     {
 
+        #region Properties
+
         public OCPP_JSONResponseMessage?        JSONResponseMessage          { get; } = JSONResponseMessage;
         public OCPP_JSONRequestErrorMessage?    JSONRequestErrorMessage      { get; } = JSONRequestErrorMessage;
         public OCPP_BinaryResponseMessage?      BinaryResponseMessage        { get; } = BinaryResponseMessage;
         public OCPP_BinaryRequestErrorMessage?  BinaryRequestErrorMessage    { get; } = BinaryRequestErrorMessage;
 
+        #endregion
 
 
         public static OCPP_Response FromJSONResponse   (OCPP_JSONResponseMessage        JSONResponseMessage)
@@ -70,6 +81,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
 
 
+        #region JSONResponse(...)
+
         public static OCPP_Response JSONResponse(EventTracking_Id   EventTrackingId,
                                                  NetworkingNode_Id  DestinationId,
                                                  NetworkPath        NetworkPath,
@@ -91,7 +104,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     null,
                     null);
 
+        #endregion
 
+        #region JSONRequestError(...)
 
         public static OCPP_Response JSONRequestError(EventTracking_Id   EventTrackingId,
                                                      NetworkingNode_Id  DestinationId,
@@ -118,7 +133,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     null,
                     null);
 
+        #endregion
 
+        #region BinaryResponse(...)
 
         public static OCPP_Response BinaryResponse(EventTracking_Id   EventTrackingId,
                                                    NetworkingNode_Id  DestinationId,
@@ -141,6 +158,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     ),
                     null);
 
+        #endregion
+
+        #region BinaryRequestError(...)
 
         public static OCPP_Response BinaryRequestError(EventTracking_Id   EventTrackingId,
                                                        NetworkingNode_Id  DestinationId,
@@ -167,7 +187,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         CancellationToken
                     ));
 
+        #endregion
 
+
+        #region (static) CouldNotParse(...)
 
         public static OCPP_Response CouldNotParse(EventTracking_Id  EventTrackingId,
                                                   Request_Id        RequestId,
@@ -186,6 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     null,
                     null);
 
+
         public static OCPP_Response CouldNotParse(EventTracking_Id  EventTrackingId,
                                                   Request_Id        RequestId,
                                                   String            Action,
@@ -203,6 +227,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     null,
                     null);
 
+        #endregion
+
+        #region (static) FormationViolation(...)
 
         public static OCPP_Response FormationViolation(EventTracking_Id  EventTrackingId,
                                                        Request_Id        RequestId,
@@ -239,7 +266,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     null,
                     null);
 
+        #endregion
 
+        #region (static) ExceptionOccurred(...)
+
+        public static OCPP_Response ExceptionOccurred(EventTracking_Id  EventTrackingId,
+                                                      Request_Id        RequestId,
+                                                      String            Action,
+                                                      JObject           JSONObjectRequest,
+                                                      Exception         Exception)
+
+            => new (null,
+                    OCPP_JSONRequestErrorMessage.ExceptionOccurred(
+                        EventTrackingId,
+                        RequestId,
+                        Action,
+                        JSONObjectRequest,
+                        Exception
+                    ),
+                    null,
+                    null);
+
+
+        public static OCPP_Response ExceptionOccurred(EventTracking_Id  EventTrackingId,
+                                                      Request_Id        RequestId,
+                                                      String            Action,
+                                                      Byte[]            BinaryRequest,
+                                                      Exception         Exception)
+
+            => new (null,
+                    OCPP_JSONRequestErrorMessage.ExceptionOccurred(
+                        EventTrackingId,
+                        RequestId,
+                        Action,
+                        BinaryRequest,
+                        Exception
+                    ),
+                    null,
+                    null);
+
+        #endregion
 
 
         public override Boolean Equals(Object? OCPPResponse)

@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifySettlement failed.
         /// </summary>
         /// <param name="Request">The NotifySettlement request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static NotifySettlementResponse SignatureError(CS.NotifySettlementRequest  Request,
                                                               String                      ErrorDescription)
 
@@ -416,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifySettlement failed.
         /// </summary>
         /// <param name="Request">The NotifySettlement request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static NotifySettlementResponse Failed(CS.NotifySettlementRequest  Request,
                                                       String?                     Description   = null)
 

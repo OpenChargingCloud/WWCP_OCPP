@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The SecurityEventNotification failed.
         /// </summary>
         /// <param name="Request">The SecurityEventNotification request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SecurityEventNotificationResponse SignatureError(CS.SecurityEventNotificationRequest  Request,
                                                                        String                               ErrorDescription)
 
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The SecurityEventNotification failed.
         /// </summary>
         /// <param name="Request">The SecurityEventNotification request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static SecurityEventNotificationResponse Failed(CS.SecurityEventNotificationRequest  Request,
                                                                String?                              Description   = null)
 

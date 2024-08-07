@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyPriorityCharging failed.
         /// </summary>
         /// <param name="Request">The NotifyPriorityCharging request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static NotifyPriorityChargingResponse SignatureError(CS.NotifyPriorityChargingRequest  Request,
                                                                     String                            ErrorDescription)
 
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyPriorityCharging failed.
         /// </summary>
         /// <param name="Request">The NotifyPriorityCharging request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static NotifyPriorityChargingResponse Failed(CS.NotifyPriorityChargingRequest  Request,
                                                             String?                           Description   = null)
 

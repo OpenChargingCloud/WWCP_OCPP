@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The DeleteUserRole failed.
         /// </summary>
         /// <param name="Request">The DeleteUserRole request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static DeleteUserRoleResponse SignatureError(DeleteUserRoleRequest  Request,
                                                             String                 ErrorDescription)
 
@@ -554,7 +554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The DeleteUserRole failed.
         /// </summary>
         /// <param name="Request">The DeleteUserRole request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static DeleteUserRoleResponse Failed(DeleteUserRoleRequest  Request,
                                                     String?                Description   = null)
 

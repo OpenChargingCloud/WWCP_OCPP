@@ -32,7 +32,7 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    public partial class OCPPWebSocketAdapterIN
     {
 
         #region Events
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSendLocalListResponse event
 
-                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnSendLocalListResponseSent(
+                    await parentNetworkingNode.OCPP.OUT.SendOnSendLocalListResponseSent(
                               Timestamp.Now,
                               parentNetworkingNode,
                               WebSocketConnection,
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
-    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    public partial class OCPPWebSocketAdapterOUT
     {
 
         #region Events

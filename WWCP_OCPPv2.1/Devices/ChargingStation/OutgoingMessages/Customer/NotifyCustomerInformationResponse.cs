@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyCustomerInformation failed.
         /// </summary>
         /// <param name="Request">The NotifyCustomerInformation request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static NotifyCustomerInformationResponse SignatureError(CS.NotifyCustomerInformationRequest  Request,
                                                                        String                               ErrorDescription)
 
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyCustomerInformation failed.
         /// </summary>
         /// <param name="Request">The NotifyCustomerInformation request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static NotifyCustomerInformationResponse Failed(CS.NotifyCustomerInformationRequest  Request,
                                                                String?                              Description   = null)
 

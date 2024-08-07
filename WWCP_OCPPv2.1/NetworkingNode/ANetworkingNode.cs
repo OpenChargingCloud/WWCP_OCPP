@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         public DNSClient                   DNSClient                  { get; }
-        public IOCPPAdapter                OCPP                       { get; }
+        public OCPPAdapter                 OCPP                       { get; }
 
 
 

@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -113,6 +114,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// The time stamp of the response.
         /// </summary>
         public DateTime?                         ResponseTimestamp             { get; set; } = ResponseTimestamp;
+
+        public IWebSocketConnection              WebSocketConnectionReceived   { get; set; }
 
         /// <summary>
         /// The destination network node identification of the request

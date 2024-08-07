@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The GetCRL failed.
         /// </summary>
         /// <param name="Request">The GetCRL request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static GetCRLResponse SignatureError(CS.GetCRLRequest  Request,
                                                     String            ErrorDescription)
 
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The GetCRL failed.
         /// </summary>
         /// <param name="Request">The GetCRL request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static GetCRLResponse Failed(CS.GetCRLRequest  Request,
                                             String?           Description   = null)
 

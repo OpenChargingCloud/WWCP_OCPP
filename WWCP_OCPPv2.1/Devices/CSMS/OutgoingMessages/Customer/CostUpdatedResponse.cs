@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The CostUpdated failed.
         /// </summary>
         /// <param name="Request">The CostUpdated request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static CostUpdatedResponse SignatureError(CSMS.CostUpdatedRequest  Request,
                                                          String                   ErrorDescription)
 
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The CostUpdated failed.
         /// </summary>
         /// <param name="Request">The CostUpdated request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static CostUpdatedResponse Failed(CSMS.CostUpdatedRequest  Request,
                                                  String?                  Description   = null)
 

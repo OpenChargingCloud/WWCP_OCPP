@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The parent OCPP adapter.
         /// </summary>
-        public IOCPPAdapter                                      OCPPAdapter              { get; }
+        public OCPPAdapter                                       OCPPAdapter              { get; }
 
         /// <summary>
         /// The enumeration of all connected networking nodes.
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public OCPPWebSocketServer(IOCPPAdapter                                                    OCPPAdapter,
+        public OCPPWebSocketServer(OCPPAdapter                                                     OCPPAdapter,
 
                                    String?                                                         HTTPServiceName              = DefaultHTTPServiceName,
                                    IIPAddress?                                                     IPAddress                    = null,

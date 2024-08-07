@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         #region Properties
 
-        public IOCPPAdapter    OCPPAdapter      { get; }
+        public OCPPAdapter     OCPPAdapter      { get; }
 
         public NetworkingMode  NetworkingMode   { get; } = NetworkingMode.Standard;
 
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public OCPPWebSocketClient(IOCPPAdapter                                                    OCPPAdapter,
+        public OCPPWebSocketClient(OCPPAdapter                                                     OCPPAdapter,
 
                                    URL                                                             RemoteURL,
                                    HTTPHostname?                                                   VirtualHostname              = null,

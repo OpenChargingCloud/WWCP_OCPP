@@ -343,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The MeterValues failed.
         /// </summary>
         /// <param name="Request">The MeterValues request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static MeterValuesResponse SignatureError(CS.MeterValuesRequest  Request,
                                                          String                 ErrorDescription)
 
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The MeterValues failed.
         /// </summary>
         /// <param name="Request">The MeterValues request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static MeterValuesResponse Failed(CS.MeterValuesRequest  Request,
                                                  String?                Description   = null)
 

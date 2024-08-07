@@ -115,9 +115,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) CouldNotParse     (RequestId, Action, JSONObjectRequest, ErrorResponse = null)
 
         public static OCPP_JSONRequestErrorMessage CouldNotParse(Request_Id  RequestId,
-                                                          String      Action,
-                                                          JObject     JSONObjectRequest,
-                                                          String?     ErrorResponse   = null)
+                                                                 String      Action,
+                                                                 JObject     JSONObjectRequest,
+                                                                 String?     ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -138,10 +138,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     ));
 
         public static OCPP_JSONRequestErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
-                                                          Request_Id        RequestId,
-                                                          String            Action,
-                                                          JObject           JSONObjectRequest,
-                                                          String?           ErrorResponse   = null)
+                                                                 Request_Id        RequestId,
+                                                                 String            Action,
+                                                                 JObject           JSONObjectRequest,
+                                                                 String?           ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTrackingId,
@@ -166,9 +166,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) CouldNotParse     (RequestId, Action, JSONArrayRequest,  ErrorResponse = null)
 
         public static OCPP_JSONRequestErrorMessage CouldNotParse(Request_Id  RequestId,
-                                                          String      Action,
-                                                          JArray      JSONArrayRequest,
-                                                          String?     ErrorResponse   = null)
+                                                                 String      Action,
+                                                                 JArray      JSONArrayRequest,
+                                                                 String?     ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -193,9 +193,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) CouldNotParse     (RequestId, Action, BinaryRequest,     ErrorResponse = null)
 
         public static OCPP_JSONRequestErrorMessage CouldNotParse(Request_Id  RequestId,
-                                                          String      Action,
-                                                          Byte[]      BinaryRequest,
-                                                          String?     ErrorResponse   = null)
+                                                                 String      Action,
+                                                                 Byte[]      BinaryRequest,
+                                                                 String?     ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -217,10 +217,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
 
         public static OCPP_JSONRequestErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
-                                                          Request_Id        RequestId,
-                                                          String            Action,
-                                                          Byte[]            BinaryRequest,
-                                                          String?           ErrorResponse   = null)
+                                                                 Request_Id        RequestId,
+                                                                 String            Action,
+                                                                 Byte[]            BinaryRequest,
+                                                                 String?           ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTrackingId,
@@ -246,9 +246,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) FormationViolation(RequestId, Action, JSONObjectRequest, Exception)
 
         public static OCPP_JSONRequestErrorMessage FormationViolation(Request_Id  RequestId,
-                                                               String      Action,
-                                                               JObject     JSONObjectRequest,
-                                                               Exception   Exception)
+                                                                      String      Action,
+                                                                      JObject     JSONObjectRequest,
+                                                                      Exception   Exception)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -266,10 +266,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
 
         public static OCPP_JSONRequestErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
-                                                               Request_Id        RequestId,
-                                                               String            Action,
-                                                               JObject           JSONObjectRequest,
-                                                               Exception         Exception)
+                                                                      Request_Id        RequestId,
+                                                                      String            Action,
+                                                                      JObject           JSONObjectRequest,
+                                                                      Exception         Exception)
 
             => new (Timestamp.Now,
                     EventTrackingId,
@@ -290,9 +290,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) FormationViolation(RequestId, Action, JSONArrayRequest,  Exception)
 
         public static OCPP_JSONRequestErrorMessage FormationViolation(Request_Id  RequestId,
-                                                               String      Action,
-                                                               JArray      JSONArrayRequest,
-                                                               Exception   Exception)
+                                                                      String      Action,
+                                                                      JArray      JSONArrayRequest,
+                                                                      Exception   Exception)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -313,9 +313,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) FormationViolation(RequestId, Action, BinaryRequest,     Exception)
 
         public static OCPP_JSONRequestErrorMessage FormationViolation(Request_Id  RequestId,
-                                                               String      Action,
-                                                               Byte[]      BinaryRequest,
-                                                               Exception   Exception)
+                                                                      String      Action,
+                                                                      Byte[]      BinaryRequest,
+                                                                      Exception   Exception)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -333,10 +333,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
 
         public static OCPP_JSONRequestErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
-                                                               Request_Id        RequestId,
-                                                               String            Action,
-                                                               Byte[]            BinaryRequest,
-                                                               Exception         Exception)
+                                                                      Request_Id        RequestId,
+                                                                      String            Action,
+                                                                      Byte[]            BinaryRequest,
+                                                                      Exception         Exception)
 
             => new (Timestamp.Now,
                     EventTrackingId,
@@ -355,13 +355,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
+        #region (static) ExceptionOccurred(...)
+
+        public static OCPP_JSONRequestErrorMessage ExceptionOccurred(EventTracking_Id  EventTrackingId,
+                                                                     Request_Id        RequestId,
+                                                                     String            Action,
+                                                                     JObject           JSONObjectRequest,
+                                                                     Exception         Exception)
+
+            => new (Timestamp.Now,
+                    EventTrackingId,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
+                    RequestId,
+                    ResultCode.InternalError,
+                    $"Processing the given '{Action}' request led to an exception!",
+                    new JObject(
+                        new JProperty("request",      JSONObjectRequest),
+                        new JProperty("exception",    Exception.Message),
+                        new JProperty("stacktrace",   Exception.StackTrace)
+                    ));
+
+        public static OCPP_JSONRequestErrorMessage ExceptionOccurred(EventTracking_Id  EventTrackingId,
+                                                                     Request_Id        RequestId,
+                                                                     String            Action,
+                                                                     Byte[]            BinaryRequest,
+                                                                     Exception         Exception)
+
+            => new (Timestamp.Now,
+                    EventTrackingId,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
+                    RequestId,
+                    ResultCode.InternalError,
+                    $"Processing the given '{Action}' request led to an exception!",
+                    new JObject(
+                        new JProperty("request",      BinaryRequest.ToBase64()),
+                        new JProperty("exception",    Exception.Message),
+                        new JProperty("stacktrace",   Exception.StackTrace)
+                    ));
+
+        #endregion
+
+
         #region (static) InternalError     (Sender, EventTrackingId, JSONTextRequest,   Exception, RequestId = null)
 
         public static OCPP_JSONRequestErrorMessage InternalError(String            Sender,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          String            JSONTextRequest,
-                                                          Exception         Exception,
-                                                          Request_Id?       RequestId   = null)
+                                                                 EventTracking_Id  EventTrackingId,
+                                                                 String            JSONTextRequest,
+                                                                 Exception         Exception,
+                                                                 Request_Id?       RequestId   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -383,10 +428,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) InternalError     (Sender, EventTrackingId, JSONObjectRequest, Exception, RequestId = null)
 
         public static OCPP_JSONRequestErrorMessage InternalError(String            Sender,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          JObject           JSONObjectRequest,
-                                                          Exception         Exception,
-                                                          Request_Id?       RequestId   = null)
+                                                                 EventTracking_Id  EventTrackingId,
+                                                                 JObject           JSONObjectRequest,
+                                                                 Exception         Exception,
+                                                                 Request_Id?       RequestId   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -408,10 +453,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) InternalError     (Sender, EventTrackingId, OCPPArrayRequest,  Exception, RequestId = null)
 
         public static OCPP_JSONRequestErrorMessage InternalError(String            Sender,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          JArray            OCPPArrayRequest,
-                                                          Exception         Exception,
-                                                          Request_Id?       RequestId   = null)
+                                                                 EventTracking_Id  EventTrackingId,
+                                                                 JArray            OCPPArrayRequest,
+                                                                 Exception         Exception,
+                                                                 Request_Id?       RequestId   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
@@ -433,10 +478,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) InternalError     (Sender, EventTrackingId, OCPPBinaryRequest, Exception, RequestId = null)
 
         public static OCPP_JSONRequestErrorMessage InternalError(String            Sender,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          Byte[]            OCPPBinaryRequest,
-                                                          Exception         Exception,
-                                                          Request_Id?       RequestId   = null)
+                                                                 EventTracking_Id  EventTrackingId,
+                                                                 Byte[]            OCPPBinaryRequest,
+                                                                 Exception         Exception,
+                                                                 Request_Id?       RequestId   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,

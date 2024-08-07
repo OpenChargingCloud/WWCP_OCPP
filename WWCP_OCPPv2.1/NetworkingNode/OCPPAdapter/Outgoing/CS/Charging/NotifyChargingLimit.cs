@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// A charging station HTTP Web Socket client.
     /// </summary>
-    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    public partial class OCPPWebSocketAdapterOUT
     {
 
         #region Custom JSON serializer delegates
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new NotifyChargingLimitResponse(
                                      Request,
-                                     Result.Format(errorResponse)
+                                     Result.FormationViolation(errorResponse)
                                  );
 
                 }
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
-    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    public partial class OCPPWebSocketAdapterIN
     {
 
         /// <summary>

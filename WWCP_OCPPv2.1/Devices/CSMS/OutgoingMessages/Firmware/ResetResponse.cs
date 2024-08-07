@@ -495,7 +495,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The Reset failed.
         /// </summary>
         /// <param name="Request">The Reset request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static ResetResponse FormationViolation(CSMS.ResetRequest  Request,
+                                                       String             ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The Reset failed.
+        /// </summary>
+        /// <param name="Request">The Reset request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static ResetResponse SignatureError(CSMS.ResetRequest  Request,
                                                    String             ErrorDescription)
 
@@ -509,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The Reset failed.
         /// </summary>
         /// <param name="Request">The Reset request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static ResetResponse Failed(CSMS.ResetRequest  Request,
                                            String?            Description   = null)
 

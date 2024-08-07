@@ -746,7 +746,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Authorize failed.
         /// </summary>
         /// <param name="Request">The Authorize request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static AuthorizeResponse FormationViolation(CS.AuthorizeRequest  Request,
+                                                           String               ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ),
+                    AuthorizationStatus.ParsingError);
+
+
+        /// <summary>
+        /// The Authorize failed.
+        /// </summary>
+        /// <param name="Request">The Authorize request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static AuthorizeResponse SignatureError(CS.AuthorizeRequest  Request,
                                                        String               ErrorDescription)
 
@@ -761,7 +776,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Authorize failed.
         /// </summary>
         /// <param name="Request">The Authorize request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static AuthorizeResponse Failed(CS.AuthorizeRequest  Request,
                                                String?              Description   = null)
 

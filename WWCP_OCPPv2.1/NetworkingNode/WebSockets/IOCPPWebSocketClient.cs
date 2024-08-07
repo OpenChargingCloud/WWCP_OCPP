@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     public interface IOCPPWebSocketClient : IWebSocketClient
     {
 
-        IOCPPAdapter    OCPPAdapter       { get; }
+        OCPPAdapter     OCPPAdapter       { get; }
         NetworkingMode  NetworkingMode    { get; }
 
 

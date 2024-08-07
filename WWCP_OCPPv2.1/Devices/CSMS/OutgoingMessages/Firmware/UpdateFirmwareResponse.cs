@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The UpdateFirmware failed.
         /// </summary>
         /// <param name="Request">The UpdateFirmware request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static UpdateFirmwareResponse SignatureError(CSMS.UpdateFirmwareRequest  Request,
                                                             String                      ErrorDescription)
 
@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The UpdateFirmware failed.
         /// </summary>
         /// <param name="Request">The UpdateFirmware request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static UpdateFirmwareResponse Failed(CSMS.UpdateFirmwareRequest  Request,
                                                     String?                     Description   = null)
 

@@ -74,12 +74,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesReceived  = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnResetResponsesReceived        = new ConcurrentList<ResetResponse>();
 
-                localController.OCPP.OUT.OnResetRequestSent             += (timestamp, sender, connection, resetRequest, sendMessageResult) => {
+                localController.OCPP.OUT.OnResetRequestSent             += (timestamp, sender, connection, resetRequest, sentMessageResult, ct) => {
                     nnResetRequestsSent.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sendMessageResult) => {
+                localController.OCPP.OUT.OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sentMessageResult) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -187,12 +187,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesReceived   = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
 
-                localController.OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sendMessageResult) => {
+                localController.OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sentMessageResult, ct) => {
                     nnDataTransferRequestsSent.     TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sendMessageResult) => {
+                localController.OCPP.OUT.OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sentMessageResult) => {
                     nnJSONMessageRequestsSent.      TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };

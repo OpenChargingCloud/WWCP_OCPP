@@ -76,17 +76,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesReceived       = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
 
-                localController.OCPP.OUT.OnBootNotificationRequestSent      += (timestamp, sender, connection, bootNotificationRequest, sendMessageResult) => {
+                localController.OCPP.OUT.OnBootNotificationRequestSent      += (timestamp, sender, connection, bootNotificationRequest, sentMessageResult, ct) => {
                     nnBootNotificationRequestsSent.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONRequestMessageSent           += (timestamp, sender, connection, jsonRequestMessage, sendMessageResult) => {
+                localController.OCPP.OUT.OnJSONRequestMessageSent           += (timestamp, sender, connection, jsonRequestMessage, sentMessageResult) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.IN. OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
+                CSMS.           OCPP.IN. OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest, ct) => {
                     csmsBootNotificationRequests.  TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN. OnBootNotificationResponseReceived += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
+                localController.OCPP.IN. OnBootNotificationResponseReceived += (timestamp, sender, connection, bootNotificationRequest, bootNotificationResponse, runtime, ct) => {
                     nnBootNotificationResponsesReceived.   TryAdd(bootNotificationResponse);
                     return Task.CompletedTask;
                 };
@@ -217,12 +217,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesReceived            = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnGet15118EVCertificateResponsesReceived  = new ConcurrentList<Get15118EVCertificateResponse>();
 
-                localController.OCPP.OUT.OnGet15118EVCertificateRequestSent      += (timestamp, sender, connection, get15118EVCertificateRequest, sendMessageResult) => {
+                localController.OCPP.OUT.OnGet15118EVCertificateRequestSent      += (timestamp, sender, connection, get15118EVCertificateRequest, sentMessageResult) => {
                     nnGet15118EVCertificateRequestsSent.TryAdd(get15118EVCertificateRequest);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONRequestMessageSent                += (timestamp, sender, connection, jsonRequestMessage, sendMessageResult) => {
+                localController.OCPP.OUT.OnJSONRequestMessageSent                += (timestamp, sender, connection, jsonRequestMessage, sentMessageResult) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -325,12 +325,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesReceived   = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
 
-                localController.OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sendMessageResult) => {
+                localController.OCPP.OUT.OnDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sentMessageResult, ct) => {
                     nnDataTransferRequestsSent.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sendMessageResult) => {
+                localController.OCPP.OUT.OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sentMessageResult) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };

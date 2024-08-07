@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The LogStatusNotification failed.
         /// </summary>
         /// <param name="Request">The LogStatusNotification request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static LogStatusNotificationResponse SignatureError(CS.LogStatusNotificationRequest  Request,
                                                                    String                           ErrorDescription)
 
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The LogStatusNotification failed.
         /// </summary>
         /// <param name="Request">The LogStatusNotification request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static LogStatusNotificationResponse Failed(CS.LogStatusNotificationRequest  Request,
                                                            String?                          Description   = null)
 

@@ -595,7 +595,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The SecureDataTransfer failed.
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SecureDataTransferResponse SignatureError(SecureDataTransferRequest  Request,
                                                                 String                     ErrorDescription)
 
@@ -609,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The SecureDataTransfer failed.
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static SecureDataTransferResponse Failed(SecureDataTransferRequest  Request,
                                                         String?                    Description   = null)
 

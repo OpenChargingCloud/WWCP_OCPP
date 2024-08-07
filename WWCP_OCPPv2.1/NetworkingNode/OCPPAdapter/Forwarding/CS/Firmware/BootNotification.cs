@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The OCPP adapter for forwarding messages.
     /// </summary>
-    public partial class OCPPWebSocketAdapterFORWARD : IOCPPWebSocketAdapterFORWARD
+    public partial class OCPPWebSocketAdapterFORWARD
     {
 
         #region Events

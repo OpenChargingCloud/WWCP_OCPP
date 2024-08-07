@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The PublishFirmware failed.
         /// </summary>
         /// <param name="Request">The PublishFirmware request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static PublishFirmwareResponse SignatureError(CSMS.PublishFirmwareRequest  Request,
                                                              String                       ErrorDescription)
 
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The PublishFirmware failed.
         /// </summary>
         /// <param name="Request">The PublishFirmware request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static PublishFirmwareResponse Failed(CSMS.PublishFirmwareRequest  Request,
                                                      String?                      Description   = null)
 

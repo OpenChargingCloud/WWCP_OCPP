@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The GetCertificateStatus failed.
         /// </summary>
         /// <param name="Request">The GetCertificateStatus request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static GetCertificateStatusResponse SignatureError(CS.GetCertificateStatusRequest  Request,
                                                                   String                          ErrorDescription)
 
@@ -507,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The GetCertificateStatus failed.
         /// </summary>
         /// <param name="Request">The GetCertificateStatus request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static GetCertificateStatusResponse Failed(CS.GetCertificateStatusRequest  Request,
                                                           String?                         Description   = null)
 

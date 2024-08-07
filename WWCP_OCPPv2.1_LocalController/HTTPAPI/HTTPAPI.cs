@@ -640,7 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGet15118EVCertificateRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -652,10 +652,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            sender,
                                                                            connection,
                                                                            request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGet15118EVCertificateRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -671,7 +671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGet15118EVCertificateResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -689,7 +689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGet15118EVCertificateResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCertificateStatusRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -720,10 +720,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           sender,
                                                                           connection,
                                                                           request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCertificateStatusRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -739,7 +739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCertificateStatusResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -757,7 +757,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCertificateStatusResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -776,7 +776,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCRLRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -788,10 +788,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                             sender,
                                                             connection,
                                                             request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCRLRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -807,7 +807,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCRLResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -825,7 +825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCRLResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -844,7 +844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSignCertificateRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -856,10 +856,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      sender,
                                                                      connection,
                                                                      request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSignCertificateRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -875,7 +875,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSignCertificateResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -893,7 +893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSignCertificateResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -911,12 +911,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnAuthorize
 
             LocalController.OCPP.IN.OnAuthorizeRequestReceived += (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnAuthorizeRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -925,17 +926,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request,
-                                                               sendMessageResult) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                sentMessageResult,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnAuthorizeRequestSent),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON())
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",           timestamp. ToIso8601()),
+                                         new JProperty("sender",              sender.Id),
+                                         new JProperty("connection",          connection?.ToJSON()),
+                                         new JProperty("request",             request.   ToJSON()),
+                                         new JProperty("sentMessageResult",   sentMessageResult.ToString())
+                                         
                                      ));
 
 
@@ -944,34 +948,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     connection,
                                                                     request,
                                                                     response,
-                                                                    runtime) =>
+                                                                    runtime,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnAuthorizeResponseReceived),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                     JSONObject.Create(
+                                               new JProperty("timestamp",    timestamp. ToIso8601()),
+                                               new JProperty("sender",       sender.Id),
+                                               new JProperty("connection",   connection.ToJSON()),
+                                               new JProperty("request",      request?.  ToJSON()),
+                                               new JProperty("response",     response.  ToJSON()),
+                                         runtime.HasValue
+                                             ? new JProperty("runtime",      runtime.Value.TotalMilliseconds)
+                                             : null
                                      ));
 
 
             LocalController.OCPP.OUT.OnAuthorizeResponseSent += (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                response,
-                                                                runtime) =>
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime,
+                                                                 sentMessageResult,
+                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnAuthorizeResponseSent),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",           timestamp. ToIso8601()),
+                                         new JProperty("sender",              sender.Id),
+                                         new JProperty("connection",          connection.ToJSON()),
+                                         new JProperty("request",             request?.  ToJSON()),
+                                         new JProperty("response",            response.  ToJSON()),
+                                         new JProperty("runtime",             runtime.   TotalMilliseconds),
+                                         new JProperty("sentMessageResult",   sentMessageResult.ToString())
                                      ));
 
             #endregion
@@ -984,7 +994,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearedChargingLimitRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -996,10 +1006,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           sender,
                                                                           connection,
                                                                           request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearedChargingLimitRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1015,7 +1025,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearedChargingLimitResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1033,7 +1043,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearedChargingLimitResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1052,7 +1062,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnMeterValuesRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1064,10 +1074,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           sender,
                                                                           connection,
                                                                           request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnMeterValuesRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1083,7 +1093,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnMeterValuesResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1101,7 +1111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                   runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnMeterValuesResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1120,7 +1130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyChargingLimitRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1132,10 +1142,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyChargingLimitRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1151,7 +1161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyChargingLimitResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1169,7 +1179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyChargingLimitResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1188,7 +1198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1200,10 +1210,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            sender,
                                                                            connection,
                                                                            request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1219,7 +1229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyEVChargingNeedsResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1237,7 +1247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyEVChargingNeedsResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1256,7 +1266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                  request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1268,10 +1278,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               sender,
                                                                               connection,
                                                                               request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1287,7 +1297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                   runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyEVChargingScheduleResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1305,7 +1315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyEVChargingScheduleResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1324,7 +1334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyPriorityChargingRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1336,10 +1346,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             sender,
                                                                             connection,
                                                                             request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyPriorityChargingRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1355,7 +1365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyPriorityChargingResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1373,7 +1383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyPriorityChargingResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1392,7 +1402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifySettlementRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1404,10 +1414,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       sender,
                                                                       connection,
                                                                       request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifySettlementRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1423,7 +1433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifySettlementResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1441,7 +1451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifySettlementResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1460,7 +1470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                   request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1472,10 +1482,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                sender,
                                                                                connection,
                                                                                request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1491,7 +1501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnPullDynamicScheduleUpdateResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1509,7 +1519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPullDynamicScheduleUpdateResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1528,7 +1538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnReportChargingProfilesRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1540,10 +1550,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             sender,
                                                                             connection,
                                                                             request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReportChargingProfilesRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1559,7 +1569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnReportChargingProfilesResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1577,7 +1587,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReportChargingProfilesResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1596,7 +1606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnReservationStatusUpdateRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1608,10 +1618,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              sender,
                                                                              connection,
                                                                              request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReservationStatusUpdateRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1627,7 +1637,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                  runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnReservationStatusUpdateResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1645,7 +1655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReservationStatusUpdateResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1664,7 +1674,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnStatusNotificationRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1676,10 +1686,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnStatusNotificationRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1695,7 +1705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnStatusNotificationResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1713,7 +1723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnStatusNotificationResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1732,7 +1742,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnTransactionEventRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1744,10 +1754,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       sender,
                                                                       connection,
                                                                       request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnTransactionEventRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1763,7 +1773,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnTransactionEventResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1781,7 +1791,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnTransactionEventResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1804,7 +1814,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                   request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyCustomerInformationRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1816,10 +1826,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                sender,
                                                                                connection,
                                                                                request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyCustomerInformationRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1835,7 +1845,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyCustomerInformationResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1853,7 +1863,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyCustomerInformationResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1872,7 +1882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyDisplayMessagesRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1884,10 +1894,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            sender,
                                                                            connection,
                                                                            request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyDisplayMessagesRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1903,7 +1913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyDisplayMessagesResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1921,7 +1931,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyDisplayMessagesResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1944,7 +1954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnLogStatusNotificationRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -1956,10 +1966,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            sender,
                                                                            connection,
                                                                            request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnLogStatusNotificationRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1975,7 +1985,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnLogStatusNotificationResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -1993,7 +2003,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnLogStatusNotificationResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2012,7 +2022,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyEventRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2024,10 +2034,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                  sender,
                                                                  connection,
                                                                  request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyEventRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2043,7 +2053,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyEventResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2061,7 +2071,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                   runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyEventResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2080,7 +2090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyMonitoringReportRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2092,10 +2102,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             sender,
                                                                             connection,
                                                                             request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyMonitoringReportRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2111,7 +2121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyMonitoringReportResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2129,7 +2139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyMonitoringReportResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2148,7 +2158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyReportRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2160,10 +2170,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                   sender,
                                                                   connection,
                                                                   request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyReportRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2179,7 +2189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyReportResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2197,7 +2207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyReportResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2216,7 +2226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                   request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSecurityEventNotificationRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2228,10 +2238,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                sender,
                                                                                connection,
                                                                                request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSecurityEventNotificationRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2247,7 +2257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSecurityEventNotificationResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2265,7 +2275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSecurityEventNotificationResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2283,12 +2293,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnBootNotification
 
             LocalController.OCPP.IN.OnBootNotificationRequestReceived += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnBootNotificationRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2297,35 +2308,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      sendMessageResult) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnBootNotificationRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnBootNotificationResponseReceived += (timestamp,
-                                                                          sender,
-                                                                          //connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnBootNotificationResponseReceived),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                     JSONObject.Create(
+                                               new JProperty("timestamp",   timestamp. ToIso8601()),
+                                               new JProperty("sender",      sender.Id),
+                                               new JProperty("connection",  connection.ToJSON()),
+                                               new JProperty("request",     request?.  ToJSON()),
+                                               new JProperty("response",    response.  ToJSON()),
+                                         runtime.HasValue
+                                             ? new JProperty("runtime",     runtime.Value.TotalMilliseconds)
+                                             : null
                                      ));
 
 
@@ -2334,10 +2349,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        connection,
                                                                        request,
                                                                        response,
-                                                                       runtime) =>
+                                                                       runtime,
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnBootNotificationResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2356,7 +2373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                    request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnFirmwareStatusNotificationRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2368,10 +2385,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnFirmwareStatusNotificationRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2387,7 +2404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                     runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnFirmwareStatusNotificationResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2405,7 +2422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                  runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnFirmwareStatusNotificationResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2424,7 +2441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                   request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnHeartbeatRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2436,10 +2453,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                sender,
                                                                connection,
                                                                request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnHeartbeatRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2455,7 +2472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnHeartbeatResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2473,7 +2490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnHeartbeatResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2492,7 +2509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                           request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2504,10 +2521,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                        sender,
                                                                                        connection,
                                                                                        request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2523,7 +2540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnPublishFirmwareStatusNotificationResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2541,7 +2558,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPublishFirmwareStatusNotificationResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2568,7 +2585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCertificateSignedRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2580,10 +2597,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCertificateSignedRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2599,7 +2616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCertificateSignedResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2617,7 +2634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCertificateSignedResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2636,7 +2653,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnDeleteCertificateRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2648,10 +2665,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnDeleteCertificateRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2667,7 +2684,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnDeleteCertificateResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2685,7 +2702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnDeleteCertificateResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2704,7 +2721,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                    request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2716,10 +2733,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2735,7 +2752,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                     runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2753,7 +2770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                  runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2772,7 +2789,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnInstallCertificateRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2784,10 +2801,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnInstallCertificateRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2803,7 +2820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnInstallCertificateResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2821,7 +2838,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnInstallCertificateResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2840,7 +2857,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                   request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyCRLRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2852,10 +2869,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                sender,
                                                                connection,
                                                                request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyCRLRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2871,7 +2888,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyCRLResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2889,7 +2906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyCRLResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2912,7 +2929,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCancelReservationRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2924,10 +2941,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCancelReservationRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2943,7 +2960,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCancelReservationResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -2961,7 +2978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCancelReservationResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2980,7 +2997,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearChargingProfileRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -2992,10 +3009,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           sender,
                                                                           connection,
                                                                           request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearChargingProfileRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3011,7 +3028,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearChargingProfileResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3029,7 +3046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearChargingProfileResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3048,7 +3065,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetChargingProfilesRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3060,10 +3077,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetChargingProfilesRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3079,7 +3096,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetChargingProfilesResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3097,7 +3114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetChargingProfilesResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3116,7 +3133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCompositeScheduleRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3128,10 +3145,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           sender,
                                                                           connection,
                                                                           request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCompositeScheduleRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3147,7 +3164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCompositeScheduleResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3165,7 +3182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCompositeScheduleResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3184,7 +3201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetTransactionStatusRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3196,10 +3213,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           sender,
                                                                           connection,
                                                                           request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetTransactionStatusRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3215,7 +3232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetTransactionStatusResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3233,7 +3250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetTransactionStatusResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3252,7 +3269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                     request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3264,10 +3281,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3283,7 +3300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                      runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3301,7 +3318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                   runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3320,7 +3337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnRequestStartTransactionRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3332,10 +3349,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              sender,
                                                                              connection,
                                                                              request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnRequestStartTransactionRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3351,7 +3368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                  runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnRequestStartTransactionResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3369,7 +3386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnRequestStartTransactionResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3388,7 +3405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnRequestStopTransactionRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3400,10 +3417,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             sender,
                                                                             connection,
                                                                             request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnRequestStopTransactionRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3419,7 +3436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnRequestStopTransactionResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3437,7 +3454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnRequestStopTransactionResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3456,7 +3473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnReserveNowRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3468,10 +3485,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                 sender,
                                                                 connection,
                                                                 request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReserveNowRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3487,7 +3504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnReserveNowResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3505,7 +3522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                  runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReserveNowResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3524,7 +3541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetChargingProfileRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3536,10 +3553,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetChargingProfileRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3555,7 +3572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetChargingProfileResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3573,7 +3590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetChargingProfileResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3592,7 +3609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUnlockConnectorRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3604,10 +3621,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      sender,
                                                                      connection,
                                                                      request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnlockConnectorRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3623,7 +3640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUnlockConnectorResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3641,7 +3658,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnlockConnectorResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3660,7 +3677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUpdateDynamicScheduleRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3672,10 +3689,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            sender,
                                                                            connection,
                                                                            request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateDynamicScheduleRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3691,7 +3708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUpdateDynamicScheduleResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3709,7 +3726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateDynamicScheduleResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3728,7 +3745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUsePriorityChargingRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3740,10 +3757,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUsePriorityChargingRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3759,7 +3776,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUsePriorityChargingResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3777,7 +3794,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUsePriorityChargingResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3800,7 +3817,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearDisplayMessageRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3812,10 +3829,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearDisplayMessageRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3831,7 +3848,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearDisplayMessageResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3849,7 +3866,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearDisplayMessageResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3868,7 +3885,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCostUpdatedRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3880,10 +3897,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                  sender,
                                                                  connection,
                                                                  request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCostUpdatedRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3899,7 +3916,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCostUpdatedResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3917,7 +3934,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                   runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCostUpdatedResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3936,7 +3953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCustomerInformationRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -3948,10 +3965,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCustomerInformationRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3967,7 +3984,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCustomerInformationResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -3985,7 +4002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCustomerInformationResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4004,7 +4021,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetDisplayMessagesRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4016,10 +4033,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetDisplayMessagesRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4035,7 +4052,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetDisplayMessagesResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4053,7 +4070,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetDisplayMessagesResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4072,7 +4089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetDisplayMessageRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4084,10 +4101,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetDisplayMessageRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4103,7 +4120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetDisplayMessageResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4121,7 +4138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetDisplayMessageResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4144,7 +4161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnChangeAvailabilityRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4156,10 +4173,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnChangeAvailabilityRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4175,7 +4192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnChangeAvailabilityResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4193,7 +4210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnChangeAvailabilityResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4212,7 +4229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                 request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearVariableMonitoringRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4224,10 +4241,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              sender,
                                                                              connection,
                                                                              request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearVariableMonitoringRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4243,7 +4260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                  runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearVariableMonitoringResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4261,7 +4278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearVariableMonitoringResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4280,7 +4297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetBaseReportRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4292,10 +4309,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    sender,
                                                                    connection,
                                                                    request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetBaseReportRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4311,7 +4328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetBaseReportResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4329,7 +4346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetBaseReportResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4348,7 +4365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetLogRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4360,10 +4377,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                             sender,
                                                             connection,
                                                             request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLogRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4379,7 +4396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetLogResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4397,7 +4414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLogResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4416,7 +4433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetMonitoringReportRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4428,10 +4445,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetMonitoringReportRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4447,7 +4464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetMonitoringReportResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4465,7 +4482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetMonitoringReportResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4484,7 +4501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                   request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetReportRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4496,10 +4513,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                sender,
                                                                connection,
                                                                request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetReportRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4515,7 +4532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetReportResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4533,7 +4550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                 runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetReportResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4552,7 +4569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetVariablesRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4564,10 +4581,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                   sender,
                                                                   connection,
                                                                   request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetVariablesRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4583,7 +4600,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetVariablesResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4601,7 +4618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetVariablesResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4620,7 +4637,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetMonitoringBaseRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4632,10 +4649,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringBaseRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4651,7 +4668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetMonitoringBaseResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4669,7 +4686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringBaseResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4688,7 +4705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetMonitoringLevelRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4700,10 +4717,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringLevelRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4719,7 +4736,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetMonitoringLevelResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4737,7 +4754,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringLevelResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4756,7 +4773,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetNetworkProfileRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4768,10 +4785,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetNetworkProfileRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4787,7 +4804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetNetworkProfileResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4805,7 +4822,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetNetworkProfileResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4824,7 +4841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                               request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetVariableMonitoringRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4836,10 +4853,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            sender,
                                                                            connection,
                                                                            request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariableMonitoringRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4855,7 +4872,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                                runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetVariableMonitoringResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4873,7 +4890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariableMonitoringResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4892,7 +4909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetVariablesRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4904,10 +4921,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                   sender,
                                                                   connection,
                                                                   request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariablesRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4923,7 +4940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetVariablesResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4941,7 +4958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariablesResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4960,7 +4977,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnTriggerMessageRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -4972,10 +4989,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     sender,
                                                                     connection,
                                                                     request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnTriggerMessageRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -4991,7 +5008,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnTriggerMessageResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5009,7 +5026,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnTriggerMessageResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5032,7 +5049,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnPublishFirmwareRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5044,10 +5061,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      sender,
                                                                      connection,
                                                                      request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPublishFirmwareRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5063,7 +5080,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnPublishFirmwareResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5081,7 +5098,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPublishFirmwareResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5101,7 +5118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnResetRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5113,10 +5130,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                             sender,
                                                             connection,
                                                             request,
-                                                            sendMessageResult) =>
+                                                            sentMessageResult,
+                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnResetRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5133,13 +5151,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnResetResponseReceived),
-                                     new JObject(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                     JSONObject.Create(
+                                               new JProperty("timestamp",   timestamp. ToIso8601()),
+                                               new JProperty("sender",      sender.Id),
+                                               new JProperty("connection",  connection.ToJSON()),
+                                               new JProperty("request",     request?.  ToJSON()),
+                                               new JProperty("response",    response.  ToJSON()),
+                                         runtime.HasValue
+                                             ? new JProperty("runtime",     runtime.Value.TotalMilliseconds)
+                                             : null
                                      ));
 
 
@@ -5148,10 +5168,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                              connection,
                                                              request,
                                                              response,
-                                                             runtime) =>
+                                                             runtime,
+                                                             sentMessageResult,
+                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnResetResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5170,7 +5192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUnpublishFirmwareRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5182,10 +5204,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnpublishFirmwareRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5201,7 +5223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                            runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUnpublishFirmwareResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5219,7 +5241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnpublishFirmwareResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5238,7 +5260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUpdateFirmwareRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5250,10 +5272,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     sender,
                                                                     connection,
                                                                     request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateFirmwareRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5269,7 +5291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                         runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUpdateFirmwareResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5287,7 +5309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                      runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateFirmwareResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5310,7 +5332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnAFRRSignalRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5322,10 +5344,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                 sender,
                                                                 connection,
                                                                 request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnAFRRSignalRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5341,7 +5363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnAFRRSignalResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5359,7 +5381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                  runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnAFRRSignalResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5382,7 +5404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearCacheRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5394,10 +5416,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                 sender,
                                                                 connection,
                                                                 request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearCacheRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5413,7 +5435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearCacheResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5431,7 +5453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                  runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearCacheResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5450,7 +5472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetLocalListVersionRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5462,10 +5484,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLocalListVersionRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5481,7 +5503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                              runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetLocalListVersionResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5499,7 +5521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLocalListVersionResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5518,7 +5540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       request) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSendLocalListRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5530,10 +5552,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    sender,
                                                                    connection,
                                                                    request,
-                                                                sendMessageResult) =>
+                                                                sentMessageResult) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSendLocalListRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5549,7 +5571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSendLocalListResponseReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          //new JProperty("connection",  connection.ToJSON()),
@@ -5567,7 +5589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     runtime) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSendLocalListResponseSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5593,7 +5615,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                       cancellationToken) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnDataTransferRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5605,13 +5627,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    sender,
                                                                    connection,
                                                                    request,
-                                                                   sendMessageResult) =>
+                                                                   sentMessageResult,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnDataTransferRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5646,7 +5669,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     connection,
                                                                     request,
                                                                     response,
-                                                                    runtime) =>
+                                                                    runtime,
+                                                                    sentMessageResult,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(
                     nameof(LocalController.OCPP.OUT.OnBinaryDataTransferResponseSent),
@@ -5675,7 +5700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                             cancellationToken) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnBinaryDataTransferRequestReceived),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
@@ -5687,13 +5712,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                         sendMessageResult) =>
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnBinaryDataTransferRequestSent),
-                                     new JObject(
+                                     JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToBinary().ToBase64())
                                      ));
 
@@ -5728,7 +5754,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                           connection,
                                                                           request,
                                                                           response,
-                                                                          runtime) =>
+                                                                          runtime,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(
                     nameof(LocalController.OCPP.OUT.OnBinaryDataTransferResponseSent),
@@ -5741,7 +5769,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                             : null,
                               new JProperty("response",    response.  ToBinary().ToBase64()),
                         runtime.HasValue
-                            ? new JProperty("runtime", runtime.Value.TotalMilliseconds)
+                            ? new JProperty("runtime",     runtime.Value.TotalMilliseconds)
                             : null
                     )
                 );

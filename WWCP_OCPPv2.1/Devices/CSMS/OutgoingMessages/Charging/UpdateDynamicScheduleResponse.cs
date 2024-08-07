@@ -394,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The UpdateDynamicSchedule failed.
         /// </summary>
         /// <param name="Request">The UpdateDynamicSchedule request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static UpdateDynamicScheduleResponse SignatureError(CSMS.UpdateDynamicScheduleRequest  Request,
                                                                    String                             ErrorDescription)
 
@@ -408,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The UpdateDynamicSchedule failed.
         /// </summary>
         /// <param name="Request">The UpdateDynamicSchedule request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static UpdateDynamicScheduleResponse Failed(CSMS.UpdateDynamicScheduleRequest  Request,
                                                            String?                            Description   = null)
 

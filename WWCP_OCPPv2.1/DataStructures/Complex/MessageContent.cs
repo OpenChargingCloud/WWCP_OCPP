@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -169,9 +171,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MessageContent">The parsed message content.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out MessageContent?  MessageContent,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out MessageContent?  MessageContent,
+                                       [NotNullWhen(false)] out String?          ErrorResponse)
 
             => TryParse(JSON,
                         out MessageContent,
@@ -187,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomMessageContentParser">A delegate to parse custom message content.</param>
         public static Boolean TryParse(JObject                                       JSON,
-                                       out MessageContent?                           MessageContent,
-                                       out String?                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out MessageContent?      MessageContent,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
                                        CustomJObjectParserDelegate<MessageContent>?  CustomMessageContentParser   = null)
         {
 
@@ -201,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("content",
                                              "message content",
-                                             out String Content,
+                                             out var Content,
                                              out ErrorResponse))
                 {
                     return false;

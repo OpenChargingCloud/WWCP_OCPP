@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetDisplayMessage failed.
         /// </summary>
         /// <param name="Request">The SetDisplayMessage request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SetDisplayMessageResponse SignatureError(CSMS.SetDisplayMessageRequest  Request,
                                                        String                 ErrorDescription)
 
@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetDisplayMessage failed.
         /// </summary>
         /// <param name="Request">The SetDisplayMessage request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static SetDisplayMessageResponse Failed(CSMS.SetDisplayMessageRequest  Request,
                                                String?                Description   = null)
 

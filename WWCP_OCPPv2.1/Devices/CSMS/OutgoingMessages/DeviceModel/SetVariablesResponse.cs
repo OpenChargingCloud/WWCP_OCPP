@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetVariables failed.
         /// </summary>
         /// <param name="Request">The SetVariables request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SetVariablesResponse SignatureError(CSMS.SetVariablesRequest  Request,
                                                           String                    ErrorDescription)
 
@@ -596,7 +596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetVariables failed.
         /// </summary>
         /// <param name="Request">The SetVariables request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static SetVariablesResponse Failed(CSMS.SetVariablesRequest  Request,
                                                   String?                   Description   = null)
 

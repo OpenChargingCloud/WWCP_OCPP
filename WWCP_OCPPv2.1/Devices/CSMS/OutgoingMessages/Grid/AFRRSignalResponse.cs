@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The AFRRSignal failed.
         /// </summary>
         /// <param name="Request">The AFRRSignal request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static AFRRSignalResponse SignatureError(CSMS.AFRRSignalRequest  Request,
                                                         String                  ErrorDescription)
 
@@ -407,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The AFRRSignal failed.
         /// </summary>
         /// <param name="Request">The AFRRSignal request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static AFRRSignalResponse Failed(CSMS.AFRRSignalRequest  Request,
                                                 String?                 Description   = null)
 

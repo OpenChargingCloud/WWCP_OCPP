@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ClearDisplayMessage failed.
         /// </summary>
         /// <param name="Request">The ClearDisplayMessage request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static ClearDisplayMessageResponse SignatureError(CSMS.ClearDisplayMessageRequest  Request,
                                                                  String                           ErrorDescription)
 
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ClearDisplayMessage failed.
         /// </summary>
         /// <param name="Request">The ClearDisplayMessage request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static ClearDisplayMessageResponse Failed(CSMS.ClearDisplayMessageRequest  Request,
                                                          String?                          Description   = null)
 

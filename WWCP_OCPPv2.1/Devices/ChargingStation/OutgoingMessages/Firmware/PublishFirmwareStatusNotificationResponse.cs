@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The PublishFirmwareStatusNotification failed.
         /// </summary>
         /// <param name="Request">The PublishFirmwareStatusNotification request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static PublishFirmwareStatusNotificationResponse SignatureError(CS.PublishFirmwareStatusNotificationRequest  Request,
                                                                                String                                       ErrorDescription)
 
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The PublishFirmwareStatusNotification failed.
         /// </summary>
         /// <param name="Request">The PublishFirmwareStatusNotification request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static PublishFirmwareStatusNotificationResponse Failed(CS.PublishFirmwareStatusNotificationRequest  Request,
                                                                        String?                                      Description   = null)
 

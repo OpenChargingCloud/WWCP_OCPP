@@ -524,7 +524,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The BinaryDataTransfer failed.
         /// </summary>
         /// <param name="Request">The BinaryDataTransfer request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static BinaryDataTransferResponse FormationViolation(BinaryDataTransferRequest  Request,
+                                                                    String                     ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The BinaryDataTransfer failed.
+        /// </summary>
+        /// <param name="Request">The BinaryDataTransfer request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static BinaryDataTransferResponse SignatureError(BinaryDataTransferRequest  Request,
                                                                 String                     ErrorDescription)
 
@@ -538,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The BinaryDataTransfer failed.
         /// </summary>
         /// <param name="Request">The BinaryDataTransfer request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static BinaryDataTransferResponse Failed(BinaryDataTransferRequest  Request,
                                                         String?                    Description   = null)
 

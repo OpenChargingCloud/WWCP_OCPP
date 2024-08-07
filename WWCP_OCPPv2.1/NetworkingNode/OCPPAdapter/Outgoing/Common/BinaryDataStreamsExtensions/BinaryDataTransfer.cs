@@ -40,9 +40,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task OnBinaryDataTransferRequestSentDelegate(DateTime                    Timestamp,
                                                                  IEventSender                Sender,
-                                                                 IWebSocketConnection        Connection,
+                                                                 IWebSocketConnection?       Connection,
                                                                  BinaryDataTransferRequest   Request,
-                                                                 SentMessageResults          SendMessageResult);
+                                                                 SentMessageResults          SendMessageResult,
+                                                                 CancellationToken           CancellationToken = default);
 
 
     /// <summary>
@@ -51,9 +52,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the response.</param>
     /// <param name="Connection">The connection of the response.</param>
-    /// <param name="Request">The optional request.</param>
+    /// <param name="Request">The request, when available.</param>
     /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The optional runtime of the response.</param>
+    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task
 
         OnBinaryDataTransferResponseSentDelegate(DateTime                     Timestamp,
@@ -61,7 +63,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  IWebSocketConnection         Connection,
                                                  BinaryDataTransferRequest?   Request,
                                                  BinaryDataTransferResponse   Response,
-                                                 TimeSpan?                    Runtime);
+                                                 TimeSpan?                    Runtime,
+                                                 SentMessageResults           SendMessageResult,
+                                                 CancellationToken            CancellationToken = default);
 
 
     /// <summary>
@@ -70,9 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the request error.</param>
     /// <param name="Connection">The connection of the request error.</param>
-    /// <param name="Request">The optional request (when parsable).</param>
+    /// <param name="Request">The request, when available.</param>
     /// <param name="RequestErrorMessage">The request error message.</param>
-    /// <param name="Runtime">The optional runtime of the request error messag.</param>
+    /// <param name="Runtime">The optional runtime of the request/request error message pair.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task
 
         OnBinaryDataTransferRequestErrorSentDelegate(DateTime                       Timestamp,
@@ -80,7 +85,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      IWebSocketConnection           Connection,
                                                      BinaryDataTransferRequest?     Request,
                                                      OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                     TimeSpan?                      Runtime);
+                                                     TimeSpan?                      Runtime,
+                                                     SentMessageResults             SendMessageResult,
+                                                     CancellationToken              CancellationToken = default);
 
 
     /// <summary>
@@ -89,10 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the response error.</param>
     /// <param name="Connection">The connection of the response error.</param>
-    /// <param name="Request">The optional request.</param>
-    /// <param name="Response">The optional response.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response, when available.</param>
     /// <param name="ResponseErrorMessage">The response error message.</param>
-    /// <param name="Runtime">The optional runtime of the response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     public delegate Task
 
         OnBinaryDataTransferResponseErrorSentDelegate(DateTime                        Timestamp,
@@ -101,18 +109,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       BinaryDataTransferRequest?      Request,
                                                       BinaryDataTransferResponse?     Response,
                                                       OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                      TimeSpan?                       Runtime);
+                                                      TimeSpan?                       Runtime,
+                                                      SentMessageResults              SendMessageResult,
+                                                      CancellationToken               CancellationToken = default);
 
     #endregion
 
 
-    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    public partial class OCPPWebSocketAdapterOUT
     {
 
         #region Send BinaryDataTransfer request
 
         /// <summary>
-        /// An event fired whenever a BinaryDataTransfer request will be sent.
+        /// An event fired whenever a BinaryDataTransfer request was sent.
         /// </summary>
         public event OnBinaryDataTransferRequestSentDelegate?  OnBinaryDataTransferRequestSent;
 
@@ -141,10 +151,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         out var signingErrors
                     ))
                 {
+
                     response = BinaryDataTransferResponse.SignatureError(
                                    Request,
                                    signingErrors
                                );
+
                 }
 
                 #endregion
@@ -179,11 +191,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
+
                     if (sendRequestState.IsValidBinaryResponse(Request, out var binaryResponse))
-                        response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_BinaryDataTransferResponse(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_BinaryDataTransferResponse(
                                              Request,
                                              binaryResponse,
-                                             null,
+                                             sendRequestState.WebSocketConnectionReceived,
                                              sendRequestState.DestinationIdReceived,
                                              sendRequestState.NetworkPathReceived,
                                              Request.EventTrackingId,
@@ -193,10 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
                     if (sendRequestState.IsValidBinaryRequestError(Request, out var binaryRequestError))
-                        response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_BinaryDataTransferRequestError(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_BinaryDataTransferRequestError(
                                              Request,
                                              binaryRequestError,
-                                             null,
+                                             sendRequestState.WebSocketConnectionReceived,
                                              sendRequestState.DestinationIdReceived,
                                              sendRequestState.NetworkPathReceived,
                                              Request.EventTrackingId,
@@ -216,9 +229,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = new BinaryDataTransferResponse(
+                response = BinaryDataTransferResponse.ExceptionOccured(
                                Request,
-                               Result.FromException(e)
+                               e
                            );
 
             }
@@ -228,6 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
 
         #region Send OnBinaryDataTransferResponseSent event
 
@@ -242,7 +256,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          IWebSocketConnection        Connection,
                                                          BinaryDataTransferRequest   Request,
                                                          BinaryDataTransferResponse  Response,
-                                                         TimeSpan                    Runtime)
+                                                         TimeSpan                    Runtime,
+                                                         SentMessageResults          SendMessageResult,
+                                                         CancellationToken           CancellationToken = default)
 
             => LogEvent(
                    OnBinaryDataTransferResponseSent,
@@ -252,7 +268,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Connection,
                        Request,
                        Response,
-                       Runtime
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
                    )
                );
 
@@ -271,7 +289,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              IWebSocketConnection          Connection,
                                                              BinaryDataTransferRequest?    Request,
                                                              OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                             TimeSpan                      Runtime)
+                                                             TimeSpan                      Runtime,
+                                                             SentMessageResults            SendMessageResult,
+                                                             CancellationToken             CancellationToken = default)
+
             => LogEvent(
                    OnBinaryDataTransferRequestErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
@@ -280,7 +301,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Connection,
                        Request,
                        RequestErrorMessage,
-                       Runtime
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
                    )
                );
 
@@ -300,7 +323,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                               BinaryDataTransferRequest?     Request,
                                                               BinaryDataTransferResponse?    Response,
                                                               OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                              TimeSpan                       Runtime)
+                                                              TimeSpan                       Runtime,
+                                                              SentMessageResults             SendMessageResult,
+                                                              CancellationToken              CancellationToken = default)
+
             => LogEvent(
                    OnBinaryDataTransferResponseErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
@@ -310,7 +336,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Request,
                        Response,
                        ResponseErrorMessage,
-                       Runtime
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
                    )
                );
 

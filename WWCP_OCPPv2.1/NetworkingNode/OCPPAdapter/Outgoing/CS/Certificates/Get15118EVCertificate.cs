@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// A charging station HTTP Web Socket client.
     /// </summary>
-    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    public partial class OCPPWebSocketAdapterOUT
     {
 
         #region Custom JSON serializer delegates
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
                 {
 
-                    response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_Get15118EVCertificateResponse(
+                    response = await parentNetworkingNode.OCPP.IN.Receive_Get15118EVCertificateResponse(
                                                                             Request,
                                                                             jsonResponse,
                                                                             null,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
-    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    public partial class OCPPWebSocketAdapterIN
     {
 
         #region Custom JSON parser delegates
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 else
                     response = new Get15118EVCertificateResponse(
                                        Request,
-                                       Result.Format(errorResponse)
+                                       Result.FormationViolation(errorResponse)
                                    );
 
             }

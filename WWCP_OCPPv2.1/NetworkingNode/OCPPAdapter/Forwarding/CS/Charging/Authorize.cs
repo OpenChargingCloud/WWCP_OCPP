@@ -255,7 +255,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              nameof(NetworkingNode),
                               nameof(OnAuthorizeRequestFiltered),
                               e
                           );
@@ -295,7 +294,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         catch (Exception e)
                         {
                             await HandleErrors(
-                                      nameof(NetworkingNode),
                                       nameof(OnAuthorizeRequestSent),
                                       e
                                   );

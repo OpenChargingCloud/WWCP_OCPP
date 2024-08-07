@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The CustomerInformation failed.
         /// </summary>
         /// <param name="Request">The CustomerInformation request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static CustomerInformationResponse SignatureError(CSMS.CustomerInformationRequest  Request,
                                                        String                 ErrorDescription)
 
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The CustomerInformation failed.
         /// </summary>
         /// <param name="Request">The CustomerInformation request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static CustomerInformationResponse Failed(CSMS.CustomerInformationRequest  Request,
                                                String?                Description   = null)
 

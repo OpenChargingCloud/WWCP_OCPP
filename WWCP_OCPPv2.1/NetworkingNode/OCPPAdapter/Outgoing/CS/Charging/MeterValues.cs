@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// A charging station HTTP Web Socket client.
     /// </summary>
-    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    public partial class OCPPWebSocketAdapterOUT
     {
 
         #region Events
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  );
 
                     if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
-                        response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_MeterValuesResponse(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_MeterValuesResponse(
                                              Request,
                                              jsonResponse,
                                              null,
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
                     else if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
-                        response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_MeterValuesRequestError(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_MeterValuesRequestError(
                                              Request,
                                              jsonRequestError,
                                              null
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
-    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    public partial class OCPPWebSocketAdapterIN
     {
 
         #region Events
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 else
                     response = new MeterValuesResponse(
                                    Request,
-                                   Result.Format(errorResponse)
+                                   Result.FormationViolation(errorResponse)
                                );
 
             }

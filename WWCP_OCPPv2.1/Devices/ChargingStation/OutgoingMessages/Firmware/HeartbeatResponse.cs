@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Heartbeat failed.
         /// </summary>
         /// <param name="Request">The Heartbeat request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static HeartbeatResponse SignatureError(CS.HeartbeatRequest  Request,
                                                        String               ErrorDescription)
 
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Heartbeat failed.
         /// </summary>
         /// <param name="Request">The Heartbeat request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static HeartbeatResponse Failed(CS.HeartbeatRequest  Request,
                                                String?              Description   = null)
 

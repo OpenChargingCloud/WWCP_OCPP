@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The CertificateSigned failed.
         /// </summary>
         /// <param name="Request">The CertificateSigned request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static CertificateSignedResponse SignatureError(CSMS.CertificateSignedRequest  Request,
                                                                String                         ErrorDescription)
 
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The CertificateSigned failed.
         /// </summary>
         /// <param name="Request">The CertificateSigned request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static CertificateSignedResponse Failed(CSMS.CertificateSignedRequest  Request,
                                                        String?                        Description   = null)
 

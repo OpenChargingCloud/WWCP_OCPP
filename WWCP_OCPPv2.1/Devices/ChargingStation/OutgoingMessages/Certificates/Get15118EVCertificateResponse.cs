@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Get15118EVCertificate failed.
         /// </summary>
         /// <param name="Request">The Get15118EVCertificate request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static Get15118EVCertificateResponse SignatureError(CS.Get15118EVCertificateRequest  Request,
                                                                    String                           ErrorDescription)
 
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Get15118EVCertificate failed.
         /// </summary>
         /// <param name="Request">The Get15118EVCertificate request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static Get15118EVCertificateResponse Failed(CS.Get15118EVCertificateRequest  Request,
                                                            String?                          Description   = null)
 

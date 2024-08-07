@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The UpdateUserRole failed.
         /// </summary>
         /// <param name="Request">The UpdateUserRole request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static UpdateUserRoleResponse SignatureError(UpdateUserRoleRequest  Request,
                                                             String                 ErrorDescription)
 
@@ -554,7 +554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The UpdateUserRole failed.
         /// </summary>
         /// <param name="Request">The UpdateUserRole request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static UpdateUserRoleResponse Failed(UpdateUserRoleRequest  Request,
                                                     String?                Description   = null)
 

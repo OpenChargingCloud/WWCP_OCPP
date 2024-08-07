@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetDisplayMessages failed.
         /// </summary>
         /// <param name="Request">The GetDisplayMessages request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static GetDisplayMessagesResponse SignatureError(CSMS.GetDisplayMessagesRequest  Request,
                                                                 String                          ErrorDescription)
 
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetDisplayMessages failed.
         /// </summary>
         /// <param name="Request">The GetDisplayMessages request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static GetDisplayMessagesResponse Failed(CSMS.GetDisplayMessagesRequest  Request,
                                                         String?                         Description   = null)
 

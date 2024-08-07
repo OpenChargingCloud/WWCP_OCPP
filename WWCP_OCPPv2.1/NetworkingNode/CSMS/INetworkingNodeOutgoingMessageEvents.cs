@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #region Charging
 
         /// <summary>
-        /// An event sent whenever a response to a Authorize request was sent.
+        /// An event sent whenever a response to an Authorize request was sent.
         /// </summary>
         event OnAuthorizeResponseSentDelegate                            OnAuthorizeResponseSent;
 

@@ -21,8 +21,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -320,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptionalJSON("groupIdToken",
                                            "group identification token",
                                            IdToken.TryParse,
-                                           out IdToken GroupIdToken,
+                                           out IdToken? GroupIdToken,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -334,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptional("language1",
                                        "first preferred user interface language",
                                        Language_Id.TryParse,
-                                       out Language_Id Language1,
+                                       out Language_Id? Language1,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -348,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptional("language2",
                                        "second preferred user interface language",
                                        Language_Id.TryParse,
-                                       out Language_Id Language2,
+                                       out Language_Id? Language2,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -412,8 +410,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                   ValidEVSEIds,
                                   HasChargingTariff,
                                   GroupIdToken,
-                                  Language2,
                                   Language1,
+                                  Language2,
                                   personalMessages,
                                   CustomData
                               );

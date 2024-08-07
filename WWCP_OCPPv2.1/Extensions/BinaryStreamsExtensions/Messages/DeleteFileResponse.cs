@@ -441,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The DeleteFile failed.
         /// </summary>
         /// <param name="Request">The DeleteFile request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static DeleteFileResponse SignatureError(DeleteFileRequest  Request,
                                                         String             ErrorDescription)
 
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The DeleteFile failed.
         /// </summary>
         /// <param name="Request">The DeleteFile request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static DeleteFileResponse Failed(DeleteFileRequest  Request,
                                                 String?            Description   = null)
 

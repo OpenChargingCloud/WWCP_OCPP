@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The TriggerMessage failed.
         /// </summary>
         /// <param name="Request">The TriggerMessage request.</param>
-        /// <param name="ErrorDescription">An optional error decription.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static TriggerMessageResponse SignatureError(CSMS.TriggerMessageRequest  Request,
                                                             String                      ErrorDescription)
 
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The TriggerMessage failed.
         /// </summary>
         /// <param name="Request">The TriggerMessage request.</param>
-        /// <param name="Description">An optional error decription.</param>
+        /// <param name="Description">An optional error description.</param>
         public static TriggerMessageResponse Failed(CSMS.TriggerMessageRequest  Request,
                                                     String?                     Description   = null)
 
