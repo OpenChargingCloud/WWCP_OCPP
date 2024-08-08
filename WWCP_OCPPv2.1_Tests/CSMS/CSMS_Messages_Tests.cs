@@ -2521,7 +2521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var qrCodeScannedRequests = new ConcurrentList<QRCodeScannedRequest>();
 
-                chargingStation1.OCPP.IN.OnQRCodeScannedRequestReceived += (timestamp, sender, connection, qrCodeScannedRequest) => {
+                chargingStation1.OCPP.IN.OnQRCodeScannedRequestReceived += (timestamp, sender, connection, qrCodeScannedRequest, ct) => {
                     qrCodeScannedRequests.TryAdd(qrCodeScannedRequest);
                     return Task.CompletedTask;
                 };
@@ -2701,12 +2701,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var requestStartTransactionRequests  = new ConcurrentList<RequestStartTransactionRequest>();
                 var requestStopTransactionRequests   = new ConcurrentList<RequestStopTransactionRequest>();
 
-                chargingStation1.OCPP.IN.OnRequestStartTransactionRequestReceived += (timestamp, sender, connection, requestStartTransactionRequest) => {
+                chargingStation1.OCPP.IN.OnRequestStartTransactionRequestReceived += (timestamp, sender, connection, requestStartTransactionRequest, ct) => {
                     requestStartTransactionRequests.TryAdd(requestStartTransactionRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.OCPP.IN.OnRequestStopTransactionRequestReceived  += (timestamp, sender, connection, requestStopTransactionRequest) => {
+                chargingStation1.OCPP.IN.OnRequestStopTransactionRequestReceived  += (timestamp, sender, connection, requestStopTransactionRequest, ct) => {
                     requestStopTransactionRequests. TryAdd(requestStopTransactionRequest);
                     return Task.CompletedTask;
                 };
@@ -2787,7 +2787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var unlockConnectorRequests = new ConcurrentList<GetTransactionStatusRequest>();
 
-                chargingStation1.OCPP.IN.OnGetTransactionStatusRequestReceived += (timestamp, sender, connection, unlockConnectorRequest) => {
+                chargingStation1.OCPP.IN.OnGetTransactionStatusRequestReceived += (timestamp, sender, connection, unlockConnectorRequest, ct) => {
                     unlockConnectorRequests.TryAdd(unlockConnectorRequest);
                     return Task.CompletedTask;
                 };
@@ -3316,7 +3316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var afrrSignalRequestRequests = new ConcurrentList<AFRRSignalRequest>();
 
-                chargingStation1.OCPP.IN.OnAFRRSignalRequestReceived += (timestamp, sender, connection, afrrSignalRequestRequest) => {
+                chargingStation1.OCPP.IN.OnAFRRSignalRequestReceived += (timestamp, sender, connection, afrrSignalRequestRequest, ct) => {
                     afrrSignalRequestRequests.TryAdd(afrrSignalRequestRequest);
                     return Task.CompletedTask;
                 };
@@ -3365,7 +3365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var setDisplayMessageRequests = new ConcurrentList<SetDisplayMessageRequest>();
 
-                chargingStation1.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp, sender, connection, setDisplayMessageRequest) => {
+                chargingStation1.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp, sender, connection, setDisplayMessageRequest, ct) => {
                     setDisplayMessageRequests.TryAdd(setDisplayMessageRequest);
                     return Task.CompletedTask;
                 };
@@ -3445,7 +3445,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var setDisplayMessageRequests = new ConcurrentList<SetDisplayMessageRequest>();
 
-                chargingStation1.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp, sender, connection, setDisplayMessageRequest) => {
+                chargingStation1.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp, sender, connection, setDisplayMessageRequest, ct) => {
                     setDisplayMessageRequests.TryAdd(setDisplayMessageRequest);
                     return Task.CompletedTask;
                 };
@@ -3509,7 +3509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var getDisplayMessagesRequests     = new ConcurrentList<GetDisplayMessagesRequest>();
                 var notifyDisplayMessagesRequests  = new ConcurrentList<CS.NotifyDisplayMessagesRequest>();
 
-                chargingStation1.OCPP.IN. OnGetDisplayMessagesRequestReceived    += (timestamp, sender, connection, getDisplayMessagesRequest) => {
+                chargingStation1.OCPP.IN. OnGetDisplayMessagesRequestReceived    += (timestamp, sender, connection, getDisplayMessagesRequest, ct) => {
                     getDisplayMessagesRequests.   TryAdd(getDisplayMessagesRequest);
                     return Task.CompletedTask;
                 };
@@ -3646,7 +3646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var setDisplayMessageRequests = new ConcurrentList<SetDisplayMessageRequest>();
 
-                chargingStation1.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp, sender, connection, setDisplayMessageRequest) => {
+                chargingStation1.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp, sender, connection, setDisplayMessageRequest, ct) => {
                     setDisplayMessageRequests.TryAdd(setDisplayMessageRequest);
                     return Task.CompletedTask;
                 };
@@ -3708,7 +3708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 // Get Messages BEFORE
                 var getDisplayMessagesRequests = new ConcurrentList<GetDisplayMessagesRequest>();
 
-                chargingStation1.OCPP.IN.OnGetDisplayMessagesRequestReceived += (timestamp, sender, connection, getDisplayMessagesRequest) => {
+                chargingStation1.OCPP.IN.OnGetDisplayMessagesRequestReceived += (timestamp, sender, connection, getDisplayMessagesRequest, ct) => {
                     getDisplayMessagesRequests.TryAdd(getDisplayMessagesRequest);
                     return Task.CompletedTask;
                 };
@@ -3741,7 +3741,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 // Delete message #1
                 var clearDisplayMessageRequests = new ConcurrentList<ClearDisplayMessageRequest>();
 
-                chargingStation1.OCPP.IN.OnClearDisplayMessageRequestReceived += (timestamp, sender, connection, clearDisplayMessageRequest) => {
+                chargingStation1.OCPP.IN.OnClearDisplayMessageRequestReceived += (timestamp, sender, connection, clearDisplayMessageRequest, ct) => {
                     clearDisplayMessageRequests.TryAdd(clearDisplayMessageRequest);
                     return Task.CompletedTask;
                 };
@@ -3821,7 +3821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var costUpdatedRequests = new ConcurrentList<CostUpdatedRequest>();
 
-                chargingStation1.OCPP.IN.OnCostUpdatedRequestReceived += (timestamp, sender, connection, costUpdatedRequest) => {
+                chargingStation1.OCPP.IN.OnCostUpdatedRequestReceived += (timestamp, sender, connection, costUpdatedRequest, ct) => {
                     costUpdatedRequests.TryAdd(costUpdatedRequest);
                     return Task.CompletedTask;
                 };
@@ -3875,7 +3875,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var customerInformationRequests        = new ConcurrentList<CustomerInformationRequest>();
                 var notifyCustomerInformationRequests  = new ConcurrentList<CS.NotifyCustomerInformationRequest>();
 
-                chargingStation1.OCPP.IN.OnCustomerInformationRequestReceived += (timestamp, sender, connection, customerInformationRequest) => {
+                chargingStation1.OCPP.IN.OnCustomerInformationRequestReceived += (timestamp, sender, connection, customerInformationRequest, ct) => {
                     customerInformationRequests.      TryAdd(customerInformationRequest);
                     return Task.CompletedTask;
                 };

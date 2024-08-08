@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public QRCodeScannedResponse(CSMS.QRCodeScannedRequest     Request,
                                      DateTime?                     ResponseTimestamp   = null,
 
+                                     NetworkingNode_Id?            DestinationId       = null,
+                                     NetworkPath?                  NetworkPath         = null,
+
                                      IEnumerable<KeyPair>?         SignKeys            = null,
                                      IEnumerable<SignInfo>?        SignInfos           = null,
                                      IEnumerable<Signature>?       Signatures          = null,
@@ -85,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -155,14 +158,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomQRCodeScannedResponseParser">A delegate to parse custom QRCodeScanned responses.</param>
         public static QRCodeScannedResponse Parse(CSMS.QRCodeScannedRequest                            Request,
                                                   JObject                                              JSON,
-                                                  CustomJObjectParserDelegate<QRCodeScannedResponse>?  CustomQRCodeScannedResponseParser   = null)
+                                                  NetworkingNode_Id                                    DestinationId,
+                                                  NetworkPath                                          NetworkPath,
+                                                  DateTime?                                            ResponseTimestamp                   = null,
+                                                  CustomJObjectParserDelegate<QRCodeScannedResponse>?  CustomQRCodeScannedResponseParser   = null,
+                                                  CustomJObjectParserDelegate<ResetResponse>?          CustomResetResponseParser           = null,
+                                                  CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                                  CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var qrCodeScannedResponse,
                          out var errorResponse,
-                         CustomQRCodeScannedResponseParser))
+                         ResponseTimestamp,
+                         CustomQRCodeScannedResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return qrCodeScannedResponse;
             }
@@ -186,9 +200,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomQRCodeScannedResponseParser">A delegate to parse custom QRCodeScanned responses.</param>
         public static Boolean TryParse(CSMS.QRCodeScannedRequest                            Request,
                                        JObject                                              JSON,
+                                       NetworkingNode_Id                                    DestinationId,
+                                       NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out QRCodeScannedResponse?      QRCodeScannedResponse,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       CustomJObjectParserDelegate<QRCodeScannedResponse>?  CustomQRCodeScannedResponseParser   = null)
+                                       DateTime?                                            ResponseTimestamp                   = null,
+                                       CustomJObjectParserDelegate<QRCodeScannedResponse>?  CustomQRCodeScannedResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                       CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             try
@@ -226,12 +245,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 QRCodeScannedResponse = new QRCodeScannedResponse(
+
                                             Request,
-                                            null,
+                                            ResponseTimestamp,
+
+                                            DestinationId,
+                                            NetworkPath,
+
                                             null,
                                             null,
                                             Signatures,
+
                                             CustomData
+
                                         );
 
                 if (CustomQRCodeScannedResponseParser is not null)
@@ -329,6 +355,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The QRCodeScanned failed.
+        /// </summary>
+        /// <param name="Request">The QRCodeScanned request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static QRCodeScannedResponse FormationViolation(CSMS.QRCodeScannedRequest  Request,
+                                                               String                     ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

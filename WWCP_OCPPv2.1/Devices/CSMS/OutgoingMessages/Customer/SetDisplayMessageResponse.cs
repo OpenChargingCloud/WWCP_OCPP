@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          StatusInfo?                    StatusInfo          = null,
                                          DateTime?                      ResponseTimestamp   = null,
 
+                                         NetworkingNode_Id?             DestinationId       = null,
+                                         NetworkPath?                   NetworkPath         = null,
+
                                          IEnumerable<KeyPair>?          SignKeys            = null,
                                          IEnumerable<SignInfo>?         SignInfos           = null,
                                          IEnumerable<Signature>?        Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -247,16 +250,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The SetDisplayMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom SetDisplayMessage responses.</param>
-        public static SetDisplayMessageResponse Parse(CSMS.SetDisplayMessageRequest                              Request,
+        public static SetDisplayMessageResponse Parse(CSMS.SetDisplayMessageRequest                            Request,
                                                       JObject                                                  JSON,
-                                                      CustomJObjectParserDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseParser   = null)
+                                                      NetworkingNode_Id                                        DestinationId,
+                                                      NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                ResponseTimestamp                       = null,
+                                                      CustomJObjectParserDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseParser   = null,
+                                                      CustomJObjectParserDelegate<StatusInfo>?                 CustomStatusInfoParser                  = null,
+                                                      CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                                      CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var setDisplayMessageResponse,
                          out var errorResponse,
-                         CustomSetDisplayMessageResponseParser))
+                         ResponseTimestamp,
+                         CustomSetDisplayMessageResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return setDisplayMessageResponse;
             }
@@ -280,9 +295,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom SetDisplayMessage responses.</param>
         public static Boolean TryParse(CSMS.SetDisplayMessageRequest                            Request,
                                        JObject                                                  JSON,
+                                       NetworkingNode_Id                                        DestinationId,
+                                       NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out SetDisplayMessageResponse?      SetDisplayMessageResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       CustomJObjectParserDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseParser   = null)
+                                       DateTime?                                                ResponseTimestamp                       = null,
+                                       CustomJObjectParserDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                 CustomStatusInfoParser                  = null,
+                                       CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                       CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             try
@@ -347,14 +368,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 SetDisplayMessageResponse = new SetDisplayMessageResponse(
+
                                                 Request,
                                                 Status,
                                                 StatusInfo,
-                                                null,
+                                                ResponseTimestamp,
+
+                                                DestinationId,
+                                                NetworkPath,
+
                                                 null,
                                                 null,
                                                 Signatures,
+
                                                 CustomData
+
                                             );
 
                 if (CustomSetDisplayMessageResponseParser is not null)
@@ -461,6 +489,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The SetDisplayMessage failed.
+        /// </summary>
+        /// <param name="Request">The SetDisplayMessage request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SetDisplayMessageResponse FormationViolation(CSMS.SetDisplayMessageRequest  Request,
+                                                                   String                         ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

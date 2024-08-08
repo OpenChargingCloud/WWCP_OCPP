@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               StatusInfo?                         StatusInfo          = null,
                                               DateTime?                           ResponseTimestamp   = null,
 
+                                              NetworkingNode_Id?                  DestinationId       = null,
+                                              NetworkPath?                        NetworkPath         = null,
+
                                               IEnumerable<KeyPair>?               SignKeys            = null,
                                               IEnumerable<SignInfo>?              SignInfos           = null,
                                               IEnumerable<Signature>?             Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -245,14 +248,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomRequestStopTransactionResponseParser">A delegate to parse custom RequestStopTransaction responses.</param>
         public static RequestStopTransactionResponse Parse(CSMS.RequestStopTransactionRequest                            Request,
                                                            JObject                                                       JSON,
-                                                           CustomJObjectParserDelegate<RequestStopTransactionResponse>?  CustomRequestStopTransactionResponseParser   = null)
+                                                           NetworkingNode_Id                                             DestinationId,
+                                                           NetworkPath                                                   NetworkPath,
+                                                           DateTime?                                                     ResponseTimestamp                            = null,
+                                                           CustomJObjectParserDelegate<RequestStopTransactionResponse>?  CustomRequestStopTransactionResponseParser   = null,
+                                                           CustomJObjectParserDelegate<StatusInfo>?                      CustomStatusInfoParser                       = null,
+                                                           CustomJObjectParserDelegate<Signature>?                       CustomSignatureParser                        = null,
+                                                           CustomJObjectParserDelegate<CustomData>?                      CustomCustomDataParser                       = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var requestStopTransactionResponse,
                          out var errorResponse,
-                         CustomRequestStopTransactionResponseParser))
+                         ResponseTimestamp,
+                         CustomRequestStopTransactionResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return requestStopTransactionResponse;
             }
@@ -276,9 +291,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomRequestStopTransactionResponseParser">A delegate to parse custom RequestStopTransaction responses.</param>
         public static Boolean TryParse(CSMS.RequestStopTransactionRequest                            Request,
                                        JObject                                                       JSON,
+                                       NetworkingNode_Id                                             DestinationId,
+                                       NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out RequestStopTransactionResponse?      RequestStopTransactionResponse,
                                        [NotNullWhen(false)] out String?                              ErrorResponse,
-                                       CustomJObjectParserDelegate<RequestStopTransactionResponse>?  CustomRequestStopTransactionResponseParser   = null)
+                                       DateTime?                                                     ResponseTimestamp                            = null,
+                                       CustomJObjectParserDelegate<RequestStopTransactionResponse>?  CustomRequestStopTransactionResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                      CustomStatusInfoParser                       = null,
+                                       CustomJObjectParserDelegate<Signature>?                       CustomSignatureParser                        = null,
+                                       CustomJObjectParserDelegate<CustomData>?                      CustomCustomDataParser                       = null)
         {
 
             try
@@ -343,14 +364,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 RequestStopTransactionResponse = new RequestStopTransactionResponse(
+
                                                      Request,
                                                      RequestStartStopStatus,
                                                      StatusInfo,
-                                                     null,
+                                                     ResponseTimestamp,
+
+                                                     DestinationId,
+                                                     NetworkPath,
+
                                                      null,
                                                      null,
                                                      Signatures,
+
                                                      CustomData
+
                                                  );
 
                 if (CustomRequestStopTransactionResponseParser is not null)
@@ -457,6 +485,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The RequestStopTransaction failed.
+        /// </summary>
+        /// <param name="Request">The RequestStopTransaction request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static RequestStopTransactionResponse FormationViolation(CSMS.RequestStopTransactionRequest  Request,
+                                                                        String                              ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             Boolean?                          OngoingIndicator    = null,
                                             DateTime?                         ResponseTimestamp   = null,
 
+                                            NetworkingNode_Id?                DestinationId       = null,
+                                            NetworkPath?                      NetworkPath         = null,
+
                                             IEnumerable<KeyPair>?             SignKeys            = null,
                                             IEnumerable<SignInfo>?            SignInfos           = null,
                                             IEnumerable<Signature>?           Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -213,14 +216,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetTransactionStatusResponseParser">A delegate to parse custom GetTransactionStatus responses.</param>
         public static GetTransactionStatusResponse Parse(CSMS.GetTransactionStatusRequest                            Request,
                                                          JObject                                                     JSON,
-                                                         CustomJObjectParserDelegate<GetTransactionStatusResponse>?  CustomGetTransactionStatusResponseParser   = null)
+                                                         NetworkingNode_Id                                           DestinationId,
+                                                         NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   ResponseTimestamp                          = null,
+                                                         CustomJObjectParserDelegate<GetTransactionStatusResponse>?  CustomGetTransactionStatusResponseParser   = null,
+                                                         CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                                         CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var getTransactionStatusResponse,
                          out var errorResponse,
-                         CustomGetTransactionStatusResponseParser))
+                         ResponseTimestamp,
+                         CustomGetTransactionStatusResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getTransactionStatusResponse;
             }
@@ -244,9 +257,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetTransactionStatusResponseParser">A delegate to parse custom GetTransactionStatus responses.</param>
         public static Boolean TryParse(CSMS.GetTransactionStatusRequest                            Request,
                                        JObject                                                     JSON,
+                                       NetworkingNode_Id                                           DestinationId,
+                                       NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out GetTransactionStatusResponse?      GetTransactionStatusResponse,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<GetTransactionStatusResponse>?  CustomGetTransactionStatusResponseParser   = null)
+                                       DateTime?                                                   ResponseTimestamp                          = null,
+                                       CustomJObjectParserDelegate<GetTransactionStatusResponse>?  CustomGetTransactionStatusResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                       CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             try
@@ -309,14 +327,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 GetTransactionStatusResponse = new GetTransactionStatusResponse(
+
                                                    Request,
                                                    MessagesInQueue,
                                                    OngoingIndicator,
-                                                   null,
+                                                   ResponseTimestamp,
+
+                                                   DestinationId,
+                                                   NetworkPath,
+
                                                    null,
                                                    null,
                                                    Signatures,
+
                                                    CustomData
+
                                                );
 
                 if (CustomGetTransactionStatusResponseParser is not null)
@@ -420,6 +445,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The GetTransactionStatus failed.
+        /// </summary>
+        /// <param name="Request">The GetTransactionStatus request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetTransactionStatusResponse FormationViolation(CSMS.GetTransactionStatusRequest  Request,
+                                                                      String                            ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

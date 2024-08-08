@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          DestinationId,
                          NetworkPath,
-                         out var ResetResponse,
+                         out var resetResponse,
                          out var errorResponse,
                          ResponseTimestamp,
                          CustomResetResponseParser,
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          CustomSignatureParser,
                          CustomCustomDataParser))
             {
-                return ResetResponse;
+                return resetResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a Reset response is invalid: " + errorResponse,

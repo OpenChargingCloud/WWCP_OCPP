@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            StatusInfo?                      StatusInfo          = null,
                                            DateTime?                        ResponseTimestamp   = null,
 
+                                           NetworkingNode_Id?               DestinationId       = null,
+                                           NetworkPath?                     NetworkPath         = null,
+
                                            IEnumerable<KeyPair>?            SignKeys            = null,
                                            IEnumerable<SignInfo>?           SignInfos           = null,
                                            IEnumerable<Signature>?          Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -245,14 +248,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom ClearDisplayMessage responses.</param>
         public static ClearDisplayMessageResponse Parse(CSMS.ClearDisplayMessageRequest                            Request,
                                                         JObject                                                    JSON,
-                                                        CustomJObjectParserDelegate<ClearDisplayMessageResponse>?  CustomClearDisplayMessageResponseParser   = null)
+                                                        NetworkingNode_Id                                          DestinationId,
+                                                        NetworkPath                                                NetworkPath,
+                                                        DateTime?                                                  ResponseTimestamp                         = null,
+                                                        CustomJObjectParserDelegate<ClearDisplayMessageResponse>?  CustomClearDisplayMessageResponseParser   = null,
+                                                        CustomJObjectParserDelegate<StatusInfo>?                   CustomStatusInfoParser                    = null,
+                                                        CustomJObjectParserDelegate<Signature>?                    CustomSignatureParser                     = null,
+                                                        CustomJObjectParserDelegate<CustomData>?                   CustomCustomDataParser                    = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var clearDisplayMessageResponse,
                          out var errorResponse,
-                         CustomClearDisplayMessageResponseParser))
+                         ResponseTimestamp,
+                         CustomClearDisplayMessageResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return clearDisplayMessageResponse;
             }
@@ -276,9 +291,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom ClearDisplayMessage responses.</param>
         public static Boolean TryParse(CSMS.ClearDisplayMessageRequest                            Request,
                                        JObject                                                    JSON,
+                                       NetworkingNode_Id                                          DestinationId,
+                                       NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out ClearDisplayMessageResponse?      ClearDisplayMessageResponse,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
-                                       CustomJObjectParserDelegate<ClearDisplayMessageResponse>?  CustomClearDisplayMessageResponseParser   = null)
+                                       DateTime?                                                  ResponseTimestamp                         = null,
+                                       CustomJObjectParserDelegate<ClearDisplayMessageResponse>?  CustomClearDisplayMessageResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                   CustomStatusInfoParser                    = null,
+                                       CustomJObjectParserDelegate<Signature>?                    CustomSignatureParser                     = null,
+                                       CustomJObjectParserDelegate<CustomData>?                   CustomCustomDataParser                    = null)
         {
 
             try
@@ -343,14 +364,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 ClearDisplayMessageResponse = new ClearDisplayMessageResponse(
+
                                                   Request,
                                                   Status,
                                                   StatusInfo,
-                                                  null,
+                                                  ResponseTimestamp,
+
+                                                  DestinationId,
+                                                  NetworkPath,
+
                                                   null,
                                                   null,
                                                   Signatures,
+
                                                   CustomData
+
                                               );
 
                 if (CustomClearDisplayMessageResponseParser is not null)
@@ -457,6 +485,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The ClearDisplayMessage failed.
+        /// </summary>
+        /// <param name="Request">The ClearDisplayMessage request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static ClearDisplayMessageResponse FormationViolation(CSMS.ClearDisplayMessageRequest  Request,
+                                                                     String                           ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>
