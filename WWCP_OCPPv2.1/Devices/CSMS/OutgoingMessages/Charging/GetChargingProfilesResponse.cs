@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            StatusInfo?                       StatusInfo          = null,
                                            DateTime?                         ResponseTimestamp   = null,
 
+                                           NetworkingNode_Id?                DestinationId       = null,
+                                           NetworkPath?                      NetworkPath         = null,
+
                                            IEnumerable<KeyPair>?             SignKeys            = null,
                                            IEnumerable<SignInfo>?            SignInfos           = null,
                                            IEnumerable<Signature>?           Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -245,14 +248,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetChargingProfilesResponse Parse(CSMS.GetChargingProfilesRequest                            Request,
                                                         JObject                                                    JSON,
-                                                        CustomJObjectParserDelegate<GetChargingProfilesResponse>?  CustomGetChargingProfilesResponseParser   = null)
+                                                        NetworkingNode_Id                                          DestinationId,
+                                                        NetworkPath                                                NetworkPath,
+                                                        DateTime?                                                  ResponseTimestamp                         = null,
+                                                        CustomJObjectParserDelegate<GetChargingProfilesResponse>?  CustomGetChargingProfilesResponseParser   = null,
+                                                        CustomJObjectParserDelegate<StatusInfo>?                   CustomStatusInfoParser                    = null,
+                                                        CustomJObjectParserDelegate<Signature>?                    CustomSignatureParser                     = null,
+                                                        CustomJObjectParserDelegate<CustomData>?                   CustomCustomDataParser                    = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var getChargingProfilesResponse,
                          out var errorResponse,
-                         CustomGetChargingProfilesResponseParser))
+                         ResponseTimestamp,
+                         CustomGetChargingProfilesResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getChargingProfilesResponse;
             }
@@ -276,9 +291,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetChargingProfilesResponseParser">A delegate to parse custom GetChargingProfiles responses.</param>
         public static Boolean TryParse(CSMS.GetChargingProfilesRequest                            Request,
                                        JObject                                                    JSON,
+                                       NetworkingNode_Id                                          DestinationId,
+                                       NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out GetChargingProfilesResponse?      GetChargingProfilesResponse,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
-                                       CustomJObjectParserDelegate<GetChargingProfilesResponse>?  CustomGetChargingProfilesResponseParser   = null)
+                                       DateTime?                                                  ResponseTimestamp                         = null,
+                                       CustomJObjectParserDelegate<GetChargingProfilesResponse>?  CustomGetChargingProfilesResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                   CustomStatusInfoParser                    = null,
+                                       CustomJObjectParserDelegate<Signature>?                    CustomSignatureParser                     = null,
+                                       CustomJObjectParserDelegate<CustomData>?                   CustomCustomDataParser                    = null)
         {
 
             try
@@ -343,14 +364,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 GetChargingProfilesResponse = new GetChargingProfilesResponse(
+
                                                   Request,
                                                   GetChargingProfilesStatus,
                                                   StatusInfo,
-                                                  null,
+                                                  ResponseTimestamp,
+
+                                                  DestinationId,
+                                                  NetworkPath,
+
                                                   null,
                                                   null,
                                                   Signatures,
+
                                                   CustomData
+
                                               );
 
                 if (CustomGetChargingProfilesResponseParser is not null)
@@ -457,6 +485,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The GetChargingProfiles failed.
+        /// </summary>
+        /// <param name="Request">The GetChargingProfiles request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetChargingProfilesResponse FormationViolation(CSMS.GetChargingProfilesRequest  Request,
+                                                                     String                           ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

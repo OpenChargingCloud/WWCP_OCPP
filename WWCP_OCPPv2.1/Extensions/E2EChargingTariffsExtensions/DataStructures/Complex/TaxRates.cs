@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public static TaxRates Empty
 
-            => new();
+            => new ();
 
         #endregion
 
@@ -394,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Percentage">The tax percentage.</param>
         public static TaxRates VAT(Decimal Percentage)
 
-            => new(
+            => new (
                    new TaxRate(
                        Type:                          "VAT",
                        Tax:                           Percentage,

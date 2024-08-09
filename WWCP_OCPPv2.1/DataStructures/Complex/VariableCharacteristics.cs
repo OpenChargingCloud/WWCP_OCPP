@@ -457,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public VariableCharacteristics Clone()
 
-            => new(
+            => new (
 
                    DataType,
                    SupportsMonitoring,

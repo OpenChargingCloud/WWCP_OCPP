@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes
         /// </summary>
         public Name Clone
 
-            => new(
+            => new (
                    new String(InternalId?.ToCharArray())
                );
 

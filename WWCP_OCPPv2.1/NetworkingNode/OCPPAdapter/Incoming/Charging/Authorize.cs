@@ -136,12 +136,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Receive Authorize request
 
         /// <summary>
-        /// An event sent whenever a Authorize request was received.
+        /// An event sent whenever an Authorize request was received.
         /// </summary>
         public event OnAuthorizeRequestReceivedDelegate?  OnAuthorizeRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a Authorize request was received for processing.
+        /// An event sent whenever an Authorize request was received for processing.
         /// </summary>
         public event OnAuthorizeDelegate?                 OnAuthorize;
 

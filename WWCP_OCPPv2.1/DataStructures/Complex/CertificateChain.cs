@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (Certificates);
 
         public static CertificateChain From(params Org.BouncyCastle.X509.X509Certificate[] Certificates)
-            => new(Certificates.Select(Certificate.From));
+            => new (Certificates.Select(Certificate.From));
 
 
 

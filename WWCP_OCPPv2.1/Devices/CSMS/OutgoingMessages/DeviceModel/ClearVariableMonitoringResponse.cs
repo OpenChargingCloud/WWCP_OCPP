@@ -83,6 +83,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                IEnumerable<ClearMonitoringResult>    ClearMonitoringResults,
                                                DateTime?                             ResponseTimestamp   = null,
 
+                                               NetworkingNode_Id?                    DestinationId       = null,
+                                               NetworkPath?                          NetworkPath         = null,
+
                                                IEnumerable<KeyPair>?                 SignKeys            = null,
                                                IEnumerable<SignInfo>?                SignInfos           = null,
                                                IEnumerable<Signature>?               Signatures          = null,
@@ -93,8 +96,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -271,14 +274,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom ClearVariableMonitoring responses.</param>
         public static ClearVariableMonitoringResponse Parse(CSMS.ClearVariableMonitoringRequest                            Request,
                                                             JObject                                                        JSON,
-                                                            CustomJObjectParserDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseParser   = null)
+                                                            NetworkingNode_Id                                              DestinationId,
+                                                            NetworkPath                                                    NetworkPath,
+                                                            DateTime?                                                      ResponseTimestamp                             = null,
+                                                            CustomJObjectParserDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseParser   = null,
+                                                            CustomJObjectParserDelegate<ClearMonitoringResult>?            CustomClearMonitoringResultParser             = null,
+                                                            CustomJObjectParserDelegate<StatusInfo>?                       CustomStatusInfoParser                        = null,
+                                                            CustomJObjectParserDelegate<Signature>?                        CustomSignatureParser                         = null,
+                                                            CustomJObjectParserDelegate<CustomData>?                       CustomCustomDataParser                        = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var clearVariableMonitoringResponse,
                          out var errorResponse,
-                         CustomClearVariableMonitoringResponseParser))
+                         ResponseTimestamp,
+                         CustomClearVariableMonitoringResponseParser,
+                         CustomClearMonitoringResultParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return clearVariableMonitoringResponse;
             }
@@ -302,9 +319,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom ClearVariableMonitoring responses.</param>
         public static Boolean TryParse(CSMS.ClearVariableMonitoringRequest                            Request,
                                        JObject                                                        JSON,
+                                       NetworkingNode_Id                                              DestinationId,
+                                       NetworkPath                                                    NetworkPath,
                                        [NotNullWhen(true)]  out ClearVariableMonitoringResponse?      ClearVariableMonitoringResponse,
                                        [NotNullWhen(false)] out String?                               ErrorResponse,
-                                       CustomJObjectParserDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseParser   = null)
+                                       DateTime?                                                      ResponseTimestamp                             = null,
+                                       CustomJObjectParserDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseParser   = null,
+                                       CustomJObjectParserDelegate<ClearMonitoringResult>?            CustomClearMonitoringResultParser             = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                       CustomStatusInfoParser                        = null,
+                                       CustomJObjectParserDelegate<Signature>?                        CustomSignatureParser                         = null,
+                                       CustomJObjectParserDelegate<CustomData>?                       CustomCustomDataParser                        = null)
         {
 
             try
@@ -355,13 +379,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 ClearVariableMonitoringResponse = new ClearVariableMonitoringResponse(
+
                                                       Request,
                                                       ClearMonitoringResults,
-                                                      null,
+                                                      ResponseTimestamp,
+
+                                                      DestinationId,
+                                                      NetworkPath,
+
                                                       null,
                                                       null,
                                                       Signatures,
+
                                                       CustomData
+
                                                   );
 
                 if (CustomClearVariableMonitoringResponseParser is not null)
@@ -466,6 +497,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The ClearVariableMonitoring failed.
+        /// </summary>
+        /// <param name="Request">The ClearVariableMonitoring request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static ClearVariableMonitoringResponse FormationViolation(CSMS.ClearVariableMonitoringRequest  Request,
+                                                                         String                               ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

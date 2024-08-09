@@ -83,6 +83,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              IEnumerable<SetMonitoringResult>   SetMonitoringResults,
                                              DateTime?                          ResponseTimestamp   = null,
 
+                                             NetworkingNode_Id?                 DestinationId       = null,
+                                             NetworkPath?                       NetworkPath         = null,
+
                                              IEnumerable<KeyPair>?              SignKeys            = null,
                                              IEnumerable<SignInfo>?             SignInfos           = null,
                                              IEnumerable<Signature>?            Signatures          = null,
@@ -93,8 +96,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -373,14 +376,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom SetVariableMonitoring responses.</param>
         public static SetVariableMonitoringResponse Parse(CSMS.SetVariableMonitoringRequest                            Request,
                                                           JObject                                                      JSON,
-                                                          CustomJObjectParserDelegate<SetVariableMonitoringResponse>?  CustomSetVariableMonitoringResponseParser   = null)
+                                                          NetworkingNode_Id                                            DestinationId,
+                                                          NetworkPath                                                  NetworkPath,
+                                                          DateTime?                                                    ResponseTimestamp                           = null,
+                                                          CustomJObjectParserDelegate<SetVariableMonitoringResponse>?  CustomSetVariableMonitoringResponseParser   = null,
+                                                          CustomJObjectParserDelegate<SetMonitoringResult>?            CustomSetMonitoringResultParser             = null,
+                                                          CustomJObjectParserDelegate<Component>?                      CustomComponentParser                       = null,
+                                                          CustomJObjectParserDelegate<EVSE>?                           CustomEVSEParser                            = null,
+                                                          CustomJObjectParserDelegate<Variable>?                       CustomVariableParser                        = null,
+                                                          CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                                          CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                                          CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var setNetworkProfileResponse,
                          out var errorResponse,
-                         CustomSetVariableMonitoringResponseParser))
+                         ResponseTimestamp,
+                         CustomSetVariableMonitoringResponseParser,
+                         CustomSetMonitoringResultParser,
+                         CustomComponentParser,
+                         CustomEVSEParser,
+                         CustomVariableParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return setNetworkProfileResponse;
             }
@@ -404,9 +427,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom SetVariableMonitoring responses.</param>
         public static Boolean TryParse(CSMS.SetVariableMonitoringRequest                            Request,
                                        JObject                                                      JSON,
+                                       NetworkingNode_Id                                            DestinationId,
+                                       NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out SetVariableMonitoringResponse?      SetVariableMonitoringResponse,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
-                                       CustomJObjectParserDelegate<SetVariableMonitoringResponse>?  CustomSetVariableMonitoringResponseParser   = null)
+                                       DateTime?                                                    ResponseTimestamp                           = null,
+                                       CustomJObjectParserDelegate<SetVariableMonitoringResponse>?  CustomSetVariableMonitoringResponseParser   = null,
+                                       CustomJObjectParserDelegate<SetMonitoringResult>?            CustomSetMonitoringResultParser             = null,
+                                       CustomJObjectParserDelegate<Component>?                      CustomComponentParser                       = null,
+                                       CustomJObjectParserDelegate<EVSE>?                           CustomEVSEParser                            = null,
+                                       CustomJObjectParserDelegate<Variable>?                       CustomVariableParser                        = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                       CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                       CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             try
@@ -457,13 +490,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 SetVariableMonitoringResponse = new SetVariableMonitoringResponse(
+
                                                     Request,
                                                     SetMonitoringResults,
-                                                    null,
+                                                    ResponseTimestamp,
+
+                                                    DestinationId,
+                                                    NetworkPath,
+
                                                     null,
                                                     null,
                                                     Signatures,
+
                                                     CustomData
+
                                                 );
 
                 if (CustomSetVariableMonitoringResponseParser is not null)
@@ -578,6 +618,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The SetVariableMonitoring failed.
+        /// </summary>
+        /// <param name="Request">The SetVariableMonitoring request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SetVariableMonitoringResponse FormationViolation(CSMS.SetVariableMonitoringRequest  Request,
+                                                                       String                             ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

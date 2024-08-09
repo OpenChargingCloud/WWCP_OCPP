@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   StatusInfo?                   StatusInfo          = null,
                                   DateTime?                     ResponseTimestamp   = null,
 
+                                  NetworkingNode_Id?            DestinationId       = null,
+                                  NetworkPath?                  NetworkPath         = null,
+
                                   IEnumerable<KeyPair>?         SignKeys            = null,
                                   IEnumerable<SignInfo>?        SignInfos           = null,
                                   IEnumerable<Signature>?       Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -245,14 +248,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearCacheResponseParser">A delegate to parse custom ClearCache responses.</param>
         public static ClearCacheResponse Parse(CSMS.ClearCacheRequest                            Request,
                                                JObject                                           JSON,
-                                               CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
+                                               NetworkingNode_Id                                 DestinationId,
+                                               NetworkPath                                       NetworkPath,
+                                               DateTime?                                         ResponseTimestamp                = null,
+                                               CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null,
+                                               CustomJObjectParserDelegate<StatusInfo>?          CustomStatusInfoParser           = null,
+                                               CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
+                                               CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var clearCacheResponse,
                          out var errorResponse,
-                         CustomClearCacheResponseParser))
+                         ResponseTimestamp,
+                         CustomClearCacheResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return clearCacheResponse;
             }
@@ -276,9 +291,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearCacheResponseParser">A delegate to parse custom ClearCache responses.</param>
         public static Boolean TryParse(CSMS.ClearCacheRequest                            Request,
                                        JObject                                           JSON,
+                                       NetworkingNode_Id                                 DestinationId,
+                                       NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out ClearCacheResponse?      ClearCacheResponse,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
-                                       CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
+                                       DateTime?                                         ResponseTimestamp                = null,
+                                       CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?          CustomStatusInfoParser           = null,
+                                       CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
+                                       CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
         {
 
             try
@@ -343,14 +364,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 ClearCacheResponse = new ClearCacheResponse(
+
                                          Request,
                                          ClearCacheStatus,
                                          StatusInfo,
-                                         null,
+                                         ResponseTimestamp,
+
+                                         DestinationId,
+                                         NetworkPath,
+
                                          null,
                                          null,
                                          Signatures,
+
                                          CustomData
+
                                      );
 
                 if (CustomClearCacheResponseParser is not null)
@@ -457,6 +485,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The ClearCache failed.
+        /// </summary>
+        /// <param name="Request">The ClearCache request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static ClearCacheResponse FormationViolation(CSMS.ClearCacheRequest  Request,
+                                                            String                  ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

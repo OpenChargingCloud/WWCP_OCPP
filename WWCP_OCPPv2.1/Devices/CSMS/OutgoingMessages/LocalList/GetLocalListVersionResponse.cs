@@ -83,6 +83,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            UInt64                           VersionNumber,
                                            DateTime?                        ResponseTimestamp   = null,
 
+                                           NetworkingNode_Id?               DestinationId       = null,
+                                           NetworkPath?                     NetworkPath         = null,
+
                                            IEnumerable<KeyPair>?            SignKeys            = null,
                                            IEnumerable<SignInfo>?           SignInfos           = null,
                                            IEnumerable<Signature>?          Signatures          = null,
@@ -93,8 +96,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -200,14 +203,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom GetLocalListVersion responses.</param>
         public static GetLocalListVersionResponse Parse(CSMS.GetLocalListVersionRequest                            Request,
                                                         JObject                                                    JSON,
-                                                        CustomJObjectParserDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseParser   = null)
+                                                        NetworkingNode_Id                                          DestinationId,
+                                                        NetworkPath                                                NetworkPath,
+                                                        DateTime?                                                  ResponseTimestamp                         = null,
+                                                        CustomJObjectParserDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseParser   = null,
+                                                        CustomJObjectParserDelegate<Signature>?                    CustomSignatureParser                     = null,
+                                                        CustomJObjectParserDelegate<CustomData>?                   CustomCustomDataParser                    = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var getLocalListVersionResponse,
                          out var errorResponse,
-                         CustomGetLocalListVersionResponseParser))
+                         ResponseTimestamp,
+                         CustomGetLocalListVersionResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getLocalListVersionResponse;
             }
@@ -231,9 +244,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom GetLocalListVersion responses.</param>
         public static Boolean TryParse(CSMS.GetLocalListVersionRequest                            Request,
                                        JObject                                                    JSON,
+                                       NetworkingNode_Id                                          DestinationId,
+                                       NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out GetLocalListVersionResponse?      GetLocalListVersionResponse,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
-                                       CustomJObjectParserDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseParser   = null)
+                                       DateTime?                                                  ResponseTimestamp                         = null,
+                                       CustomJObjectParserDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                    CustomSignatureParser                     = null,
+                                       CustomJObjectParserDelegate<CustomData>?                   CustomCustomDataParser                    = null)
         {
 
             try
@@ -283,13 +301,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 GetLocalListVersionResponse = new GetLocalListVersionResponse(
+
                                                   Request,
                                                   VersionNumber,
-                                                  null,
+                                                  ResponseTimestamp,
+
+                                                  DestinationId,
+                                                  NetworkPath,
+
                                                   null,
                                                   null,
                                                   Signatures,
+
                                                   CustomData
+
                                               );
 
                 if (CustomGetLocalListVersionResponseParser is not null)
@@ -389,6 +414,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The GetLocalListVersion failed.
+        /// </summary>
+        /// <param name="Request">The GetLocalListVersion request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetLocalListVersionResponse FormationViolation(CSMS.GetLocalListVersionRequest  Request,
+                                                                     String                           ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

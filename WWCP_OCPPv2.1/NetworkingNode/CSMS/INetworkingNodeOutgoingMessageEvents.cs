@@ -119,12 +119,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         event OnUnlockConnectorRequestSentDelegate?                OnUnlockConnectorRequestSent;
 
         /// <summary>
-        /// An event fired whenever a UpdateDynamicSchedule request will be be sent (to the charging station).
+        /// An event fired whenever an UpdateDynamicSchedule request will be be sent (to the charging station).
         /// </summary>
         event OnUpdateDynamicScheduleRequestSentDelegate?          OnUpdateDynamicScheduleRequestSent;
 
         /// <summary>
-        /// An event fired whenever a UsePriorityCharging request will be be sent (to the charging station).
+        /// An event fired whenever an UsePriorityCharging request will be be sent (to the charging station).
         /// </summary>
         event OnUsePriorityChargingRequestSentDelegate?            OnUsePriorityChargingRequestSent;
 

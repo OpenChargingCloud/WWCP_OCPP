@@ -839,9 +839,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnSignCertificate
 
             LocalController.OCPP.IN.OnSignCertificateRequestReceived += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSignCertificateRequestReceived),
                                      JSONObject.Create(
@@ -853,44 +854,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnSignCertificateRequestSent += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                sentMessageResult) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      sentMessageResult,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSignCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnSignCertificateResponseReceived += (timestamp,
-                                                                         sender,
-                                                                         //connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSignCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnSignCertificateResponseSent += (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime,
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSignCertificateResponseSent),
                                      JSONObject.Create(
@@ -2580,9 +2585,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnCertificateSigned
 
             LocalController.OCPP.IN.OnCertificateSignedRequestReceived += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCertificateSignedRequestReceived),
                                      JSONObject.Create(
@@ -2594,44 +2600,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnCertificateSignedRequestSent += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                sentMessageResult) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCertificateSignedRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnCertificateSignedResponseReceived += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCertificateSignedResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnCertificateSignedResponseSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCertificateSignedResponseSent),
                                      JSONObject.Create(
@@ -2648,9 +2658,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnDeleteCertificate
 
             LocalController.OCPP.IN.OnDeleteCertificateRequestReceived += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnDeleteCertificateRequestReceived),
                                      JSONObject.Create(
@@ -2665,41 +2676,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sentMessageResult) =>
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnDeleteCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnDeleteCertificateResponseReceived += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnDeleteCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnDeleteCertificateResponseSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnDeleteCertificateResponseSent),
                                      JSONObject.Create(
@@ -2716,9 +2731,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnGetInstalledCertificateIds
 
             LocalController.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived += (timestamp,
-                                                                                   sender,
-                                                                                   connection,
-                                                                                   request) =>
+                                                                                    sender,
+                                                                                    connection,
+                                                                                    request,
+                                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived),
                                      JSONObject.Create(
@@ -2730,44 +2746,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent += (timestamp,
-                                                                                sender,
-                                                                                connection,
-                                                                                request,
-                                                                sentMessageResult) =>
+                                                                                 sender,
+                                                                                 connection,
+                                                                                 request,
+                                                                                 sentMessageResult,
+                                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived += (timestamp,
-                                                                                    sender,
-                                                                                    //connection,
-                                                                                    request,
-                                                                                    response,
-                                                                                    runtime) =>
+                                                                                     sender,
+                                                                                     connection,
+                                                                                     request,
+                                                                                     response,
+                                                                                     runtime,
+                                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent += (timestamp,
-                                                                                 sender,
-                                                                                 connection,
-                                                                                 request,
-                                                                                 response,
-                                                                                 runtime) =>
+                                                                                  sender,
+                                                                                  connection,
+                                                                                  request,
+                                                                                  response,
+                                                                                  runtime,
+                                                                                  sentMessageResult,
+                                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent),
                                      JSONObject.Create(
@@ -2784,9 +2804,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnInstallCertificate
 
             LocalController.OCPP.IN.OnInstallCertificateRequestReceived += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnInstallCertificateRequestReceived),
                                      JSONObject.Create(
@@ -2798,44 +2819,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnInstallCertificateRequestSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                sentMessageResult) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnInstallCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnInstallCertificateResponseReceived += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnInstallCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnInstallCertificateResponseSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnInstallCertificateResponseSent),
                                      JSONObject.Create(
@@ -2852,9 +2877,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnNotifyCRL
 
             LocalController.OCPP.IN.OnNotifyCRLRequestReceived += (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyCRLRequestReceived),
                                      JSONObject.Create(
@@ -2866,44 +2892,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnNotifyCRLRequestSent += (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request,
-                                                                sentMessageResult) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                sentMessageResult,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyCRLRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnNotifyCRLResponseReceived += (timestamp,
-                                                                   sender,
-                                                                   //connection,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyCRLResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnNotifyCRLResponseSent += (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                response,
-                                                                runtime) =>
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime,
+                                                                 sentMessageResult,
+                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyCRLResponseSent),
                                      JSONObject.Create(
@@ -2924,9 +2954,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnCancelReservation
 
             LocalController.OCPP.IN.OnCancelReservationRequestReceived += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCancelReservationRequestReceived),
                                      JSONObject.Create(
@@ -2938,44 +2969,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnCancelReservationRequestSent += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                sentMessageResult) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCancelReservationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnCancelReservationResponseReceived += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnCancelReservationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnCancelReservationResponseSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnCancelReservationResponseSent),
                                      JSONObject.Create(
@@ -2992,9 +3027,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnClearChargingProfile
 
             LocalController.OCPP.IN.OnClearChargingProfileRequestReceived += (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearChargingProfileRequestReceived),
                                      JSONObject.Create(
@@ -3006,44 +3042,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnClearChargingProfileRequestSent += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                sentMessageResult) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearChargingProfileRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnClearChargingProfileResponseReceived += (timestamp,
-                                                                              sender,
-                                                                              //connection,
-                                                                              request,
-                                                                              response,
-                                                                              runtime) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request,
+                                                                               response,
+                                                                               runtime,
+                                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearChargingProfileResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnClearChargingProfileResponseSent += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime,
+                                                                            sentMessageResult,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearChargingProfileResponseSent),
                                      JSONObject.Create(
@@ -3060,9 +3100,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnGetChargingProfiles
 
             LocalController.OCPP.IN.OnGetChargingProfilesRequestReceived += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetChargingProfilesRequestReceived),
                                      JSONObject.Create(
@@ -3074,44 +3115,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnGetChargingProfilesRequestSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                sentMessageResult) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetChargingProfilesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnGetChargingProfilesResponseReceived += (timestamp,
-                                                                             sender,
-                                                                             //connection,
-                                                                             request,
-                                                                             response,
-                                                                             runtime) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetChargingProfilesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnGetChargingProfilesResponseSent += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime,
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetChargingProfilesResponseSent),
                                      JSONObject.Create(
@@ -3128,9 +3173,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnGetCompositeSchedule
 
             LocalController.OCPP.IN.OnGetCompositeScheduleRequestReceived += (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCompositeScheduleRequestReceived),
                                      JSONObject.Create(
@@ -3142,44 +3188,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnGetCompositeScheduleRequestSent += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                sentMessageResult) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCompositeScheduleRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnGetCompositeScheduleResponseReceived += (timestamp,
-                                                                              sender,
-                                                                              //connection,
-                                                                              request,
-                                                                              response,
-                                                                              runtime) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request,
+                                                                               response,
+                                                                               runtime,
+                                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCompositeScheduleResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnGetCompositeScheduleResponseSent += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime,
+                                                                            sentMessageResult,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCompositeScheduleResponseSent),
                                      JSONObject.Create(
@@ -3269,9 +3319,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnNotifyAllowedEnergyTransfer
 
             LocalController.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived += (timestamp,
-                                                                                    sender,
-                                                                                    connection,
-                                                                                    request) =>
+                                                                                     sender,
+                                                                                     connection,
+                                                                                     request,
+                                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived),
                                      JSONObject.Create(
@@ -3283,44 +3334,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
-                                                                                 sender,
-                                                                                 connection,
-                                                                                 request,
-                                                                sentMessageResult) =>
+                                                                                  sender,
+                                                                                  connection,
+                                                                                  request,
+                                                                                  sentMessageResult,
+                                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived += (timestamp,
-                                                                                     sender,
-                                                                                     //connection,
-                                                                                     request,
-                                                                                     response,
-                                                                                     runtime) =>
+                                                                                      sender,
+                                                                                      connection,
+                                                                                      request,
+                                                                                      response,
+                                                                                      runtime,
+                                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent += (timestamp,
-                                                                                  sender,
-                                                                                  connection,
-                                                                                  request,
-                                                                                  response,
-                                                                                  runtime) =>
+                                                                                   sender,
+                                                                                   connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   runtime,
+                                                                                   sentMessageResult,
+                                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent),
                                      JSONObject.Create(
@@ -3483,9 +3538,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnReserveNow
 
             LocalController.OCPP.IN.OnReserveNowRequestReceived += (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnReserveNowRequestReceived),
                                      JSONObject.Create(
@@ -3497,44 +3553,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnReserveNowRequestSent += (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                sentMessageResult) =>
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 sentMessageResult,
+                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReserveNowRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnReserveNowResponseReceived += (timestamp,
-                                                                    sender,
-                                                                    //connection,
-                                                                    request,
-                                                                    response,
-                                                                    runtime) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnReserveNowResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnReserveNowResponseSent += (timestamp,
-                                                                 sender,
-                                                                 connection,
-                                                                 request,
-                                                                 response,
-                                                                 runtime) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  response,
+                                                                  runtime,
+                                                                  sentMessageResult,
+                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnReserveNowResponseSent),
                                      JSONObject.Create(
@@ -3551,9 +3611,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnSetChargingProfile
 
             LocalController.OCPP.IN.OnSetChargingProfileRequestReceived += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetChargingProfileRequestReceived),
                                      JSONObject.Create(
@@ -3565,44 +3626,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnSetChargingProfileRequestSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                sentMessageResult) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetChargingProfileRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnSetChargingProfileResponseReceived += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetChargingProfileResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnSetChargingProfileResponseSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetChargingProfileResponseSent),
                                      JSONObject.Create(
@@ -3619,9 +3684,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnUnlockConnector
 
             LocalController.OCPP.IN.OnUnlockConnectorRequestReceived += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUnlockConnectorRequestReceived),
                                      JSONObject.Create(
@@ -3633,44 +3699,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnUnlockConnectorRequestSent += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                sentMessageResult) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      sentMessageResult,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnlockConnectorRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnUnlockConnectorResponseReceived += (timestamp,
-                                                                         sender,
-                                                                         //connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUnlockConnectorResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnUnlockConnectorResponseSent += (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime,
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnlockConnectorResponseSent),
                                      JSONObject.Create(
@@ -3687,9 +3757,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnUpdateDynamicSchedule
 
             LocalController.OCPP.IN.OnUpdateDynamicScheduleRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request,
+                                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUpdateDynamicScheduleRequestReceived),
                                      JSONObject.Create(
@@ -3701,44 +3772,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnUpdateDynamicScheduleRequestSent += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request,
-                                                                sentMessageResult) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            sentMessageResult,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateDynamicScheduleRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnUpdateDynamicScheduleResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                                sender,
+                                                                                connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime,
+                                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUpdateDynamicScheduleResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnUpdateDynamicScheduleResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime,
+                                                                             sentMessageResult,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateDynamicScheduleResponseSent),
                                      JSONObject.Create(
@@ -3755,9 +3830,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnUsePriorityCharging
 
             LocalController.OCPP.IN.OnUsePriorityChargingRequestReceived += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUsePriorityChargingRequestReceived),
                                      JSONObject.Create(
@@ -3769,44 +3845,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnUsePriorityChargingRequestSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                sentMessageResult) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUsePriorityChargingRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnUsePriorityChargingResponseReceived += (timestamp,
-                                                                             sender,
-                                                                             //connection,
-                                                                             request,
-                                                                             response,
-                                                                             runtime) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUsePriorityChargingResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnUsePriorityChargingResponseSent += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime,
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUsePriorityChargingResponseSent),
                                      JSONObject.Create(
@@ -4196,9 +4276,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnChangeAvailability
 
             LocalController.OCPP.IN.OnChangeAvailabilityRequestReceived += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnChangeAvailabilityRequestReceived),
                                      JSONObject.Create(
@@ -4210,44 +4291,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnChangeAvailabilityRequestSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                sentMessageResult) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnChangeAvailabilityRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnChangeAvailabilityResponseReceived += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnChangeAvailabilityResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnChangeAvailabilityResponseSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime,
+                                                                          entMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnChangeAvailabilityResponseSent),
                                      JSONObject.Create(
@@ -4264,9 +4349,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnClearVariableMonitoring
 
             LocalController.OCPP.IN.OnClearVariableMonitoringRequestReceived += (timestamp,
-                                                                                sender,
-                                                                                connection,
-                                                                                request) =>
+                                                                                 sender,
+                                                                                 connection,
+                                                                                 request,
+                                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearVariableMonitoringRequestReceived),
                                      JSONObject.Create(
@@ -4278,44 +4364,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnClearVariableMonitoringRequestSent += (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request,
-                                                                sentMessageResult) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              sentMessageResult,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearVariableMonitoringRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnClearVariableMonitoringResponseReceived += (timestamp,
-                                                                                 sender,
-                                                                                 //connection,
-                                                                                 request,
-                                                                                 response,
-                                                                                 runtime) =>
+                                                                                  sender,
+                                                                                  connection,
+                                                                                  request,
+                                                                                  response,
+                                                                                  runtime,
+                                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearVariableMonitoringResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnClearVariableMonitoringResponseSent += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request,
-                                                                              response,
-                                                                              runtime) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request,
+                                                                               response,
+                                                                               runtime,
+                                                                               sentMessageResult,
+                                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearVariableMonitoringResponseSent),
                                      JSONObject.Create(
@@ -4332,9 +4422,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnGetBaseReport
 
             LocalController.OCPP.IN.OnGetBaseReportRequestReceived += (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetBaseReportRequestReceived),
                                      JSONObject.Create(
@@ -4346,44 +4437,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnGetBaseReportRequestSent += (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request,
-                                                                sentMessageResult) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    sentMessageResult,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetBaseReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnGetBaseReportResponseReceived += (timestamp,
-                                                                       sender,
-                                                                       //connection,
-                                                                       request,
-                                                                       response,
-                                                                       runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetBaseReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnGetBaseReportResponseSent += (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    response,
-                                                                    runtime) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime,
+                                                                     sentMessageResult,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetBaseReportResponseSent),
                                      JSONObject.Create(
@@ -4400,9 +4495,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnGetLog
 
             LocalController.OCPP.IN.OnGetLogRequestReceived += (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetLogRequestReceived),
                                      JSONObject.Create(
@@ -4414,44 +4510,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnGetLogRequestSent += (timestamp,
-                                                            sender,
-                                                            connection,
-                                                            request,
-                                                                sentMessageResult) =>
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             sentMessageResult,
+                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLogRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnGetLogResponseReceived += (timestamp,
-                                                                sender,
-                                                                //connection,
-                                                                request,
-                                                                response,
-                                                                runtime) =>
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime,
+                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetLogResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnGetLogResponseSent += (timestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             response,
-                                                             runtime) =>
+                                                              sender,
+                                                              connection,
+                                                              request,
+                                                              response,
+                                                              runtime,
+                                                              sentMessageResult,
+                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLogResponseSent),
                                      JSONObject.Create(
@@ -4468,9 +4568,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnGetMonitoringReport
 
             LocalController.OCPP.IN.OnGetMonitoringReportRequestReceived += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetMonitoringReportRequestReceived),
                                      JSONObject.Create(
@@ -4482,44 +4583,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnGetMonitoringReportRequestSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                sentMessageResult) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetMonitoringReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnGetMonitoringReportResponseReceived += (timestamp,
-                                                                             sender,
-                                                                             //connection,
-                                                                             request,
-                                                                             response,
-                                                                             runtime) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetMonitoringReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnGetMonitoringReportResponseSent += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime,
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetMonitoringReportResponseSent),
                                      JSONObject.Create(
@@ -4536,9 +4641,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnGetReport
 
             LocalController.OCPP.IN.OnGetReportRequestReceived += (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetReportRequestReceived),
                                      JSONObject.Create(
@@ -4550,44 +4656,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnGetReportRequestSent += (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request,
-                                                                sentMessageResult) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                sentMessageResult,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnGetReportResponseReceived += (timestamp,
-                                                                   sender,
-                                                                   //connection,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnGetReportResponseSent += (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                response,
-                                                                runtime) =>
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime,
+                                                                 sentMessageResult,
+                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetReportResponseSent),
                                      JSONObject.Create(
@@ -4604,9 +4714,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnGetVariables
 
             LocalController.OCPP.IN.OnGetVariablesRequestReceived += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetVariablesRequestReceived),
                                      JSONObject.Create(
@@ -4618,44 +4729,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnGetVariablesRequestSent += (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request,
-                                                                sentMessageResult) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   sentMessageResult,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetVariablesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnGetVariablesResponseReceived += (timestamp,
-                                                                      sender,
-                                                                      //connection,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetVariablesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnGetVariablesResponseSent += (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime,
+                                                                    sentMessageResult,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetVariablesResponseSent),
                                      JSONObject.Create(
@@ -4672,9 +4787,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnSetMonitoringBase
 
             LocalController.OCPP.IN.OnSetMonitoringBaseRequestReceived += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetMonitoringBaseRequestReceived),
                                      JSONObject.Create(
@@ -4686,44 +4802,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnSetMonitoringBaseRequestSent += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                sentMessageResult) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringBaseRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnSetMonitoringBaseResponseReceived += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetMonitoringBaseResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnSetMonitoringBaseResponseSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringBaseResponseSent),
                                      JSONObject.Create(
@@ -4740,9 +4860,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnSetMonitoringLevel
 
             LocalController.OCPP.IN.OnSetMonitoringLevelRequestReceived += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetMonitoringLevelRequestReceived),
                                      JSONObject.Create(
@@ -4754,44 +4875,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnSetMonitoringLevelRequestSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                sentMessageResult) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringLevelRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnSetMonitoringLevelResponseReceived += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetMonitoringLevelResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnSetMonitoringLevelResponseSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetMonitoringLevelResponseSent),
                                      JSONObject.Create(
@@ -4808,9 +4933,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnSetNetworkProfile
 
             LocalController.OCPP.IN.OnSetNetworkProfileRequestReceived += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetNetworkProfileRequestReceived),
                                      JSONObject.Create(
@@ -4822,44 +4948,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnSetNetworkProfileRequestSent += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                sentMessageResult) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetNetworkProfileRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnSetNetworkProfileResponseReceived += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetNetworkProfileResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnSetNetworkProfileResponseSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetNetworkProfileResponseSent),
                                      JSONObject.Create(
@@ -4876,9 +5006,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnSetVariableMonitoring
 
             LocalController.OCPP.IN.OnSetVariableMonitoringRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request,
+                                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetVariableMonitoringRequestReceived),
                                      JSONObject.Create(
@@ -4890,44 +5021,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnSetVariableMonitoringRequestSent += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request,
-                                                                sentMessageResult) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            sentMessageResult,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariableMonitoringRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnSetVariableMonitoringResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                                sender,
+                                                                                connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime,
+                                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetVariableMonitoringResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnSetVariableMonitoringResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime,
+                                                                             sentMessageResult,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariableMonitoringResponseSent),
                                      JSONObject.Create(
@@ -4944,9 +5079,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnSetVariables
 
             LocalController.OCPP.IN.OnSetVariablesRequestReceived += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetVariablesRequestReceived),
                                      JSONObject.Create(
@@ -4958,44 +5094,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnSetVariablesRequestSent += (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request,
-                                                                sentMessageResult) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   sentMessageResult,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariablesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnSetVariablesResponseReceived += (timestamp,
-                                                                      sender,
-                                                                      //connection,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSetVariablesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnSetVariablesResponseSent += (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime,
+                                                                    sentMessageResult,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSetVariablesResponseSent),
                                      JSONObject.Create(
@@ -5012,9 +5152,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnTriggerMessage
 
             LocalController.OCPP.IN.OnTriggerMessageRequestReceived += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnTriggerMessageRequestReceived),
                                      JSONObject.Create(
@@ -5026,44 +5167,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnTriggerMessageRequestSent += (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                sentMessageResult) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     sentMessageResult,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnTriggerMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnTriggerMessageResponseReceived += (timestamp,
-                                                                        sender,
-                                                                        //connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnTriggerMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnTriggerMessageResponseSent += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     response,
-                                                                     runtime) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      response,
+                                                                      runtime,
+                                                                      sentMessageResult,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnTriggerMessageResponseSent),
                                      JSONObject.Create(
@@ -5084,9 +5229,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnPublishFirmware
 
             LocalController.OCPP.IN.OnPublishFirmwareRequestReceived += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnPublishFirmwareRequestReceived),
                                      JSONObject.Create(
@@ -5098,44 +5244,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnPublishFirmwareRequestSent += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                sentMessageResult) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      sentMessageResult,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPublishFirmwareRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnPublishFirmwareResponseReceived += (timestamp,
-                                                                         sender,
-                                                                         //connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnPublishFirmwareResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnPublishFirmwareResponseSent += (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime,
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnPublishFirmwareResponseSent),
                                      JSONObject.Create(
@@ -5227,9 +5377,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnUnpublishFirmware
 
             LocalController.OCPP.IN.OnUnpublishFirmwareRequestReceived += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUnpublishFirmwareRequestReceived),
                                      JSONObject.Create(
@@ -5241,44 +5392,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnUnpublishFirmwareRequestSent += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                sentMessageResult) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnpublishFirmwareRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnUnpublishFirmwareResponseReceived += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUnpublishFirmwareResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnUnpublishFirmwareResponseSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUnpublishFirmwareResponseSent),
                                      JSONObject.Create(
@@ -5295,9 +5450,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnUpdateFirmware
 
             LocalController.OCPP.IN.OnUpdateFirmwareRequestReceived += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUpdateFirmwareRequestReceived),
                                      JSONObject.Create(
@@ -5309,44 +5465,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnUpdateFirmwareRequestSent += (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                sentMessageResult) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     sentMessageResult,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateFirmwareRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnUpdateFirmwareResponseReceived += (timestamp,
-                                                                        sender,
-                                                                        //connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnUpdateFirmwareResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnUpdateFirmwareResponseSent += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     response,
-                                                                     runtime) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      response,
+                                                                      runtime,
+                                                                      sentMessageResult,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnUpdateFirmwareResponseSent),
                                      JSONObject.Create(
@@ -5444,9 +5604,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnClearCache
 
             LocalController.OCPP.IN.OnClearCacheRequestReceived += (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearCacheRequestReceived),
                                      JSONObject.Create(
@@ -5458,44 +5619,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnClearCacheRequestSent += (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                sentMessageResult) =>
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 sentMessageResult,
+                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearCacheRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnClearCacheResponseReceived += (timestamp,
-                                                                    sender,
-                                                                    //connection,
-                                                                    request,
-                                                                    response,
-                                                                    runtime) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnClearCacheResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnClearCacheResponseSent += (timestamp,
-                                                                 sender,
-                                                                 connection,
-                                                                 request,
-                                                                 response,
-                                                                 runtime) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  response,
+                                                                  runtime,
+                                                                  sentMessageResult,
+                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnClearCacheResponseSent),
                                      JSONObject.Create(
@@ -5512,9 +5677,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnGetLocalListVersion
 
             LocalController.OCPP.IN.OnGetLocalListVersionRequestReceived += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetLocalListVersionRequestReceived),
                                      JSONObject.Create(
@@ -5526,44 +5692,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnGetLocalListVersionRequestSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                sentMessageResult) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLocalListVersionRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnGetLocalListVersionResponseReceived += (timestamp,
-                                                                             sender,
-                                                                             //connection,
-                                                                             request,
-                                                                             response,
-                                                                             runtime) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetLocalListVersionResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnGetLocalListVersionResponseSent += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime,
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetLocalListVersionResponseSent),
                                      JSONObject.Create(
@@ -5580,9 +5750,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region OnSendLocalList
 
             LocalController.OCPP.IN.OnSendLocalListRequestReceived += (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSendLocalListRequestReceived),
                                      JSONObject.Create(
@@ -5594,44 +5765,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             LocalController.OCPP.OUT.OnSendLocalListRequestSent += (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request,
-                                                                sentMessageResult) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    sentMessageResult,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSendLocalListRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             LocalController.OCPP.IN.OnSendLocalListResponseReceived += (timestamp,
-                                                                       sender,
-                                                                       //connection,
-                                                                       request,
-                                                                       response,
-                                                                       runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnSendLocalListResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
             LocalController.OCPP.OUT.OnSendLocalListResponseSent += (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    response,
-                                                                    runtime) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime,
+                                                                     sentMessageResult,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnSendLocalListResponseSent),
                                      JSONObject.Create(

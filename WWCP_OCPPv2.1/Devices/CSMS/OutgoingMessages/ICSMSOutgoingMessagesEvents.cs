@@ -526,12 +526,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region UpdateDynamicSchedule       (Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a UpdateDynamicSchedule request will be sent to a charging station.
+        /// An event fired whenever an UpdateDynamicSchedule request will be sent to a charging station.
         /// </summary>
         event OnUpdateDynamicScheduleRequestSentDelegate?               OnUpdateDynamicScheduleRequestSent;
 
         /// <summary>
-        /// An event fired whenever a response to a UpdateDynamicSchedule request was received.
+        /// An event fired whenever a response to an UpdateDynamicSchedule request was received.
         /// </summary>
         event OnUpdateDynamicScheduleResponseReceivedDelegate?          OnUpdateDynamicScheduleResponseReceived;
 
@@ -554,12 +554,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region UsePriorityCharging         (Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a UsePriorityCharging request will be sent to a charging station.
+        /// An event fired whenever an UsePriorityCharging request will be sent to a charging station.
         /// </summary>
         event OnUsePriorityChargingRequestSentDelegate?                 OnUsePriorityChargingRequestSent;
 
         /// <summary>
-        /// An event fired whenever a response to a UsePriorityCharging request was received.
+        /// An event fired whenever a response to an UsePriorityCharging request was received.
         /// </summary>
         event OnUsePriorityChargingResponseReceivedDelegate?            OnUsePriorityChargingResponseReceived;
 

@@ -100,6 +100,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                               StatusInfo?                   StatusInfo          = null,
                               DateTime?                     ResponseTimestamp   = null,
 
+                              NetworkingNode_Id?            DestinationId       = null,
+                              NetworkPath?                  NetworkPath         = null,
+
                               IEnumerable<KeyPair>?         SignKeys            = null,
                               IEnumerable<SignInfo>?        SignInfos           = null,
                               IEnumerable<Signature>?       Signatures          = null,
@@ -110,8 +113,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -213,14 +216,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetLogResponseParser">A delegate to parse custom GetLog responses.</param>
         public static GetLogResponse Parse(CSMS.GetLogRequest                            Request,
                                            JObject                                       JSON,
-                                           CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null)
+                                           NetworkingNode_Id                             DestinationId,
+                                           NetworkPath                                   NetworkPath,
+                                           DateTime?                                     ResponseTimestamp            = null,
+                                           CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null,
+                                           CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser       = null,
+                                           CustomJObjectParserDelegate<Signature>?       CustomSignatureParser        = null,
+                                           CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser       = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var getLogResponse,
                          out var errorResponse,
-                         CustomGetLogResponseParser))
+                         ResponseTimestamp,
+                         CustomGetLogResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getLogResponse;
             }
@@ -244,9 +259,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetLogResponseParser">A delegate to parse custom GetLog responses.</param>
         public static Boolean TryParse(CSMS.GetLogRequest                            Request,
                                        JObject                                       JSON,
+                                       NetworkingNode_Id                             DestinationId,
+                                       NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out GetLogResponse?      GetLogResponse,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
-                                       CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null)
+                                       DateTime?                                     ResponseTimestamp            = null,
+                                       CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser       = null,
+                                       CustomJObjectParserDelegate<Signature>?       CustomSignatureParser        = null,
+                                       CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser       = null)
         {
 
             try
@@ -317,15 +338,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 GetLogResponse = new GetLogResponse(
+
                                      Request,
                                      Status,
                                      Filename,
                                      StatusInfo,
-                                     null,
+                                     ResponseTimestamp,
+
+                                     DestinationId,
+                                     NetworkPath,
+
                                      null,
                                      null,
                                      Signatures,
+
                                      CustomData
+
                                  );
 
                 if (CustomGetLogResponseParser is not null)
@@ -436,6 +464,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The GetLog failed.
+        /// </summary>
+        /// <param name="Request">The GetLog request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetLogResponse FormationViolation(CSMS.GetLogRequest  Request,
+                                                       String               ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

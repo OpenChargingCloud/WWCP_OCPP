@@ -100,6 +100,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             StatusInfo?                       StatusInfo          = null,
                                             DateTime?                         ResponseTimestamp   = null,
 
+                                            NetworkingNode_Id?                DestinationId       = null,
+                                            NetworkPath?                      NetworkPath         = null,
+
                                             IEnumerable<KeyPair>?             SignKeys            = null,
                                             IEnumerable<SignInfo>?            SignInfos           = null,
                                             IEnumerable<Signature>?           Signatures          = null,
@@ -110,8 +113,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -341,14 +344,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to parse custom GetCompositeSchedule responses.</param>
         public static GetCompositeScheduleResponse Parse(CSMS.GetCompositeScheduleRequest                            Request,
                                                          JObject                                                     JSON,
-                                                         CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
+                                                         NetworkingNode_Id                                           DestinationId,
+                                                         NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   ResponseTimestamp                          = null,
+                                                         CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null,
+                                                         CustomJObjectParserDelegate<CompositeSchedule>?             CustomCompositeScheduleParser              = null,
+                                                         CustomJObjectParserDelegate<ChargingSchedulePeriod>?        CustomChargingSchedulePeriodParser         = null,
+                                                         CustomJObjectParserDelegate<StatusInfo>?                    CustomStatusInfoParser                     = null,
+                                                         CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                                         CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var getCompositeScheduleResponse,
                          out var errorResponse,
-                         CustomGetCompositeScheduleResponseParser))
+                         ResponseTimestamp,
+                         CustomGetCompositeScheduleResponseParser,
+                         CustomCompositeScheduleParser,
+                         CustomChargingSchedulePeriodParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getCompositeScheduleResponse;
             }
@@ -372,9 +391,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to parse custom GetCompositeSchedule responses.</param>
         public static Boolean TryParse(CSMS.GetCompositeScheduleRequest                            Request,
                                        JObject                                                     JSON,
+                                       NetworkingNode_Id                                           DestinationId,
+                                       NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out GetCompositeScheduleResponse?      GetCompositeScheduleResponse,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
+                                       DateTime?                                                   ResponseTimestamp                          = null,
+                                       CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null,
+                                       CustomJObjectParserDelegate<CompositeSchedule>?             CustomCompositeScheduleParser              = null,
+                                       CustomJObjectParserDelegate<ChargingSchedulePeriod>?        CustomChargingSchedulePeriodParser         = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                    CustomStatusInfoParser                     = null,
+                                       CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                       CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             try
@@ -453,15 +480,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 GetCompositeScheduleResponse = new GetCompositeScheduleResponse(
+
                                                    Request,
                                                    Status,
                                                    Schedule,
                                                    StatusInfo,
-                                                   null,
+                                                   ResponseTimestamp,
+
+                                                   DestinationId,
+                                                   NetworkPath,
+
                                                    null,
                                                    null,
                                                    Signatures,
+
                                                    CustomData
+
                                                );
 
                 if (CustomGetCompositeScheduleResponseParser is not null)
@@ -578,6 +612,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The GetCompositeSchedule failed.
+        /// </summary>
+        /// <param name="Request">The GetCompositeSchedule request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetCompositeScheduleResponse FormationViolation(CSMS.GetCompositeScheduleRequest  Request,
+                                                                      String                            ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>
@@ -733,10 +781,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status.AsText(),
-                             Schedule is not null
-                                 ? ": " + Schedule
-                                 : "");
+            => String.Concat(
+
+                   Status.AsText(),
+
+                   Schedule is not null
+                       ? $": {Schedule}"
+                       : ""
+
+               );
 
         #endregion
 

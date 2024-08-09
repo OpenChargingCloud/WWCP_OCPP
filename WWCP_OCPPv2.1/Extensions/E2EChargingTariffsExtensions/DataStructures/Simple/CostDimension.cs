@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public CostDimension Clone
 
-            => new(
+            => new (
                    new String(InternalId?.ToCharArray())
                );
 
@@ -201,21 +201,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// When negative, more energy was feed into the grid then charged into the EV.
         /// </summary>
         public static CostDimension MinA
-            => new("MinA");
+            => new ("MinA");
 
         /// <summary>
         /// Maximum power reached during this charging period.
         /// When negative, more energy was feed into the grid then charged into the EV.
         /// </summary>
         public static CostDimension MaxKW
-            => new("MaxKW");
+            => new ("MaxKW");
 
         /// <summary>
         /// Minumum power reached during this charging period.
         /// When negative, more energy was feed into the grid then charged into the EV.
         /// </summary>
         public static CostDimension MinKW
-            => new("MinKW");
+            => new ("MinKW");
 
         /// <summary>
         /// Time reserved for future charging during this charging period.

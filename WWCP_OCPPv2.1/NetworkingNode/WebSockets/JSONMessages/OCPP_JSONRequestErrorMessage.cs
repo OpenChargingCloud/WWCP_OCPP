@@ -731,7 +731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                    // ]
                    NetworkingMode.Unknown or
                    NetworkingMode.Standard
-                       => new(4,
+                       => new (4,
                               RequestId.ToString(),
                               ErrorCode.ToString(),
                               ErrorDescription,

@@ -287,12 +287,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         event OnUnlockConnectorResponseReceivedDelegate?                OnUnlockConnectorResponseReceived;
 
         /// <summary>
-        /// An event fired whenever a response to a UpdateDynamicSchedule request was received.
+        /// An event fired whenever a response to an UpdateDynamicSchedule request was received.
         /// </summary>
         event OnUpdateDynamicScheduleResponseReceivedDelegate?          OnUpdateDynamicScheduleResponseReceived;
 
         /// <summary>
-        /// An event fired whenever a response to a UsePriorityCharging request was received.
+        /// An event fired whenever a response to an UsePriorityCharging request was received.
         /// </summary>
         event OnUsePriorityChargingResponseReceivedDelegate?            OnUsePriorityChargingResponseReceived;
 

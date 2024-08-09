@@ -17,12 +17,12 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -205,9 +205,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetMonitoringResult">The parsed set monitoring result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                   JSON,
-                                       out SetMonitoringResult?  SetMonitoringResult,
-                                       out String?               ErrorResponse)
+        public static Boolean TryParse(JObject                                        JSON,
+                                       [NotNullWhen(true)]  out SetMonitoringResult?  SetMonitoringResult,
+                                       [NotNullWhen(false)] out String?               ErrorResponse)
 
             => TryParse(JSON,
                         out SetMonitoringResult,
@@ -223,8 +223,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetMonitoringResultParser">A delegate to parse custom set monitoring result JSON objects.</param>
         public static Boolean TryParse(JObject                                            JSON,
-                                       out SetMonitoringResult?                           SetMonitoringResult,
-                                       out String?                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out SetMonitoringResult?      SetMonitoringResult,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
                                        CustomJObjectParserDelegate<SetMonitoringResult>?  CustomSetMonitoringResultParser)
         {
 

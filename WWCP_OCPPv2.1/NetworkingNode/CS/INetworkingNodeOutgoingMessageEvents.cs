@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         event OnUnlockConnectorResponseSentDelegate                OnUnlockConnectorResponseSent;
 
         /// <summary>
-        /// An event sent whenever an response to a UpdateDynamicSchedule request was sent.
+        /// An event sent whenever an response to an UpdateDynamicSchedule request was sent.
         /// </summary>
         event OnUpdateDynamicScheduleResponseSentDelegate          OnUpdateDynamicScheduleResponseSent;
 

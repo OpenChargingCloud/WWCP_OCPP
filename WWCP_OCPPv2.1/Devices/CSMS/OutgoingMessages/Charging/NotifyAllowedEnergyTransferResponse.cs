@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    StatusInfo?                              StatusInfo          = null,
                                                    DateTime?                                ResponseTimestamp   = null,
 
+                                                   NetworkingNode_Id?                       DestinationId       = null,
+                                                   NetworkPath?                             NetworkPath         = null,
+
                                                    IEnumerable<KeyPair>?                    SignKeys            = null,
                                                    IEnumerable<SignInfo>?                   SignInfos           = null,
                                                    IEnumerable<Signature>?                  Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -176,14 +179,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyAllowedEnergyTransferResponseParser">A delegate to parse custom NotifyAllowedEnergyTransfer responses.</param>
         public static NotifyAllowedEnergyTransferResponse Parse(CSMS.NotifyAllowedEnergyTransferRequest                            Request,
                                                                 JObject                                                            JSON,
-                                                                CustomJObjectParserDelegate<NotifyAllowedEnergyTransferResponse>?  CustomNotifyAllowedEnergyTransferResponseParser   = null)
+                                                                NetworkingNode_Id                                                  DestinationId,
+                                                                NetworkPath                                                        NetworkPath,
+                                                                DateTime?                                                          ResponseTimestamp                                 = null,
+                                                                CustomJObjectParserDelegate<NotifyAllowedEnergyTransferResponse>?  CustomNotifyAllowedEnergyTransferResponseParser   = null,
+                                                                CustomJObjectParserDelegate<StatusInfo>?                           CustomStatusInfoParser                            = null,
+                                                                CustomJObjectParserDelegate<Signature>?                            CustomSignatureParser                             = null,
+                                                                CustomJObjectParserDelegate<CustomData>?                           CustomCustomDataParser                            = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var notifyAllowedEnergyTransferResponse,
                          out var errorResponse,
-                         CustomNotifyAllowedEnergyTransferResponseParser))
+                         ResponseTimestamp,
+                         CustomNotifyAllowedEnergyTransferResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return notifyAllowedEnergyTransferResponse;
             }
@@ -207,9 +222,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyAllowedEnergyTransferResponseParser">A delegate to parse custom NotifyAllowedEnergyTransfer responses.</param>
         public static Boolean TryParse(CSMS.NotifyAllowedEnergyTransferRequest                            Request,
                                        JObject                                                            JSON,
+                                       NetworkingNode_Id                                                  DestinationId,
+                                       NetworkPath                                                        NetworkPath,
                                        [NotNullWhen(true)]  out NotifyAllowedEnergyTransferResponse?      NotifyAllowedEnergyTransferResponse,
                                        [NotNullWhen(false)] out String?                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyAllowedEnergyTransferResponse>?  CustomNotifyAllowedEnergyTransferResponseParser   = null)
+                                       DateTime?                                                          ResponseTimestamp                                 = null,
+                                       CustomJObjectParserDelegate<NotifyAllowedEnergyTransferResponse>?  CustomNotifyAllowedEnergyTransferResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                           CustomStatusInfoParser                            = null,
+                                       CustomJObjectParserDelegate<Signature>?                            CustomSignatureParser                             = null,
+                                       CustomJObjectParserDelegate<CustomData>?                           CustomCustomDataParser                            = null)
         {
 
             try
@@ -274,14 +295,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 NotifyAllowedEnergyTransferResponse = new NotifyAllowedEnergyTransferResponse(
+
                                                           Request,
                                                           Status,
                                                           StatusInfo,
-                                                          null,
+                                                          ResponseTimestamp,
+
+                                                          DestinationId,
+                                                          NetworkPath,
+
                                                           null,
                                                           null,
                                                           Signatures,
+
                                                           CustomData
+
                                                       );
 
                 if (CustomNotifyAllowedEnergyTransferResponseParser is not null)
@@ -388,6 +416,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The NotifyAllowedEnergyTransfer failed.
+        /// </summary>
+        /// <param name="Request">The NotifyAllowedEnergyTransfer request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static NotifyAllowedEnergyTransferResponse FormationViolation(CSMS.NotifyAllowedEnergyTransferRequest  Request,
+                                                                             String                                   ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

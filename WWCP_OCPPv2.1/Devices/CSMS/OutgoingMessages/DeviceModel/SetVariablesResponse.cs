@@ -83,6 +83,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     IEnumerable<SetVariableResult>  SetVariableResults,
                                     DateTime?                       ResponseTimestamp   = null,
 
+                                    NetworkingNode_Id?              DestinationId       = null,
+                                    NetworkPath?                    NetworkPath         = null,
+
                                     IEnumerable<KeyPair>?           SignKeys            = null,
                                     IEnumerable<SignInfo>?          SignInfos           = null,
                                     IEnumerable<Signature>?         Signatures          = null,
@@ -93,8 +96,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -361,18 +364,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom SetVariables responses.</param>
-        public static SetVariablesResponse Parse(CSMS.SetVariablesRequest                            Request,
-                                                 JObject                                             JSON,
-                                                 DateTime?                                           ResponseTimestamp                  = null,
-                                                 CustomJObjectParserDelegate<SetVariablesResponse>?  CustomSetVariablesResponseParser   = null)
+        public static SetVariablesResponse Parse(CSMS.SetVariablesRequest                             Request,
+                                                 JObject                                              JSON,
+                                                 NetworkingNode_Id                                    DestinationId,
+                                                 NetworkPath                                          NetworkPath,
+                                                 DateTime?                                            ResponseTimestamp                   = null,
+                                                 CustomJObjectParserDelegate<SetVariablesResponse>?   CustomSetVariablesResponseParser    = null,
+                                                 CustomJObjectSerializerDelegate<SetVariableResult>?  CustomSetVariableResultSerializer   = null,
+                                                 CustomJObjectSerializerDelegate<Component>?          CustomComponentSerializer           = null,
+                                                 CustomJObjectSerializerDelegate<EVSE>?               CustomEVSESerializer                = null,
+                                                 CustomJObjectSerializerDelegate<Variable>?           CustomVariableSerializer            = null,
+                                                 CustomJObjectParserDelegate<StatusInfo>?             CustomStatusInfoParser              = null,
+                                                 CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                                 CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var setVariablesResponse,
                          out var errorResponse,
                          ResponseTimestamp,
-                         CustomSetVariablesResponseParser))
+                         CustomSetVariablesResponseParser,
+                         CustomSetVariableResultSerializer,
+                         CustomComponentSerializer,
+                         CustomEVSESerializer,
+                         CustomVariableSerializer,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return setVariablesResponse;
             }
@@ -395,12 +416,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom SetVariables responses.</param>
-        public static Boolean TryParse(CSMS.SetVariablesRequest                            Request,
-                                       JObject                                             JSON,
-                                       [NotNullWhen(true)]  out SetVariablesResponse?      SetVariablesResponse,
-                                       [NotNullWhen(false)] out String?                    ErrorResponse,
-                                       DateTime?                                           ResponseTimestamp                  = null,
-                                       CustomJObjectParserDelegate<SetVariablesResponse>?  CustomSetVariablesResponseParser   = null)
+        public static Boolean TryParse(CSMS.SetVariablesRequest                             Request,
+                                       JObject                                              JSON,
+                                       NetworkingNode_Id                                    DestinationId,
+                                       NetworkPath                                          NetworkPath,
+                                       [NotNullWhen(true)]  out SetVariablesResponse?       SetVariablesResponse,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
+                                       DateTime?                                            ResponseTimestamp                   = null,
+                                       CustomJObjectParserDelegate<SetVariablesResponse>?   CustomSetVariablesResponseParser    = null,
+                                       CustomJObjectSerializerDelegate<SetVariableResult>?  CustomSetVariableResultSerializer   = null,
+                                       CustomJObjectSerializerDelegate<Component>?          CustomComponentSerializer           = null,
+                                       CustomJObjectSerializerDelegate<EVSE>?               CustomEVSESerializer                = null,
+                                       CustomJObjectSerializerDelegate<Variable>?           CustomVariableSerializer            = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?             CustomStatusInfoParser              = null,
+                                       CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                       CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             try
@@ -455,6 +485,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            Request,
                                            SetVariableResults,
                                            ResponseTimestamp,
+
+                                           DestinationId,
+                                           NetworkPath,
 
                                            null,
                                            null,
@@ -576,6 +609,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The SetVariables failed.
+        /// </summary>
+        /// <param name="Request">The SetVariables request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SetVariablesResponse FormationViolation(CSMS.SetVariablesRequest  Request,
+                                                              String                    ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

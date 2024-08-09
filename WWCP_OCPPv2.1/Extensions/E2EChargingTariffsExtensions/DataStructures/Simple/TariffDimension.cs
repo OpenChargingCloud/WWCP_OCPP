@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public TariffDimension Clone
 
-            => new(
+            => new (
                    new String(InternalId?.ToCharArray())
                );
 

@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static DisplayTexts Create(Languages Language,
                                         String Text)
 
-            => new(Language, Text);
+            => new (Language, Text);
 
         #endregion
 
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Text">The internationalized (ML) text.</param>
         public static DisplayTexts Create(String Text)
 
-            => new(Languages.en, Text);
+            => new (Languages.en, Text);
 
         #endregion
 
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public static DisplayTexts Empty
 
-            => new();
+            => new ();
 
         #endregion
 
@@ -648,7 +648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public DisplayTexts Clone()
 
-            => new(i18NStrings.SafeSelect(i18n => new DisplayText(i18n.Key, new String(i18n.Value.ToCharArray()))));
+            => new (i18NStrings.SafeSelect(i18n => new DisplayText(i18n.Key, new String(i18n.Value.ToCharArray()))));
 
         #endregion
 

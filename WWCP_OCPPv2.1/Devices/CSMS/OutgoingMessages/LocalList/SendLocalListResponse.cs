@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      StatusInfo?                   StatusInfo          = null,
                                      DateTime?                     ResponseTimestamp   = null,
 
+                                     NetworkingNode_Id?            DestinationId       = null,
+                                     NetworkPath?                  NetworkPath         = null,
+
                                      IEnumerable<KeyPair>?         SignKeys            = null,
                                      IEnumerable<SignInfo>?        SignInfos           = null,
                                      IEnumerable<Signature>?       Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -246,14 +249,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom SendLocalList responses.</param>
         public static SendLocalListResponse Parse(CSMS.SendLocalListRequest                            Request,
                                                   JObject                                              JSON,
-                                                  CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null)
+                                                  NetworkingNode_Id                                    DestinationId,
+                                                  NetworkPath                                          NetworkPath,
+                                                  DateTime?                                            ResponseTimestamp                   = null,
+                                                  CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null,
+                                                  CustomJObjectParserDelegate<StatusInfo>?             CustomStatusInfoParser              = null,
+                                                  CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                                  CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var sendLocalListResponse,
                          out var errorResponse,
-                         CustomSendLocalListResponseParser))
+                         ResponseTimestamp,
+                         CustomSendLocalListResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return sendLocalListResponse;
             }
@@ -277,9 +292,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom SendLocalList responses.</param>
         public static Boolean TryParse(CSMS.SendLocalListRequest                            Request,
                                        JObject                                              JSON,
+                                       NetworkingNode_Id                                    DestinationId,
+                                       NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out SendLocalListResponse?      SendLocalListResponse,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null)
+                                       DateTime?                                            ResponseTimestamp                   = null,
+                                       CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?             CustomStatusInfoParser              = null,
+                                       CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                       CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             try
@@ -344,14 +365,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 SendLocalListResponse = new SendLocalListResponse(
+
                                             Request,
                                             SendLocalListStatus,
                                             StatusInfo,
-                                            null,
+                                            ResponseTimestamp,
+
+                                            DestinationId,
+                                            NetworkPath,
+
                                             null,
                                             null,
                                             Signatures,
+
                                             CustomData
+
                                         );
 
                 if (CustomSendLocalListResponseParser is not null)
@@ -458,6 +486,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The SendLocalList failed.
+        /// </summary>
+        /// <param name="Request">The SendLocalList request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SendLocalListResponse FormationViolation(CSMS.SendLocalListRequest  Request,
+                                                               String                     ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

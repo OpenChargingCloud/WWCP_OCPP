@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public static MessageContents Empty
 
-            => new();
+            => new ();
 
         #endregion
 

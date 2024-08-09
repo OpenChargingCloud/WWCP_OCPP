@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public GetFileStatus Clone
 
-            => new(
+            => new (
                    new String(InternalId?.ToCharArray())
                );
 

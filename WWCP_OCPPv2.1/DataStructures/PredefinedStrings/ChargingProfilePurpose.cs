@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         /// <summary>
         /// This profile is used in place of a Tx(Default)Profile when priority charging is requested,
-        /// either locally on the charging station or by a UsePriorityChargingRequest from the CSMS.
+        /// either locally on the charging station or by an UsePriorityChargingRequest from the CSMS.
         /// </summary>
         public static ChargingProfilePurpose PriorityCharging                      { get; }
             = Register("ApplicationReset");

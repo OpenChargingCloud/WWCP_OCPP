@@ -842,7 +842,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnSignCertificateRequestReceived += (timestamp,
                                                                         sender,
                                                                         connection,
-                                                                        request) =>
+                                                                        request,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSignCertificateRequestReceived),
                                      JSONObject.Create(
@@ -857,32 +858,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      sender,
                                                                      connection,
                                                                      request,
-                                                                sentMessageResult) =>
+                                                                     sentMessageResult,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSignCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnSignCertificateResponseReceived += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                          response,
-                                                                         runtime) =>
+                                                                         runtime,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSignCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -891,7 +894,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       connection,
                                                                       request,
                                                                       response,
-                                                                      runtime) =>
+                                                                      runtime,
+                                                                      sentMessageResult,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSignCertificateResponseSent),
                                      JSONObject.Create(
@@ -2580,7 +2585,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnCertificateSignedRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
-                                                                          request) =>
+                                                                          request,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCertificateSignedRequestReceived),
                                      JSONObject.Create(
@@ -2595,13 +2601,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sentMessageResult) =>
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCertificateSignedRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2611,16 +2618,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            connection,
                                                                            request,
                                                                            response,
-                                                                           runtime) =>
+                                                                           runtime,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCertificateSignedResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -2629,7 +2637,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         connection,
                                                                         request,
                                                                         response,
-                                                                        runtime) =>
+                                                                        runtime,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCertificateSignedResponseSent),
                                      JSONObject.Create(
@@ -2648,7 +2658,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnDeleteCertificateRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
-                                                                          request) =>
+                                                                          request,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDeleteCertificateRequestReceived),
                                      JSONObject.Create(
@@ -2663,32 +2674,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sentMessageResult) =>
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDeleteCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnDeleteCertificateResponseReceived += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                            response,
-                                                                           runtime) =>
+                                                                           runtime,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDeleteCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -2697,7 +2710,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         connection,
                                                                         request,
                                                                         response,
-                                                                        runtime) =>
+                                                                        runtime,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDeleteCertificateResponseSent),
                                      JSONObject.Create(
@@ -2716,7 +2731,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
-                                                                                   request) =>
+                                                                                   request,
+                                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived),
                                      JSONObject.Create(
@@ -2731,32 +2747,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
-                                                                sentMessageResult) =>
+                                                                                sentMessageResult,
+                                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived += (timestamp,
                                                                                     sender,
-                                                                                    //connection,
+                                                                                    connection,
                                                                                     request,
                                                                                     response,
-                                                                                    runtime) =>
+                                                                                    runtime,
+                                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -2765,7 +2783,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                  connection,
                                                                                  request,
                                                                                  response,
-                                                                                 runtime) =>
+                                                                                 runtime,
+                                                                                 sentMessageResult,
+                                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent),
                                      JSONObject.Create(
@@ -2784,7 +2804,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnInstallCertificateRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
-                                                                           request) =>
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnInstallCertificateRequestReceived),
                                      JSONObject.Create(
@@ -2799,32 +2820,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sentMessageResult) =>
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnInstallCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnInstallCertificateResponseReceived += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                             response,
-                                                                            runtime) =>
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnInstallCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -2833,7 +2856,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          connection,
                                                                          request,
                                                                          response,
-                                                                         runtime) =>
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnInstallCertificateResponseSent),
                                      JSONObject.Create(
@@ -2852,7 +2877,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnNotifyCRLRequestReceived += (timestamp,
                                                                   sender,
                                                                   connection,
-                                                                  request) =>
+                                                                  request,
+                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCRLRequestReceived),
                                      JSONObject.Create(
@@ -2867,32 +2893,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                sender,
                                                                connection,
                                                                request,
-                                                                sentMessageResult) =>
+                                                               sentMessageResult,
+                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCRLRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnNotifyCRLResponseReceived += (timestamp,
                                                                    sender,
-                                                                   //connection,
+                                                                   connection,
                                                                    request,
                                                                    response,
-                                                                   runtime) =>
+                                                                   runtime,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCRLResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -2901,7 +2929,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 connection,
                                                                 request,
                                                                 response,
-                                                                runtime) =>
+                                                                runtime,
+                                                                sentMessageResult,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCRLResponseSent),
                                      JSONObject.Create(
@@ -2924,7 +2954,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnCancelReservationRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
-                                                                          request) =>
+                                                                          request,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCancelReservationRequestReceived),
                                      JSONObject.Create(
@@ -2939,32 +2970,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sentMessageResult) =>
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCancelReservationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnCancelReservationResponseReceived += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                            response,
-                                                                           runtime) =>
+                                                                           runtime,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCancelReservationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -2973,7 +3006,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         connection,
                                                                         request,
                                                                         response,
-                                                                        runtime) =>
+                                                                        runtime,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCancelReservationResponseSent),
                                      JSONObject.Create(
@@ -2992,7 +3027,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnClearChargingProfileRequestReceived += (timestamp,
                                                                              sender,
                                                                              connection,
-                                                                             request) =>
+                                                                             request,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearChargingProfileRequestReceived),
                                      JSONObject.Create(
@@ -3007,32 +3043,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           sender,
                                                                           connection,
                                                                           request,
-                                                                sentMessageResult) =>
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearChargingProfileRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnClearChargingProfileResponseReceived += (timestamp,
                                                                               sender,
-                                                                              //connection,
+                                                                              connection,
                                                                               request,
                                                                               response,
-                                                                              runtime) =>
+                                                                              runtime,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearChargingProfileResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -3041,7 +3079,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            connection,
                                                                            request,
                                                                            response,
-                                                                           runtime) =>
+                                                                           runtime,
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearChargingProfileResponseSent),
                                      JSONObject.Create(
@@ -3060,7 +3100,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnGetChargingProfilesRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
-                                                                            request) =>
+                                                                            request,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetChargingProfilesRequestReceived),
                                      JSONObject.Create(
@@ -3075,32 +3116,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sentMessageResult) =>
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetChargingProfilesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnGetChargingProfilesResponseReceived += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                              response,
-                                                                             runtime) =>
+                                                                             runtime,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetChargingProfilesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -3109,7 +3152,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           connection,
                                                                           request,
                                                                           response,
-                                                                          runtime) =>
+                                                                          runtime,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetChargingProfilesResponseSent),
                                      JSONObject.Create(
@@ -3128,7 +3173,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnGetCompositeScheduleRequestReceived += (timestamp,
                                                                              sender,
                                                                              connection,
-                                                                             request) =>
+                                                                             request,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCompositeScheduleRequestReceived),
                                      JSONObject.Create(
@@ -3143,32 +3189,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           sender,
                                                                           connection,
                                                                           request,
-                                                                sentMessageResult) =>
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCompositeScheduleRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnGetCompositeScheduleResponseReceived += (timestamp,
                                                                               sender,
-                                                                              //connection,
+                                                                              connection,
                                                                               request,
                                                                               response,
-                                                                              runtime) =>
+                                                                              runtime,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCompositeScheduleResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -3177,7 +3225,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            connection,
                                                                            request,
                                                                            response,
-                                                                           runtime) =>
+                                                                           runtime,
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCompositeScheduleResponseSent),
                                      JSONObject.Create(
@@ -3269,7 +3319,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived += (timestamp,
                                                                                     sender,
                                                                                     connection,
-                                                                                    request) =>
+                                                                                    request,
+                                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived),
                                      JSONObject.Create(
@@ -3284,32 +3335,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
-                                                                sentMessageResult) =>
+                                                                                 sentMessageResult,
+                                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived += (timestamp,
                                                                                      sender,
-                                                                                     //connection,
+                                                                                     connection,
                                                                                      request,
                                                                                      response,
-                                                                                     runtime) =>
+                                                                                     runtime,
+                                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -3318,14 +3371,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                   connection,
                                                                                   request,
                                                                                   response,
-                                                                                  runtime) =>
+                                                                                  runtime,
+                                                                                  sentMessageResult,
+                                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
                                          new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
                                      ));
@@ -3483,7 +3538,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnReserveNowRequestReceived += (timestamp,
                                                                    sender,
                                                                    connection,
-                                                                   request) =>
+                                                                   request,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReserveNowRequestReceived),
                                      JSONObject.Create(
@@ -3498,32 +3554,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 sender,
                                                                 connection,
                                                                 request,
-                                                                sentMessageResult) =>
+                                                                sentMessageResult,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReserveNowRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnReserveNowResponseReceived += (timestamp,
                                                                     sender,
-                                                                    //connection,
+                                                                    connection,
                                                                     request,
                                                                     response,
-                                                                    runtime) =>
+                                                                    runtime,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReserveNowResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -3532,7 +3590,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                  connection,
                                                                  request,
                                                                  response,
-                                                                 runtime) =>
+                                                                 runtime,
+                                                                 sentMessageResult,
+                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReserveNowResponseSent),
                                      JSONObject.Create(
@@ -3551,7 +3611,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnSetChargingProfileRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
-                                                                           request) =>
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetChargingProfileRequestReceived),
                                      JSONObject.Create(
@@ -3566,32 +3627,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sentMessageResult) =>
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetChargingProfileRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnSetChargingProfileResponseReceived += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                             response,
-                                                                            runtime) =>
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetChargingProfileResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -3600,7 +3663,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          connection,
                                                                          request,
                                                                          response,
-                                                                         runtime) =>
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetChargingProfileResponseSent),
                                      JSONObject.Create(
@@ -3619,7 +3684,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnUnlockConnectorRequestReceived += (timestamp,
                                                                         sender,
                                                                         connection,
-                                                                        request) =>
+                                                                        request,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnlockConnectorRequestReceived),
                                      JSONObject.Create(
@@ -3634,32 +3700,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      sender,
                                                                      connection,
                                                                      request,
-                                                                sentMessageResult) =>
+                                                                     sentMessageResult,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnlockConnectorRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnUnlockConnectorResponseReceived += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                          response,
-                                                                         runtime) =>
+                                                                         runtime,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnlockConnectorResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -3668,7 +3736,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       connection,
                                                                       request,
                                                                       response,
-                                                                      runtime) =>
+                                                                      runtime,
+                                                                      sentMessageResult,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnlockConnectorResponseSent),
                                      JSONObject.Create(
@@ -3687,7 +3757,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
-                                                                              request) =>
+                                                                              request,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleRequestReceived),
                                      JSONObject.Create(
@@ -3702,32 +3773,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            sender,
                                                                            connection,
                                                                            request,
-                                                                sentMessageResult) =>
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleResponseReceived += (timestamp,
                                                                                sender,
-                                                                               //connection,
+                                                                               connection,
                                                                                request,
                                                                                response,
-                                                                               runtime) =>
+                                                                               runtime,
+                                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -3736,7 +3809,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             connection,
                                                                             request,
                                                                             response,
-                                                                            runtime) =>
+                                                                            runtime,
+                                                                            sentMessageResult,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleResponseSent),
                                      JSONObject.Create(
@@ -3755,7 +3830,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnUsePriorityChargingRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
-                                                                            request) =>
+                                                                            request,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUsePriorityChargingRequestReceived),
                                      JSONObject.Create(
@@ -3770,32 +3846,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sentMessageResult) =>
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUsePriorityChargingRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnUsePriorityChargingResponseReceived += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                              response,
-                                                                             runtime) =>
+                                                                             runtime,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUsePriorityChargingResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -3804,7 +3882,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           connection,
                                                                           request,
                                                                           response,
-                                                                          runtime) =>
+                                                                          runtime,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUsePriorityChargingResponseSent),
                                      JSONObject.Create(
@@ -4196,7 +4276,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnChangeAvailabilityRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
-                                                                           request) =>
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnChangeAvailabilityRequestReceived),
                                      JSONObject.Create(
@@ -4211,32 +4292,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sentMessageResult) =>
+                                                                        entMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnChangeAvailabilityRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnChangeAvailabilityResponseReceived += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                             response,
-                                                                            runtime) =>
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnChangeAvailabilityResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4245,7 +4328,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          connection,
                                                                          request,
                                                                          response,
-                                                                         runtime) =>
+                                                                         runtime,
+                                                                         entMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnChangeAvailabilityResponseSent),
                                      JSONObject.Create(
@@ -4264,7 +4349,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnClearVariableMonitoringRequestReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
-                                                                                request) =>
+                                                                                request,
+                                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearVariableMonitoringRequestReceived),
                                      JSONObject.Create(
@@ -4279,32 +4365,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              sender,
                                                                              connection,
                                                                              request,
-                                                                sentMessageResult) =>
+                                                                             sentMessageResult,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearVariableMonitoringRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnClearVariableMonitoringResponseReceived += (timestamp,
                                                                                  sender,
-                                                                                 //connection,
+                                                                                 connection,
                                                                                  request,
                                                                                  response,
-                                                                                 runtime) =>
+                                                                                 runtime,
+                                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearVariableMonitoringResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4313,7 +4401,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                               connection,
                                                                               request,
                                                                               response,
-                                                                              runtime) =>
+                                                                              runtime,
+                                                                              sentMessageResult,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearVariableMonitoringResponseSent),
                                      JSONObject.Create(
@@ -4332,7 +4422,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnGetBaseReportRequestReceived += (timestamp,
                                                                       sender,
                                                                       connection,
-                                                                      request) =>
+                                                                      request,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetBaseReportRequestReceived),
                                      JSONObject.Create(
@@ -4347,32 +4438,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    sender,
                                                                    connection,
                                                                    request,
-                                                                sentMessageResult) =>
+                                                                   sentMessageResult,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetBaseReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnGetBaseReportResponseReceived += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                        response,
-                                                                       runtime) =>
+                                                                       runtime,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetBaseReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4381,7 +4474,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     connection,
                                                                     request,
                                                                     response,
-                                                                    runtime) =>
+                                                                    runtime,
+                                                                    sentMessageResult,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetBaseReportResponseSent),
                                      JSONObject.Create(
@@ -4400,7 +4495,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnGetLogRequestReceived += (timestamp,
                                                                sender,
                                                                connection,
-                                                               request) =>
+                                                               request,
+                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLogRequestReceived),
                                      JSONObject.Create(
@@ -4415,32 +4511,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                             sender,
                                                             connection,
                                                             request,
-                                                                sentMessageResult) =>
+                                                            sentMessageResult,
+                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLogRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnGetLogResponseReceived += (timestamp,
                                                                 sender,
-                                                                //connection,
+                                                                connection,
                                                                 request,
                                                                 response,
-                                                                runtime) =>
+                                                                runtime,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLogResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4449,7 +4547,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                              connection,
                                                              request,
                                                              response,
-                                                             runtime) =>
+                                                             runtime,
+                                                             sentMessageResult,
+                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLogResponseSent),
                                      JSONObject.Create(
@@ -4468,7 +4568,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnGetMonitoringReportRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
-                                                                            request) =>
+                                                                            request,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetMonitoringReportRequestReceived),
                                      JSONObject.Create(
@@ -4483,32 +4584,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sentMessageResult) =>
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetMonitoringReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnGetMonitoringReportResponseReceived += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                              response,
-                                                                             runtime) =>
+                                                                             runtime,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetMonitoringReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4517,7 +4620,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           connection,
                                                                           request,
                                                                           response,
-                                                                          runtime) =>
+                                                                          runtime,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetMonitoringReportResponseSent),
                                      JSONObject.Create(
@@ -4536,7 +4641,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnGetReportRequestReceived += (timestamp,
                                                                   sender,
                                                                   connection,
-                                                                  request) =>
+                                                                  request,
+                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetReportRequestReceived),
                                      JSONObject.Create(
@@ -4551,32 +4657,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                sender,
                                                                connection,
                                                                request,
-                                                                sentMessageResult) =>
+                                                               sentMessageResult,
+                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnGetReportResponseReceived += (timestamp,
                                                                    sender,
-                                                                   //connection,
+                                                                   connection,
                                                                    request,
                                                                    response,
-                                                                   runtime) =>
+                                                                   runtime,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4585,7 +4693,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 connection,
                                                                 request,
                                                                 response,
-                                                                runtime) =>
+                                                                runtime,
+                                                                sentMessageResult,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetReportResponseSent),
                                      JSONObject.Create(
@@ -4604,7 +4714,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnGetVariablesRequestReceived += (timestamp,
                                                                      sender,
                                                                      connection,
-                                                                     request) =>
+                                                                     request,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetVariablesRequestReceived),
                                      JSONObject.Create(
@@ -4619,32 +4730,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   sender,
                                                                   connection,
                                                                   request,
-                                                                sentMessageResult) =>
+                                                                  sentMessageResult,
+                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetVariablesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnGetVariablesResponseReceived += (timestamp,
                                                                       sender,
-                                                                      //connection,
+                                                                      connection,
                                                                       request,
                                                                       response,
-                                                                      runtime) =>
+                                                                      runtime,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetVariablesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4653,7 +4766,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    connection,
                                                                    request,
                                                                    response,
-                                                                   runtime) =>
+                                                                   runtime,
+                                                                   sentMessageResult,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetVariablesResponseSent),
                                      JSONObject.Create(
@@ -4672,7 +4787,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnSetMonitoringBaseRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
-                                                                          request) =>
+                                                                          request,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringBaseRequestReceived),
                                      JSONObject.Create(
@@ -4687,32 +4803,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sentMessageResult) =>
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringBaseRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnSetMonitoringBaseResponseReceived += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                            response,
-                                                                           runtime) =>
+                                                                           runtime,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringBaseResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4721,7 +4839,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         connection,
                                                                         request,
                                                                         response,
-                                                                        runtime) =>
+                                                                        runtime,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringBaseResponseSent),
                                      JSONObject.Create(
@@ -4740,7 +4860,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnSetMonitoringLevelRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
-                                                                           request) =>
+                                                                           request,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringLevelRequestReceived),
                                      JSONObject.Create(
@@ -4755,32 +4876,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sender,
                                                                         connection,
                                                                         request,
-                                                                sentMessageResult) =>
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringLevelRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnSetMonitoringLevelResponseReceived += (timestamp,
                                                                             sender,
-                                                                            //connection,
+                                                                            connection,
                                                                             request,
                                                                             response,
-                                                                            runtime) =>
+                                                                            runtime,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringLevelResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4789,7 +4912,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          connection,
                                                                          request,
                                                                          response,
-                                                                         runtime) =>
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringLevelResponseSent),
                                      JSONObject.Create(
@@ -4808,7 +4933,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnSetNetworkProfileRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
-                                                                          request) =>
+                                                                          request,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetNetworkProfileRequestReceived),
                                      JSONObject.Create(
@@ -4823,32 +4949,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                sentMessageResult) =>
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetNetworkProfileRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnSetNetworkProfileResponseReceived += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                            response,
-                                                                           runtime) =>
+                                                                           runtime,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetNetworkProfileResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4857,7 +4985,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         connection,
                                                                         request,
                                                                         response,
-                                                                        runtime) =>
+                                                                        runtime,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetNetworkProfileResponseSent),
                                      JSONObject.Create(
@@ -4876,7 +5006,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnSetVariableMonitoringRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
-                                                                              request) =>
+                                                                              request,
+                                                                              ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariableMonitoringRequestReceived),
                                      JSONObject.Create(
@@ -4891,32 +5022,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            sender,
                                                                            connection,
                                                                            request,
-                                                                sentMessageResult) =>
+                                                                           sentMessageResult,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariableMonitoringRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnSetVariableMonitoringResponseReceived += (timestamp,
                                                                                sender,
-                                                                               //connection,
+                                                                               connection,
                                                                                request,
                                                                                response,
-                                                                               runtime) =>
+                                                                               runtime,
+                                                                               ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariableMonitoringResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4925,7 +5058,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             connection,
                                                                             request,
                                                                             response,
-                                                                            runtime) =>
+                                                                            runtime,
+                                                                            sentMessageResult,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariableMonitoringResponseSent),
                                      JSONObject.Create(
@@ -4944,7 +5079,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnSetVariablesRequestReceived += (timestamp,
                                                                      sender,
                                                                      connection,
-                                                                     request) =>
+                                                                     request,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariablesRequestReceived),
                                      JSONObject.Create(
@@ -4959,32 +5095,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   sender,
                                                                   connection,
                                                                   request,
-                                                                  sentMessageResult) =>
+                                                                  sentMessageResult,
+                                                                  ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariablesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnSetVariablesResponseReceived += (timestamp,
                                                                       sender,
-                                                                      //connection,
+                                                                      connection,
                                                                       request,
                                                                       response,
-                                                                      runtime) =>
+                                                                      runtime,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariablesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -4993,7 +5131,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    connection,
                                                                    request,
                                                                    response,
-                                                                   runtime) =>
+                                                                   runtime,
+                                                                   sentMessageResult,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariablesResponseSent),
                                      JSONObject.Create(
@@ -5012,7 +5152,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnTriggerMessageRequestReceived += (timestamp,
                                                                        sender,
                                                                        connection,
-                                                                       request) =>
+                                                                       request,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTriggerMessageRequestReceived),
                                      JSONObject.Create(
@@ -5027,7 +5168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     sender,
                                                                     connection,
                                                                     request,
-                                                                    sentMessageResult) =>
+                                                                    sentMessageResult,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTriggerMessageRequestSent),
                                      JSONObject.Create(
@@ -5040,19 +5182,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.IN.OnTriggerMessageResponseReceived += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                         response,
-                                                                        runtime) =>
+                                                                        runtime,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTriggerMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -5061,7 +5204,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      connection,
                                                                      request,
                                                                      response,
-                                                                     runtime) =>
+                                                                     runtime,
+                                                                     sentMessageResult,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTriggerMessageResponseSent),
                                      JSONObject.Create(
@@ -5084,7 +5229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnPublishFirmwareRequestReceived += (timestamp,
                                                                         sender,
                                                                         connection,
-                                                                        request) =>
+                                                                        request,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareRequestReceived),
                                      JSONObject.Create(
@@ -5099,7 +5245,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      sender,
                                                                      connection,
                                                                      request,
-                                                                     sentMessageResult) =>
+                                                                     sentMessageResult,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareRequestSent),
                                      JSONObject.Create(
@@ -5112,19 +5259,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.IN.OnPublishFirmwareResponseReceived += (timestamp,
                                                                          sender,
-                                                                         //connection,
+                                                                         connection,
                                                                          request,
                                                                          response,
-                                                                         runtime) =>
+                                                                         runtime,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -5133,7 +5281,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       connection,
                                                                       request,
                                                                       response,
-                                                                      runtime) =>
+                                                                      runtime,
+                                                                      sentMessageResult,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareResponseSent),
                                      JSONObject.Create(
@@ -5227,7 +5377,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnUnpublishFirmwareRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
-                                                                          request) =>
+                                                                          request,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnpublishFirmwareRequestReceived),
                                      JSONObject.Create(
@@ -5242,7 +5393,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        sender,
                                                                        connection,
                                                                        request,
-                                                                       sentMessageResult) =>
+                                                                       sentMessageResult,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnpublishFirmwareRequestSent),
                                      JSONObject.Create(
@@ -5255,19 +5407,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.IN.OnUnpublishFirmwareResponseReceived += (timestamp,
                                                                            sender,
-                                                                           //connection,
+                                                                           connection,
                                                                            request,
                                                                            response,
-                                                                           runtime) =>
+                                                                           runtime,
+                                                                           ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnpublishFirmwareResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -5276,7 +5429,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         connection,
                                                                         request,
                                                                         response,
-                                                                        runtime) =>
+                                                                        runtime,
+                                                                        sentMessageResult,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnpublishFirmwareResponseSent),
                                      JSONObject.Create(
@@ -5295,7 +5450,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnUpdateFirmwareRequestReceived += (timestamp,
                                                                        sender,
                                                                        connection,
-                                                                       request) =>
+                                                                       request,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateFirmwareRequestReceived),
                                      JSONObject.Create(
@@ -5310,7 +5466,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     sender,
                                                                     connection,
                                                                     request,
-                                                                    sentMessageResult) =>
+                                                                    sentMessageResult,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateFirmwareRequestSent),
                                      JSONObject.Create(
@@ -5323,19 +5480,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NetworkingNode.OCPP.IN.OnUpdateFirmwareResponseReceived += (timestamp,
                                                                         sender,
-                                                                        //connection,
+                                                                        connection,
                                                                         request,
                                                                         response,
-                                                                        runtime) =>
+                                                                        runtime,
+                                                                        ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateFirmwareResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -5344,7 +5502,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      connection,
                                                                      request,
                                                                      response,
-                                                                     runtime) =>
+                                                                     runtime,
+                                                                     sentMessageResult,
+                                                                     ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateFirmwareResponseSent),
                                      JSONObject.Create(
@@ -5444,7 +5604,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnClearCacheRequestReceived += (timestamp,
                                                                    sender,
                                                                    connection,
-                                                                   request) =>
+                                                                   request,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearCacheRequestReceived),
                                      JSONObject.Create(
@@ -5459,32 +5620,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 sender,
                                                                 connection,
                                                                 request,
-                                                                sentMessageResult) =>
+                                                                sentMessageResult,
+                                                                ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearCacheRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnClearCacheResponseReceived += (timestamp,
                                                                     sender,
-                                                                    //connection,
+                                                                    connection,
                                                                     request,
                                                                     response,
-                                                                    runtime) =>
+                                                                    runtime,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearCacheResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -5493,7 +5656,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                  connection,
                                                                  request,
                                                                  response,
-                                                                 runtime) =>
+                                                                 runtime,
+                                                                 sentMessageResult,
+                                                                 ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearCacheResponseSent),
                                      JSONObject.Create(
@@ -5512,7 +5677,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnGetLocalListVersionRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
-                                                                            request) =>
+                                                                            request,
+                                                                            ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLocalListVersionRequestReceived),
                                      JSONObject.Create(
@@ -5527,32 +5693,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          sender,
                                                                          connection,
                                                                          request,
-                                                                sentMessageResult) =>
+                                                                         sentMessageResult,
+                                                                         ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLocalListVersionRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnGetLocalListVersionResponseReceived += (timestamp,
                                                                              sender,
-                                                                             //connection,
+                                                                             connection,
                                                                              request,
                                                                              response,
-                                                                             runtime) =>
+                                                                             runtime,
+                                                                             ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLocalListVersionResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -5561,7 +5729,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           connection,
                                                                           request,
                                                                           response,
-                                                                          runtime) =>
+                                                                          runtime,
+                                                                          sentMessageResult,
+                                                                          ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLocalListVersionResponseSent),
                                      JSONObject.Create(
@@ -5580,7 +5750,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             NetworkingNode.OCPP.IN.OnSendLocalListRequestReceived += (timestamp,
                                                                       sender,
                                                                       connection,
-                                                                      request) =>
+                                                                      request,
+                                                                      ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSendLocalListRequestReceived),
                                      JSONObject.Create(
@@ -5595,32 +5766,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    sender,
                                                                    connection,
                                                                    request,
-                                                                sentMessageResult) =>
+                                                                   sentMessageResult,
+                                                                   ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSendLocalListRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
 
             NetworkingNode.OCPP.IN.OnSendLocalListResponseReceived += (timestamp,
                                                                        sender,
-                                                                       //connection,
+                                                                       connection,
                                                                        request,
                                                                        response,
-                                                                       runtime) =>
+                                                                       runtime,
+                                                                       ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSendLocalListResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         //new JProperty("connection",  connection.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
+                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
+                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
                                      ));
 
 
@@ -5629,7 +5802,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     connection,
                                                                     request,
                                                                     response,
-                                                                    runtime) =>
+                                                                    runtime,
+                                                                    sentMessageResult,
+                                                                    ct) =>
 
                 EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSendLocalListResponseSent),
                                      JSONObject.Create(

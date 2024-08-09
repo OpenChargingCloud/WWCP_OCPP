@@ -82,6 +82,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          UnpublishFirmwareStatus        Status,
                                          DateTime?                      ResponseTimestamp   = null,
 
+                                         NetworkingNode_Id?             DestinationId       = null,
+                                         NetworkPath?                   NetworkPath         = null,
+
                                          IEnumerable<KeyPair>?          SignKeys            = null,
                                          IEnumerable<SignInfo>?         SignInfos           = null,
                                          IEnumerable<Signature>?        Signatures          = null,
@@ -92,8 +95,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -209,14 +212,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom UnpublishFirmware responses.</param>
         public static UnpublishFirmwareResponse Parse(CSMS.UnpublishFirmwareRequest                            Request,
                                                       JObject                                                  JSON,
-                                                      CustomJObjectParserDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseParser   = null)
+                                                      NetworkingNode_Id                                        DestinationId,
+                                                      NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                ResponseTimestamp                       = null,
+                                                      CustomJObjectParserDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseParser   = null,
+                                                      CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                                      CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var unpublishFirmwareResponse,
                          out var errorResponse,
-                         CustomUnpublishFirmwareResponseParser))
+                         ResponseTimestamp,
+                         CustomUnpublishFirmwareResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return unpublishFirmwareResponse;
             }
@@ -240,9 +253,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom UnpublishFirmware responses.</param>
         public static Boolean TryParse(CSMS.UnpublishFirmwareRequest                            Request,
                                        JObject                                                  JSON,
+                                       NetworkingNode_Id                                        DestinationId,
+                                       NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out UnpublishFirmwareResponse?      UnpublishFirmwareResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       CustomJObjectParserDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseParser   = null)
+                                       DateTime?                                                ResponseTimestamp                       = null,
+                                       CustomJObjectParserDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                       CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             try
@@ -293,13 +311,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 UnpublishFirmwareResponse = new UnpublishFirmwareResponse(
+
                                                 Request,
                                                 Status,
-                                                null,
+                                                ResponseTimestamp,
+
+                                                DestinationId,
+                                                NetworkPath,
+
                                                 null,
                                                 null,
                                                 Signatures,
+
                                                 CustomData
+
                                             );
 
                 if (CustomUnpublishFirmwareResponseParser is not null)
@@ -399,6 +424,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The UnpublishFirmware failed.
+        /// </summary>
+        /// <param name="Request">The UnpublishFirmware request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static UnpublishFirmwareResponse FormationViolation(CSMS.UnpublishFirmwareRequest  Request,
+                                                                   String                         ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

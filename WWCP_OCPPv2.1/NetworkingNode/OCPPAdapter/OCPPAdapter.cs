@@ -766,7 +766,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectParserDelegate<Signature>?                                                 CustomSignatureParser                                    { get; set; }
         public CustomJObjectParserDelegate<CustomData>?                                                CustomCustomDataParser                                   { get; set; }
         public CustomJObjectParserDelegate<StatusInfo>?                                                CustomStatusInfoParser                                   { get; set; }
+        public CustomJObjectParserDelegate<CompositeSchedule>?                                         CustomCompositeScheduleParser                            { get; set; }
+        public CustomJObjectParserDelegate<ChargingSchedulePeriod>?                                    CustomChargingSchedulePeriodParser                       { get; set; }
+        public CustomJObjectParserDelegate<ClearMonitoringResult>?                                     CustomClearMonitoringResultParser                        { get; set; }
 
+
+        public CustomJObjectParserDelegate<GetVariableResult>?                                         CustomGetVariableResultParser                            { get; set; }
+        public CustomJObjectParserDelegate<Component>?                                                 CustomComponentParser                                    { get; set; }
+        public CustomJObjectParserDelegate<EVSE>?                                                      CustomEVSEParser                                         { get; set; }
+        public CustomJObjectParserDelegate<Variable>?                                                  CustomVariableParser                                     { get; set; }
+        public CustomJObjectParserDelegate<SetMonitoringResult>?                                       CustomSetMonitoringResultParser                          { get; set; }
+
+        public CustomJObjectParserDelegate<CertificateHashData>?                                       CustomCertificateHashDataParser                          { get; set; }
 
 
         // Overlay Network Extensions

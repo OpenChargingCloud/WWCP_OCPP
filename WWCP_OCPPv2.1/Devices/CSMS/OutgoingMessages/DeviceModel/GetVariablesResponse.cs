@@ -83,6 +83,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     IEnumerable<GetVariableResult>  Results,
                                     DateTime?                       ResponseTimestamp   = null,
 
+                                    NetworkingNode_Id?              DestinationId       = null,
+                                    NetworkPath?                    NetworkPath         = null,
+
                                     IEnumerable<KeyPair>?           SignKeys            = null,
                                     IEnumerable<SignInfo>?          SignInfos           = null,
                                     IEnumerable<Signature>?         Signatures          = null,
@@ -93,8 +96,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -380,16 +383,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom GetVariables responses.</param>
         public static GetVariablesResponse Parse(CSMS.GetVariablesRequest                            Request,
                                                  JObject                                             JSON,
+                                                 NetworkingNode_Id                                   DestinationId,
+                                                 NetworkPath                                         NetworkPath,
                                                  DateTime?                                           ResponseTimestamp                  = null,
-                                                 CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null)
+                                                 CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null,
+                                                 CustomJObjectParserDelegate<GetVariableResult>?     CustomGetVariableResultParser      = null,
+                                                 CustomJObjectParserDelegate<Component>?             CustomComponentParser              = null,
+                                                 CustomJObjectParserDelegate<EVSE>?                  CustomEVSEParser                   = null,
+                                                 CustomJObjectParserDelegate<Variable>?              CustomVariableParser               = null,
+                                                 CustomJObjectParserDelegate<StatusInfo>?            CustomStatusInfoParser             = null,
+                                                 CustomJObjectParserDelegate<Signature>?             CustomSignatureParser              = null,
+                                                 CustomJObjectParserDelegate<CustomData>?            CustomCustomDataParser             = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var getVariablesResponse,
                          out var errorResponse,
                          ResponseTimestamp,
-                         CustomGetVariablesResponseParser))
+                         CustomGetVariablesResponseParser,
+                         CustomGetVariableResultParser,
+                         CustomComponentParser,
+                         CustomEVSEParser,
+                         CustomVariableParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getVariablesResponse;
             }
@@ -414,10 +435,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom GetVariables responses.</param>
         public static Boolean TryParse(CSMS.GetVariablesRequest                            Request,
                                        JObject                                             JSON,
+                                       NetworkingNode_Id                                   DestinationId,
+                                       NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out GetVariablesResponse?      GetVariablesResponse,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
                                        DateTime?                                           ResponseTimestamp                  = null,
-                                       CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null)
+                                       CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null,
+                                       CustomJObjectParserDelegate<GetVariableResult>?     CustomGetVariableResultParser      = null,
+                                       CustomJObjectParserDelegate<Component>?             CustomComponentParser              = null,
+                                       CustomJObjectParserDelegate<EVSE>?                  CustomEVSEParser                   = null,
+                                       CustomJObjectParserDelegate<Variable>?              CustomVariableParser               = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?            CustomStatusInfoParser             = null,
+                                       CustomJObjectParserDelegate<Signature>?             CustomSignatureParser              = null,
+                                       CustomJObjectParserDelegate<CustomData>?            CustomCustomDataParser             = null)
         {
 
             try
@@ -472,6 +502,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            Request,
                                            Results,
                                            ResponseTimestamp,
+
+                                           DestinationId,
+                                           NetworkPath,
 
                                            null,
                                            null,
@@ -593,6 +626,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The GetVariables failed.
+        /// </summary>
+        /// <param name="Request">The GetVariables request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetVariablesResponse FormationViolation(CSMS.GetVariablesRequest  Request,
+                                                              String                    ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

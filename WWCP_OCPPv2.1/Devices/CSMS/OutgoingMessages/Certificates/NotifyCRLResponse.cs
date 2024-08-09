@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public NotifyCRLResponse(CSMS.NotifyCRLRequest         Request,
                                  DateTime?                     ResponseTimestamp   = null,
 
+                                 NetworkingNode_Id?            DestinationId       = null,
+                                 NetworkPath?                  NetworkPath         = null,
+
                                  IEnumerable<KeyPair>?         SignKeys            = null,
                                  IEnumerable<SignInfo>?        SignInfos           = null,
                                  IEnumerable<Signature>?       Signatures          = null,
@@ -85,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -155,14 +158,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyCRLResponseParser">A delegate to parse custom NotifyCRL responses.</param>
         public static NotifyCRLResponse Parse(CSMS.NotifyCRLRequest                            Request,
                                               JObject                                          JSON,
-                                              CustomJObjectParserDelegate<NotifyCRLResponse>?  CustomNotifyCRLResponseParser   = null)
+                                              NetworkingNode_Id                                DestinationId,
+                                              NetworkPath                                      NetworkPath,
+                                              DateTime?                                        ResponseTimestamp               = null,
+                                              CustomJObjectParserDelegate<NotifyCRLResponse>?  CustomNotifyCRLResponseParser   = null,
+                                              CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
+                                              CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var notifyCRLResponse,
                          out var errorResponse,
-                         CustomNotifyCRLResponseParser))
+                         ResponseTimestamp,
+                         CustomNotifyCRLResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return notifyCRLResponse;
             }
@@ -186,9 +199,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyCRLResponseParser">A delegate to parse custom NotifyCRL responses.</param>
         public static Boolean TryParse(CSMS.NotifyCRLRequest                            Request,
                                        JObject                                          JSON,
+                                       NetworkingNode_Id                                DestinationId,
+                                       NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out NotifyCRLResponse?      NotifyCRLResponse,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyCRLResponse>?  CustomNotifyCRLResponseParser   = null)
+                                       DateTime?                                        ResponseTimestamp               = null,
+                                       CustomJObjectParserDelegate<NotifyCRLResponse>?  CustomNotifyCRLResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
+                                       CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
         {
 
             try
@@ -226,12 +244,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 NotifyCRLResponse = new NotifyCRLResponse(
+
                                         Request,
-                                        null,
+                                        ResponseTimestamp,
+
+                                        DestinationId,
+                                        NetworkPath,
+
                                         null,
                                         null,
                                         Signatures,
+
                                         CustomData
+
                                     );
 
                 if (CustomNotifyCRLResponseParser is not null)
@@ -329,6 +354,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The NotifyCRL failed.
+        /// </summary>
+        /// <param name="Request">The NotifyCRL request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static NotifyCRLResponse FormationViolation(CSMS.NotifyCRLRequest  Request,
+                                                           String                 ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

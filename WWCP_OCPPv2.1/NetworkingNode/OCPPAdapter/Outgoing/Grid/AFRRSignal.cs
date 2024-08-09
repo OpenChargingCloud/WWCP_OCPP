@@ -17,8 +17,6 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
@@ -35,319 +33,113 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Logging Delegates
 
     /// <summary>
-    /// A logging delegate called whenever an AFRRSignal request was received.
+    /// A delegate called whenever an AFRRSignal request was sent.
     /// </summary>
-    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAFRRSignalRequestReceivedDelegate(DateTime               Timestamp,
-                                                             IEventSender           Sender,
-                                                             IWebSocketConnection   Connection,
-                                                             AFRRSignalRequest      Request,
-                                                             CancellationToken      CancellationToken = default);
-
-
-    /// <summary>
-    /// A logging delegate called whenever an AFRRSignal response was received.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the response logging.</param>
-    /// <param name="Sender">The sender of the request/response.</param>
     /// <param name="Connection">The connection of the request.</param>
-    /// <param name="Request">The request, when available.</param>
-    /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAFRRSignalResponseReceivedDelegate(DateTime               Timestamp,
-                                                              IEventSender           Sender,
-                                                              IWebSocketConnection   Connection,
-                                                              AFRRSignalRequest?     Request,
-                                                              AFRRSignalResponse     Response,
-                                                              TimeSpan?              Runtime,
-                                                              CancellationToken      CancellationToken = default);
+    public delegate Task OnAFRRSignalRequestSentDelegate(DateTime               Timestamp,
+                                                         IEventSender           Sender,
+                                                         IWebSocketConnection   Connection,
+                                                         AFRRSignalRequest      Request,
+                                                         SentMessageResults     SendMessageResult,
+                                                         CancellationToken      CancellationToken = default);
 
 
     /// <summary>
-    /// A logging delegate called whenever an AFRRSignal request error was received.
+    /// A AFRRSignal response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnAFRRSignalResponseSentDelegate(DateTime               Timestamp,
+                                         IEventSender           Sender,
+                                         IWebSocketConnection   Connection,
+                                         AFRRSignalRequest      Request,
+                                         AFRRSignalResponse     Response,
+                                         TimeSpan               Runtime,
+                                         SentMessageResults     SendMessageResult,
+                                         CancellationToken      CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an AFRRSignal request error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The connection of the request.</param>
-    /// <param name="Request">The request, when available.</param>
+    /// <param name="Sender">The sender of the request error.</param>
+    /// <param name="Connection">The connection of the request error.</param>
+    /// <param name="Request">The optional request (when parsable).</param>
     /// <param name="RequestErrorMessage">The request error message.</param>
-    /// <param name="Runtime">The runtime of the request/request error pair.</param>
+    /// <param name="Runtime">The optional runtime of the request error message.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAFRRSignalRequestErrorReceivedDelegate(DateTime                       Timestamp,
-                                                                  IEventSender                   Sender,
-                                                                  IWebSocketConnection           Connection,
-                                                                  AFRRSignalRequest?             Request,
-                                                                  OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                                  TimeSpan?                      Runtime,
-                                                                  CancellationToken              CancellationToken = default);
+    public delegate Task
+
+        OnAFRRSignalRequestErrorSentDelegate(DateTime                       Timestamp,
+                                             IEventSender                   Sender,
+                                             IWebSocketConnection           Connection,
+                                             AFRRSignalRequest?             Request,
+                                             OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                             TimeSpan?                      Runtime,
+                                             SentMessageResults             SendMessageResult,
+                                             CancellationToken              CancellationToken = default);
 
 
     /// <summary>
-    /// A logging delegate called whenever an AFRRSignal response error was received.
+    /// A logging delegate called whenever an AFRRSignal response error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the response error.</param>
     /// <param name="Connection">The connection of the response error.</param>
-    /// <param name="Request">The request, when available.</param>
-    /// <param name="Response">The response, when available.</param>
+    /// <param name="Request">The optional request.</param>
+    /// <param name="Response">The optional response.</param>
     /// <param name="ResponseErrorMessage">The response error message.</param>
-    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="Runtime">The optional runtime of the response error message.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAFRRSignalResponseErrorReceivedDelegate(DateTime                        Timestamp,
-                                                                   IEventSender                    Sender,
-                                                                   IWebSocketConnection            Connection,
-                                                                   AFRRSignalRequest?              Request,
-                                                                   AFRRSignalResponse?             Response,
-                                                                   OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                                   TimeSpan?                       Runtime,
-                                                                   CancellationToken               CancellationToken = default);
+    public delegate Task
+
+        OnAFRRSignalResponseErrorSentDelegate(DateTime                        Timestamp,
+                                              IEventSender                    Sender,
+                                              IWebSocketConnection            Connection,
+                                              AFRRSignalRequest?              Request,
+                                              AFRRSignalResponse?             Response,
+                                              OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                              TimeSpan?                       Runtime,
+                                              SentMessageResults              SendMessageResult,
+                                              CancellationToken               CancellationToken = default);
 
     #endregion
 
 
-    /// <summary>
-    /// A delegate called whenever an AFRRSignal response is expected
-    /// for a received AFRRSignal request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<AFRRSignalResponse>
-
-        OnAFRRSignalDelegate(DateTime               Timestamp,
-                             IEventSender           Sender,
-                             IWebSocketConnection   Connection,
-                             AFRRSignalRequest      Request,
-                             CancellationToken      CancellationToken = default);
-
-
-    public partial class OCPPWebSocketAdapterIN
+    public partial class OCPPWebSocketAdapterOUT
     {
 
-        // Wired via reflection!
-
-        #region Receive AFRRSignal request
+        #region Send AFRRSignal request
 
         /// <summary>
-        /// An event sent whenever an AFRRSignal request was received.
+        /// An event fired whenever an AFRRSignal request was sent.
         /// </summary>
-        public event OnAFRRSignalRequestReceivedDelegate?  OnAFRRSignalRequestReceived;
+        public event OnAFRRSignalRequestSentDelegate?  OnAFRRSignalRequestSent;
+
 
         /// <summary>
-        /// An event sent whenever an AFRRSignal request was received for processing.
+        /// Send an AFRRSignal request.
         /// </summary>
-        public event OnAFRRSignalDelegate?                 OnAFRRSignal;
-
-
-        public async Task<OCPP_Response>
-
-            Receive_AFRRSignal(DateTime              RequestTimestamp,
-                               IWebSocketConnection  WebSocketConnection,
-                               NetworkingNode_Id     DestinationId,
-                               NetworkPath           NetworkPath,
-                               EventTracking_Id      EventTrackingId,
-                               Request_Id            RequestId,
-                               JObject               JSONRequest,
-                               CancellationToken     CancellationToken)
-
-        {
-
-            OCPP_Response? ocppResponse = null;
-
-            try
-            {
-
-                if (AFRRSignalRequest.TryParse(JSONRequest,
-                                               RequestId,
-                                               DestinationId,
-                                               NetworkPath,
-                                               out var request,
-                                               out var errorResponse,
-                                               RequestTimestamp,
-                                               parentNetworkingNode.OCPP.DefaultRequestTimeout,
-                                               EventTrackingId,
-                                               parentNetworkingNode.OCPP.CustomAFRRSignalRequestParser)) {
-
-                    AFRRSignalResponse? response = null;
-
-                    #region Verify request signature(s)
-
-                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToJSON(
-                            parentNetworkingNode.OCPP.CustomAFRRSignalRequestSerializer,
-                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                        ),
-                        out errorResponse))
-                    {
-
-                        response = AFRRSignalResponse.SignatureError(
-                                       request,
-                                       errorResponse
-                                   );
-
-                    }
-
-                    #endregion
-
-                    #region Send OnAFRRSignalRequestReceived event
-
-                    await LogEvent(
-                              OnAFRRSignalRequestReceived,
-                              loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
-                                  parentNetworkingNode,
-                                  WebSocketConnection,
-                                  request,
-                                  CancellationToken
-                              )
-                          );
-
-                    #endregion
-
-
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnAFRRSignal?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnAFRRSignalDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : AFRRSignalResponse.Failed(request, $"Undefined {nameof(OnAFRRSignal)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = AFRRSignalResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnAFRRSignal),
-                                      e
-                                  );
-
-                        }
-                    }
-
-                    response ??= AFRRSignalResponse.Failed(request);
-
-                    #endregion
-
-                    #region Sign response message
-
-                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
-                        response,
-                        response.ToJSON(
-                            parentNetworkingNode.OCPP.CustomAFRRSignalResponseSerializer,
-                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse2
-                    );
-
-                    #endregion
-
-
-                    #region Send OnAFRRSignalResponse event
-
-                    await parentNetworkingNode.OCPP.OUT.SendOnAFRRSignalResponseSent(
-                              Timestamp.Now,
-                              parentNetworkingNode,
-                              WebSocketConnection,
-                              request,
-                              response,
-                              response.Runtime,
-                              SentMessageResults.Unknown
-                          );
-
-                    #endregion
-
-                    ocppResponse = OCPP_Response.JSONResponse(
-                                       EventTrackingId,
-                                       NetworkPath.Source,
-                                       NetworkPath.From(parentNetworkingNode.Id),
-                                       RequestId,
-                                       response.ToJSON(
-                                           parentNetworkingNode.OCPP.CustomAFRRSignalResponseSerializer,
-                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                                           parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                           parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       ),
-                                       CancellationToken
-                                   );
-
-                }
-
-                else
-                    ocppResponse = OCPP_Response.CouldNotParse(
-                                       EventTrackingId,
-                                       RequestId,
-                                       nameof(Receive_AFRRSignal)[8..],
-                                       JSONRequest,
-                                       errorResponse
-                                   );
-
-            }
-            catch (Exception e)
-            {
-
-                ocppResponse = OCPP_Response.ExceptionOccurred(
-                                   EventTrackingId,
-                                   RequestId,
-                                   nameof(Receive_AFRRSignal)[8..],
-                                   JSONRequest,
-                                   e
-                               );
-
-            }
-
-            return ocppResponse;
-
-        }
-
-        #endregion
-
-        #region Receive AFRRSignal response
-
-        /// <summary>
-        /// An event fired whenever an AFRRSignal response was received.
-        /// </summary>
-        public event OnAFRRSignalResponseReceivedDelegate? OnAFRRSignalResponseReceived;
-
-
+        /// <param name="Request">A AFRRSignal request.</param>
         public async Task<AFRRSignalResponse>
 
-            Receive_AFRRSignalResponse(AFRRSignalRequest     Request,
-                                       JObject               ResponseJSON,
-                                       IWebSocketConnection  WebSocketConnection,
-                                       NetworkingNode_Id     DestinationId,
-                                       NetworkPath           NetworkPath,
-                                       EventTracking_Id      EventTrackingId,
-                                       Request_Id            RequestId,
-                                       DateTime?             ResponseTimestamp   = null,
-                                       CancellationToken     CancellationToken   = default)
+            AFRRSignal(AFRRSignalRequest Request)
 
         {
 
@@ -356,48 +148,91 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                if (AFRRSignalResponse.TryParse(Request,
-                                                ResponseJSON,
-                                                DestinationId,
-                                                NetworkPath,
-                                                out response,
-                                                out var errorResponse,
-                                                ResponseTimestamp,
-                                                parentNetworkingNode.OCPP.CustomAFRRSignalResponseParser,
-                                                parentNetworkingNode.OCPP.CustomStatusInfoParser,
-                                                parentNetworkingNode.OCPP.CustomSignatureParser,
-                                                parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+                #region Sign request message
 
-                    #region Verify response signature(s)
+                if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomAFRRSignalRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var signingErrors
+                    ))
+                {
 
-                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-                            response,
-                            response.ToJSON(
-                                parentNetworkingNode.OCPP.CustomAFRRSignalResponseSerializer,
-                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                            ),
-                            out errorResponse
-                        ))
-                    {
-
-                        response = AFRRSignalResponse.SignatureError(
-                                       Request,
-                                       errorResponse
-                                   );
-
-                    }
-
-                    #endregion
+                    response = AFRRSignalResponse.SignatureError(
+                                   Request,
+                                   signingErrors
+                               );
 
                 }
 
+                #endregion
+
                 else
-                    response = AFRRSignalResponse.FormationViolation(
-                                   Request,
-                                   errorResponse
-                               );
+                {
+
+                    #region Send request message
+
+                    var sendRequestState = await SendJSONRequestAndWait(
+
+                                                     OCPP_JSONRequestMessage.FromRequest(
+                                                         Request,
+                                                         Request.ToJSON(
+                                                             parentNetworkingNode.OCPP.CustomAFRRSignalRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                         )
+                                                     ),
+
+                                                     sendMessageResult => LogEvent(
+                                                         OnAFRRSignalRequestSent,
+                                                         loggingDelegate => loggingDelegate.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             sendMessageResult.Connection,
+                                                             Request,
+                                                             sendMessageResult.Result
+                                                         )
+                                                     )
+
+                                                 );
+
+                    #endregion
+
+                    if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_AFRRSignalResponse(
+                                             Request,
+                                             jsonResponse,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.         EventTrackingId,
+                                             Request.         RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.         CancellationToken
+                                         );
+
+                    if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_AFRRSignalRequestError(
+                                             Request,
+                                             jsonRequestError,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.CancellationToken
+                                         );
+
+                    response ??= new AFRRSignalResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
+
+                }
 
             }
             catch (Exception e)
@@ -410,178 +245,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-
-            #region Send OnAFRRSignalResponseReceived event
-
-            await LogEvent(
-                      OnAFRRSignalResponseReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          WebSocketConnection,
-                          Request,
-                          response,
-                          response.Runtime,
-                          CancellationToken
-                      )
-                  );
-
-            #endregion
-
             return response;
 
         }
 
         #endregion
 
-        #region Receive AFRRSignal request error
+
+        #region Send OnAFRRSignalResponseSent event
 
         /// <summary>
-        /// An event fired whenever an AFRRSignal request error was received.
+        /// An event sent whenever an AFRRSignal response was sent.
         /// </summary>
-        public event OnAFRRSignalRequestErrorReceivedDelegate? AFRRSignalRequestErrorReceived;
+        public event OnAFRRSignalResponseSentDelegate?  OnAFRRSignalResponseSent;
 
+        public Task SendOnAFRRSignalResponseSent(DateTime              Timestamp,
+                                                 IEventSender          Sender,
+                                                 IWebSocketConnection  Connection,
+                                                 AFRRSignalRequest     Request,
+                                                 AFRRSignalResponse    Response,
+                                                 TimeSpan              Runtime,
+                                                 SentMessageResults    SendMessageResult,
+                                                 CancellationToken     CancellationToken = default)
 
-        public async Task<AFRRSignalResponse>
-
-            Receive_AFRRSignalRequestError(AFRRSignalRequest             Request,
-                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                           IWebSocketConnection          Connection,
-                                           NetworkingNode_Id             DestinationId,
-                                           NetworkPath                   NetworkPath,
-                                           EventTracking_Id              EventTrackingId,
-                                           Request_Id                    RequestId,
-                                           DateTime?                     ResponseTimestamp   = null,
-                                           CancellationToken             CancellationToken   = default)
-        {
-
-            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-            //    response,
-            //    response.ToJSON(
-            //        parentNetworkingNode.OCPP.CustomAFRRSignalResponseSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
-            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-            //    ),
-            //    out errorResponse
-            //);
-
-            #region Send AFRRSignalRequestErrorReceived event
-
-            await LogEvent(
-                      AFRRSignalRequestErrorReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          Connection,
-                          Request,
-                          RequestErrorMessage,
-                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
-                          CancellationToken
-                      )
-                  );
-
-            #endregion
-
-
-            var response = AFRRSignalResponse.RequestError(
-                               Request,
-                               RequestErrorMessage.EventTrackingId,
-                               RequestErrorMessage.ErrorCode,
-                               RequestErrorMessage.ErrorDescription,
-                               RequestErrorMessage.ErrorDetails,
-                               RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
-                               RequestErrorMessage.NetworkPath
-                           );
-
-            #region Send OnAFRRSignalResponseReceived event
-
-            await LogEvent(
-                      OnAFRRSignalResponseReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          Connection,
-                          Request,
-                          response,
-                          response.Runtime,
-                          CancellationToken
-                      )
-                  );
-
-            #endregion
-
-            return response;
-
-        }
+            => LogEvent(
+                   OnAFRRSignalResponseSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
 
         #endregion
 
-        #region Receive AFRRSignal response error
+        #region Send OnAFRRSignalRequestErrorSent event
 
         /// <summary>
-        /// An event fired whenever an AFRRSignal response error was received.
+        /// An event sent whenever an AFRRSignal request error was sent.
         /// </summary>
-        public event OnAFRRSignalResponseErrorReceivedDelegate? AFRRSignalResponseErrorReceived;
+        public event OnAFRRSignalRequestErrorSentDelegate? OnAFRRSignalRequestErrorSent;
 
 
-        public async Task
+        public Task SendOnAFRRSignalRequestErrorSent(DateTime                      Timestamp,
+                                                     IEventSender                  Sender,
+                                                     IWebSocketConnection          Connection,
+                                                     AFRRSignalRequest?            Request,
+                                                     OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                     TimeSpan                      Runtime,
+                                                     SentMessageResults            SendMessageResult,
+                                                     CancellationToken             CancellationToken = default)
 
-            Receive_AFRRSignalResponseError(AFRRSignalRequest?             Request,
-                                            AFRRSignalResponse?            Response,
-                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                            IWebSocketConnection           Connection,
-                                            NetworkingNode_Id              DestinationId,
-                                            NetworkPath                    NetworkPath,
-                                            EventTracking_Id               EventTrackingId,
-                                            Request_Id                     RequestId,
-                                            DateTime?                      ResponseTimestamp   = null,
-                                            CancellationToken              CancellationToken   = default)
+            => LogEvent(
+                   OnAFRRSignalRequestErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       RequestErrorMessage,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
 
-        {
+        #endregion
 
-            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-            //    response,
-            //    response.ToJSON(
-            //        parentNetworkingNode.OCPP.CustomAFRRSignalResponseSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
-            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-            //    ),
-            //    out errorResponse
-            //);
+        #region Send OnAFRRSignalResponseErrorSent event
 
-            #region Send AFRRSignalResponseErrorReceived event
-
-            await LogEvent(
-                      AFRRSignalResponseErrorReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          Connection,
-                          Request,
-                          Response,
-                          ResponseErrorMessage,
-                          Response is not null
-                              ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
-                              : null,
-                          CancellationToken
-                      )
-                  );
-
-            #endregion
+        /// <summary>
+        /// An event sent whenever an AFRRSignal response error was sent.
+        /// </summary>
+        public event OnAFRRSignalResponseErrorSentDelegate? OnAFRRSignalResponseErrorSent;
 
 
-        }
+        public Task SendOnAFRRSignalResponseErrorSent(DateTime                       Timestamp,
+                                                      IEventSender                   Sender,
+                                                      IWebSocketConnection           Connection,
+                                                      AFRRSignalRequest?             Request,
+                                                      AFRRSignalResponse?            Response,
+                                                      OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                      TimeSpan                       Runtime,
+                                                      SentMessageResults             SendMessageResult,
+                                                      CancellationToken              CancellationToken = default)
+
+            => LogEvent(
+                   OnAFRRSignalResponseErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       ResponseErrorMessage,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
 
         #endregion
 

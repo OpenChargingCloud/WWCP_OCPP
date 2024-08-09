@@ -1,0 +1,590 @@
+﻿/*
+ * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#region Usings
+
+using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+
+#endregion
+
+namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
+{
+
+    #region Logging Delegates
+
+    /// <summary>
+    /// A logging delegate called whenever an UnlockConnector request was received.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnUnlockConnectorRequestReceivedDelegate(DateTime                 Timestamp,
+                                                                  IEventSender             Sender,
+                                                                  IWebSocketConnection     Connection,
+                                                                  UnlockConnectorRequest   Request,
+                                                                  CancellationToken        CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an UnlockConnector response was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnUnlockConnectorResponseReceivedDelegate(DateTime                  Timestamp,
+                                                                   IEventSender              Sender,
+                                                                   IWebSocketConnection      Connection,
+                                                                   UnlockConnectorRequest?   Request,
+                                                                   UnlockConnectorResponse   Response,
+                                                                   TimeSpan?                 Runtime,
+                                                                   CancellationToken         CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an UnlockConnector request error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="RequestErrorMessage">The request error message.</param>
+    /// <param name="Runtime">The runtime of the request/request error pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnUnlockConnectorRequestErrorReceivedDelegate(DateTime                       Timestamp,
+                                                                       IEventSender                   Sender,
+                                                                       IWebSocketConnection           Connection,
+                                                                       UnlockConnectorRequest?        Request,
+                                                                       OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                                       TimeSpan?                      Runtime,
+                                                                       CancellationToken              CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an UnlockConnector response error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response error.</param>
+    /// <param name="Connection">The connection of the response error.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response, when available.</param>
+    /// <param name="ResponseErrorMessage">The response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnUnlockConnectorResponseErrorReceivedDelegate(DateTime                        Timestamp,
+                                                                        IEventSender                    Sender,
+                                                                        IWebSocketConnection            Connection,
+                                                                        UnlockConnectorRequest?         Request,
+                                                                        UnlockConnectorResponse?        Response,
+                                                                        OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                                        TimeSpan?                       Runtime,
+                                                                        CancellationToken               CancellationToken = default);
+
+    #endregion
+
+
+    /// <summary>
+    /// A delegate called whenever an UnlockConnector response is expected
+    /// for a received UnlockConnector request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<UnlockConnectorResponse>
+
+        OnUnlockConnectorDelegate(DateTime                 Timestamp,
+                                  IEventSender             Sender,
+                                  IWebSocketConnection     Connection,
+                                  UnlockConnectorRequest   Request,
+                                  CancellationToken        CancellationToken = default);
+
+
+    public partial class OCPPWebSocketAdapterIN
+    {
+
+        // Wired via reflection!
+
+        #region Receive UnlockConnector request
+
+        /// <summary>
+        /// An event sent whenever an UnlockConnector request was received.
+        /// </summary>
+        public event OnUnlockConnectorRequestReceivedDelegate?  OnUnlockConnectorRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever an UnlockConnector request was received for processing.
+        /// </summary>
+        public event OnUnlockConnectorDelegate?                 OnUnlockConnector;
+
+
+        public async Task<OCPP_Response>
+
+            Receive_UnlockConnector(DateTime              RequestTimestamp,
+                                    IWebSocketConnection  WebSocketConnection,
+                                    NetworkingNode_Id     DestinationId,
+                                    NetworkPath           NetworkPath,
+                                    EventTracking_Id      EventTrackingId,
+                                    Request_Id            RequestId,
+                                    JObject               JSONRequest,
+                                    CancellationToken     CancellationToken)
+
+        {
+
+            OCPP_Response? ocppResponse = null;
+
+            try
+            {
+
+                if (UnlockConnectorRequest.TryParse(JSONRequest,
+                                                    RequestId,
+                                                    DestinationId,
+                                                    NetworkPath,
+                                                    out var request,
+                                                    out var errorResponse,
+                                                    RequestTimestamp,
+                                                    parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                    EventTrackingId,
+                                                    parentNetworkingNode.OCPP.CustomUnlockConnectorRequestParser)) {
+
+                    UnlockConnectorResponse? response = null;
+
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomUnlockConnectorRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse))
+                    {
+
+                        response = UnlockConnectorResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
+
+                    }
+
+                    #endregion
+
+                    #region Send OnUnlockConnectorRequestReceived event
+
+                    await LogEvent(
+                              OnUnlockConnectorRequestReceived,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  parentNetworkingNode,
+                                  WebSocketConnection,
+                                  request,
+                                  CancellationToken
+                              )
+                          );
+
+                    #endregion
+
+
+                    #region Call async subscribers
+
+                    if (response is null)
+                    {
+                        try
+                        {
+
+                            var responseTasks = OnUnlockConnector?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : UnlockConnectorResponse.Failed(request, $"Undefined {nameof(OnUnlockConnector)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = UnlockConnectorResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OnUnlockConnector),
+                                      e
+                                  );
+
+                        }
+                    }
+
+                    response ??= UnlockConnectorResponse.Failed(request);
+
+                    #endregion
+
+                    #region Sign response message
+
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.OCPP.CustomUnlockConnectorResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2
+                    );
+
+                    #endregion
+
+
+                    #region Send OnUnlockConnectorResponse event
+
+                    await parentNetworkingNode.OCPP.OUT.SendOnUnlockConnectorResponseSent(
+                              Timestamp.Now,
+                              parentNetworkingNode,
+                              WebSocketConnection,
+                              request,
+                              response,
+                              response.Runtime,
+                              SentMessageResults.Unknown
+                          );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
+                                       NetworkPath.Source,
+                                       NetworkPath.From(parentNetworkingNode.Id),
+                                       RequestId,
+                                       response.ToJSON(
+                                           parentNetworkingNode.OCPP.CustomUnlockConnectorResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                           parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                           parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                       ),
+                                       CancellationToken
+                                   );
+
+                }
+
+                else
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_UnlockConnector)[8..],
+                                       JSONRequest,
+                                       errorResponse
+                                   );
+
+            }
+            catch (Exception e)
+            {
+
+                ocppResponse = OCPP_Response.ExceptionOccurred(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_UnlockConnector)[8..],
+                                   JSONRequest,
+                                   e
+                               );
+
+            }
+
+            return ocppResponse;
+
+        }
+
+        #endregion
+
+        #region Receive UnlockConnector response
+
+        /// <summary>
+        /// An event fired whenever an UnlockConnector response was received.
+        /// </summary>
+        public event OnUnlockConnectorResponseReceivedDelegate? OnUnlockConnectorResponseReceived;
+
+
+        public async Task<UnlockConnectorResponse>
+
+            Receive_UnlockConnectorResponse(UnlockConnectorRequest  Request,
+                                            JObject                 ResponseJSON,
+                                            IWebSocketConnection    WebSocketConnection,
+                                            NetworkingNode_Id       DestinationId,
+                                            NetworkPath             NetworkPath,
+                                            EventTracking_Id        EventTrackingId,
+                                            Request_Id              RequestId,
+                                            DateTime?               ResponseTimestamp   = null,
+                                            CancellationToken       CancellationToken   = default)
+
+        {
+
+            UnlockConnectorResponse? response = null;
+
+            try
+            {
+
+                if (UnlockConnectorResponse.TryParse(Request,
+                                                     ResponseJSON,
+                                                     DestinationId,
+                                                     NetworkPath,
+                                                     out response,
+                                                     out var errorResponse,
+                                                     ResponseTimestamp,
+                                                     parentNetworkingNode.OCPP.CustomUnlockConnectorResponseParser,
+                                                     parentNetworkingNode.OCPP.CustomStatusInfoParser,
+                                                     parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                     parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+
+                    #region Verify response signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+                            response,
+                            response.ToJSON(
+                                parentNetworkingNode.OCPP.CustomUnlockConnectorResponseSerializer,
+                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            ),
+                            out errorResponse
+                        ))
+                    {
+
+                        response = UnlockConnectorResponse.SignatureError(
+                                       Request,
+                                       errorResponse
+                                   );
+
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    response = UnlockConnectorResponse.FormationViolation(
+                                   Request,
+                                   errorResponse
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                response = UnlockConnectorResponse.ExceptionOccured(
+                               Request,
+                               e
+                           );
+
+            }
+
+
+            #region Send OnUnlockConnectorResponseReceived event
+
+            await LogEvent(
+                      OnUnlockConnectorResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Receive UnlockConnector request error
+
+        /// <summary>
+        /// An event fired whenever an UnlockConnector request error was received.
+        /// </summary>
+        public event OnUnlockConnectorRequestErrorReceivedDelegate? UnlockConnectorRequestErrorReceived;
+
+
+        public async Task<UnlockConnectorResponse>
+
+            Receive_UnlockConnectorRequestError(UnlockConnectorRequest        Request,
+                                                OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                IWebSocketConnection          Connection,
+                                                NetworkingNode_Id             DestinationId,
+                                                NetworkPath                   NetworkPath,
+                                                EventTracking_Id              EventTrackingId,
+                                                Request_Id                    RequestId,
+                                                DateTime?                     ResponseTimestamp   = null,
+                                                CancellationToken             CancellationToken   = default)
+        {
+
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomUnlockConnectorResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
+
+            #region Send UnlockConnectorRequestErrorReceived event
+
+            await LogEvent(
+                      UnlockConnectorRequestErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          RequestErrorMessage,
+                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+
+            var response = UnlockConnectorResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
+            #region Send OnUnlockConnectorResponseReceived event
+
+            await LogEvent(
+                      OnUnlockConnectorResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Receive UnlockConnector response error
+
+        /// <summary>
+        /// An event fired whenever an UnlockConnector response error was received.
+        /// </summary>
+        public event OnUnlockConnectorResponseErrorReceivedDelegate? UnlockConnectorResponseErrorReceived;
+
+
+        public async Task
+
+            Receive_UnlockConnectorResponseError(UnlockConnectorRequest?        Request,
+                                                 UnlockConnectorResponse?       Response,
+                                                 OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                 IWebSocketConnection           Connection,
+                                                 NetworkingNode_Id              DestinationId,
+                                                 NetworkPath                    NetworkPath,
+                                                 EventTracking_Id               EventTrackingId,
+                                                 Request_Id                     RequestId,
+                                                 DateTime?                      ResponseTimestamp   = null,
+                                                 CancellationToken              CancellationToken   = default)
+
+        {
+
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomUnlockConnectorResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
+
+            #region Send UnlockConnectorResponseErrorReceived event
+
+            await LogEvent(
+                      UnlockConnectorResponseErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          Response,
+                          ResponseErrorMessage,
+                          Response is not null
+                              ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
+                              : null,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+
+        }
+
+        #endregion
+
+    }
+
+}

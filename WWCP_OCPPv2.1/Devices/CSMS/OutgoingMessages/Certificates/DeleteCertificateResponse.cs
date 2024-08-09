@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          StatusInfo?                    StatusInfo          = null,
                                          DateTime?                      ResponseTimestamp   = null,
 
+                                         NetworkingNode_Id?             DestinationId       = null,
+                                         NetworkPath?                   NetworkPath         = null,
+
                                          IEnumerable<KeyPair>?          SignKeys            = null,
                                          IEnumerable<SignInfo>?         SignInfos           = null,
                                          IEnumerable<Signature>?        Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -246,14 +249,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomDeleteCertificateResponseParser">A delegate to parse custom DeleteCertificate responses.</param>
         public static DeleteCertificateResponse Parse(CSMS.DeleteCertificateRequest                            Request,
                                                       JObject                                                  JSON,
-                                                      CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null)
+                                                      NetworkingNode_Id                                        DestinationId,
+                                                      NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                ResponseTimestamp                       = null,
+                                                      CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null,
+                                                      CustomJObjectParserDelegate<StatusInfo>?                 CustomStatusInfoParser                  = null,
+                                                      CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                                      CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var deleteCertificateResponse,
                          out var errorResponse,
-                         CustomDeleteCertificateResponseParser))
+                         ResponseTimestamp,
+                         CustomDeleteCertificateResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return deleteCertificateResponse;
             }
@@ -277,9 +292,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomDeleteCertificateResponseParser">A delegate to parse custom DeleteCertificate responses.</param>
         public static Boolean TryParse(CSMS.DeleteCertificateRequest                            Request,
                                        JObject                                                  JSON,
+                                       NetworkingNode_Id                                        DestinationId,
+                                       NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out DeleteCertificateResponse?      DeleteCertificateResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null)
+                                       DateTime?                                                ResponseTimestamp                       = null,
+                                       CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                 CustomStatusInfoParser                  = null,
+                                       CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                       CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             try
@@ -344,14 +365,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 DeleteCertificateResponse = new DeleteCertificateResponse(
+
                                                 Request,
                                                 Status,
                                                 StatusInfo,
-                                                null,
+                                                ResponseTimestamp,
+
+                                                DestinationId,
+                                                NetworkPath,
+
                                                 null,
                                                 null,
                                                 Signatures,
+
                                                 CustomData
+
                                             );
 
                 if (CustomDeleteCertificateResponseParser is not null)
@@ -458,6 +486,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The DeleteCertificate failed.
+        /// </summary>
+        /// <param name="Request">The DeleteCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static DeleteCertificateResponse FormationViolation(CSMS.DeleteCertificateRequest  Request,
+                                                                   String                         ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

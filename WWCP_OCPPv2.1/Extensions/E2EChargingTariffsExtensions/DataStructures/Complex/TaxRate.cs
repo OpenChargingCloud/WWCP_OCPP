@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Percentage">The tax percentage.</param>
         public static TaxRate VAT(Decimal Percentage)
 
-            => new(
+            => new (
                    Type:                         "VAT",
                    Tax:                          Percentage,
                    AppliesToEnergyFee:           true,

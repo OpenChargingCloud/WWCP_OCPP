@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       StatusInfo?                   StatusInfo          = null,
                                       DateTime?                     ResponseTimestamp   = null,
 
+                                      NetworkingNode_Id?            DestinationId       = null,
+                                      NetworkPath?                  NetworkPath         = null,
+
                                       IEnumerable<KeyPair>?         SignKeys            = null,
                                       IEnumerable<SignInfo>?        SignInfos           = null,
                                       IEnumerable<Signature>?       Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -248,19 +251,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom UpdateFirmware responses.</param>
         public static UpdateFirmwareResponse Parse(CSMS.UpdateFirmwareRequest                            Request,
                                                    JObject                                               JSON,
-                                                   CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null)
+                                                   NetworkingNode_Id                                     DestinationId,
+                                                   NetworkPath                                           NetworkPath,
+                                                   DateTime?                                             ResponseTimestamp                    = null,
+                                                   CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null,
+                                                   CustomJObjectParserDelegate<StatusInfo>?              CustomStatusInfoParser               = null,
+                                                   CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
+                                                   CustomJObjectParserDelegate<CustomData>?              CustomCustomDataParser               = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var updateFirmwareResponse,
                          out var errorResponse,
-                         CustomUpdateFirmwareResponseParser))
+                         ResponseTimestamp,
+                         CustomUpdateFirmwareResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return updateFirmwareResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a UpdateFirmware response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UpdateFirmware response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -279,9 +294,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom UpdateFirmware responses.</param>
         public static Boolean TryParse(CSMS.UpdateFirmwareRequest                            Request,
                                        JObject                                               JSON,
+                                       NetworkingNode_Id                                     DestinationId,
+                                       NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out UpdateFirmwareResponse?      UpdateFirmwareResponse,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
-                                       CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null)
+                                       DateTime?                                             ResponseTimestamp                    = null,
+                                       CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?              CustomStatusInfoParser               = null,
+                                       CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
+                                       CustomJObjectParserDelegate<CustomData>?              CustomCustomDataParser               = null)
         {
 
             try
@@ -346,14 +367,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 UpdateFirmwareResponse = new UpdateFirmwareResponse(
+
                                              Request,
                                              Status,
                                              StatusInfo,
-                                             null,
+                                             ResponseTimestamp,
+
+                                             DestinationId,
+                                             NetworkPath,
+
                                              null,
                                              null,
                                              Signatures,
+
                                              CustomData
+
                                          );
 
                 if (CustomUpdateFirmwareResponseParser is not null)
@@ -461,6 +489,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The UpdateFirmware failed.
+        /// </summary>
+        /// <param name="Request">The UpdateFirmware request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static UpdateFirmwareResponse FormationViolation(CSMS.UpdateFirmwareRequest  Request,
+                                                                String                      ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

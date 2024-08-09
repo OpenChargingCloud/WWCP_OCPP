@@ -90,6 +90,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        StatusInfo?                   StatusInfo          = null,
                                        DateTime?                     ResponseTimestamp   = null,
 
+                                       NetworkingNode_Id?            DestinationId       = null,
+                                       NetworkPath?                  NetworkPath         = null,
+
                                        IEnumerable<KeyPair>?         SignKeys            = null,
                                        IEnumerable<SignInfo>?        SignInfos           = null,
                                        IEnumerable<Signature>?       Signatures          = null,
@@ -100,8 +103,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -246,14 +249,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom UnlockConnector responses.</param>
         public static UnlockConnectorResponse Parse(CSMS.UnlockConnectorRequest                            Request,
                                                     JObject                                                JSON,
-                                                    CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null)
+                                                    NetworkingNode_Id                                      DestinationId,
+                                                    NetworkPath                                            NetworkPath,
+                                                    DateTime?                                              ResponseTimestamp                     = null,
+                                                    CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null,
+                                                    CustomJObjectParserDelegate<StatusInfo>?               CustomStatusInfoParser                = null,
+                                                    CustomJObjectParserDelegate<Signature>?                CustomSignatureParser                 = null,
+                                                    CustomJObjectParserDelegate<CustomData>?               CustomCustomDataParser                = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var unlockConnectorResponse,
                          out var errorResponse,
-                         CustomUnlockConnectorResponseParser))
+                         ResponseTimestamp,
+                         CustomUnlockConnectorResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return unlockConnectorResponse;
             }
@@ -277,9 +292,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom UnlockConnector responses.</param>
         public static Boolean TryParse(CSMS.UnlockConnectorRequest                            Request,
                                        JObject                                                JSON,
+                                       NetworkingNode_Id                                      DestinationId,
+                                       NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out UnlockConnectorResponse?      UnlockConnectorResponse,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
-                                       CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null)
+                                       DateTime?                                              ResponseTimestamp                     = null,
+                                       CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?               CustomStatusInfoParser                = null,
+                                       CustomJObjectParserDelegate<Signature>?                CustomSignatureParser                 = null,
+                                       CustomJObjectParserDelegate<CustomData>?               CustomCustomDataParser                = null)
         {
 
             try
@@ -344,14 +365,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 UnlockConnectorResponse = new UnlockConnectorResponse(
+
                                               Request,
                                               UnlockStatus,
                                               StatusInfo,
-                                              null,
+                                              ResponseTimestamp,
+
+                                              DestinationId,
+                                              NetworkPath,
+
                                               null,
                                               null,
                                               Signatures,
+
                                               CustomData
+
                                           );
 
                 if (CustomUnlockConnectorResponseParser is not null)
@@ -458,6 +486,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The UnlockConnector failed.
+        /// </summary>
+        /// <param name="Request">The UnlockConnector request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static UnlockConnectorResponse FormationViolation(CSMS.UnlockConnectorRequest  Request,
+                                                                 String                       ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

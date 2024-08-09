@@ -790,7 +790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                        );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,             response.Result.ResultCode);
+                ClassicAssert.AreEqual(ResultCode.OK,              response.Result.ResultCode);
                 ClassicAssert.AreEqual(JTokenType.Array,           response.Data?.Type);
                 ClassicAssert.AreEqual(data[0]?.Value<String>(),   response.Data?[0]?.Value<String>()?.Reverse());
 
@@ -829,10 +829,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 chargingStation3        is not null)
             {
 
-                var notifyReportRequests= new ConcurrentList<CS.SignCertificateRequest>();
+                var signCertificateRequests= new ConcurrentList<SignCertificateRequest>();
 
-                testCSMS01.OCPP.IN.OnSignCertificateRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
-                    notifyReportRequests.TryAdd(notifyReportRequest);
+                testCSMS01.OCPP.IN.OnSignCertificateRequestReceived += (timestamp, sender, connection, signCertificateRequest, ct) => {
+                    signCertificateRequests.TryAdd(signCertificateRequest);
                     return Task.CompletedTask;
                 };
 
@@ -846,7 +846,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,               notifyReportRequests.Count);
+                ClassicAssert.AreEqual(1,               signCertificateRequests.Count);
 
             }
 

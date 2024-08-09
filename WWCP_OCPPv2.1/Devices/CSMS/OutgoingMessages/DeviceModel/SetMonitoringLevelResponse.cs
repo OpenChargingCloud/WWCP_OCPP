@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          StatusInfo?                      StatusInfo          = null,
                                          DateTime?                        ResponseTimestamp   = null,
 
+                                         NetworkingNode_Id?               DestinationId       = null,
+                                         NetworkPath?                     NetworkPath         = null,
+
                                          IEnumerable<KeyPair>?            SignKeys            = null,
                                          IEnumerable<SignInfo>?           SignInfos           = null,
                                          IEnumerable<Signature>?          Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -245,14 +248,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom SetMonitoringLevel responses.</param>
         public static SetMonitoringLevelResponse Parse(CSMS.SetMonitoringLevelRequest                            Request,
                                                        JObject                                                   JSON,
-                                                       CustomJObjectParserDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseParser   = null)
+                                                       NetworkingNode_Id                                         DestinationId,
+                                                       NetworkPath                                               NetworkPath,
+                                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                                       CustomJObjectParserDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseParser   = null,
+                                                       CustomJObjectParserDelegate<StatusInfo>?                  CustomStatusInfoParser                   = null,
+                                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var setMonitoringLevelResponse,
                          out var errorResponse,
-                         CustomSetMonitoringLevelResponseParser))
+                         ResponseTimestamp,
+                         CustomSetMonitoringLevelResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return setMonitoringLevelResponse;
             }
@@ -276,9 +291,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom SetMonitoringLevel responses.</param>
         public static Boolean TryParse(CSMS.SetMonitoringLevelRequest                            Request,
                                        JObject                                                   JSON,
+                                       NetworkingNode_Id                                         DestinationId,
+                                       NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out SetMonitoringLevelResponse?      SetMonitoringLevelResponse,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
-                                       CustomJObjectParserDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseParser   = null)
+                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                       CustomJObjectParserDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                  CustomStatusInfoParser                   = null,
+                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
 
             try
@@ -343,14 +364,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 SetMonitoringLevelResponse = new SetMonitoringLevelResponse(
+
                                                  Request,
                                                  Status,
                                                  StatusInfo,
-                                                 null,
+                                                 ResponseTimestamp,
+
+                                                 DestinationId,
+                                                 NetworkPath,
+
                                                  null,
                                                  null,
                                                  Signatures,
+
                                                  CustomData
+
                                              );
 
                 if (CustomSetMonitoringLevelResponseParser is not null)
@@ -457,6 +485,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The SetMonitoringLevel failed.
+        /// </summary>
+        /// <param name="Request">The SetMonitoringLevel request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SetMonitoringLevelResponse FormationViolation(CSMS.SetMonitoringLevelRequest  Request,
+                                                                    String                          ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

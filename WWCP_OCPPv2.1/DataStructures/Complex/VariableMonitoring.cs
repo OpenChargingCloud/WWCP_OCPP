@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public VariableMonitoring Clone()
 
-            => new(
+            => new (
 
                    Id,
                    Transaction,

@@ -86,23 +86,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public ReserveNowResponse(CSMS.ReserveNowRequest        Request,
-                                  ReservationStatus             Status,
-                                  StatusInfo?                   StatusInfo          = null,
-                                  DateTime?                     ResponseTimestamp   = null,
+        public ReserveNowResponse(CSMS.ReserveNowRequest   Request,
+                                  ReservationStatus        Status,
+                                  StatusInfo?              StatusInfo          = null,
+                                  DateTime?                ResponseTimestamp   = null,
 
-                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                  IEnumerable<Signature>?       Signatures          = null,
+                                  NetworkingNode_Id?       DestinationId       = null,
+                                  NetworkPath?             NetworkPath         = null,
 
-                                  CustomData?                   CustomData          = null)
+                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  IEnumerable<Signature>?  Signatures          = null,
+
+                                  CustomData?              CustomData          = null)
 
             : base(Request,
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -248,14 +251,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReserveNowResponseParser">A delegate to parse custom ReserveNow responses.</param>
         public static ReserveNowResponse Parse(CSMS.ReserveNowRequest                            Request,
                                                JObject                                           JSON,
-                                               CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null)
+                                               NetworkingNode_Id                                 DestinationId,
+                                               NetworkPath                                       NetworkPath,
+                                               DateTime?                                         ResponseTimestamp                = null,
+                                               CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null,
+                                               CustomJObjectParserDelegate<StatusInfo>?          CustomStatusInfoParser           = null,
+                                               CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
+                                               CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var reserveNowResponse,
                          out var errorResponse,
-                         CustomReserveNowResponseParser))
+                         ResponseTimestamp,
+                         CustomReserveNowResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return reserveNowResponse;
             }
@@ -279,9 +294,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReserveNowResponseParser">A delegate to parse custom ReserveNow responses.</param>
         public static Boolean TryParse(CSMS.ReserveNowRequest                            Request,
                                        JObject                                           JSON,
+                                       NetworkingNode_Id                                 DestinationId,
+                                       NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out ReserveNowResponse?      ReserveNowResponse,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
-                                       CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null)
+                                       DateTime?                                         ResponseTimestamp                = null,
+                                       CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?          CustomStatusInfoParser           = null,
+                                       CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
+                                       CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
         {
 
             try
@@ -346,14 +367,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 ReserveNowResponse = new ReserveNowResponse(
+
                                          Request,
                                          ReservationStatus,
                                          StatusInfo,
-                                         null,
+                                         ResponseTimestamp,
+
+                                         DestinationId,
+                                         NetworkPath,
+
                                          null,
                                          null,
                                          Signatures,
+
                                          CustomData
+
                                      );
 
                 if (CustomReserveNowResponseParser is not null)
@@ -460,6 +488,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The ReserveNow failed.
+        /// </summary>
+        /// <param name="Request">The ReserveNow request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static ReserveNowResponse FormationViolation(CSMS.ReserveNowRequest  Request,
+                                                            String                  ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public SecureDataTransferStatus Clone
 
-            => new(
+            => new (
                    new String(TextId?.ToCharArray()),
                    NumericId
                );

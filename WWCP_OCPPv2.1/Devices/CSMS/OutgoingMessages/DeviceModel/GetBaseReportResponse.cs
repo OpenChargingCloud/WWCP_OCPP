@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      StatusInfo?                   StatusInfo          = null,
                                      DateTime?                     ResponseTimestamp   = null,
 
+                                     NetworkingNode_Id?            DestinationId       = null,
+                                     NetworkPath?                  NetworkPath         = null,
+
                                      IEnumerable<KeyPair>?         SignKeys            = null,
                                      IEnumerable<SignInfo>?        SignInfos           = null,
                                      IEnumerable<Signature>?       Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -244,17 +247,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetBaseReport request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetBaseReportResponse Parse(CSMS.GetBaseReportRequest                            Request,
                                                   JObject                                              JSON,
-                                                  CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null)
+                                                  NetworkingNode_Id                                    DestinationId,
+                                                  NetworkPath                                          NetworkPath,
+                                                  DateTime?                                            ResponseTimestamp                   = null,
+                                                  CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null,
+                                                  CustomJObjectParserDelegate<StatusInfo>?             CustomStatusInfoParser              = null,
+                                                  CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                                  CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var getBaseReportResponse,
                          out var errorResponse,
-                         CustomGetBaseReportResponseParser))
+                         ResponseTimestamp,
+                         CustomGetBaseReportResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getBaseReportResponse;
             }
@@ -278,9 +292,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetBaseReportResponseParser">A delegate to parse custom GetBaseReport responses.</param>
         public static Boolean TryParse(CSMS.GetBaseReportRequest                            Request,
                                        JObject                                              JSON,
+                                       NetworkingNode_Id                                    DestinationId,
+                                       NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out GetBaseReportResponse?      GetBaseReportResponse,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null)
+                                       DateTime?                                            ResponseTimestamp                   = null,
+                                       CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?             CustomStatusInfoParser              = null,
+                                       CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                       CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             try
@@ -345,14 +365,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 GetBaseReportResponse = new GetBaseReportResponse(
+
                                             Request,
                                             GetBaseReportStatus,
                                             StatusInfo,
-                                            null,
+                                            ResponseTimestamp,
+
+                                            DestinationId,
+                                            NetworkPath,
+
                                             null,
                                             null,
                                             Signatures,
+
                                             CustomData
+
                                         );
 
                 if (CustomGetBaseReportResponseParser is not null)
@@ -459,6 +486,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The GetBaseReport failed.
+        /// </summary>
+        /// <param name="Request">The GetBaseReport request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetBaseReportResponse FormationViolation(CSMS.GetBaseReportRequest  Request,
+                                                               String                     ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

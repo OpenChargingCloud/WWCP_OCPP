@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a UsePriorityCharging request.
+        /// Create an UsePriorityCharging request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a UsePriorityCharging request.
+        /// Parse the given JSON representation of an UsePriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return usePriorityChargingRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a UsePriorityCharging request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UsePriorityCharging request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a UsePriorityCharging request.
+        /// Try to parse the given JSON representation of an UsePriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 UsePriorityChargingRequest  = null;
-                ErrorResponse               = "The given JSON representation of a UsePriorityCharging request is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of an UsePriorityCharging request is invalid: " + e.Message;
                 return false;
             }
 

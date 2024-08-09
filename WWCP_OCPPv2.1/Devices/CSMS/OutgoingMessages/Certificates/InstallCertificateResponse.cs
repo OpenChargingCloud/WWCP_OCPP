@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                           StatusInfo?                     StatusInfo          = null,
                                           DateTime?                       ResponseTimestamp   = null,
 
+                                          NetworkingNode_Id?              DestinationId       = null,
+                                          NetworkPath?                    NetworkPath         = null,
+
                                           IEnumerable<KeyPair>?           SignKeys            = null,
                                           IEnumerable<SignInfo>?          SignInfos           = null,
                                           IEnumerable<Signature>?         Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -246,14 +249,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom InstallCertificate responses.</param>
         public static InstallCertificateResponse Parse(CSMS.InstallCertificateRequest                            Request,
                                                        JObject                                                   JSON,
-                                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+                                                       NetworkingNode_Id                                         DestinationId,
+                                                       NetworkPath                                               NetworkPath,
+                                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null,
+                                                       CustomJObjectParserDelegate<StatusInfo>?                  CustomStatusInfoParser                   = null,
+                                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var installCertificateResponse,
                          out var errorResponse,
-                         CustomInstallCertificateResponseParser))
+                         ResponseTimestamp,
+                         CustomInstallCertificateResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return installCertificateResponse;
             }
@@ -277,9 +292,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom InstallCertificate responses.</param>
         public static Boolean TryParse(CSMS.InstallCertificateRequest                            Request,
                                        JObject                                                   JSON,
+                                       NetworkingNode_Id                                         DestinationId,
+                                       NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out InstallCertificateResponse?      InstallCertificateResponse,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
-                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                  CustomStatusInfoParser                   = null,
+                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
 
             try
@@ -344,14 +365,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 InstallCertificateResponse = new InstallCertificateResponse(
+
                                                  Request,
                                                  Status,
                                                  StatusInfo,
-                                                 null,
+                                                 ResponseTimestamp,
+
+                                                 DestinationId,
+                                                 NetworkPath,
+
                                                  null,
                                                  null,
                                                  Signatures,
+
                                                  CustomData
+
                                              );
 
                 if (CustomInstallCertificateResponseParser is not null)
@@ -458,6 +486,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The InstallCertificate failed.
+        /// </summary>
+        /// <param name="Request">The InstallCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static InstallCertificateResponse FormationViolation(CSMS.InstallCertificateRequest  Request,
+                                                                    String                          ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

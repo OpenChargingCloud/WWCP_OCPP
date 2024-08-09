@@ -89,9 +89,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        StatusInfo?                StatusInfo          = null,
                                        DateTime?                  ResponseTimestamp   = null,
 
+                                       NetworkingNode_Id?         DestinationId       = null,
+                                       NetworkPath?               NetworkPath         = null,
+
                                        IEnumerable<KeyPair>?      SignKeys            = null,
                                        IEnumerable<SignInfo>?     SignInfos           = null,
-                                       IEnumerable<Signature>?         Signatures          = null,
+                                       IEnumerable<Signature>?    Signatures          = null,
 
                                        CustomData?                CustomData          = null)
 
@@ -99,8 +102,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -243,15 +246,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom SignCertificate responses.</param>
         public static SignCertificateResponse Parse(CS.SignCertificateRequest                              Request,
                                                     JObject                                                JSON,
-                                                    CustomJObjectParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null)
+                                                    NetworkingNode_Id                                      DestinationId,
+                                                    NetworkPath                                            NetworkPath,
+                                                    DateTime?                                              ResponseTimestamp                     = null,
+                                                    CustomJObjectParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null,
+                                                    CustomJObjectParserDelegate<StatusInfo>?               CustomStatusInfoParser                = null,
+                                                    CustomJObjectParserDelegate<Signature>?                CustomSignatureParser                 = null,
+                                                    CustomJObjectParserDelegate<CustomData>?               CustomCustomDataParser                = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var signCertificateResponse,
                          out var errorResponse,
-                         CustomSignCertificateResponseParser))
+                         ResponseTimestamp,
+                         CustomSignCertificateResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return signCertificateResponse;
             }
@@ -274,9 +289,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom SignCertificate responses.</param>
         public static Boolean TryParse(CS.SignCertificateRequest                              Request,
                                        JObject                                                JSON,
+                                       NetworkingNode_Id                                      DestinationId,
+                                       NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out SignCertificateResponse?      SignCertificateResponse,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
-                                       CustomJObjectParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null)
+                                       DateTime?                                              ResponseTimestamp                     = null,
+                                       CustomJObjectParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?               CustomStatusInfoParser                = null,
+                                       CustomJObjectParserDelegate<Signature>?                CustomSignatureParser                 = null,
+                                       CustomJObjectParserDelegate<CustomData>?               CustomCustomDataParser                = null)
         {
 
             try
@@ -341,14 +362,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 SignCertificateResponse = new SignCertificateResponse(
+
                                               Request,
                                               Status,
                                               StatusInfo,
-                                              null,
+                                              ResponseTimestamp,
+
+                                              DestinationId,
+                                              NetworkPath,
+
                                               null,
                                               null,
                                               Signatures,
+
                                               CustomData
+
                                           );
 
                 if (CustomSignCertificateResponseParser is not null)
@@ -455,6 +483,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The SignCertificate failed.
+        /// </summary>
+        /// <param name="Request">The SignCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SignCertificateResponse FormationViolation(CS.SignCertificateRequest  Request,
+                                                                 String                     ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

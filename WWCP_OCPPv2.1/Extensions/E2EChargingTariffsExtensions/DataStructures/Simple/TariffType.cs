@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public TariffType Clone
 
-            => new(
+            => new (
                    new String(InternalId?.ToCharArray())
                );
 
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// GREEN is set for the charging session.
         /// </summary>
         public static TariffType PROFILE_GREEN
-            => new("PROFILE_GREEN");
+            => new ("PROFILE_GREEN");
 
         /// <summary>
         /// Used to describe that a tariff is valid when using an RFID, without

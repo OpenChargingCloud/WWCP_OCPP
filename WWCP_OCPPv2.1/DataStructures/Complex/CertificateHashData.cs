@@ -17,12 +17,12 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -170,9 +170,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CertificateHashData">The parsed certificate hash data.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                   JSON,
-                                       out CertificateHashData?  CertificateHashData,
-                                       out String?               ErrorResponse)
+        public static Boolean TryParse(JObject                                        JSON,
+                                       [NotNullWhen(true)]  out CertificateHashData?  CertificateHashData,
+                                       [NotNullWhen(false)] out String?               ErrorResponse)
 
             => TryParse(JSON,
                         out CertificateHashData,
@@ -188,8 +188,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCertificateHashDataParser">A delegate to parse custom CertificateHashDatas.</param>
         public static Boolean TryParse(JObject                                            JSON,
-                                       out CertificateHashData?                           CertificateHashData,
-                                       out String?                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out CertificateHashData?      CertificateHashData,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
                                        CustomJObjectParserDelegate<CertificateHashData>?  CustomCertificateHashDataParser)
         {
 
@@ -262,11 +262,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                CertificateHashData = new CertificateHashData(HashAlgorithm,
-                                                              IssuerNameHash,
-                                                              IssuerPublicKeyHash,
-                                                              SerialNumber,
-                                                              CustomData);
+                CertificateHashData = new CertificateHashData(
+                                          HashAlgorithm,
+                                          IssuerNameHash,
+                                          IssuerPublicKeyHash,
+                                          SerialNumber,
+                                          CustomData
+                                      );
 
                 if (CustomCertificateHashDataParser is not null)
                     CertificateHashData = CustomCertificateHashDataParser(JSON,
