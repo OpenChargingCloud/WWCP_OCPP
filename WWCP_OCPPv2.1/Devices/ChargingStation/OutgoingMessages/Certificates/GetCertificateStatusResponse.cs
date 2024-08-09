@@ -100,6 +100,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             StatusInfo?                     StatusInfo          = null,
                                             DateTime?                       ResponseTimestamp   = null,
 
+                                            NetworkingNode_Id?              DestinationId       = null,
+                                            NetworkPath?                    NetworkPath         = null,
+
                                             IEnumerable<KeyPair>?           SignKeys            = null,
                                             IEnumerable<SignInfo>?          SignInfos           = null,
                                             IEnumerable<Signature>?         Signatures          = null,
@@ -110,8 +113,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -260,14 +263,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCertificateStatusResponseParser">A delegate to parse custom GetCertificateStatus responses.</param>
         public static GetCertificateStatusResponse Parse(CS.GetCertificateStatusRequest                              Request,
                                                          JObject                                                     JSON,
-                                                         CustomJObjectParserDelegate<GetCertificateStatusResponse>?  CustomGetCertificateStatusResponseParser   = null)
+                                                         NetworkingNode_Id                                           DestinationId,
+                                                         NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   ResponseTimestamp                          = null,
+                                                         CustomJObjectParserDelegate<GetCertificateStatusResponse>?  CustomGetCertificateStatusResponseParser   = null,
+                                                         CustomJObjectParserDelegate<StatusInfo>?                    CustomStatusInfoParser                     = null,
+                                                         CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                                         CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var getCertificateStatusResponse,
                          out var errorResponse,
-                         CustomGetCertificateStatusResponseParser))
+                         ResponseTimestamp,
+                         CustomGetCertificateStatusResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getCertificateStatusResponse;
             }
@@ -291,9 +306,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCertificateStatusResponseParser">A delegate to parse custom GetCertificateStatus responses.</param>
         public static Boolean TryParse(CS.GetCertificateStatusRequest                              Request,
                                        JObject                                                     JSON,
+                                       NetworkingNode_Id                                           DestinationId,
+                                       NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out GetCertificateStatusResponse?      GetCertificateStatusResponse,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<GetCertificateStatusResponse>?  CustomGetCertificateStatusResponseParser   = null)
+                                       DateTime?                                                   ResponseTimestamp                          = null,
+                                       CustomJObjectParserDelegate<GetCertificateStatusResponse>?  CustomGetCertificateStatusResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                    CustomStatusInfoParser                     = null,
+                                       CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                       CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             try
@@ -371,15 +392,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 GetCertificateStatusResponse = new GetCertificateStatusResponse(
+
                                                    Request,
                                                    Status,
                                                    OCSPResult,
                                                    StatusInfo,
-                                                   null,
+                                                   ResponseTimestamp,
+
+                                                   DestinationId,
+                                                   NetworkPath,
+
                                                    null,
                                                    null,
                                                    Signatures,
+
                                                    CustomData
+
                                                );
 
                 if (CustomGetCertificateStatusResponseParser is not null)
@@ -487,6 +515,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The GetCertificateStatus failed.
+        /// </summary>
+        /// <param name="Request">The GetCertificateStatus request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetCertificateStatusResponse FormationViolation(CS.GetCertificateStatusRequest  Request,
+                                                                      String                          ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

@@ -3,7 +3,8 @@
 
 ## Charging Stations -> Local Controllers, CSMSs
 
-- xxx
+- NotifyCustomerInformation
+- NotifyDisplayMessages
 
 
 ## CSMSs -> Charging Stations, Local Controllers

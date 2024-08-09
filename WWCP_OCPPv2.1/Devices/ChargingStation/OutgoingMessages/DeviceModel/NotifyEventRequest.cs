@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                   IEnumerable<KeyPair>?    SignKeys            = null,
                                   IEnumerable<SignInfo>?   SignInfos           = null,
-                                  IEnumerable<Signature>?       Signatures          = null,
+                                  IEnumerable<Signature>?  Signatures          = null,
 
                                   CustomData?              CustomData          = null,
 

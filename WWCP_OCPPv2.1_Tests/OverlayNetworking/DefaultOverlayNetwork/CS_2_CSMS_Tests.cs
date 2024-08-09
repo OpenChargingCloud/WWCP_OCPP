@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.    OnJSONRequestMessageSent           += (timestamp, sender, connection, jsonRequestMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.    OnJSONRequestMessageSent           += (timestamp, sender, connection, jsonRequestMessage, sendOCPPMessageResult, ct) => {
                     nnJSONRequestMessagesSent.          TryAdd(new Tuple<OCPP_JSONRequestMessage, SentMessageResults>(jsonRequestMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.    OnJSONResponseMessageSent          += (timestamp, sender, connection, jsonResponseMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.    OnJSONResponseMessageSent          += (timestamp, sender, connection, jsonResponseMessage, sendOCPPMessageResult, ct) => {
                     nnJSONResponseMessagesSent.         TryAdd(new Tuple<OCPP_JSONResponseMessage, SentMessageResults>(jsonResponseMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.    OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.    OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sendOCPPMessageResult, ct) => {
                     nnJSONRequestMessagesSent.          TryAdd(new Tuple<OCPP_JSONRequestMessage, SentMessageResults>(jsonRequestMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.    OnJSONResponseMessageSent      += (timestamp, sender, connection, jsonResponseMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.    OnJSONResponseMessageSent      += (timestamp, sender, connection, jsonResponseMessage, sendOCPPMessageResult, ct) => {
                     nnJSONResponseMessagesSent.         TryAdd(new Tuple<OCPP_JSONResponseMessage, SentMessageResults>(jsonResponseMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.    OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.    OnJSONRequestMessageSent       += (timestamp, sender, connection, jsonRequestMessage, sendOCPPMessageResult, ct) => {
                     nnJSONRequestMessagesSent.          TryAdd(new Tuple<OCPP_JSONRequestMessage, SentMessageResults>(jsonRequestMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.    OnJSONResponseMessageSent      += (timestamp, sender, connection, jsonResponseMessage, sendOCPPMessageResult) => {
+                localController.OCPP.OUT.    OnJSONResponseMessageSent      += (timestamp, sender, connection, jsonResponseMessage, sendOCPPMessageResult, ct) => {
                     nnJSONResponseMessagesSent.         TryAdd(new Tuple<OCPP_JSONResponseMessage, SentMessageResults>(jsonResponseMessage, sendOCPPMessageResult));
                     return Task.CompletedTask;
                 };

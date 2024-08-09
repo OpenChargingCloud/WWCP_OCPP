@@ -4,6 +4,9 @@
 ## Charging Stations -> Local Controllers, CSMSs
 
 - Authorize
+- MeterValues
+- StatusNotification
+- TransactionEvent
 
 
 ## CSMSs -> Charging Stations, Local Controllers

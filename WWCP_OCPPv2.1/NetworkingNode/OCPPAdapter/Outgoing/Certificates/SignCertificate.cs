@@ -229,6 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new SignCertificateResponse(
                                      Request,
+                                     GenericStatus.Rejected,
+                                     null,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
 
@@ -259,14 +261,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnSignCertificateResponseSentDelegate?  OnSignCertificateResponseSent;
 
-        public Task SendOnSignCertificateResponseSent(DateTime                  Timestamp,
-                                                      IEventSender              Sender,
-                                                      IWebSocketConnection      Connection,
-                                                      SignCertificateRequest    Request,
-                                                      SignCertificateResponse   Response,
-                                                      TimeSpan                  Runtime,
-                                                      SentMessageResults        SendMessageResult,
-                                                      CancellationToken         CancellationToken = default)
+        public Task SendOnSignCertificateResponseSent(DateTime                 Timestamp,
+                                                      IEventSender             Sender,
+                                                      IWebSocketConnection     Connection,
+                                                      SignCertificateRequest   Request,
+                                                      SignCertificateResponse  Response,
+                                                      TimeSpan                 Runtime,
+                                                      SentMessageResults       SendMessageResult,
+                                                      CancellationToken        CancellationToken = default)
 
             => LogEvent(
                    OnSignCertificateResponseSent,

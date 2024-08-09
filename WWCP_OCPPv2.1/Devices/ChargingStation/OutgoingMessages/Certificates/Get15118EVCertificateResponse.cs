@@ -108,6 +108,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              StatusInfo?                      StatusInfo           = null,
                                              DateTime?                        ResponseTimestamp    = null,
 
+                                             NetworkingNode_Id?               DestinationId        = null,
+                                             NetworkPath?                     NetworkPath          = null,
+
                                              IEnumerable<KeyPair>?            SignKeys             = null,
                                              IEnumerable<SignInfo>?           SignInfos            = null,
                                              IEnumerable<Signature>?          Signatures           = null,
@@ -118,8 +121,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -272,14 +275,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom Get15118EVCertificate responses.</param>
         public static Get15118EVCertificateResponse Parse(CS.Get15118EVCertificateRequest                              Request,
                                                           JObject                                                      JSON,
-                                                          CustomJObjectParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser   = null)
+                                                          NetworkingNode_Id                                            DestinationId,
+                                                          NetworkPath                                                  NetworkPath,
+                                                          DateTime?                                                    ResponseTimestamp                           = null,
+                                                          CustomJObjectParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser   = null,
+                                                          CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                                          CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                                          CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var get15118EVCertificateResponse,
                          out var errorResponse,
-                         CustomGet15118EVCertificateResponseParser))
+                         ResponseTimestamp,
+                         CustomGet15118EVCertificateResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return get15118EVCertificateResponse;
             }
@@ -303,9 +318,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom Get15118EVCertificate responses.</param>
         public static Boolean TryParse(CS.Get15118EVCertificateRequest                              Request,
                                        JObject                                                      JSON,
+                                       NetworkingNode_Id                                            DestinationId,
+                                       NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out Get15118EVCertificateResponse?      Get15118EVCertificateResponse,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
-                                       CustomJObjectParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser   = null)
+                                       DateTime?                                                    ResponseTimestamp                           = null,
+                                       CustomJObjectParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                       CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                       CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             try
@@ -396,16 +417,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 Get15118EVCertificateResponse = new Get15118EVCertificateResponse(
+
                                                     Request,
                                                     Status,
                                                     EXIRequest,
                                                     RemainingContracts,
                                                     StatusInfo,
-                                                    null,
+                                                    ResponseTimestamp,
+
+                                                    DestinationId,
+                                                    NetworkPath,
+
                                                     null,
                                                     null,
                                                     Signatures,
+
                                                     CustomData
+
                                                 );
 
                 if (CustomGet15118EVCertificateResponseParser is not null)
@@ -517,6 +545,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The Get15118EVCertificate failed.
+        /// </summary>
+        /// <param name="Request">The Get15118EVCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static Get15118EVCertificateResponse FormationViolation(CS.Get15118EVCertificateRequest  Request,
+                                                                       String                           ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

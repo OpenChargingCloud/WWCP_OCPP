@@ -33,66 +33,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
     public delegate Task OnJSONRequestMessageSentDelegate         (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONRequestMessage          JSONRequestMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
     public delegate Task OnJSONResponseMessageSentDelegate        (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONResponseMessage         JSONResponseMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
     public delegate Task OnJSONRequestErrorMessageSentDelegate    (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
     public delegate Task OnJSONResponseErrorMessageSentDelegate   (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONResponseErrorMessage    JSONRequestErrorMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
     public delegate Task OnJSONSendMessageSentDelegate            (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_JSONSendMessage             JSONSendMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
 
 
     public delegate Task OnBinaryRequestMessageSentDelegate       (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinaryRequestMessage        BinaryRequestMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
     public delegate Task OnBinaryResponseMessageSentDelegate      (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinaryResponseMessage       BinaryResponseMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
     public delegate Task OnBinaryRequestErrorMessageSentDelegate  (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
     public delegate Task OnBinaryResponseErrorMessageSentDelegate (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinaryResponseErrorMessage  BinaryRequestErrorMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
     public delegate Task OnBinarySendMessageSentDelegate          (DateTime                         Timestamp,
-                                                                   OCPPWebSocketAdapterOUT          Server,
+                                                                   OCPPWebSocketAdapterOUT          Sender,
                                                                    IWebSocketConnection?            WebSocketConnection,
                                                                    OCPP_BinarySendMessage           BinarySendMessage,
-                                                                   SentMessageResults               SendMessageResult);
+                                                                   SentMessageResults               SendMessageResult,
+                                                                   CancellationToken                CancellationToken = default);
 
     #endregion
 

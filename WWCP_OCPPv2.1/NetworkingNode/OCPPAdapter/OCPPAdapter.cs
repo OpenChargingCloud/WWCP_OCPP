@@ -779,6 +779,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public CustomJObjectParserDelegate<CertificateHashData>?                                       CustomCertificateHashDataParser                          { get; set; }
 
+        public CustomJObjectParserDelegate<IdTokenInfo>?                                               CustomIdTokenInfoParser                                  { get; set; }
+        public CustomJObjectParserDelegate<IdToken>?                                                   CustomIdTokenParser                                      { get; set; }
+        public CustomJObjectParserDelegate<AdditionalInfo>?                                            CustomAdditionalInfoParser                               { get; set; }
+        public CustomJObjectParserDelegate<MessageContent>?                                            CustomMessageContentParser                               { get; set; }
+
 
         // Overlay Network Extensions
         public CustomJObjectParserDelegate<NotifyNetworkTopologyRequest>?                              CustomNotifyNetworkTopologyRequestParser                 { get; set; }

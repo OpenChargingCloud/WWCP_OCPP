@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public IEnumerable<SignInfo>   SignInfos    { get; }
 
         /// <summary>
-        /// The optional enumeration of cryptographic signatures for this message.
+        /// The optional enumeration of cryptographic signatures of this message.
         /// </summary>
         [Optional]
         public IEnumerable<Signature>  Signatures
@@ -88,11 +88,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.SignKeys    = SignKeys  ?? Array.Empty<KeyPair>();
-            this.SignInfos   = SignInfos ?? Array.Empty<SignInfo>();
+            this.SignKeys    = SignKeys  ?? [];
+            this.SignInfos   = SignInfos ?? [];
             this.signatures  = Signatures is not null && Signatures.Any()
                                    ? new HashSet<Signature>(Signatures)
-                                   : new HashSet<Signature>();
+                                   : [];
 
             unchecked
             {

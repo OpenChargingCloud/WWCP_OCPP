@@ -33,9 +33,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The MeterValues response.
     /// </summary>
-    public class MeterValuesResponse : AResponse<CS.MeterValuesRequest,
-                                                 MeterValuesResponse>,
-                                       IResponse
+    /// <param name="Request">The request leading to this response.</param>
+    /// 
+    /// <param name="Result">The machine-readable result code.</param>
+    /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+    /// 
+    /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+    /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+    /// 
+    /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+    /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+    /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+    /// 
+    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+    public class MeterValuesResponse(CS.MeterValuesRequest    Request,
+
+                                     Result?                  Result              = null,
+                                     DateTime?                ResponseTimestamp   = null,
+
+                                     NetworkingNode_Id?       DestinationId       = null,
+                                     NetworkPath?             NetworkPath         = null,
+
+                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                     CustomData?              CustomData          = null)
+
+            : AResponse<CS.MeterValuesRequest,
+                        MeterValuesResponse>(Request,
+                                             Result ?? Result.OK(),
+                                             ResponseTimestamp,
+
+                                             DestinationId,
+                                             NetworkPath,
+
+                                             SignKeys,
+                                             SignInfos,
+                                             Signatures,
+
+                                             CustomData),
+                        IResponse
+
     {
 
         #region Data
@@ -54,43 +93,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public JSONLDContext Context
             => DefaultJSONLDContext;
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new MeterValues response.
-        /// </summary>
-        /// <param name="Request">The MeterValues request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public MeterValuesResponse(CS.MeterValuesRequest    Request,
-                                   Result?                  Result              = null,
-                                   DateTime?                ResponseTimestamp   = null,
-
-                                   NetworkingNode_Id?       DestinationId       = null,
-                                   NetworkPath?             NetworkPath         = null,
-
-                                   IEnumerable<KeyPair>?    SignKeys            = null,
-                                   IEnumerable<SignInfo>?   SignInfos           = null,
-                                   IEnumerable<Signature>?  Signatures          = null,
-
-                                   CustomData?              CustomData          = null)
-
-            : base(Request,
-                   Result ?? Result.OK(),
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
 
         #endregion
 
@@ -144,7 +146,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 NetworkingNode_Id                                  DestinationId,
                                                 NetworkPath                                        NetworkPath,
                                                 DateTime?                                          ResponseTimestamp                 = null,
-                                                CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
+                                                CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null,
+                                                CustomJObjectParserDelegate<Signature>?            CustomSignatureParser             = null,
+                                                CustomJObjectParserDelegate<CustomData>?           CustomCustomDataParser            = null)
         {
 
             if (TryParse(Request,
@@ -154,7 +158,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          out var meterValuesResponse,
                          out var errorResponse,
                          ResponseTimestamp,
-                         CustomMeterValuesResponseParser))
+                         CustomMeterValuesResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return meterValuesResponse;
             }
@@ -186,7 +192,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        [NotNullWhen(true)]  out MeterValuesResponse?      MeterValuesResponse,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
                                        DateTime?                                          ResponseTimestamp                 = null,
-                                       CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
+                                       CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?            CustomSignatureParser             = null,
+                                       CustomJObjectParserDelegate<CustomData>?           CustomCustomDataParser            = null)
         {
 
             ErrorResponse = null;
@@ -337,6 +345,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The MeterValues failed.
+        /// </summary>
+        /// <param name="Request">The MeterValues request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static MeterValuesResponse FormationViolation(CS.MeterValuesRequest  Request,
+                                                             String                 ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

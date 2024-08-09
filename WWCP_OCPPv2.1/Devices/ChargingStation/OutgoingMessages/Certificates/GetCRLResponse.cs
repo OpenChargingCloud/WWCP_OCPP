@@ -99,9 +99,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               StatusInfo?              StatusInfo          = null,
                               DateTime?                ResponseTimestamp   = null,
 
+                              NetworkingNode_Id?       DestinationId       = null,
+                              NetworkPath?             NetworkPath         = null,
+
                               IEnumerable<KeyPair>?    SignKeys            = null,
                               IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?       Signatures          = null,
+                              IEnumerable<Signature>?  Signatures          = null,
 
                               CustomData?              CustomData          = null)
 
@@ -109,8 +112,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -185,14 +188,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCRLResponseParser">A delegate to parse custom GetCRL responses.</param>
         public static GetCRLResponse Parse(CS.GetCRLRequest                              Request,
                                            JObject                                       JSON,
-                                           CustomJObjectParserDelegate<GetCRLResponse>?  CustomGetCRLResponseParser   = null)
+                                           NetworkingNode_Id                             DestinationId,
+                                           NetworkPath                                   NetworkPath,
+                                           DateTime?                                     ResponseTimestamp            = null,
+                                           CustomJObjectParserDelegate<GetCRLResponse>?  CustomGetCRLResponseParser   = null,
+                                           CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser       = null,
+                                           CustomJObjectParserDelegate<Signature>?       CustomSignatureParser        = null,
+                                           CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser       = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var getCRLResponse,
                          out var errorResponse,
-                         CustomGetCRLResponseParser))
+                         ResponseTimestamp,
+                         CustomGetCRLResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getCRLResponse;
             }
@@ -216,9 +231,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCRLResponseParser">A delegate to parse custom GetCRL responses.</param>
         public static Boolean TryParse(CS.GetCRLRequest                              Request,
                                        JObject                                       JSON,
+                                       NetworkingNode_Id                             DestinationId,
+                                       NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out GetCRLResponse?      GetCRLResponse,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
-                                       CustomJObjectParserDelegate<GetCRLResponse>?  CustomGetCRLResponseParser   = null)
+                                       DateTime?                                     ResponseTimestamp            = null,
+                                       CustomJObjectParserDelegate<GetCRLResponse>?  CustomGetCRLResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser       = null,
+                                       CustomJObjectParserDelegate<Signature>?       CustomSignatureParser        = null,
+                                       CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser       = null)
         {
 
             try
@@ -295,15 +316,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 GetCRLResponse = new GetCRLResponse(
+
                                      Request,
                                      GetCRLRequestId,
                                      Status,
                                      StatusInfo,
-                                     null,
+                                     ResponseTimestamp,
+
+                                     DestinationId,
+                                     NetworkPath,
+
                                      null,
                                      null,
                                      Signatures,
+
                                      CustomData
+
                                  );
 
                 if (CustomGetCRLResponseParser is not null)
@@ -411,6 +439,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The GetCRL failed.
+        /// </summary>
+        /// <param name="Request">The GetCRL request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetCRLResponse FormationViolation(CS.GetCRLRequest  Request,
+                                                        String            ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

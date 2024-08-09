@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public NotifyCustomerInformationResponse(CS.NotifyCustomerInformationRequest  Request,
                                                  DateTime?                            ResponseTimestamp   = null,
 
+                                                 NetworkingNode_Id?                   DestinationId       = null,
+                                                 NetworkPath?                         NetworkPath         = null,
+
                                                  IEnumerable<KeyPair>?                SignKeys            = null,
                                                  IEnumerable<SignInfo>?               SignInfos           = null,
                                                  IEnumerable<Signature>?              Signatures          = null,
@@ -85,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -181,14 +184,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyCustomerInformationResponseParser">A delegate to parse custom NotifyCustomerInformation responses.</param>
         public static NotifyCustomerInformationResponse Parse(CS.NotifyCustomerInformationRequest                              Request,
                                                               JObject                                                          JSON,
-                                                              CustomJObjectParserDelegate<NotifyCustomerInformationResponse>?  CustomNotifyCustomerInformationResponseParser   = null)
+                                                              NetworkingNode_Id                                                DestinationId,
+                                                              NetworkPath                                                      NetworkPath,
+                                                              DateTime?                                                        ResponseTimestamp                               = null,
+                                                              CustomJObjectParserDelegate<NotifyCustomerInformationResponse>?  CustomNotifyCustomerInformationResponseParser   = null,
+                                                              CustomJObjectParserDelegate<Signature>?                          CustomSignatureParser                           = null,
+                                                              CustomJObjectParserDelegate<CustomData>?                         CustomCustomDataParser                          = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var notifyCustomerInformationResponse,
                          out var errorResponse,
-                         CustomNotifyCustomerInformationResponseParser))
+                         ResponseTimestamp,
+                         CustomNotifyCustomerInformationResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return notifyCustomerInformationResponse;
             }
@@ -212,9 +225,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyCustomerInformationResponseParser">A delegate to parse custom NotifyCustomerInformation responses.</param>
         public static Boolean TryParse(CS.NotifyCustomerInformationRequest                              Request,
                                        JObject                                                          JSON,
+                                       NetworkingNode_Id                                                DestinationId,
+                                       NetworkPath                                                      NetworkPath,
                                        [NotNullWhen(true)]  out NotifyCustomerInformationResponse?      NotifyCustomerInformationResponse,
                                        [NotNullWhen(false)] out String?                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyCustomerInformationResponse>?  CustomNotifyCustomerInformationResponseParser   = null)
+                                       DateTime?                                                        ResponseTimestamp                               = null,
+                                       CustomJObjectParserDelegate<NotifyCustomerInformationResponse>?  CustomNotifyCustomerInformationResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                          CustomSignatureParser                           = null,
+                                       CustomJObjectParserDelegate<CustomData>?                         CustomCustomDataParser                          = null)
         {
 
             ErrorResponse = null;
@@ -254,12 +272,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 NotifyCustomerInformationResponse = new NotifyCustomerInformationResponse(
+
                                                         Request,
-                                                        null,
+                                                        ResponseTimestamp,
+
+                                                        DestinationId,
+                                                        NetworkPath,
+
                                                         null,
                                                         null,
                                                         Signatures,
+
                                                         CustomData
+
                                                     );
 
                 if (CustomNotifyCustomerInformationResponseParser is not null)
@@ -357,6 +382,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The NotifyCustomerInformation failed.
+        /// </summary>
+        /// <param name="Request">The NotifyCustomerInformation request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static NotifyCustomerInformationResponse FormationViolation(CS.NotifyCustomerInformationRequest  Request,
+                                                                           String                               ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

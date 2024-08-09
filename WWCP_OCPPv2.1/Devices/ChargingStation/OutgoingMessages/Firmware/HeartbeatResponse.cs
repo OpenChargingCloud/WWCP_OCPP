@@ -82,6 +82,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  DateTime                      CurrentTime,
                                  DateTime?                     ResponseTimestamp   = null,
 
+                                 NetworkingNode_Id?            DestinationId       = null,
+                                 NetworkPath?                  NetworkPath         = null,
+
                                  IEnumerable<KeyPair>?         SignKeys            = null,
                                  IEnumerable<SignInfo>?        SignInfos           = null,
                                  IEnumerable<Signature>?       Signatures          = null,
@@ -92,8 +95,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -204,14 +207,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom Heartbeat responses.</param>
         public static HeartbeatResponse Parse(CS.HeartbeatRequest                              Request,
                                               JObject                                          JSON,
-                                              CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null)
+                                              NetworkingNode_Id                                DestinationId,
+                                              NetworkPath                                      NetworkPath,
+                                              DateTime?                                        ResponseTimestamp               = null,
+                                              CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null,
+                                              CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
+                                              CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var HeartbeatResponse,
                          out var errorResponse,
-                         CustomHeartbeatResponseParser))
+                         ResponseTimestamp,
+                         CustomHeartbeatResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return HeartbeatResponse;
             }
@@ -235,9 +248,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom Heartbeat responses.</param>
         public static Boolean TryParse(CS.HeartbeatRequest                              Request,
                                        JObject                                          JSON,
+                                       NetworkingNode_Id                                DestinationId,
+                                       NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out HeartbeatResponse?      HeartbeatResponse,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
-                                       CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null)
+                                       DateTime?                                        ResponseTimestamp               = null,
+                                       CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
+                                       CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
         {
 
             try
@@ -287,13 +305,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 HeartbeatResponse = new HeartbeatResponse(
+
                                         Request,
                                         CurrentTime,
-                                        null,
+                                        ResponseTimestamp,
+
+                                        DestinationId,
+                                        NetworkPath,
+
                                         null,
                                         null,
                                         Signatures,
+
                                         CustomData
+
                                     );
 
                 if (CustomHeartbeatResponseParser is not null)
@@ -393,6 +418,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The Heartbeat failed.
+        /// </summary>
+        /// <param name="Request">The Heartbeat request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static HeartbeatResponse FormationViolation(CS.HeartbeatRequest  Request,
+                                                           String               ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

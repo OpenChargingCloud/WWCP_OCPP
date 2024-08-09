@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public NotifyEventResponse(CS.NotifyEventRequest         Request,
                                    DateTime?                     ResponseTimestamp   = null,
 
+                                   NetworkingNode_Id?            DestinationId       = null,
+                                   NetworkPath?                  NetworkPath         = null,
+
                                    IEnumerable<KeyPair>?         SignKeys            = null,
                                    IEnumerable<SignInfo>?        SignInfos           = null,
                                    IEnumerable<Signature>?       Signatures          = null,
@@ -85,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -181,14 +184,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyEventResponseParser">A delegate to parse custom NotifyEvent responses.</param>
         public static NotifyEventResponse Parse(CS.NotifyEventRequest                              Request,
                                                 JObject                                            JSON,
-                                                CustomJObjectParserDelegate<NotifyEventResponse>?  CustomNotifyEventResponseParser   = null)
+                                                NetworkingNode_Id                                  DestinationId,
+                                                NetworkPath                                        NetworkPath,
+                                                DateTime?                                          ResponseTimestamp                 = null,
+                                                CustomJObjectParserDelegate<NotifyEventResponse>?  CustomNotifyEventResponseParser   = null,
+                                                CustomJObjectParserDelegate<Signature>?            CustomSignatureParser             = null,
+                                                CustomJObjectParserDelegate<CustomData>?           CustomCustomDataParser            = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var notifyEventResponse,
                          out var errorResponse,
-                         CustomNotifyEventResponseParser))
+                         ResponseTimestamp,
+                         CustomNotifyEventResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return notifyEventResponse;
             }
@@ -212,9 +225,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyEventResponseParser">A delegate to parse custom NotifyEvent responses.</param>
         public static Boolean TryParse(CS.NotifyEventRequest                              Request,
                                        JObject                                            JSON,
+                                       NetworkingNode_Id                                  DestinationId,
+                                       NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out NotifyEventResponse?      NotifyEventResponse,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyEventResponse>?  CustomNotifyEventResponseParser   = null)
+                                       DateTime?                                          ResponseTimestamp                 = null,
+                                       CustomJObjectParserDelegate<NotifyEventResponse>?  CustomNotifyEventResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?            CustomSignatureParser             = null,
+                                       CustomJObjectParserDelegate<CustomData>?           CustomCustomDataParser            = null)
         {
 
             ErrorResponse = null;
@@ -254,12 +272,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 NotifyEventResponse = new NotifyEventResponse(
+
                                           Request,
-                                          null,
+                                          ResponseTimestamp,
+
+                                          DestinationId,
+                                          NetworkPath,
+
                                           null,
                                           null,
                                           Signatures,
+
                                           CustomData
+
                                       );
 
                 if (CustomNotifyEventResponseParser is not null)
@@ -357,6 +382,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The NotifyEvent failed.
+        /// </summary>
+        /// <param name="Request">The NotifyEvent request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static NotifyEventResponse FormationViolation(CS.NotifyEventRequest  Request,
+                                                             String                 ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

@@ -333,10 +333,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return errorResponse is not null
 
                            ? new SignCertificateResponse(
-                                 Request:   request,
-                                 Result:    Result.GenericError(
-                                                errorResponse
-                                            )
+                                 Request:      request,
+                                 Status:       GenericStatus.Rejected,
+                                 Result:       Result.GenericError(errorResponse),
+                                 StatusInfo:   null,
+                                 CustomData:   null
                              )
 
                            : new SignCertificateResponse(

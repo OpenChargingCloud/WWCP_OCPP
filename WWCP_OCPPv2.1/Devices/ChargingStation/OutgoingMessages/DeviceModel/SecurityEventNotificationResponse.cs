@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public SecurityEventNotificationResponse(CS.SecurityEventNotificationRequest  Request,
                                                  DateTime?                            ResponseTimestamp   = null,
 
+                                                 NetworkingNode_Id?                   DestinationId       = null,
+                                                 NetworkPath?                         NetworkPath         = null,
+
                                                  IEnumerable<KeyPair>?                SignKeys            = null,
                                                  IEnumerable<SignInfo>?               SignInfos           = null,
                                                  IEnumerable<Signature>?              Signatures          = null,
@@ -85,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -181,14 +184,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom SecurityEventNotification responses.</param>
         public static SecurityEventNotificationResponse Parse(CS.SecurityEventNotificationRequest                              Request,
                                                               JObject                                                          JSON,
-                                                              CustomJObjectParserDelegate<SecurityEventNotificationResponse>?  CustomSecurityEventNotificationResponseParser   = null)
+                                                              NetworkingNode_Id                                                DestinationId,
+                                                              NetworkPath                                                      NetworkPath,
+                                                              DateTime?                                                        ResponseTimestamp                               = null,
+                                                              CustomJObjectParserDelegate<SecurityEventNotificationResponse>?  CustomSecurityEventNotificationResponseParser   = null,
+                                                              CustomJObjectParserDelegate<Signature>?                          CustomSignatureParser                           = null,
+                                                              CustomJObjectParserDelegate<CustomData>?                         CustomCustomDataParser                          = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var securityEventNotificationResponse,
                          out var errorResponse,
-                         CustomSecurityEventNotificationResponseParser))
+                         ResponseTimestamp,
+                         CustomSecurityEventNotificationResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return securityEventNotificationResponse;
             }
@@ -212,9 +225,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom SecurityEventNotification responses.</param>
         public static Boolean TryParse(CS.SecurityEventNotificationRequest                              Request,
                                        JObject                                                          JSON,
+                                       NetworkingNode_Id                                                DestinationId,
+                                       NetworkPath                                                      NetworkPath,
                                        [NotNullWhen(true)]  out SecurityEventNotificationResponse?      SecurityEventNotificationResponse,
                                        [NotNullWhen(false)] out String?                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<SecurityEventNotificationResponse>?  CustomSecurityEventNotificationResponseParser   = null)
+                                       DateTime?                                                        ResponseTimestamp                               = null,
+                                       CustomJObjectParserDelegate<SecurityEventNotificationResponse>?  CustomSecurityEventNotificationResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                          CustomSignatureParser                           = null,
+                                       CustomJObjectParserDelegate<CustomData>?                         CustomCustomDataParser                          = null)
         {
 
             try
@@ -252,12 +270,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 SecurityEventNotificationResponse = new SecurityEventNotificationResponse(
+
                                                         Request,
-                                                        null,
+                                                        ResponseTimestamp,
+
+                                                        DestinationId,
+                                                        NetworkPath,
+
                                                         null,
                                                         null,
                                                         Signatures,
+
                                                         CustomData
+
                                                     );
 
                 if (CustomSecurityEventNotificationResponseParser is not null)
@@ -355,6 +380,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The SecurityEventNotification failed.
+        /// </summary>
+        /// <param name="Request">The SecurityEventNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SecurityEventNotificationResponse FormationViolation(CS.SecurityEventNotificationRequest  Request,
+                                                                           String                               ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

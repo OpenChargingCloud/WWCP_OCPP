@@ -33,9 +33,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The TransactionEvent response.
     /// </summary>
-    public class TransactionEventResponse : AResponse<CS.TransactionEventRequest,
-                                                      TransactionEventResponse>,
-                                            IResponse
+    /// <param name="Request">The request leading to this response.</param>
+    /// <param name="TotalCost">The optional final total cost of the charging transaction, including taxes.</param>
+    /// <param name="ChargingPriority">The optional charging priority from a business point of view.</param>
+    /// <param name="IdTokenInfo">The optional information about the authorization status, expiry and group id.</param>
+    /// <param name="UpdatedPersonalMessage">The optional personal message that should be shown to the EV driver.</param>
+    /// 
+    /// <param name="Result">The machine-readable result code.</param>
+    /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+    /// 
+    /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+    /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+    /// 
+    /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+    /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+    /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+    /// 
+    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+    public class TransactionEventResponse(CS.TransactionEventRequest  Request,
+                                          Decimal?                    TotalCost                = null,
+                                          Int16?                      ChargingPriority         = null,
+                                          IdTokenInfo?                IdTokenInfo              = null,
+                                          MessageContent?             UpdatedPersonalMessage   = null,
+
+                                          Result?                     Result                   = null,
+                                          DateTime?                   ResponseTimestamp        = null,
+
+                                          NetworkingNode_Id?          DestinationId            = null,
+                                          NetworkPath?                NetworkPath              = null,
+
+                                          IEnumerable<KeyPair>?       SignKeys                 = null,
+                                          IEnumerable<SignInfo>?      SignInfos                = null,
+                                          IEnumerable<Signature>?     Signatures               = null,
+
+                                          CustomData?                 CustomData               = null)
+
+            : AResponse<CS.TransactionEventRequest,
+                        TransactionEventResponse>(Request,
+                                                  Result ?? Result.OK(),
+                                                  ResponseTimestamp,
+
+                                                  DestinationId,
+                                                  NetworkPath,
+
+                                                  SignKeys,
+                                                  SignInfos,
+                                                  Signatures,
+
+                                                  CustomData),
+                        IResponse
+
     {
 
         #region Data
@@ -63,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// To indicate a free transaction, the central system SHALL send 0.00.
         /// </summary>
         [Optional]
-        public Decimal?         TotalCost                 { get; }
+        public Decimal?         TotalCost                 { get; } = TotalCost;
 
         /// <summary>
         /// The optional charging priority from a business point of view.
@@ -74,116 +121,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Also the chargingPriority in TransactionEventResponse overrules the one in IdTokenInfoType.
         /// </summary>
         [Optional]
-        public Int16?           ChargingPriority          { get; }
+        public Int16?           ChargingPriority          { get; } = ChargingPriority;
 
         /// <summary>
         /// The optional information about the authorization status, expiry and group id.
         /// This is required when the transactionEventRequest contained an identification token.
         /// </summary>
         [Optional]
-        public IdTokenInfo?     IdTokenInfo               { get; }
+        public IdTokenInfo?     IdTokenInfo               { get; } = IdTokenInfo;
 
         /// <summary>
         /// The optional personal message that should be shown to the EV driver.
         /// This can also be used to provide updated tariff information.
         /// </summary>
         [Optional]
-        public MessageContent?  UpdatedPersonalMessage    { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        #region TransactionEventResponse(Request, TotalCost = null, ChargingPriority = null, IdTokenInfo = null, UpdatedPersonalMessage = null, ...)
-
-        /// <summary>
-        /// Create a TransactionEvent response.
-        /// </summary>
-        /// <param name="Request">The TransactionEvent request leading to this response.</param>
-        /// <param name="TotalCost">The optional final total cost of the charging transaction, including taxes.</param>
-        /// <param name="ChargingPriority">The optional charging priority from a business point of view.</param>
-        /// <param name="IdTokenInfo">The optional information about the authorization status, expiry and group id.</param>
-        /// <param name="UpdatedPersonalMessage">The optional personal message that should be shown to the EV driver.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public TransactionEventResponse(CS.TransactionEventRequest  Request,
-                                        Decimal?                    TotalCost                = null,
-                                        Int16?                      ChargingPriority         = null,
-                                        IdTokenInfo?                IdTokenInfo              = null,
-                                        MessageContent?             UpdatedPersonalMessage   = null,
-                                        DateTime?                   ResponseTimestamp        = null,
-
-                                        IEnumerable<KeyPair>?       SignKeys                 = null,
-                                        IEnumerable<SignInfo>?      SignInfos                = null,
-                                        IEnumerable<Signature>?     Signatures               = null,
-
-                                        CustomData?                 CustomData               = null)
-
-            : base(Request,
-                   Result.OK(),
-                   ResponseTimestamp,
-
-                   null,
-                   null,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.TotalCost               = TotalCost;
-            this.ChargingPriority        = ChargingPriority;
-            this.IdTokenInfo             = IdTokenInfo;
-            this.UpdatedPersonalMessage  = UpdatedPersonalMessage;
-
-        }
-
-        #endregion
-
-        #region TransactionEventResponse(Request, Result)
-
-        /// <summary>
-        /// Create a TransactionEvent response.
-        /// </summary>
-        /// <param name="Request">The TransactionEvent request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public TransactionEventResponse(CS.TransactionEventRequest  Request,
-                                        Result                      Result,
-                                        DateTime?                   ResponseTimestamp   = null,
-
-                                        NetworkingNode_Id?          DestinationId       = null,
-                                        NetworkPath?                NetworkPath         = null,
-
-                                        IEnumerable<KeyPair>?       SignKeys            = null,
-                                        IEnumerable<SignInfo>?      SignInfos           = null,
-                                        IEnumerable<Signature>?     Signatures          = null,
-
-                                        CustomData?                 CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
+        public MessageContent?  UpdatedPersonalMessage    { get; } = UpdatedPersonalMessage;
 
         #endregion
 
@@ -426,15 +378,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom TransactionEvent responses.</param>
         public static TransactionEventResponse Parse(CS.TransactionEventRequest                              Request,
                                                      JObject                                                 JSON,
-                                                     CustomJObjectParserDelegate<TransactionEventResponse>?  CustomTransactionEventResponseParser   = null)
+                                                     NetworkingNode_Id                                       DestinationId,
+                                                     NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               ResponseTimestamp                      = null,
+                                                     CustomJObjectParserDelegate<TransactionEventResponse>?  CustomTransactionEventResponseParser   = null,
+                                                     CustomJObjectParserDelegate<IdTokenInfo>?               CustomIdTokenInfoSerializer            = null,
+                                                     CustomJObjectParserDelegate<IdToken>?                   CustomIdTokenSerializer                = null,
+                                                     CustomJObjectParserDelegate<AdditionalInfo>?            CustomAdditionalInfoSerializer         = null,
+                                                     CustomJObjectParserDelegate<MessageContent>?            CustomMessageContentSerializer         = null,
+                                                     CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
+                                                     CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var transactionEventResponse,
                          out var errorResponse,
-                         CustomTransactionEventResponseParser))
+                         ResponseTimestamp,
+                         CustomTransactionEventResponseParser,
+                         CustomIdTokenInfoSerializer,
+                         CustomIdTokenSerializer,
+                         CustomAdditionalInfoSerializer,
+                         CustomMessageContentSerializer,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return transactionEventResponse;
             }
@@ -457,9 +427,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom TransactionEvent responses.</param>
         public static Boolean TryParse(CS.TransactionEventRequest                              Request,
                                        JObject                                                 JSON,
+                                       NetworkingNode_Id                                       DestinationId,
+                                       NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out TransactionEventResponse?      TransactionEventResponse,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       CustomJObjectParserDelegate<TransactionEventResponse>?  CustomTransactionEventResponseParser   = null)
+                                       DateTime?                                               ResponseTimestamp                      = null,
+                                       CustomJObjectParserDelegate<TransactionEventResponse>?  CustomTransactionEventResponseParser   = null,
+                                       CustomJObjectParserDelegate<IdTokenInfo>?               CustomIdTokenInfoSerializer            = null,
+                                       CustomJObjectParserDelegate<IdToken>?                   CustomIdTokenSerializer                = null,
+                                       CustomJObjectParserDelegate<AdditionalInfo>?            CustomAdditionalInfoSerializer         = null,
+                                       CustomJObjectParserDelegate<MessageContent>?            CustomMessageContentSerializer         = null,
+                                       CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
+                                       CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
         {
 
             try
@@ -551,16 +530,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 TransactionEventResponse = new TransactionEventResponse(
+
                                                Request,
                                                TotalCost,
                                                ChargingPriority,
                                                IdTokenInfo,
                                                UpdatedPersonalMessage,
                                                null,
+                                               ResponseTimestamp,
+
+                                               DestinationId,
+                                               NetworkPath,
+
                                                null,
                                                null,
                                                Signatures,
+
                                                CustomData
+
                                            );
 
                 if (CustomTransactionEventResponseParser is not null)
@@ -670,6 +657,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => new (
 
                    Request,
+                   null,
+                   null,
+                   null,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -694,13 +685,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The TransactionEvent request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
+        public static TransactionEventResponse FormationViolation(CS.TransactionEventRequest  Request,
+                                                                  String                      ErrorDescription)
+
+            => new (Request,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The TransactionEvent failed.
+        /// </summary>
+        /// <param name="Request">The TransactionEvent request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static TransactionEventResponse SignatureError(CS.TransactionEventRequest  Request,
                                                               String                      ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -712,7 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                       String?                     Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -724,7 +729,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 Exception                   Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

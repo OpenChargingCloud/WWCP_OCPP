@@ -18,3 +18,12 @@
 - SetMonitoringBase
 - SetMonitoringLevel
 - SetVariableMonitoring
+
+
+## Charging Stations, Local Controllers and Gateways -> CSMSs
+
+- LogStatusNotification
+- NotifyEvent
+- NotifyMonitoringReport
+- NotifyReport
+- SecurityEventNotification

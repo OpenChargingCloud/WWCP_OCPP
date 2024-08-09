@@ -33,9 +33,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The SignCertificate response.
     /// </summary>
-    public class SignCertificateResponse : AResponse<CS.SignCertificateRequest,
-                                                     SignCertificateResponse>,
-                                           IResponse
+    /// <param name="Request">The request leading to this response.</param>
+    /// <param name="Status">The success or failure status of the SignCertificate request.</param>
+    /// <param name="StatusInfo">Optional detailed status information.</param>
+    /// 
+    /// <param name="Result">The machine-readable result code.</param>
+    /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+    /// 
+    /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+    /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+    /// 
+    /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+    /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+    /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+    /// 
+    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+    public class SignCertificateResponse(CS.SignCertificateRequest  Request,
+                                         GenericStatus              Status,
+                                         StatusInfo?                StatusInfo          = null,
+
+                                         Result?                    Result              = null,
+                                         DateTime?                  ResponseTimestamp   = null,
+
+                                         NetworkingNode_Id?         DestinationId       = null,
+                                         NetworkPath?               NetworkPath         = null,
+
+                                         IEnumerable<KeyPair>?      SignKeys            = null,
+                                         IEnumerable<SignInfo>?     SignInfos           = null,
+                                         IEnumerable<Signature>?    Signatures          = null,
+
+                                         CustomData?                CustomData          = null)
+
+            : AResponse<CS.SignCertificateRequest,
+                        SignCertificateResponse>(Request,
+                                                 Result ?? Result.OK(),
+                                                 ResponseTimestamp,
+
+                                                 DestinationId,
+                                                 NetworkPath,
+
+                                                 SignKeys,
+                                                 SignInfos,
+                                                 Signatures,
+
+                                                 CustomData),
+                        IResponse
+
     {
 
         #region Data
@@ -59,103 +102,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The success or failure status of the SignCertificate request.
         /// </summary>
         [Mandatory]
-        public GenericStatus  Status        { get; }
+        public GenericStatus  Status        { get; } = Status;
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?    StatusInfo    { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        #region SignCertificateResponse(Request, Status, StatusInfo = null)
-
-        /// <summary>
-        /// Create a SignCertificate response.
-        /// </summary>
-        /// <param name="Request">The SignCertificate request leading to this response.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignCertificateResponse(CS.SignCertificateRequest  Request,
-                                       GenericStatus              Status,
-                                       StatusInfo?                StatusInfo          = null,
-                                       DateTime?                  ResponseTimestamp   = null,
-
-                                       NetworkingNode_Id?         DestinationId       = null,
-                                       NetworkPath?               NetworkPath         = null,
-
-                                       IEnumerable<KeyPair>?      SignKeys            = null,
-                                       IEnumerable<SignInfo>?     SignInfos           = null,
-                                       IEnumerable<Signature>?    Signatures          = null,
-
-                                       CustomData?                CustomData          = null)
-
-            : base(Request,
-                   Result.OK(),
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Status      = Status;
-            this.StatusInfo  = StatusInfo;
-
-        }
-
-        #endregion
-
-        #region SignCertificateResponse(Request, Result)
-
-        /// <summary>
-        /// Create a SignCertificate response.
-        /// </summary>
-        /// <param name="Request">The SignCertificate request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public SignCertificateResponse(CS.SignCertificateRequest  Request,
-                                       Result                     Result,
-                                       DateTime?                  ResponseTimestamp   = null,
-
-                                       NetworkingNode_Id?         DestinationId       = null,
-                                       NetworkPath?               NetworkPath         = null,
-
-                                       IEnumerable<KeyPair>?      SignKeys            = null,
-                                       IEnumerable<SignInfo>?     SignInfos           = null,
-                                       IEnumerable<Signature>?    Signatures          = null,
-
-                                       CustomData?                CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
+        public StatusInfo?    StatusInfo    { get; } = StatusInfo;
 
         #endregion
 
@@ -366,6 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               Request,
                                               Status,
                                               StatusInfo,
+                                              null,
                                               ResponseTimestamp,
 
                                               DestinationId,
@@ -466,6 +420,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => new (
 
                    Request,
+                   GenericStatus.Rejected,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -494,9 +450,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                  String                     ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    GenericStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -508,9 +465,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                              String                     ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    GenericStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -522,7 +480,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      String?                    Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    GenericStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -534,7 +493,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                Exception                  Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    GenericStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

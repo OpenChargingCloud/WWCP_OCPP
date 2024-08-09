@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public PublishFirmwareStatusNotificationResponse(CS.PublishFirmwareStatusNotificationRequest  Request,
                                                          DateTime?                                    ResponseTimestamp   = null,
 
+                                                         NetworkingNode_Id?                           DestinationId       = null,
+                                                         NetworkPath?                                 NetworkPath         = null,
+
                                                          IEnumerable<KeyPair>?                        SignKeys            = null,
                                                          IEnumerable<SignInfo>?                       SignInfos           = null,
                                                          IEnumerable<Signature>?                      Signatures          = null,
@@ -85,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -181,14 +184,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">A delegate to parse custom PublishFirmwareStatusNotification responses.</param>
         public static PublishFirmwareStatusNotificationResponse Parse(CS.PublishFirmwareStatusNotificationRequest                              Request,
                                                                       JObject                                                                  JSON,
-                                                                      CustomJObjectParserDelegate<PublishFirmwareStatusNotificationResponse>?  CustomPublishFirmwareStatusNotificationResponseParser   = null)
+                                                                      NetworkingNode_Id                                                        DestinationId,
+                                                                      NetworkPath                                                              NetworkPath,
+                                                                      DateTime?                                                                ResponseTimestamp                                       = null,
+                                                                      CustomJObjectParserDelegate<PublishFirmwareStatusNotificationResponse>?  CustomPublishFirmwareStatusNotificationResponseParser   = null,
+                                                                      CustomJObjectParserDelegate<Signature>?                                  CustomSignatureParser                                   = null,
+                                                                      CustomJObjectParserDelegate<CustomData>?                                 CustomCustomDataParser                                  = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var publishFirmwareStatusNotificationResponse,
                          out var errorResponse,
-                         CustomPublishFirmwareStatusNotificationResponseParser))
+                         ResponseTimestamp,
+                         CustomPublishFirmwareStatusNotificationResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return publishFirmwareStatusNotificationResponse;
             }
@@ -212,9 +225,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">A delegate to parse custom PublishFirmwareStatusNotification responses.</param>
         public static Boolean TryParse(CS.PublishFirmwareStatusNotificationRequest                              Request,
                                        JObject                                                                  JSON,
+                                       NetworkingNode_Id                                                        DestinationId,
+                                       NetworkPath                                                              NetworkPath,
                                        [NotNullWhen(true)]  out PublishFirmwareStatusNotificationResponse?      PublishFirmwareStatusNotificationResponse,
                                        [NotNullWhen(false)] out String?                                         ErrorResponse,
-                                       CustomJObjectParserDelegate<PublishFirmwareStatusNotificationResponse>?  CustomPublishFirmwareStatusNotificationResponseParser   = null)
+                                       DateTime?                                                                ResponseTimestamp                                       = null,
+                                       CustomJObjectParserDelegate<PublishFirmwareStatusNotificationResponse>?  CustomPublishFirmwareStatusNotificationResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                                  CustomSignatureParser                                   = null,
+                                       CustomJObjectParserDelegate<CustomData>?                                 CustomCustomDataParser                                  = null)
         {
 
             ErrorResponse = null;
@@ -254,12 +272,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 PublishFirmwareStatusNotificationResponse = new PublishFirmwareStatusNotificationResponse(
+
                                                                 Request,
-                                                                null,
+                                                                ResponseTimestamp,
+
+                                                                DestinationId,
+                                                                NetworkPath,
+
                                                                 null,
                                                                 null,
                                                                 Signatures,
+
                                                                 CustomData
+
                                                             );
 
                 if (CustomPublishFirmwareStatusNotificationResponseParser is not null)
@@ -357,6 +382,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The PublishFirmwareStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The PublishFirmwareStatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static PublishFirmwareStatusNotificationResponse FormationViolation(CS.PublishFirmwareStatusNotificationRequest  Request,
+                                                                                   String                                       ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

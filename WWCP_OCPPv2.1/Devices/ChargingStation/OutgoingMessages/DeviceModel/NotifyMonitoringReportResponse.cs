@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public NotifyMonitoringReportResponse(CS.NotifyMonitoringReportRequest  Request,
                                               DateTime?                         ResponseTimestamp   = null,
 
+                                              NetworkingNode_Id?                DestinationId       = null,
+                                              NetworkPath?                      NetworkPath         = null,
+
                                               IEnumerable<KeyPair>?             SignKeys            = null,
                                               IEnumerable<SignInfo>?            SignInfos           = null,
                                               IEnumerable<Signature>?           Signatures          = null,
@@ -85,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -181,14 +184,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyMonitoringReportResponseParser">A delegate to parse custom NotifyMonitoringReport responses.</param>
         public static NotifyMonitoringReportResponse Parse(CS.NotifyMonitoringReportRequest                              Request,
                                                            JObject                                                       JSON,
-                                                           CustomJObjectParserDelegate<NotifyMonitoringReportResponse>?  CustomNotifyMonitoringReportResponseParser   = null)
+                                                           NetworkingNode_Id                                             DestinationId,
+                                                           NetworkPath                                                   NetworkPath,
+                                                           DateTime?                                                     ResponseTimestamp                            = null,
+                                                           CustomJObjectParserDelegate<NotifyMonitoringReportResponse>?  CustomNotifyMonitoringReportResponseParser   = null,
+                                                           CustomJObjectParserDelegate<Signature>?                       CustomSignatureParser                        = null,
+                                                           CustomJObjectParserDelegate<CustomData>?                      CustomCustomDataParser                       = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var notifyMonitoringReportResponse,
                          out var errorResponse,
-                         CustomNotifyMonitoringReportResponseParser))
+                         ResponseTimestamp,
+                         CustomNotifyMonitoringReportResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return notifyMonitoringReportResponse;
             }
@@ -212,9 +225,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyMonitoringReportResponseParser">A delegate to parse custom NotifyMonitoringReport responses.</param>
         public static Boolean TryParse(CS.NotifyMonitoringReportRequest                              Request,
                                        JObject                                                       JSON,
+                                       NetworkingNode_Id                                             DestinationId,
+                                       NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out NotifyMonitoringReportResponse?      NotifyMonitoringReportResponse,
                                        [NotNullWhen(false)] out String?                              ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyMonitoringReportResponse>?  CustomNotifyMonitoringReportResponseParser   = null)
+                                       DateTime?                                                     ResponseTimestamp                            = null,
+                                       CustomJObjectParserDelegate<NotifyMonitoringReportResponse>?  CustomNotifyMonitoringReportResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                       CustomSignatureParser                        = null,
+                                       CustomJObjectParserDelegate<CustomData>?                      CustomCustomDataParser                       = null)
         {
 
             ErrorResponse = null;
@@ -254,12 +272,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 NotifyMonitoringReportResponse = new NotifyMonitoringReportResponse(
+
                                                      Request,
-                                                     null,
+                                                     ResponseTimestamp,
+
+                                                     DestinationId,
+                                                     NetworkPath,
+
                                                      null,
                                                      null,
                                                      Signatures,
+
                                                      CustomData
+
                                                  );
 
                 if (CustomNotifyMonitoringReportResponseParser is not null)
@@ -357,6 +382,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The NotifyMonitoringReport failed.
+        /// </summary>
+        /// <param name="Request">The NotifyMonitoringReport request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static NotifyMonitoringReportResponse FormationViolation(CS.NotifyMonitoringReportRequest  Request,
+                                                                        String                            ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>

@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public LogStatusNotificationResponse(CS.LogStatusNotificationRequest  Request,
                                              DateTime?                        ResponseTimestamp   = null,
 
+                                             NetworkingNode_Id?               DestinationId       = null,
+                                             NetworkPath?                     NetworkPath         = null,
+
                                              IEnumerable<KeyPair>?            SignKeys            = null,
                                              IEnumerable<SignInfo>?           SignInfos           = null,
                                              IEnumerable<Signature>?          Signatures          = null,
@@ -85,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -181,14 +184,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomLogStatusNotificationResponseParser">A delegate to parse custom LogStatusNotification responses.</param>
         public static LogStatusNotificationResponse Parse(CS.LogStatusNotificationRequest                              Request,
                                                           JObject                                                      JSON,
-                                                          CustomJObjectParserDelegate<LogStatusNotificationResponse>?  CustomLogStatusNotificationResponseParser   = null)
+                                                          NetworkingNode_Id                                            DestinationId,
+                                                          NetworkPath                                                  NetworkPath,
+                                                          DateTime?                                                    ResponseTimestamp                           = null,
+                                                          CustomJObjectParserDelegate<LogStatusNotificationResponse>?  CustomLogStatusNotificationResponseParser   = null,
+                                                          CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                                          CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var logStatusNotificationResponse,
                          out var errorResponse,
-                         CustomLogStatusNotificationResponseParser))
+                         ResponseTimestamp,
+                         CustomLogStatusNotificationResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return logStatusNotificationResponse;
             }
@@ -212,9 +225,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomLogStatusNotificationResponseParser">A delegate to parse custom LogStatusNotification responses.</param>
         public static Boolean TryParse(CS.LogStatusNotificationRequest                              Request,
                                        JObject                                                      JSON,
+                                       NetworkingNode_Id                                            DestinationId,
+                                       NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out LogStatusNotificationResponse?      LogStatusNotificationResponse,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
-                                       CustomJObjectParserDelegate<LogStatusNotificationResponse>?  CustomLogStatusNotificationResponseParser   = null)
+                                       DateTime?                                                    ResponseTimestamp                           = null,
+                                       CustomJObjectParserDelegate<LogStatusNotificationResponse>?  CustomLogStatusNotificationResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                       CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             try
@@ -252,12 +270,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 LogStatusNotificationResponse  = new LogStatusNotificationResponse(
+
                                                      Request,
-                                                     null,
+                                                     ResponseTimestamp,
+
+                                                     DestinationId,
+                                                     NetworkPath,
+
                                                      null,
                                                      null,
                                                      Signatures,
+
                                                      CustomData
+
                                                  );
 
                 if (CustomLogStatusNotificationResponseParser is not null)
@@ -355,6 +380,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData
 
                );
+
+
+        /// <summary>
+        /// The LogStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The LogStatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static LogStatusNotificationResponse FormationViolation(CS.LogStatusNotificationRequest  Request,
+                                                                       String                           ErrorDescription)
+
+            => new (Request,
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
 
 
         /// <summary>
