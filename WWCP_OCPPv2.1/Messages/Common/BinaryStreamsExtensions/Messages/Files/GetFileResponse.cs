@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -29,11 +30,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A get file response.
+    /// The GetFile response.
     /// </summary>
     public class GetFileResponse : AResponse<GetFileRequest,
                                              GetFileResponse>,
-                                   IResponse
+                                             IResponse
+
     {
 
         #region Data
@@ -54,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The name of the requested file including its absolute path.
+        /// The absolute path and name of the file to fetch.
         /// </summary>
         [Mandatory]
         public FilePath                FileName           { get; }
@@ -66,58 +68,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public GetFileStatus           Status             { get; }
 
         /// <summary>
-        /// Optional file content.
+        /// The optional file content.
         /// </summary>
         [Optional]
-        public Byte[]                  FileContent        { get; } = [];
+        public Byte[]                  FileContent        { get; }
 
         /// <summary>
-        /// The content/MIME type of the file.
+        /// The optional content/MIME type of the file.
         /// </summary>
         [Optional]
-        public ContentType             FileContentType    { get; } = ContentType.Application.OctetStream;
+        public ContentType             FileContentType    { get; }
 
         /// <summary>
         /// The optional SHA256 hash value of the file content.
         /// </summary>
         [Optional]
-        public Byte[]                  FileSHA256         { get; } = [];
+        public Byte[]                  FileSHA256         { get; }
 
         /// <summary>
         /// The optional SHA512 hash value of the file content.
         /// </summary>
         [Optional]
-        public Byte[]                  FileSHA512         { get; } = [];
+        public Byte[]                  FileSHA512         { get; }
 
         /// <summary>
         /// The optional enumeration of cryptographic signatures for the file content.
         /// </summary>
         [Optional]
-        public IEnumerable<Signature>  FileSignatures     { get; } = [];
+        public IEnumerable<Signature>  FileSignatures     { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region GetFileResponse(Request, FileName, Status, FileContent = null, FileContentType = null, ...)
-
         /// <summary>
         /// Create a new get file response.
         /// </summary>
         /// <param name="Request">The get file request leading to this response.</param>
-        /// <param name="FileName">The name of the requested file including its absolute path.</param>
-        /// <param name="Status">The success or failure status of the get file request.</param>
-        /// <param name="FileContent">An optional file content.</param>
-        /// <param name="FileContentType">An optional content/MIME type of the file.</param>
-        /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
-        /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
-        /// <param name="FileSignatures">An optional enumeration of cryptographic signatures for the file content.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="FileName">The absolute path and name of the file to fetch.</param>
+        /// <param name="Status">The success or failure status of the get file.</param>
+        /// <param name="FileContent">The optional file content.</param>
+        /// <param name="FileContentType">The optional content/MIME type of the file.</param>
+        /// <param name="FileSHA256">The optional SHA256 hash value of the file content.</param>
+        /// <param name="FileSHA512">The optional SHA512 hash value of the file content.</param>
+        /// <param name="FileSignatures">The optional enumeration of cryptographic signatures for the file content.</param>
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetFileResponse(GetFileRequest           Request,
+
                                FilePath                 FileName,
                                GetFileStatus            Status,
                                Byte[]?                  FileContent         = null,
@@ -125,59 +134,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                Byte[]?                  FileSHA256          = null,
                                Byte[]?                  FileSHA512          = null,
                                IEnumerable<Signature>?  FileSignatures      = null,
-                               DateTime?                ResponseTimestamp   = null,
 
-                               NetworkingNode_Id?       DestinationId   = null,
-                               NetworkPath?             NetworkPath         = null,
-
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null)
-
-            : base(Request,
-                   Result.OK(),
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures)
-
-        {
-
-            this.FileName         = FileName;
-            this.Status           = Status;
-            this.FileContent      = FileContent                ?? [];
-            this.FileContentType  = FileContentType            ?? ContentType.Application.OctetStream;
-            this.FileSHA256       = FileSHA256                 ?? [];
-            this.FileSHA512       = FileSHA512                 ?? [];
-            this.FileSignatures   = FileSignatures?.Distinct() ?? Array.Empty<Signature>();
-
-
-            unchecked
-            {
-
-                hashCode = this.FileName.GetHashCode() * 5 ^
-                          //(this.Priority?.GetHashCode() ?? 0) * 3 ^
-                           base.GetHashCode();
-
-            }
-
-        }
-
-        #endregion
-
-        #region GetFileResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new get file response.
-        /// </summary>
-        /// <param name="Request">The get file request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetFileResponse(GetFileRequest           Request,
-                               Result                   Result,
+                               Result?                  Result              = null,
                                DateTime?                ResponseTimestamp   = null,
 
                                NetworkingNode_Id?       DestinationId       = null,
@@ -190,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result,
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -204,11 +162,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            this.Status = GetFileStatus.Rejected;
+            this.FileName         = FileName;
+            this.Status           = Status;
+            this.FileContent      = FileContent                ?? [];
+            this.FileContentType  = FileContentType            ?? ContentType.Application.OctetStream;
+            this.FileSHA256       = FileSHA256                 ?? [];
+            this.FileSHA512       = FileSHA512                 ?? [];
+            this.FileSignatures   = FileSignatures?.Distinct() ?? [];
+
+            unchecked
+            {
+
+                hashCode = this.FileName.GetHashCode() * 5 ^
+                          //(this.Priority?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -229,14 +200,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomGetFileResponseParser">An optional delegate to parse custom get file responses.</param>
         public static GetFileResponse Parse(GetFileRequest                                Request,
                                             Byte[]                                        Binary,
-                                            CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser  = null)
+                                            NetworkingNode_Id                             DestinationId,
+                                            NetworkPath                                   NetworkPath,
+                                            DateTime?                                     ResponseTimestamp             = null,
+                                            CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser   = null,
+                                            CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser        = null,
+                                            CustomJObjectParserDelegate<Signature>?       CustomSignatureParser         = null,
+                                            CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser        = null)
         {
 
             if (TryParse(Request,
                          Binary,
+                         DestinationId,
+                         NetworkPath,
                          out var getFileResponse,
                          out var errorResponse,
-                         CustomGetFileResponseParser))
+                         ResponseTimestamp,
+                         CustomGetFileResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getFileResponse;
             }
@@ -260,9 +243,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomGetFileResponseParser">An optional delegate to parse custom get file responses.</param>
         public static Boolean TryParse(GetFileRequest                                Request,
                                        Byte[]                                        Binary,
+                                       NetworkingNode_Id                             DestinationId,
+                                       NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out GetFileResponse?     GetFileResponse,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
-                                       CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser   = null)
+                                       DateTime?                                     ResponseTimestamp             = null,
+                                       CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser        = null,
+                                       CustomJObjectParserDelegate<Signature>?       CustomSignatureParser         = null,
+                                       CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser        = null)
         {
 
             try
@@ -389,6 +378,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 //ToDo: Check if there are some bytes left!
 
+                #region CustomData    [optional]
+
+                CustomData? CustomData = null;
+
+                #endregion
+
 
                 GetFileResponse = new GetFileResponse(
 
@@ -401,13 +396,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                       fileSHA512,
                                       fileSignatures,
                                       null,
-
-                                      null,
                                       null,
 
                                       null,
                                       null,
-                                      signatures
+
+                                      null,
+                                      null,
+                                      signatures,
+
+                                      CustomData
 
                                   );
 
@@ -437,11 +435,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="CustomGetFileResponseSerializer">A delegate to serialize custom get file responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
-        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomBinarySignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<GetFileResponse>?  CustomGetFileResponseSerializer   = null,
                                CustomJObjectSerializerDelegate<StatusInfo>?      CustomStatusInfoSerializer        = null,
-                               CustomBinarySerializerDelegate<Signature>?        CustomSignatureSerializer         = null,
+                               CustomBinarySerializerDelegate<Signature>?        CustomBinarySignatureSerializer   = null,
+                               CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer        = null,
                                Boolean                                           IncludeSignatures                 = true)
         {
 
@@ -490,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (IncludeSignatures) {
                     foreach (var signature in Signatures)
                     {
-                        var binarySignature = signature.ToBinary(CustomSignatureSerializer);
+                        var binarySignature = signature.ToBinary(CustomBinarySignatureSerializer);
                         binaryStream.WriteUInt16((UInt16) binarySignature.Length);
                         binaryStream.Write(binarySignature);
                     }
@@ -539,6 +539,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (
 
                    Request,
+                   Request.FileName,
+                   GetFileStatus.Rejected,
+                   null,
+                   null,
+                   null,
+                   null,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -563,13 +570,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The GetFile request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetFileResponse FormationViolation(GetFileRequest  Request,
+                                                         String          ErrorDescription)
+
+            => new (Request,
+                    Request.FileName,
+                    GetFileStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetFile failed.
+        /// </summary>
+        /// <param name="Request">The GetFile request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static GetFileResponse SignatureError(GetFileRequest  Request,
                                                      String          ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    Request.FileName,
+                    GetFileStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -581,7 +606,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              String?         Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    Request.FileName,
+                    GetFileStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -593,7 +620,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        Exception       Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    Request.FileName,
+                    GetFileStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

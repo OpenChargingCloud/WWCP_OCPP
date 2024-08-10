@@ -77,8 +77,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region GetInstalledCertificateIdsResponse(Request, Status, CertificateHashDataChain, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new GetInstalledCertificateIds response.
         /// </summary>
@@ -86,17 +84,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Status">The Charge Point indicates if it can process the request.</param>
         /// <param name="CertificateHashDataChain">An optional enumeration of information about available certificates.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetInstalledCertificateIdsResponse(CSMS.GetInstalledCertificateIdsRequest  Request,
                                                   GetInstalledCertificateStatus           Status,
                                                   IEnumerable<CertificateHashData>?       CertificateHashDataChain   = null,
                                                   StatusInfo?                             StatusInfo                 = null,
+
+                                                  Result?                                 Result                     = null,
                                                   DateTime?                               ResponseTimestamp          = null,
 
                                                   NetworkingNode_Id?                      DestinationId              = null,
@@ -109,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                   CustomData?                             CustomData                 = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -124,54 +129,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         {
 
             this.Status                    = Status;
-            this.CertificateHashDataChain  = CertificateHashDataChain?.Distinct() ?? Array.Empty<CertificateHashData>();
+            this.CertificateHashDataChain  = CertificateHashDataChain?.Distinct() ?? [];
             this.StatusInfo                = StatusInfo;
 
-        }
+            unchecked
+            {
 
-        #endregion
+                hashCode = this.Status.                  GetHashCode()       * 7 ^
+                           this.CertificateHashDataChain.GetHashCode()       * 5 ^
+                          (this.StatusInfo?.             GetHashCode() ?? 0) * 3 ^
 
-        #region GetInstalledCertificateIdsResponse(Request, Result)
+                           base.                         GetHashCode();
 
-        /// <summary>
-        /// Create a new GetInstalledCertificateIds response.
-        /// </summary>
-        /// <param name="Request">The GetInstalledCertificateIds request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetInstalledCertificateIdsResponse(CSMS.GetInstalledCertificateIdsRequest  Request,
-                                                  Result                                  Result,
-                                                  DateTime?                               ResponseTimestamp   = null,
-
-                                                  NetworkingNode_Id?                      DestinationId       = null,
-                                                  NetworkPath?                            NetworkPath         = null,
-
-                                                  IEnumerable<KeyPair>?                   SignKeys            = null,
-                                                  IEnumerable<SignInfo>?                  SignInfos           = null,
-                                                  IEnumerable<Signature>?                 Signatures          = null,
-
-                                                  CustomData?                             CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Status                    = GetInstalledCertificateStatus.Unknown;
-            this.CertificateHashDataChain  = [];
+            }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -494,6 +466,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                          Status,
                                                          CertificateHashDataChain,
                                                          StatusInfo,
+
+                                                         null,
                                                          ResponseTimestamp,
 
                                                          DestinationId,
@@ -597,6 +571,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => new (
 
                    Request,
+                   GetInstalledCertificateStatus.NotFound,
+                   null,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -625,9 +602,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                             String                                  ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    GetInstalledCertificateStatus.NotFound,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -639,9 +617,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                         String                                  ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    GetInstalledCertificateStatus.NotFound,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -653,7 +632,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                 String?                                 Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    GetInstalledCertificateStatus.NotFound,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -665,7 +645,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                           Exception                               Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    GetInstalledCertificateStatus.NotFound,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -756,23 +737,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.                  GetHashCode()       * 7 ^
-                       CertificateHashDataChain.GetHashCode()       * 5 ^
-                      (StatusInfo?.             GetHashCode() ?? 0) * 3 ^
-
-                       base.                    GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

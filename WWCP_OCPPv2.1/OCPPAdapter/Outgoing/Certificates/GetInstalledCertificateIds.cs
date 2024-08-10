@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new GetInstalledCertificateIdsResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     GetInstalledCertificateStatus.NotFound,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

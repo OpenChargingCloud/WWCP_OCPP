@@ -193,7 +193,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new GetCertificateStatusResponse(
                                        request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       GetCertificateStatus.Failed,
+                                       OCSPResult.Empty,
+                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<GetCertificateStatusRequest, GetCertificateStatusResponse>(

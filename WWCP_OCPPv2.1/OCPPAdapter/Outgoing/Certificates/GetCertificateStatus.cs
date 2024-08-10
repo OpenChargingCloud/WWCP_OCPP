@@ -231,7 +231,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new GetCertificateStatusResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     OCPPv2_1.GetCertificateStatus.Failed,
+                                     OCSPResult.Empty,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

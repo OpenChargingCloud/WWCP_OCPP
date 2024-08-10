@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new CertificateSignedResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     CertificateSignedStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

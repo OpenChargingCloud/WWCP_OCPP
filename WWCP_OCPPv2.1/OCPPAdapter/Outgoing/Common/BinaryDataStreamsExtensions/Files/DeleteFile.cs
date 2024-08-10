@@ -21,8 +21,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -33,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Logging Delegates
 
     /// <summary>
-    /// A delegate called whenever a GetCRL request was sent.
+    /// A delegate called whenever a DeleteFile request was sent.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -41,16 +39,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SendMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetCRLRequestSentDelegate(DateTime               Timestamp,
-                                                     IEventSender           Sender,
-                                                     IWebSocketConnection   Connection,
-                                                     GetCRLRequest          Request,
-                                                     SentMessageResults     SendMessageResult,
-                                                     CancellationToken      CancellationToken = default);
+    public delegate Task OnDeleteFileRequestSentDelegate(DateTime               Timestamp,
+                                                         IEventSender           Sender,
+                                                         IWebSocketConnection   Connection,
+                                                         DeleteFileRequest      Request,
+                                                         SentMessageResults     SendMessageResult,
+                                                         CancellationToken      CancellationToken = default);
 
 
     /// <summary>
-    /// A GetCRL response.
+    /// A DeleteFile response.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
@@ -62,18 +60,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetCRLResponseSentDelegate(DateTime               Timestamp,
-                                     IEventSender           Sender,
-                                     IWebSocketConnection   Connection,
-                                     GetCRLRequest          Request,
-                                     GetCRLResponse         Response,
-                                     TimeSpan               Runtime,
-                                     SentMessageResults     SendMessageResult,
-                                     CancellationToken      CancellationToken = default);
+        OnDeleteFileResponseSentDelegate(DateTime               Timestamp,
+                                         IEventSender           Sender,
+                                         IWebSocketConnection   Connection,
+                                         DeleteFileRequest      Request,
+                                         DeleteFileResponse     Response,
+                                         TimeSpan               Runtime,
+                                         SentMessageResults     SendMessageResult,
+                                         CancellationToken      CancellationToken = default);
 
 
     /// <summary>
-    /// A logging delegate called whenever a GetCRL request error was sent.
+    /// A logging delegate called whenever a DeleteFile request error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the request error.</param>
@@ -85,18 +83,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetCRLRequestErrorSentDelegate(DateTime                       Timestamp,
-                                         IEventSender                   Sender,
-                                         IWebSocketConnection           Connection,
-                                         GetCRLRequest?                 Request,
-                                         OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                         TimeSpan?                      Runtime,
-                                         SentMessageResults             SendMessageResult,
-                                         CancellationToken              CancellationToken = default);
+        OnDeleteFileRequestErrorSentDelegate(DateTime                       Timestamp,
+                                             IEventSender                   Sender,
+                                             IWebSocketConnection           Connection,
+                                             DeleteFileRequest?             Request,
+                                             OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                             TimeSpan?                      Runtime,
+                                             SentMessageResults             SendMessageResult,
+                                             CancellationToken              CancellationToken = default);
 
 
     /// <summary>
-    /// A logging delegate called whenever a GetCRL response error was sent.
+    /// A logging delegate called whenever a DeleteFile response error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the response error.</param>
@@ -109,15 +107,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetCRLResponseErrorSentDelegate(DateTime                        Timestamp,
-                                          IEventSender                    Sender,
-                                          IWebSocketConnection            Connection,
-                                          GetCRLRequest?                  Request,
-                                          GetCRLResponse?                 Response,
-                                          OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                          TimeSpan?                       Runtime,
-                                          SentMessageResults              SendMessageResult,
-                                          CancellationToken               CancellationToken = default);
+        OnDeleteFileResponseErrorSentDelegate(DateTime                        Timestamp,
+                                              IEventSender                    Sender,
+                                              IWebSocketConnection            Connection,
+                                              DeleteFileRequest?              Request,
+                                              DeleteFileResponse?             Response,
+                                              OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                              TimeSpan?                       Runtime,
+                                              SentMessageResults              SendMessageResult,
+                                              CancellationToken               CancellationToken = default);
 
     #endregion
 
@@ -125,25 +123,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT
     {
 
-        #region Send GetCRL request
+        #region Send DeleteFile request
 
         /// <summary>
-        /// An event fired whenever a GetCRL request was sent.
+        /// An event fired whenever a DeleteFile request was sent.
         /// </summary>
-        public event OnGetCRLRequestSentDelegate?  OnGetCRLRequestSent;
+        public event OnDeleteFileRequestSentDelegate?  OnDeleteFileRequestSent;
 
 
         /// <summary>
-        /// Send a GetCRL request.
+        /// Send a DeleteFile request.
         /// </summary>
-        /// <param name="Request">A GetCRL request.</param>
-        public async Task<GetCRLResponse>
+        /// <param name="Request">A DeleteFile request.</param>
+        public async Task<DeleteFileResponse>
 
-            GetCRL(GetCRLRequest Request)
+            DeleteFile(DeleteFileRequest Request)
 
         {
 
-            GetCRLResponse? response = null;
+            DeleteFileResponse? response = null;
 
             try
             {
@@ -153,8 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
                         Request,
                         Request.ToJSON(
-                            parentNetworkingNode.OCPP.CustomGetCRLRequestSerializer,
-                            parentNetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+                            parentNetworkingNode.OCPP.CustomDeleteFileRequestSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
@@ -162,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     ))
                 {
 
-                    response = GetCRLResponse.SignatureError(
+                    response = DeleteFileResponse.SignatureError(
                                    Request,
                                    signingErrors
                                );
@@ -181,15 +178,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
                                                          Request.ToJSON(
-                                                             parentNetworkingNode.OCPP.CustomGetCRLRequestSerializer,
-                                                             parentNetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+                                                             parentNetworkingNode.OCPP.CustomDeleteFileRequestSerializer,
                                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                          )
                                                      ),
 
                                                      sendMessageResult => LogEvent(
-                                                         OnGetCRLRequestSent,
+                                                         OnDeleteFileRequestSent,
                                                          loggingDelegate => loggingDelegate.Invoke(
                                                              Timestamp.Now,
                                                              parentNetworkingNode,
@@ -204,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
                     if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_GetCRLResponse(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_DeleteFileResponse(
                                              Request,
                                              jsonResponse,
                                              sendRequestState.WebSocketConnectionReceived,
@@ -217,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
                     if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_GetCRLRequestError(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_DeleteFileRequestError(
                                              Request,
                                              jsonRequestError,
                                              sendRequestState.WebSocketConnectionReceived,
@@ -229,11 +225,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              Request.CancellationToken
                                          );
 
-                    response ??= new GetCRLResponse(
+                    response ??= new DeleteFileResponse(
                                      Request,
-                                     Request.GetCRLRequestId,
-                                     GenericStatus.Rejected,
-                                     Result: Result.FromSendRequestState(sendRequestState)
+                                     Request.FileName,
+                                     DeleteFileStatus.Rejected,
+                                     null,
+                                     Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }
@@ -242,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = GetCRLResponse.ExceptionOccured(
+                response = DeleteFileResponse.ExceptionOccured(
                                Request,
                                e
                            );
@@ -256,24 +253,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region Send OnGetCRLResponseSent event
+        #region Send OnDeleteFileResponseSent event
 
         /// <summary>
-        /// An event sent whenever a GetCRL response was sent.
+        /// An event sent whenever a DeleteFile response was sent.
         /// </summary>
-        public event OnGetCRLResponseSentDelegate?  OnGetCRLResponseSent;
+        public event OnDeleteFileResponseSentDelegate?  OnDeleteFileResponseSent;
 
-        public Task SendOnGetCRLResponseSent(DateTime              Timestamp,
-                                             IEventSender          Sender,
-                                             IWebSocketConnection  Connection,
-                                             GetCRLRequest         Request,
-                                             GetCRLResponse        Response,
-                                             TimeSpan              Runtime,
-                                             SentMessageResults    SendMessageResult,
-                                             CancellationToken     CancellationToken = default)
+        public Task SendOnDeleteFileResponseSent(DateTime              Timestamp,
+                                                 IEventSender          Sender,
+                                                 IWebSocketConnection  Connection,
+                                                 DeleteFileRequest     Request,
+                                                 DeleteFileResponse    Response,
+                                                 TimeSpan              Runtime,
+                                                 SentMessageResults    SendMessageResult,
+                                                 CancellationToken     CancellationToken = default)
 
             => LogEvent(
-                   OnGetCRLResponseSent,
+                   OnDeleteFileResponseSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,
@@ -288,25 +285,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Send OnGetCRLRequestErrorSent event
+        #region Send OnDeleteFileRequestErrorSent event
 
         /// <summary>
-        /// An event sent whenever a GetCRL request error was sent.
+        /// An event sent whenever a DeleteFile request error was sent.
         /// </summary>
-        public event OnGetCRLRequestErrorSentDelegate? OnGetCRLRequestErrorSent;
+        public event OnDeleteFileRequestErrorSentDelegate? OnDeleteFileRequestErrorSent;
 
 
-        public Task SendOnGetCRLRequestErrorSent(DateTime                      Timestamp,
-                                                 IEventSender                  Sender,
-                                                 IWebSocketConnection          Connection,
-                                                 GetCRLRequest?                Request,
-                                                 OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                 TimeSpan                      Runtime,
-                                                 SentMessageResults            SendMessageResult,
-                                                 CancellationToken             CancellationToken = default)
+        public Task SendOnDeleteFileRequestErrorSent(DateTime                      Timestamp,
+                                                     IEventSender                  Sender,
+                                                     IWebSocketConnection          Connection,
+                                                     DeleteFileRequest?            Request,
+                                                     OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                     TimeSpan                      Runtime,
+                                                     SentMessageResults            SendMessageResult,
+                                                     CancellationToken             CancellationToken = default)
 
             => LogEvent(
-                   OnGetCRLRequestErrorSent,
+                   OnDeleteFileRequestErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,
@@ -321,26 +318,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Send OnGetCRLResponseErrorSent event
+        #region Send OnDeleteFileResponseErrorSent event
 
         /// <summary>
-        /// An event sent whenever a GetCRL response error was sent.
+        /// An event sent whenever a DeleteFile response error was sent.
         /// </summary>
-        public event OnGetCRLResponseErrorSentDelegate? OnGetCRLResponseErrorSent;
+        public event OnDeleteFileResponseErrorSentDelegate? OnDeleteFileResponseErrorSent;
 
 
-        public Task SendOnGetCRLResponseErrorSent(DateTime                       Timestamp,
-                                                  IEventSender                   Sender,
-                                                  IWebSocketConnection           Connection,
-                                                  GetCRLRequest?                 Request,
-                                                  GetCRLResponse?                Response,
-                                                  OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                  TimeSpan                       Runtime,
-                                                  SentMessageResults             SendMessageResult,
-                                                  CancellationToken              CancellationToken = default)
+        public Task SendOnDeleteFileResponseErrorSent(DateTime                       Timestamp,
+                                                      IEventSender                   Sender,
+                                                      IWebSocketConnection           Connection,
+                                                      DeleteFileRequest?             Request,
+                                                      DeleteFileResponse?            Response,
+                                                      OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                      TimeSpan                       Runtime,
+                                                      SentMessageResults             SendMessageResult,
+                                                      CancellationToken              CancellationToken = default)
 
             => LogEvent(
-                   OnGetCRLResponseErrorSent,
+                   OnDeleteFileResponseErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,

@@ -195,31 +195,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The DeleteFileRequest has been accepted and the file is included in the response.
         /// </summary>
-        public static DeleteFileStatus Success             { get; }
+        public static DeleteFileStatus  Success               { get; }
             = Register("Success");
 
         /// <summary>
         /// The DeleteFileRequest has been accepted, but the file was not found.
         /// </summary>
-        public static DeleteFileStatus NotFound            { get; }
+        public static DeleteFileStatus  NotFound              { get; }
             = Register("NotFound");
 
         /// <summary>
         /// The DeleteFileRequest was understood, but the file is locked.
         /// </summary>
-        public static DeleteFileStatus Locked              { get; }
+        public static DeleteFileStatus  Locked                { get; }
             = Register("Locked");
 
         /// <summary>
         /// The DeleteFileRequest has been rejected.
         /// </summary>
-        public static DeleteFileStatus Rejected            { get; }
+        public static DeleteFileStatus  Rejected              { get; }
             = Register("Rejected");
+
+        /// <summary>
+        /// The format of the message is invalid.
+        /// </summary>
+        public static DeleteFileStatus  FormationViolation    { get; }
+            = Register("FormationViolation");
 
         /// <summary>
         /// The digital signature(s) of the message is/are invalid.
         /// </summary>
-        public static DeleteFileStatus InvalidSignature    { get; }
+        public static DeleteFileStatus  InvalidSignature      { get; }
             = Register("InvalidSignature");
 
         #endregion

@@ -34,6 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public class DeleteFileResponse : AResponse<DeleteFileRequest,
                                                 DeleteFileResponse>,
                                       IResponse
+
     {
 
         #region Data
@@ -50,14 +51,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext    Context
+        public JSONLDContext     Context
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The name of the stored file including its absolute path.
+        /// The absolute path and name of the file to delete.
         /// </summary>
         [Mandatory]
-        public FilePath        FileName      { get; }
+        public FilePath          FileName      { get; }
 
         /// <summary>
         /// The response status.
@@ -69,35 +70,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An optional element providing more information about the response status.
         /// </summary>
         [Optional]
-        public StatusInfo?     StatusInfo    { get; }
+        public StatusInfo?       StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region DeleteFileResponse(Request, Status = null, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new DeleteFile response.
         /// </summary>
-        /// <param name="Request">The DeleteFile request leading to this response.</param>
-        /// <param name="FileName">The name of the stored file including its absolute path.</param>
-        /// <param name="Status">An optional response status.</param>
-        /// <param name="StatusInfo">An optional element providing more information about the response status.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="FileName">The absolute path and name of the file to delete.</param>
+        /// <param name="Status">The success or failure status of the DeleteFile request.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public DeleteFileResponse(DeleteFileRequest        Request,
                                   FilePath                 FileName,
                                   DeleteFileStatus         Status,
                                   StatusInfo?              StatusInfo          = null,
+                                  Result?                  Result              = null,
                                   DateTime?                ResponseTimestamp   = null,
 
-                                  NetworkingNode_Id?       DestinationId   = null,
+                                  NetworkingNode_Id?       DestinationId       = null,
                                   NetworkPath?             NetworkPath         = null,
 
                                   IEnumerable<KeyPair>?    SignKeys            = null,
@@ -107,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -140,49 +145,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region DeleteFileResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new DeleteFile response.
-        /// </summary>
-        /// <param name="Request">The authorize request.</param>
-        /// <param name="Result">A result.</param>
-        public DeleteFileResponse(DeleteFileRequest        Request,
-                                  Result                   Result,
-                                  DateTime?                ResponseTimestamp   = null,
-
-                                  NetworkingNode_Id?       DestinationId       = null,
-                                  NetworkPath?             NetworkPath         = null,
-
-                                  IEnumerable<KeyPair>?    SignKeys            = null,
-                                  IEnumerable<SignInfo>?   SignInfos           = null,
-                                  IEnumerable<Signature>?  Signatures          = null,
-
-                                  CustomData?              CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Status = DeleteFileStatus.Rejected;
-
-        }
-
-        #endregion
-
-        #endregion
-
 
         #region Documentation
 
@@ -200,15 +162,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteFileResponseParser">An optional delegate to parse custom DeleteFile responses.</param>
         public static DeleteFileResponse Parse(DeleteFileRequest                                 Request,
                                                JObject                                           JSON,
-                                               CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser   = null)
+                                               NetworkingNode_Id                                 DestinationId,
+                                               NetworkPath                                       NetworkPath,
+                                               DateTime?                                         ResponseTimestamp                = null,
+                                               CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser   = null,
+                                               CustomJObjectParserDelegate<StatusInfo>?          CustomStatusInfoParser           = null,
+                                               CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
+                                               CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var deleteFileResponse,
                          out var errorResponse,
-                         CustomDeleteFileResponseParser))
+                         ResponseTimestamp,
+                         CustomDeleteFileResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return deleteFileResponse;
             }
@@ -232,9 +206,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteFileResponseParser">An optional delegate to parse custom DeleteFile responses.</param>
         public static Boolean TryParse(DeleteFileRequest                                 Request,
                                        JObject                                           JSON,
+                                       NetworkingNode_Id                                 DestinationId,
+                                       NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out DeleteFileResponse?      DeleteFileResponse,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
-                                       CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser   = null)
+                                       DateTime?                                         ResponseTimestamp                = null,
+                                       CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?          CustomStatusInfoParser           = null,
+                                       CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
+                                       CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
         {
 
             try
@@ -318,9 +298,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          Status,
                                          StatusInfo,
                                          null,
+                                         ResponseTimestamp,
 
-                                         null,
-                                         null,
+                                         DestinationId,
+                                         NetworkPath,
 
                                          null,
                                          null,
@@ -418,6 +399,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (
 
                    Request,
+                   Request.FileName,
+                   DeleteFileStatus.Rejected,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -442,13 +426,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The DeleteFile request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
+        public static DeleteFileResponse FormationViolation(DeleteFileRequest  Request,
+                                                            String             ErrorDescription)
+
+            => new (Request,
+                    Request.FileName,
+                    DeleteFileStatus.FormationViolation,
+                    Result: Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The DeleteFile failed.
+        /// </summary>
+        /// <param name="Request">The DeleteFile request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static DeleteFileResponse SignatureError(DeleteFileRequest  Request,
                                                         String             ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    Request.FileName,
+                    DeleteFileStatus.InvalidSignature,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -460,7 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 String?            Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    Request.FileName,
+                    DeleteFileStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -472,7 +476,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                           Exception          Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    Request.FileName,
+                    DeleteFileStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

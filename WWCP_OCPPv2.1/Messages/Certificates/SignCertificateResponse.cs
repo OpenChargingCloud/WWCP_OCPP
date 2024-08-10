@@ -33,51 +33,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The SignCertificate response.
     /// </summary>
-    /// <param name="Request">The request leading to this response.</param>
-    /// <param name="Status">The success or failure status of the SignCertificate request.</param>
-    /// <param name="StatusInfo">Optional detailed status information.</param>
-    /// 
-    /// <param name="Result">The machine-readable result code.</param>
-    /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
-    /// 
-    /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
-    /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
-    /// 
-    /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
-    /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
-    /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
-    /// 
-    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-    public class SignCertificateResponse(CS.SignCertificateRequest  Request,
-                                         GenericStatus              Status,
-                                         StatusInfo?                StatusInfo          = null,
-
-                                         Result?                    Result              = null,
-                                         DateTime?                  ResponseTimestamp   = null,
-
-                                         NetworkingNode_Id?         DestinationId       = null,
-                                         NetworkPath?               NetworkPath         = null,
-
-                                         IEnumerable<KeyPair>?      SignKeys            = null,
-                                         IEnumerable<SignInfo>?     SignInfos           = null,
-                                         IEnumerable<Signature>?    Signatures          = null,
-
-                                         CustomData?                CustomData          = null)
-
-            : AResponse<CS.SignCertificateRequest,
-                        SignCertificateResponse>(Request,
-                                                 Result ?? Result.OK(),
-                                                 ResponseTimestamp,
-
-                                                 DestinationId,
-                                                 NetworkPath,
-
-                                                 SignKeys,
-                                                 SignInfos,
-                                                 Signatures,
-
-                                                 CustomData),
-                        IResponse
+    public class SignCertificateResponse : AResponse<CS.SignCertificateRequest,
+                                                     SignCertificateResponse>,
+                                                     IResponse
 
     {
 
@@ -102,13 +60,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The success or failure status of the SignCertificate request.
         /// </summary>
         [Mandatory]
-        public GenericStatus  Status        { get; } = Status;
+        public GenericStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?    StatusInfo    { get; } = StatusInfo;
+        public StatusInfo?    StatusInfo    { get; }
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a SignCertificate response.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="Status">The success or failure status of the SignCertificate request.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public SignCertificateResponse(CS.SignCertificateRequest  Request,
+                                       GenericStatus              Status,
+                                       StatusInfo?                StatusInfo          = null,
+
+                                       Result?                    Result              = null,
+                                       DateTime?                  ResponseTimestamp   = null,
+
+                                       NetworkingNode_Id?         DestinationId       = null,
+                                       NetworkPath?               NetworkPath         = null,
+
+                                       IEnumerable<KeyPair>?      SignKeys            = null,
+                                       IEnumerable<SignInfo>?     SignInfos           = null,
+                                       IEnumerable<Signature>?    Signatures          = null,
+
+                                       CustomData?                CustomData          = null)
+
+            : base(Request,
+                   Result ?? Result.OK(),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
+
+        {
+
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
+
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
+
+        }
 
         #endregion
 
@@ -319,6 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               Request,
                                               Status,
                                               StatusInfo,
+
                                               null,
                                               ResponseTimestamp,
 
@@ -582,22 +608,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

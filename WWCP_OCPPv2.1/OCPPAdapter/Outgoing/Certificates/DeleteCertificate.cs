@@ -231,7 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new DeleteCertificateResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     DeleteCertificateStatus.Failed,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

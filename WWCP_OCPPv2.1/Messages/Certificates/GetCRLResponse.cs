@@ -77,8 +77,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region GetCRLResponse(Request, GetCRLRequestId, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new GetCRL response.
         /// </summary>
@@ -86,17 +84,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="GetCRLRequestId">The GetCRL request identification.</param>
         /// <param name="Status">The success or failure of the EXI message processing.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetCRLResponse(CS.GetCRLRequest         Request,
                               UInt32                   GetCRLRequestId,
                               GenericStatus            Status,
                               StatusInfo?              StatusInfo          = null,
+
+                              Result?                  Result              = null,
                               DateTime?                ResponseTimestamp   = null,
 
                               NetworkingNode_Id?       DestinationId       = null,
@@ -109,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -127,46 +132,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.Status           = Status;
             this.StatusInfo       = StatusInfo;
 
+            unchecked
+            {
+
+                hashCode = this.Status.         GetHashCode()       * 7 ^
+                           this.GetCRLRequestId.GetHashCode()       * 5 ^
+                          (this.StatusInfo?.    GetHashCode() ?? 0) * 3 ^
+                           base.                GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region GetCRLResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new GetCRL response.
-        /// </summary>
-        /// <param name="Request">The GetCRL request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetCRLResponse(CS.GetCRLRequest         Request,
-                              Result                   Result,
-                              DateTime?                ResponseTimestamp   = null,
-
-                              NetworkingNode_Id?       DestinationId       = null,
-                              NetworkPath?             NetworkPath         = null,
-
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
-
-                              CustomData?              CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -321,6 +297,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      GetCRLRequestId,
                                      Status,
                                      StatusInfo,
+
+                                     null,
                                      ResponseTimestamp,
 
                                      DestinationId,
@@ -422,6 +400,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => new (
 
                    Request,
+                   Request.GetCRLRequestId,
+                   GenericStatus.Rejected,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -450,9 +431,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         String            ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    Request.GetCRLRequestId,
+                    GenericStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -464,9 +447,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                     String            ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    Request.GetCRLRequestId,
+                    GenericStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -478,7 +463,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             String?           Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    Request.GetCRLRequestId,
+                    GenericStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -490,7 +477,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                       Exception         Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    Request.GetCRLRequestId,
+                    GenericStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -579,23 +568,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.         GetHashCode()       * 7 ^
-                       GetCRLRequestId.GetHashCode()       * 5 ^
-                      (StatusInfo?.    GetHashCode() ?? 0) * 3 ^
-
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

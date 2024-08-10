@@ -193,7 +193,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new Get15118EVCertificateResponse(
                                        request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       ISO15118EVCertificateStatus.Failed,
+                                       EXIData.Empty,
+                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>(

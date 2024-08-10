@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var getFileRequests = new ConcurrentList<GetFileRequest>();
 
-                chargingStation1.OCPP.IN.OnGetFileRequestReceived += (timestamp, sender, connection, getFileRequest) => {
+                chargingStation1.OCPP.IN.OnGetFileRequestReceived += (timestamp, sender, connection, getFileRequest, ct) => {
                     getFileRequests.TryAdd(getFileRequest);
                     return Task.CompletedTask;
                 };
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var deleteFileRequests = new ConcurrentList<DeleteFileRequest>();
 
-                chargingStation1.OCPP.IN.OnDeleteFileRequestReceived += (timestamp, sender, connection, deleteFileRequest) => {
+                chargingStation1.OCPP.IN.OnDeleteFileRequestReceived += (timestamp, sender, connection, deleteFileRequest, ct) => {
                     deleteFileRequests.TryAdd(deleteFileRequest);
                     return Task.CompletedTask;
                 };
@@ -206,22 +206,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var response   = await testCSMS01.DeleteFile(
                                            DestinationId:  chargingStation1.Id,
-                                           FileName:           filename,
-                                           FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
-                                           FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes())
+                                           FileName:       filename,
+                                           FileSHA256:     SHA256.HashData("Hello world!".ToUTF8Bytes()),
+                                           FileSHA512:     SHA512.HashData("Hello world!".ToUTF8Bytes())
                                        );
 
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                              Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                         Is.EqualTo(DeleteFileStatus.Success));
-                    Assert.That(response.FileName,                                       Is.EqualTo(filename));
+                    Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                 Is.EqualTo(DeleteFileStatus.Success));
+                    Assert.That(response.FileName,                               Is.EqualTo(filename));
 
-                    Assert.That(deleteFileRequests.Count,                                Is.EqualTo(1), "The SendFileRequest did not reach the charging station!");
-                    Assert.That(deleteFileRequests.First().DestinationId,            Is.EqualTo(NetworkingNode_Id.Zero));
-                    Assert.That(deleteFileRequests.First().NetworkPath.Length,           Is.EqualTo(0));
-                    Assert.That(deleteFileRequests.First().FileName,                     Is.EqualTo(filename));
+                    Assert.That(deleteFileRequests.Count,                        Is.EqualTo(1), "The SendFileRequest did not reach the charging station!");
+                    Assert.That(deleteFileRequests.First().DestinationId,        Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(deleteFileRequests.First().NetworkPath.Length,   Is.EqualTo(0));
+                    Assert.That(deleteFileRequests.First().FileName,             Is.EqualTo(filename));
 
                 });
 

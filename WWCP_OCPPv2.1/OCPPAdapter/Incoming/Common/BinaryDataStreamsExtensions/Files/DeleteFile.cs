@@ -30,10 +30,108 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Logging Delegates
+
+    /// <summary>
+    /// A logging delegate called whenever a DeleteFile request was received.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnDeleteFileRequestReceivedDelegate(DateTime               Timestamp,
+                                                             IEventSender           Sender,
+                                                             IWebSocketConnection   Connection,
+                                                             DeleteFileRequest      Request,
+                                                             CancellationToken      CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a DeleteFile response was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnDeleteFileResponseReceivedDelegate(DateTime               Timestamp,
+                                                              IEventSender           Sender,
+                                                              IWebSocketConnection   Connection,
+                                                              DeleteFileRequest?     Request,
+                                                              DeleteFileResponse     Response,
+                                                              TimeSpan?              Runtime,
+                                                              CancellationToken      CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a DeleteFile request error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="RequestErrorMessage">The request error message.</param>
+    /// <param name="Runtime">The runtime of the request/request error pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnDeleteFileRequestErrorReceivedDelegate(DateTime                       Timestamp,
+                                                                  IEventSender                   Sender,
+                                                                  IWebSocketConnection           Connection,
+                                                                  DeleteFileRequest?             Request,
+                                                                  OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                                  TimeSpan?                      Runtime,
+                                                                  CancellationToken              CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a DeleteFile response error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response error.</param>
+    /// <param name="Connection">The connection of the response error.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response, when available.</param>
+    /// <param name="ResponseErrorMessage">The response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnDeleteFileResponseErrorReceivedDelegate(DateTime                        Timestamp,
+                                                                   IEventSender                    Sender,
+                                                                   IWebSocketConnection            Connection,
+                                                                   DeleteFileRequest?              Request,
+                                                                   DeleteFileResponse?             Response,
+                                                                   OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                                   TimeSpan?                       Runtime,
+                                                                   CancellationToken               CancellationToken = default);
+
+    #endregion
+
+
+    /// <summary>
+    /// A delegate called whenever a DeleteFile response is expected
+    /// for a received DeleteFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<DeleteFileResponse>
+
+        OnDeleteFileDelegate(DateTime               Timestamp,
+                             IEventSender           Sender,
+                             IWebSocketConnection   Connection,
+                             DeleteFileRequest      Request,
+                             CancellationToken      CancellationToken = default);
+
+
     public partial class OCPPWebSocketAdapterIN
     {
 
-        #region Events
+        // Wired via reflection!
+
+        #region Receive DeleteFile request
 
         /// <summary>
         /// An event sent whenever a DeleteFile request was received.
@@ -45,9 +143,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnDeleteFileDelegate?                 OnDeleteFile;
 
-        #endregion
-
-        #region Receive DeleteFileRequest (wired via reflection!)
 
         public async Task<OCPP_Response>
 
@@ -103,32 +198,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnDeleteFileRequestReceived event
 
-                    var logger = OnDeleteFileRequestReceived;
-                    if (logger is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType<OnDeleteFileRequestReceivedDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
-                                      nameof(OnDeleteFileRequestReceived),
-                                      e
-                                  );
-                        }
-                    }
+                    await LogEvent(
+                              OnDeleteFileRequestReceived,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  parentNetworkingNode,
+                                  WebSocketConnection,
+                                  request,
+                                  CancellationToken
+                              )
+                          );
 
                     #endregion
 
@@ -162,7 +241,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             response = DeleteFileResponse.ExceptionOccured(request, e);
 
                             await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
                                       nameof(OnDeleteFile),
                                       e
                                   );
@@ -184,7 +262,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
-                        out var errorResponse2);
+                        out var errorResponse2
+                    );
 
                     #endregion
 
@@ -197,7 +276,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                               WebSocketConnection,
                               request,
                               response,
-                              response.Runtime
+                              response.Runtime,
+                              SentMessageResults.Unknown
                           );
 
                     #endregion
@@ -231,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                ocppResponse = OCPP_Response.FormationViolation(
+                ocppResponse = OCPP_Response.ExceptionOccurred(
                                    EventTrackingId,
                                    RequestId,
                                    nameof(Receive_DeleteFile)[8..],
@@ -247,57 +327,257 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-    }
-
-    public partial class OCPPWebSocketAdapterOUT
-    {
-
-        #region Events
+        #region Receive DeleteFile response
 
         /// <summary>
-        /// An event sent whenever a response to a DeleteFile was sent.
+        /// An event fired whenever a DeleteFile response was received.
         /// </summary>
-        public event OnDeleteFileResponseSentDelegate?  OnDeleteFileResponseSent;
+        public event OnDeleteFileResponseReceivedDelegate? OnDeleteFileResponseReceived;
+
+
+        public async Task<DeleteFileResponse>
+
+            Receive_DeleteFileResponse(DeleteFileRequest     Request,
+                                       JObject               ResponseJSON,
+                                       IWebSocketConnection  WebSocketConnection,
+                                       NetworkingNode_Id     DestinationId,
+                                       NetworkPath           NetworkPath,
+                                       EventTracking_Id      EventTrackingId,
+                                       Request_Id            RequestId,
+                                       DateTime?             ResponseTimestamp   = null,
+                                       CancellationToken     CancellationToken   = default)
+
+        {
+
+            DeleteFileResponse? response = null;
+
+            try
+            {
+
+                if (DeleteFileResponse.TryParse(Request,
+                                                ResponseJSON,
+                                                DestinationId,
+                                                NetworkPath,
+                                                out response,
+                                                out var errorResponse,
+                                                ResponseTimestamp,
+                                                parentNetworkingNode.OCPP.CustomDeleteFileResponseParser,
+                                                parentNetworkingNode.OCPP.CustomStatusInfoParser,
+                                                parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+
+                    #region Verify response signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+                            response,
+                            response.ToJSON(
+                                parentNetworkingNode.OCPP.CustomDeleteFileResponseSerializer,
+                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            ),
+                            out errorResponse
+                        ))
+                    {
+
+                        response = DeleteFileResponse.SignatureError(
+                                       Request,
+                                       errorResponse
+                                   );
+
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    response = DeleteFileResponse.FormationViolation(
+                                   Request,
+                                   errorResponse
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                response = DeleteFileResponse.ExceptionOccured(
+                               Request,
+                               e
+                           );
+
+            }
+
+
+            #region Send OnDeleteFileResponseReceived event
+
+            await LogEvent(
+                      OnDeleteFileResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
 
         #endregion
 
-        #region Send OnDeleteFileResponse event
+        #region Receive DeleteFile request error
 
-        public async Task SendOnDeleteFileResponseSent(DateTime              Timestamp,
-                                                       IEventSender          Sender,
-                                                       IWebSocketConnection  Connection,
-                                                       DeleteFileRequest     Request,
-                                                       DeleteFileResponse    Response,
-                                                       TimeSpan              Runtime)
+        /// <summary>
+        /// An event fired whenever a DeleteFile request error was received.
+        /// </summary>
+        public event OnDeleteFileRequestErrorReceivedDelegate? DeleteFileRequestErrorReceived;
+
+
+        public async Task<DeleteFileResponse>
+
+            Receive_DeleteFileRequestError(DeleteFileRequest             Request,
+                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                           IWebSocketConnection          Connection,
+                                           NetworkingNode_Id             DestinationId,
+                                           NetworkPath                   NetworkPath,
+                                           EventTracking_Id              EventTrackingId,
+                                           Request_Id                    RequestId,
+                                           DateTime?                     ResponseTimestamp   = null,
+                                           CancellationToken             CancellationToken   = default)
         {
 
-            var logger = OnDeleteFileResponseSent;
-            if (logger is not null)
-            {
-                try
-                {
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomDeleteFileResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                              OfType<OnDeleteFileResponseSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
-                                                                                             Sender,
-                                                                                             Connection,
-                                                                                             Request,
-                                                                                             Response,
-                                                                                             Runtime)).
-                                              ToArray());
+            #region Send DeleteFileRequestErrorReceived event
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(OCPPWebSocketAdapterOUT),
-                              nameof(OnDeleteFileResponseSent),
-                              e
-                          );
-                }
+            await LogEvent(
+                      DeleteFileRequestErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          RequestErrorMessage,
+                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
+                          CancellationToken
+                      )
+                  );
 
-            }
+            #endregion
+
+
+            var response = DeleteFileResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
+            #region Send OnDeleteFileResponseReceived event
+
+            await LogEvent(
+                      OnDeleteFileResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Receive DeleteFile response error
+
+        /// <summary>
+        /// An event fired whenever a DeleteFile response error was received.
+        /// </summary>
+        public event OnDeleteFileResponseErrorReceivedDelegate? DeleteFileResponseErrorReceived;
+
+
+        public async Task
+
+            Receive_DeleteFileResponseError(DeleteFileRequest?             Request,
+                                            DeleteFileResponse?            Response,
+                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                            IWebSocketConnection           Connection,
+                                            NetworkingNode_Id              DestinationId,
+                                            NetworkPath                    NetworkPath,
+                                            EventTracking_Id               EventTrackingId,
+                                            Request_Id                     RequestId,
+                                            DateTime?                      ResponseTimestamp   = null,
+                                            CancellationToken              CancellationToken   = default)
+
+        {
+
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomDeleteFileResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
+
+            #region Send DeleteFileResponseErrorReceived event
+
+            await LogEvent(
+                      DeleteFileResponseErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          Response,
+                          ResponseErrorMessage,
+                          Response is not null
+                              ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
+                              : null,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
 
         }
 

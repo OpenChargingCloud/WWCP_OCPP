@@ -229,7 +229,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new Get15118EVCertificateResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     ISO15118EVCertificateStatus.Failed,
+                                     EXIData.Empty,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

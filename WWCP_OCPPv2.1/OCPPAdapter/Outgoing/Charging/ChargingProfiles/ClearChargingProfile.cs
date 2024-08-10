@@ -231,7 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new ClearChargingProfileResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     ClearChargingProfileStatus.Unknown,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }
