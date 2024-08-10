@@ -193,7 +193,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new ClearCacheResponse(
                                        request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       ClearCacheStatus.Rejected,
+                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<ClearCacheRequest, ClearCacheResponse>(

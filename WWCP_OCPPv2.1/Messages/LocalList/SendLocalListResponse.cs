@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The SendLocalList response.
     /// </summary>
-    public class SendLocalListResponse : AResponse<CSMS.SendLocalListRequest,
+    public class SendLocalListResponse : AResponse<SendLocalListRequest,
                                                    SendLocalListResponse>,
                                          IResponse
     {
@@ -71,8 +72,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region SendLocalListResponse(Request, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new SendLocalList response.
         /// </summary>
@@ -86,22 +85,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SendLocalListResponse(CSMS.SendLocalListRequest     Request,
-                                     SendLocalListStatus           Status,
-                                     StatusInfo?                   StatusInfo          = null,
-                                     DateTime?                     ResponseTimestamp   = null,
+        public SendLocalListResponse(SendLocalListRequest     Request,
+                                     SendLocalListStatus      Status,
+                                     StatusInfo?              StatusInfo          = null,
 
-                                     NetworkingNode_Id?            DestinationId       = null,
-                                     NetworkPath?                  NetworkPath         = null,
+                                     Result?                  Result              = null,
+                                     DateTime?                ResponseTimestamp   = null,
 
-                                     IEnumerable<KeyPair>?         SignKeys            = null,
-                                     IEnumerable<SignInfo>?        SignInfos           = null,
-                                     IEnumerable<Signature>?       Signatures          = null,
+                                     NetworkingNode_Id?       DestinationId       = null,
+                                     NetworkPath?             NetworkPath         = null,
 
-                                     CustomData?                   CustomData          = null)
+                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                     CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -118,46 +119,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.Status      = Status;
             this.StatusInfo  = StatusInfo;
 
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region SendLocalListResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new SendLocalList response.
-        /// </summary>
-        /// <param name="Request">The SendLocalList request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public SendLocalListResponse(CSMS.SendLocalListRequest  Request,
-                                     Result                     Result,
-                                     DateTime?                  ResponseTimestamp   = null,
-
-                                     NetworkingNode_Id?         DestinationId       = null,
-                                     NetworkPath?               NetworkPath         = null,
-
-                                     IEnumerable<KeyPair>?      SignKeys            = null,
-                                     IEnumerable<SignInfo>?     SignInfos           = null,
-                                     IEnumerable<Signature>?    Signatures          = null,
-
-                                     CustomData?                CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -247,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The SendLocalList request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom SendLocalList responses.</param>
-        public static SendLocalListResponse Parse(CSMS.SendLocalListRequest                            Request,
+        public static SendLocalListResponse Parse(SendLocalListRequest                                 Request,
                                                   JObject                                              JSON,
                                                   NetworkingNode_Id                                    DestinationId,
                                                   NetworkPath                                          NetworkPath,
@@ -290,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="SendLocalListResponse">The parsed SendLocalList response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom SendLocalList responses.</param>
-        public static Boolean TryParse(CSMS.SendLocalListRequest                            Request,
+        public static Boolean TryParse(SendLocalListRequest                                 Request,
                                        JObject                                              JSON,
                                        NetworkingNode_Id                                    DestinationId,
                                        NetworkPath                                          NetworkPath,
@@ -369,6 +340,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             Request,
                                             SendLocalListStatus,
                                             StatusInfo,
+
+                                            null,
                                             ResponseTimestamp,
 
                                             DestinationId,
@@ -450,25 +423,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SendLocalList failed because of a request error.
         /// </summary>
         /// <param name="Request">The SendLocalList request.</param>
-        public static SendLocalListResponse RequestError(CSMS.SendLocalListRequest  Request,
-                                                         EventTracking_Id           EventTrackingId,
-                                                         ResultCode                 ErrorCode,
-                                                         String?                    ErrorDescription    = null,
-                                                         JObject?                   ErrorDetails        = null,
-                                                         DateTime?                  ResponseTimestamp   = null,
+        public static SendLocalListResponse RequestError(SendLocalListRequest     Request,
+                                                         EventTracking_Id         EventTrackingId,
+                                                         ResultCode               ErrorCode,
+                                                         String?                  ErrorDescription    = null,
+                                                         JObject?                 ErrorDetails        = null,
+                                                         DateTime?                ResponseTimestamp   = null,
 
-                                                         NetworkingNode_Id?         DestinationId       = null,
-                                                         NetworkPath?               NetworkPath         = null,
+                                                         NetworkingNode_Id?       DestinationId       = null,
+                                                         NetworkPath?             NetworkPath         = null,
 
-                                                         IEnumerable<KeyPair>?      SignKeys            = null,
-                                                         IEnumerable<SignInfo>?     SignInfos           = null,
-                                                         IEnumerable<Signature>?    Signatures          = null,
+                                                         IEnumerable<KeyPair>?    SignKeys            = null,
+                                                         IEnumerable<SignInfo>?   SignInfos           = null,
+                                                         IEnumerable<Signature>?  Signatures          = null,
 
-                                                         CustomData?                CustomData          = null)
+                                                         CustomData?              CustomData          = null)
 
             => new (
 
                    Request,
+                   SendLocalListStatus.Failed,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -493,13 +468,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SendLocalList request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SendLocalListResponse FormationViolation(CSMS.SendLocalListRequest  Request,
-                                                               String                     ErrorDescription)
+        public static SendLocalListResponse FormationViolation(SendLocalListRequest  Request,
+                                                               String                ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    SendLocalListStatus.Failed,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -507,13 +483,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SendLocalList request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SendLocalListResponse SignatureError(CSMS.SendLocalListRequest  Request,
-                                                           String                     ErrorDescription)
+        public static SendLocalListResponse SignatureError(SendLocalListRequest  Request,
+                                                           String                ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    SendLocalListStatus.Failed,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -521,11 +498,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SendLocalList request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static SendLocalListResponse Failed(CSMS.SendLocalListRequest  Request,
-                                                   String?                    Description   = null)
+        public static SendLocalListResponse Failed(SendLocalListRequest  Request,
+                                                   String?               Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    SendLocalListStatus.Failed,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -533,11 +511,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SendLocalList request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SendLocalListResponse ExceptionOccured(CSMS.SendLocalListRequest  Request,
-                                                             Exception                  Exception)
+        public static SendLocalListResponse ExceptionOccured(SendLocalListRequest  Request,
+                                                             Exception             Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    SendLocalListStatus.Failed,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -625,22 +604,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

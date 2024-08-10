@@ -188,7 +188,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new ListDirectoryResponse(
                                        request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       request.DirectoryPath,
+                                       ListDirectoryStatus.Rejected,
+                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.REJECT(

@@ -231,7 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new UpdateFirmwareResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     UpdateFirmwareStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

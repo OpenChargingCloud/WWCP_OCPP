@@ -30,10 +30,108 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Logging Delegates
+
+    /// <summary>
+    /// A logging delegate called whenever a ListDirectory request was received.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnListDirectoryRequestReceivedDelegate(DateTime               Timestamp,
+                                                                IEventSender           Sender,
+                                                                IWebSocketConnection   Connection,
+                                                                ListDirectoryRequest   Request,
+                                                                CancellationToken      CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a ListDirectory response was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnListDirectoryResponseReceivedDelegate(DateTime                Timestamp,
+                                                                 IEventSender            Sender,
+                                                                 IWebSocketConnection    Connection,
+                                                                 ListDirectoryRequest?   Request,
+                                                                 ListDirectoryResponse   Response,
+                                                                 TimeSpan?               Runtime,
+                                                                 CancellationToken       CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a ListDirectory request error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="RequestErrorMessage">The request error message.</param>
+    /// <param name="Runtime">The runtime of the request/request error pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnListDirectoryRequestErrorReceivedDelegate(DateTime                       Timestamp,
+                                                                     IEventSender                   Sender,
+                                                                     IWebSocketConnection           Connection,
+                                                                     ListDirectoryRequest?          Request,
+                                                                     OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                                     TimeSpan?                      Runtime,
+                                                                     CancellationToken              CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a ListDirectory response error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response error.</param>
+    /// <param name="Connection">The connection of the response error.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response, when available.</param>
+    /// <param name="ResponseErrorMessage">The response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnListDirectoryResponseErrorReceivedDelegate(DateTime                        Timestamp,
+                                                                      IEventSender                    Sender,
+                                                                      IWebSocketConnection            Connection,
+                                                                      ListDirectoryRequest?           Request,
+                                                                      ListDirectoryResponse?          Response,
+                                                                      OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                                      TimeSpan?                       Runtime,
+                                                                      CancellationToken               CancellationToken = default);
+
+    #endregion
+
+
+    /// <summary>
+    /// A delegate called whenever a ListDirectory response is expected
+    /// for a received ListDirectory request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ListDirectoryResponse>
+
+        OnListDirectoryDelegate(DateTime               Timestamp,
+                                IEventSender           Sender,
+                                IWebSocketConnection   Connection,
+                                ListDirectoryRequest   Request,
+                                CancellationToken      CancellationToken = default);
+
+
     public partial class OCPPWebSocketAdapterIN
     {
 
-        #region Events
+        // Wired via reflection!
+
+        #region Receive ListDirectory request
 
         /// <summary>
         /// An event sent whenever a ListDirectory request was received.
@@ -45,9 +143,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnListDirectoryDelegate?                 OnListDirectory;
 
-        #endregion
-
-        #region Receive ListDirectoryRequest (wired via reflection!)
 
         public async Task<OCPP_Response>
 
@@ -103,32 +198,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnListDirectoryRequestReceived event
 
-                    var logger = OnListDirectoryRequestReceived;
-                    if (logger is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType<OnListDirectoryRequestReceivedDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
-                                      nameof(OnListDirectoryRequestReceived),
-                                      e
-                                  );
-                        }
-                    }
+                    await LogEvent(
+                              OnListDirectoryRequestReceived,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  parentNetworkingNode,
+                                  WebSocketConnection,
+                                  request,
+                                  CancellationToken
+                              )
+                          );
 
                     #endregion
 
@@ -162,7 +241,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             response = ListDirectoryResponse.ExceptionOccured(request, e);
 
                             await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
                                       nameof(OnListDirectory),
                                       e
                                   );
@@ -184,7 +262,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
-                        out var errorResponse2);
+                        out var errorResponse2
+                    );
 
                     #endregion
 
@@ -197,7 +276,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                               WebSocketConnection,
                               request,
                               response,
-                              response.Runtime
+                              response.Runtime,
+                              SentMessageResults.Unknown
                           );
 
                     #endregion
@@ -231,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                ocppResponse = OCPP_Response.FormationViolation(
+                ocppResponse = OCPP_Response.ExceptionOccurred(
                                    EventTrackingId,
                                    RequestId,
                                    nameof(Receive_ListDirectory)[8..],
@@ -247,57 +327,257 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-    }
-
-    public partial class OCPPWebSocketAdapterOUT
-    {
-
-        #region Events
+        #region Receive ListDirectory response
 
         /// <summary>
-        /// An event sent whenever a response to a ListDirectory was sent.
+        /// An event fired whenever a ListDirectory response was received.
         /// </summary>
-        public event OnListDirectoryResponseSentDelegate?  OnListDirectoryResponseSent;
+        public event OnListDirectoryResponseReceivedDelegate? OnListDirectoryResponseReceived;
+
+
+        public async Task<ListDirectoryResponse>
+
+            Receive_ListDirectoryResponse(ListDirectoryRequest  Request,
+                                          JObject               ResponseJSON,
+                                          IWebSocketConnection  WebSocketConnection,
+                                          NetworkingNode_Id     DestinationId,
+                                          NetworkPath           NetworkPath,
+                                          EventTracking_Id      EventTrackingId,
+                                          Request_Id            RequestId,
+                                          DateTime?             ResponseTimestamp   = null,
+                                          CancellationToken     CancellationToken   = default)
+
+        {
+
+            ListDirectoryResponse? response = null;
+
+            try
+            {
+
+                if (ListDirectoryResponse.TryParse(Request,
+                                                   ResponseJSON,
+                                                   DestinationId,
+                                                   NetworkPath,
+                                                   out response,
+                                                   out var errorResponse,
+                                                   ResponseTimestamp,
+                                                   parentNetworkingNode.OCPP.CustomListDirectoryResponseParser,
+                                                   parentNetworkingNode.OCPP.CustomStatusInfoParser,
+                                                   parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                   parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+
+                    #region Verify response signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+                            response,
+                            response.ToJSON(
+                                parentNetworkingNode.OCPP.CustomListDirectoryResponseSerializer,
+                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            ),
+                            out errorResponse
+                        ))
+                    {
+
+                        response = ListDirectoryResponse.SignatureError(
+                                       Request,
+                                       errorResponse
+                                   );
+
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    response = ListDirectoryResponse.FormationViolation(
+                                   Request,
+                                   errorResponse
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                response = ListDirectoryResponse.ExceptionOccured(
+                               Request,
+                               e
+                           );
+
+            }
+
+
+            #region Send OnListDirectoryResponseReceived event
+
+            await LogEvent(
+                      OnListDirectoryResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
 
         #endregion
 
-        #region Send OnListDirectoryResponse event
+        #region Receive ListDirectory request error
 
-        public async Task SendOnListDirectoryResponseSent(DateTime               Timestamp,
-                                                          IEventSender           Sender,
-                                                          IWebSocketConnection   Connection,
-                                                          ListDirectoryRequest   Request,
-                                                          ListDirectoryResponse  Response,
-                                                          TimeSpan               Runtime)
+        /// <summary>
+        /// An event fired whenever a ListDirectory request error was received.
+        /// </summary>
+        public event OnListDirectoryRequestErrorReceivedDelegate? ListDirectoryRequestErrorReceived;
+
+
+        public async Task<ListDirectoryResponse>
+
+            Receive_ListDirectoryRequestError(ListDirectoryRequest          Request,
+                                              OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                              IWebSocketConnection          Connection,
+                                              NetworkingNode_Id             DestinationId,
+                                              NetworkPath                   NetworkPath,
+                                              EventTracking_Id              EventTrackingId,
+                                              Request_Id                    RequestId,
+                                              DateTime?                     ResponseTimestamp   = null,
+                                              CancellationToken             CancellationToken   = default)
         {
 
-            var logger = OnListDirectoryResponseSent;
-            if (logger is not null)
-            {
-                try
-                {
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomListDirectoryResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                              OfType<OnListDirectoryResponseSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
-                                                                                             Sender,
-                                                                                             Connection,
-                                                                                             Request,
-                                                                                             Response,
-                                                                                             Runtime)).
-                                              ToArray());
+            #region Send ListDirectoryRequestErrorReceived event
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(OCPPWebSocketAdapterOUT),
-                              nameof(OnListDirectoryResponseSent),
-                              e
-                          );
-                }
+            await LogEvent(
+                      ListDirectoryRequestErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          RequestErrorMessage,
+                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
+                          CancellationToken
+                      )
+                  );
 
-            }
+            #endregion
+
+
+            var response = ListDirectoryResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
+            #region Send OnListDirectoryResponseReceived event
+
+            await LogEvent(
+                      OnListDirectoryResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Receive ListDirectory response error
+
+        /// <summary>
+        /// An event fired whenever a ListDirectory response error was received.
+        /// </summary>
+        public event OnListDirectoryResponseErrorReceivedDelegate? ListDirectoryResponseErrorReceived;
+
+
+        public async Task
+
+            Receive_ListDirectoryResponseError(ListDirectoryRequest?          Request,
+                                               ListDirectoryResponse?         Response,
+                                               OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                               IWebSocketConnection           Connection,
+                                               NetworkingNode_Id              DestinationId,
+                                               NetworkPath                    NetworkPath,
+                                               EventTracking_Id               EventTrackingId,
+                                               Request_Id                     RequestId,
+                                               DateTime?                      ResponseTimestamp   = null,
+                                               CancellationToken              CancellationToken   = default)
+
+        {
+
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomListDirectoryResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
+
+            #region Send ListDirectoryResponseErrorReceived event
+
+            await LogEvent(
+                      ListDirectoryResponseErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          Response,
+                          ResponseErrorMessage,
+                          Response is not null
+                              ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
+                              : null,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
 
         }
 
@@ -306,4 +586,3 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     }
 
 }
-

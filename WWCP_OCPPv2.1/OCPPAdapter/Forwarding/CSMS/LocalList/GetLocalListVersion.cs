@@ -193,7 +193,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new GetLocalListVersionResponse(
                                        request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       VersionNumber:  0,
+                                       Result:         Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(

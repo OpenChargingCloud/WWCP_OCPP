@@ -231,7 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new GetLogResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     LogStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

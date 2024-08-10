@@ -191,7 +191,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new NotifyNetworkTopologyResponse(
                                        request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       NetworkTopologyStatus.Error,
+                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<NotifyNetworkTopologyRequest, NotifyNetworkTopologyResponse>(
@@ -200,6 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          response,
                                          response.ToJSON(
                                              parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )

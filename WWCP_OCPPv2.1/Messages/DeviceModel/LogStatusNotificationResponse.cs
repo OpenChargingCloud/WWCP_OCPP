@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The LogStatusNotification response.
     /// </summary>
-    public class LogStatusNotificationResponse : AResponse<CS.LogStatusNotificationRequest,
+    public class LogStatusNotificationResponse : AResponse<LogStatusNotificationRequest,
                                                            LogStatusNotificationResponse>,
                                                  IResponse
     {
@@ -59,33 +60,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region LogStatusNotificationResponse(Request, ...)
-
         /// <summary>
         /// Create a new LogStatusNotification response.
         /// </summary>
         /// <param name="Request">The LogStatusNotification request leading to this response.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public LogStatusNotificationResponse(CS.LogStatusNotificationRequest  Request,
-                                             DateTime?                        ResponseTimestamp   = null,
+        public LogStatusNotificationResponse(LogStatusNotificationRequest  Request,
 
-                                             NetworkingNode_Id?               DestinationId       = null,
-                                             NetworkPath?                     NetworkPath         = null,
+                                             Result?                       Result              = null,
+                                             DateTime?                     ResponseTimestamp   = null,
 
-                                             IEnumerable<KeyPair>?            SignKeys            = null,
-                                             IEnumerable<SignInfo>?           SignInfos           = null,
-                                             IEnumerable<Signature>?          Signatures          = null,
+                                             NetworkingNode_Id?            DestinationId       = null,
+                                             NetworkPath?                  NetworkPath         = null,
 
-                                             CustomData?                      CustomData          = null)
+                                             IEnumerable<KeyPair>?         SignKeys            = null,
+                                             IEnumerable<SignInfo>?        SignInfos           = null,
+                                             IEnumerable<Signature>?       Signatures          = null,
+
+                                             CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -97,46 +103,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    CustomData)
 
-        { }
+        {
 
-        #endregion
+            unchecked
+            {
+                hashCode = base.GetHashCode();
+            }
 
-        #region LogStatusNotificationResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new LogStatusNotification response.
-        /// </summary>
-        /// <param name="Request">The LogStatusNotification request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public LogStatusNotificationResponse(CS.LogStatusNotificationRequest  Request,
-                                             Result                           Result,
-                                             DateTime?                        ResponseTimestamp   = null,
-
-                                             NetworkingNode_Id?               DestinationId       = null,
-                                             NetworkPath?                     NetworkPath         = null,
-
-                                             IEnumerable<KeyPair>?            SignKeys            = null,
-                                             IEnumerable<SignInfo>?           SignInfos           = null,
-                                             IEnumerable<Signature>?          Signatures          = null,
-
-                                             CustomData?                      CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
+        }
 
         #endregion
 
@@ -182,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The LogStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomLogStatusNotificationResponseParser">A delegate to parse custom LogStatusNotification responses.</param>
-        public static LogStatusNotificationResponse Parse(CS.LogStatusNotificationRequest                              Request,
+        public static LogStatusNotificationResponse Parse(LogStatusNotificationRequest                                 Request,
                                                           JObject                                                      JSON,
                                                           NetworkingNode_Id                                            DestinationId,
                                                           NetworkPath                                                  NetworkPath,
@@ -223,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="LogStatusNotificationResponse">The parsed LogStatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomLogStatusNotificationResponseParser">A delegate to parse custom LogStatusNotification responses.</param>
-        public static Boolean TryParse(CS.LogStatusNotificationRequest                              Request,
+        public static Boolean TryParse(LogStatusNotificationRequest                                 Request,
                                        JObject                                                      JSON,
                                        NetworkingNode_Id                                            DestinationId,
                                        NetworkPath                                                  NetworkPath,
@@ -272,6 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 LogStatusNotificationResponse  = new LogStatusNotificationResponse(
 
                                                      Request,
+
+                                                     null,
                                                      ResponseTimestamp,
 
                                                      DestinationId,
@@ -344,21 +320,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The LogStatusNotification failed because of a request error.
         /// </summary>
         /// <param name="Request">The LogStatusNotification request.</param>
-        public static LogStatusNotificationResponse RequestError(CS.LogStatusNotificationRequest  Request,
-                                                                 EventTracking_Id                 EventTrackingId,
-                                                                 ResultCode                       ErrorCode,
-                                                                 String?                          ErrorDescription    = null,
-                                                                 JObject?                         ErrorDetails        = null,
-                                                                 DateTime?                        ResponseTimestamp   = null,
+        public static LogStatusNotificationResponse RequestError(LogStatusNotificationRequest  Request,
+                                                                 EventTracking_Id              EventTrackingId,
+                                                                 ResultCode                    ErrorCode,
+                                                                 String?                       ErrorDescription    = null,
+                                                                 JObject?                      ErrorDetails        = null,
+                                                                 DateTime?                     ResponseTimestamp   = null,
 
-                                                                 NetworkingNode_Id?               DestinationId       = null,
-                                                                 NetworkPath?                     NetworkPath         = null,
+                                                                 NetworkingNode_Id?            DestinationId       = null,
+                                                                 NetworkPath?                  NetworkPath         = null,
 
-                                                                 IEnumerable<KeyPair>?            SignKeys            = null,
-                                                                 IEnumerable<SignInfo>?           SignInfos           = null,
-                                                                 IEnumerable<Signature>?          Signatures          = null,
+                                                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                 IEnumerable<Signature>?       Signatures          = null,
 
-                                                                 CustomData?                      CustomData          = null)
+                                                                 CustomData?                   CustomData          = null)
 
             => new (
 
@@ -387,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The LogStatusNotification request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static LogStatusNotificationResponse FormationViolation(CS.LogStatusNotificationRequest  Request,
-                                                                       String                           ErrorDescription)
+        public static LogStatusNotificationResponse FormationViolation(LogStatusNotificationRequest  Request,
+                                                                       String                        ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -401,8 +377,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The LogStatusNotification request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static LogStatusNotificationResponse SignatureError(CS.LogStatusNotificationRequest  Request,
-                                                                   String                           ErrorDescription)
+        public static LogStatusNotificationResponse SignatureError(LogStatusNotificationRequest  Request,
+                                                                   String                        ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -415,8 +391,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The LogStatusNotification request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static LogStatusNotificationResponse Failed(CS.LogStatusNotificationRequest  Request,
-                                                           String?                          Description   = null)
+        public static LogStatusNotificationResponse Failed(LogStatusNotificationRequest  Request,
+                                                           String?                       Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -427,8 +403,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The LogStatusNotification request.</param>
         /// <param name="Exception">The exception.</param>
-        public static LogStatusNotificationResponse ExceptionOccured(CS.LogStatusNotificationRequest  Request,
-                                                                     Exception                        Exception)
+        public static LogStatusNotificationResponse ExceptionOccured(LogStatusNotificationRequest  Request,
+                                                                     Exception                     Exception)
 
             => new (Request,
                     Result.FromException(Exception));
@@ -513,13 +489,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => base.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

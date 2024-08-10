@@ -235,7 +235,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new SetNetworkProfileResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     SetNetworkProfileStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

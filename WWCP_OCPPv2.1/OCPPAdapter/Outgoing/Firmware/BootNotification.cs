@@ -231,7 +231,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new BootNotificationResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     RegistrationStatus.Rejected,
+                                     Timestamp.Now,
+                                     BootNotificationResponse.DefaultInterval,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

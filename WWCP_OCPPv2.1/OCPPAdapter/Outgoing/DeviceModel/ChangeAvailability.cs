@@ -231,7 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new ChangeAvailabilityResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     ChangeAvailabilityStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

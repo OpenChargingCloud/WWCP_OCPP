@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The FirmwareStatusNotification response.
     /// </summary>
-    public class FirmwareStatusNotificationResponse : AResponse<CS.FirmwareStatusNotificationRequest,
+    public class FirmwareStatusNotificationResponse : AResponse<FirmwareStatusNotificationRequest,
                                                                 FirmwareStatusNotificationResponse>,
                                                       IResponse
     {
@@ -59,33 +60,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region FirmwareStatusNotificationResponse(Request, ...)
-
         /// <summary>
         /// Create a new FirmwareStatusNotification response.
         /// </summary>
         /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public FirmwareStatusNotificationResponse(CS.FirmwareStatusNotificationRequest  Request,
-                                                  DateTime?                             ResponseTimestamp   = null,
+        public FirmwareStatusNotificationResponse(FirmwareStatusNotificationRequest  Request,
 
-                                                  NetworkingNode_Id?                    DestinationId       = null,
-                                                  NetworkPath?                          NetworkPath         = null,
+                                                  Result?                            Result              = null,
+                                                  DateTime?                          ResponseTimestamp   = null,
 
-                                                  IEnumerable<KeyPair>?                 SignKeys            = null,
-                                                  IEnumerable<SignInfo>?                SignInfos           = null,
-                                                  IEnumerable<Signature>?               Signatures          = null,
+                                                  NetworkingNode_Id?                 DestinationId       = null,
+                                                  NetworkPath?                       NetworkPath         = null,
 
-                                                  CustomData?                           CustomData          = null)
+                                                  IEnumerable<KeyPair>?              SignKeys            = null,
+                                                  IEnumerable<SignInfo>?             SignInfos           = null,
+                                                  IEnumerable<Signature>?            Signatures          = null,
+
+                                                  CustomData?                        CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -98,45 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData)
 
         { }
-
-        #endregion
-
-        #region FirmwareStatusNotificationResponse(Result)
-
-        /// <summary>
-        /// Create a new FirmwareStatusNotification response.
-        /// </summary>
-        /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public FirmwareStatusNotificationResponse(CS.FirmwareStatusNotificationRequest  Request,
-                                                  Result                                Result,
-                                                  DateTime?                             ResponseTimestamp   = null,
-
-                                                  NetworkingNode_Id?                    DestinationId       = null,
-                                                  NetworkPath?                          NetworkPath         = null,
-
-                                                  IEnumerable<KeyPair>?                 SignKeys            = null,
-                                                  IEnumerable<SignInfo>?                SignInfos           = null,
-                                                  IEnumerable<Signature>?               Signatures          = null,
-
-                                                  CustomData?                           CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -182,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom FirmwareStatusNotification responses.</param>
-        public static FirmwareStatusNotificationResponse Parse(CS.FirmwareStatusNotificationRequest                              Request,
+        public static FirmwareStatusNotificationResponse Parse(FirmwareStatusNotificationRequest                                 Request,
                                                                JObject                                                           JSON,
                                                                NetworkingNode_Id                                                 DestinationId,
                                                                NetworkPath                                                       NetworkPath,
@@ -223,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="FirmwareStatusNotificationResponse">The parsed FirmwareStatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom FirmwareStatusNotification responses.</param>
-        public static Boolean TryParse(CS.FirmwareStatusNotificationRequest                              Request,
+        public static Boolean TryParse(FirmwareStatusNotificationRequest                                 Request,
                                        JObject                                                           JSON,
                                        NetworkingNode_Id                                                 DestinationId,
                                        NetworkPath                                                       NetworkPath,
@@ -270,9 +237,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+
                 FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(
 
                                                          Request,
+
+                                                         null,
                                                          ResponseTimestamp,
 
                                                          DestinationId,
@@ -345,21 +315,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The FirmwareStatusNotification failed because of a request error.
         /// </summary>
         /// <param name="Request">The FirmwareStatusNotification request.</param>
-        public static FirmwareStatusNotificationResponse RequestError(CS.FirmwareStatusNotificationRequest  Request,
-                                                                      EventTracking_Id                      EventTrackingId,
-                                                                      ResultCode                            ErrorCode,
-                                                                      String?                               ErrorDescription    = null,
-                                                                      JObject?                              ErrorDetails        = null,
-                                                                      DateTime?                             ResponseTimestamp   = null,
+        public static FirmwareStatusNotificationResponse RequestError(FirmwareStatusNotificationRequest  Request,
+                                                                      EventTracking_Id                   EventTrackingId,
+                                                                      ResultCode                         ErrorCode,
+                                                                      String?                            ErrorDescription    = null,
+                                                                      JObject?                           ErrorDetails        = null,
+                                                                      DateTime?                          ResponseTimestamp   = null,
 
-                                                                      NetworkingNode_Id?                    DestinationId       = null,
-                                                                      NetworkPath?                          NetworkPath         = null,
+                                                                      NetworkingNode_Id?                 DestinationId       = null,
+                                                                      NetworkPath?                       NetworkPath         = null,
 
-                                                                      IEnumerable<KeyPair>?                 SignKeys            = null,
-                                                                      IEnumerable<SignInfo>?                SignInfos           = null,
-                                                                      IEnumerable<Signature>?               Signatures          = null,
+                                                                      IEnumerable<KeyPair>?              SignKeys            = null,
+                                                                      IEnumerable<SignInfo>?             SignInfos           = null,
+                                                                      IEnumerable<Signature>?            Signatures          = null,
 
-                                                                      CustomData?                           CustomData          = null)
+                                                                      CustomData?                        CustomData          = null)
 
             => new (
 
@@ -388,8 +358,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The FirmwareStatusNotification request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static FirmwareStatusNotificationResponse FormationViolation(CS.FirmwareStatusNotificationRequest  Request,
-                                                                            String                                ErrorDescription)
+        public static FirmwareStatusNotificationResponse FormationViolation(FirmwareStatusNotificationRequest  Request,
+                                                                            String                             ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -402,8 +372,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The FirmwareStatusNotification request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static FirmwareStatusNotificationResponse SignatureError(CS.FirmwareStatusNotificationRequest  Request,
-                                                                        String                                ErrorDescription)
+        public static FirmwareStatusNotificationResponse SignatureError(FirmwareStatusNotificationRequest  Request,
+                                                                        String                             ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -416,8 +386,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The FirmwareStatusNotification request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static FirmwareStatusNotificationResponse Failed(CS.FirmwareStatusNotificationRequest  Request,
-                                                                String?                               Description   = null)
+        public static FirmwareStatusNotificationResponse Failed(FirmwareStatusNotificationRequest  Request,
+                                                                String?                            Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -428,8 +398,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The FirmwareStatusNotification request.</param>
         /// <param name="Exception">The exception.</param>
-        public static FirmwareStatusNotificationResponse ExceptionOccured(CS.FirmwareStatusNotificationRequest  Request,
-                                                                          Exception                             Exception)
+        public static FirmwareStatusNotificationResponse ExceptionOccured(FirmwareStatusNotificationRequest  Request,
+                                                                          Exception                          Exception)
 
             => new (Request,
                     Result.FromException(Exception));

@@ -231,7 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new TriggerMessageResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     TriggerMessageStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

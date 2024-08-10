@@ -59,8 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private readonly static Dictionary<String, FilePath>  lookup = new(StringComparer.OrdinalIgnoreCase);
-        private readonly        String                           InternalId;
+        private readonly String InternalId;
 
         #endregion
 
@@ -96,18 +95,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
             this.InternalId = Text;
         }
-
-        #endregion
-
-
-        #region (private static) Register(Text)
-
-        private static FilePath Register(String Text)
-
-            => lookup.AddAndReturnValue(
-                   Text,
-                   new FilePath(Text)
-               );
 
         #endregion
 
@@ -164,12 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (Text.IsNotNullOrEmpty())
             {
-
-                if (!lookup.TryGetValue(Text, out FilePath))
-                    FilePath = Register(Text);
-
+                FilePath = new FilePath(Text);
                 return true;
-
             }
 
             FilePath = default;
@@ -195,62 +178,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Static definitions
 
-        public static class Text
-        {
-
-            /// <summary>
-            /// text/plain
-            /// </summary>
-            public static FilePath  Plain                 { get; }
-                = Register("text/plain");
-
-        }
-
-        public static class Application
-        {
-
-            /// <summary>
-            /// application/octet-stream
-            /// </summary>
-            public static FilePath  OctetStream    { get; }
-                = Register("application/octet-stream");
-
-            /// <summary>
-            /// application/json
-            /// </summary>
-            public static FilePath  JSON           { get; }
-                = Register("application/json");
-
-            /// <summary>
-            /// application/pdf
-            /// </summary>
-            public static FilePath  PDF            { get; }
-                = Register("application/pdf");
-
-        }
-
-        public static class Image
-        {
-
-            /// <summary>
-            /// image/jpeg
-            /// </summary>
-            public static FilePath  JPEG           { get; }
-                = Register("image/jpeg");
-
-            /// <summary>
-            /// image/png
-            /// </summary>
-            public static FilePath  PNG            { get; }
-                = Register("image/png");
-
-            /// <summary>
-            /// image/svg+xml
-            /// </summary>
-            public static FilePath  SVG_XML        { get; }
-                = Register("image/svg+xml");
-
-        }
+        /// <summary>
+        /// An empty file path.
+        /// </summary>
+        public static FilePath  Empty    { get; }
+            = new ("");
 
         #endregion
 

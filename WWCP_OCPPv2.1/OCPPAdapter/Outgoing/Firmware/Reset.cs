@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new ResetResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     ResetStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

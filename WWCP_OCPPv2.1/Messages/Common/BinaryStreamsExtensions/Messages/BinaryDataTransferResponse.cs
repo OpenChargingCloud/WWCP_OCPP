@@ -83,8 +83,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Constructor(s)
 
-        #region BinaryDataTransferResponse(Request, Status, AdditionalStatusInfo = null, BinaryData = null, ...)
-
         /// <summary>
         /// Create a new binary data transfer response.
         /// </summary>
@@ -92,19 +90,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Status">The success or failure status of the binary data transfer.</param>
         /// <param name="AdditionalStatusInfo">Optional detailed status information.</param>
         /// <param name="Data">A vendor-specific JSON token.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="DestinationId">The destination networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public BinaryDataTransferResponse(BinaryDataTransferRequest  Request,
                                           BinaryDataTransferStatus   Status,
                                           String?                    AdditionalStatusInfo   = null,
                                           Byte[]?                    Data                   = null,
                                           BinaryFormats?             Format                 = null,
+
+                                          Result?                    Result                 = null,
                                           DateTime?                  ResponseTimestamp      = null,
 
                                           NetworkingNode_Id?         DestinationId          = null,
@@ -115,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           IEnumerable<Signature>?    Signatures             = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -133,49 +137,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.Format                = Format ?? BinaryFormats.TextIds;
 
         }
-
-        #endregion
-
-        #region BinaryDataTransferResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new binary data transfer response.
-        /// </summary>
-        /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public BinaryDataTransferResponse(BinaryDataTransferRequest  Request,
-                                          Result                     Result,
-                                          DateTime?                  ResponseTimestamp   = null,
-
-                                          NetworkingNode_Id?         DestinationId       = null,
-                                          NetworkPath?               NetworkPath         = null,
-
-                                          IEnumerable<KeyPair>?      SignKeys            = null,
-                                          IEnumerable<SignInfo>?     SignInfos           = null,
-                                          IEnumerable<Signature>?    Signatures          = null,
-
-                                          CustomData?                CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Status = BinaryDataTransferStatus.Rejected;
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -202,7 +163,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        NetworkingNode_Id                                        DestinationId,
                                                        NetworkPath                                              NetworkPath,
                                                        DateTime?                                                ResponseTimestamp                        = null,
-                                                       CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null)
+                                                       CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null,
+                                                       CustomJObjectParserDelegate<StatusInfo>?                 CustomStatusInfoParser                   = null,
+                                                       CustomBinaryParserDelegate<Signature>?                   CustomBinarySignatureParser              = null)
         {
 
             if (TryParse(Request,
@@ -212,7 +175,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                          out var binaryDataTransferResponse,
                          out var errorResponse,
                          ResponseTimestamp,
-                         CustomBinaryDataTransferResponseParser))
+                         CustomBinaryDataTransferResponseParser,
+                         CustomStatusInfoParser,
+                         CustomBinarySignatureParser))
             {
                 return binaryDataTransferResponse;
             }
@@ -244,7 +209,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        [NotNullWhen(true)]  out BinaryDataTransferResponse?     BinaryDataTransferResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
                                        DateTime?                                                ResponseTimestamp                        = null,
-                                       CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null)
+                                       CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                 CustomStatusInfoParser                   = null,
+                                       CustomBinaryParserDelegate<Signature>?                   CustomBinarySignatureParser              = null)
         {
 
             try
@@ -286,6 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              data,
                                                              format,
 
+                                                             null,
                                                              ResponseTimestamp,
 
                                                              DestinationId,
@@ -328,6 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              additionalStatusInfo,
                                                              data,
                                                              format,
+
+                                                             null,
                                                              ResponseTimestamp,
 
                                                              DestinationId,
@@ -494,13 +464,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                                               IEnumerable<KeyPair>?      SignKeys            = null,
                                                               IEnumerable<SignInfo>?     SignInfos           = null,
-                                                              IEnumerable<Signature>?    Signatures          = null,
-
-                                                              CustomData?                CustomData          = null)
+                                                              IEnumerable<Signature>?    Signatures          = null)
 
             => new (
 
                    Request,
+                   BinaryDataTransferStatus.Rejected,
+                   null,
+                   null,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -513,9 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                    SignKeys,
                    SignInfos,
-                   Signatures,
-
-                   CustomData
+                   Signatures
 
                );
 
@@ -529,9 +499,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                     String                     ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    BinaryDataTransferStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -543,9 +514,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                 String                     ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    BinaryDataTransferStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -557,7 +529,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         String?                    Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    BinaryDataTransferStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -569,7 +542,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   Exception                  Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    BinaryDataTransferStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

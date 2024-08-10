@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new GetLocalListVersionResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     VersionNumber:  0,
+                                     Result:         Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

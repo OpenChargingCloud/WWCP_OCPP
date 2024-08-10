@@ -133,7 +133,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Firmware file no longer being published.
         /// </summary>
-        Unpublished
+        Unpublished,
+
+
+        // Extensions...
+
+        /// <summary>
+        /// The request led to an error.
+        /// </summary>
+        Error
 
     }
 

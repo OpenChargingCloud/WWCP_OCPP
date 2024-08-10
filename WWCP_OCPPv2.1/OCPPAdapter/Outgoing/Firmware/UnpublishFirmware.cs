@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new UnpublishFirmwareResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     UnpublishFirmwareStatus.Error,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

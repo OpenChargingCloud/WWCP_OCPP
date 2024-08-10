@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
                 var csmsNotifyNetworkTopologyRequests  = new ConcurrentList<NotifyNetworkTopologyRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyNetworkTopologyRequestReceived += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyNetworkTopologyRequestReceived += (timestamp, sender, connection, notifyNetworkTopologyRequest, ct) => {
                     csmsNotifyNetworkTopologyRequests.TryAdd(notifyNetworkTopologyRequest);
                     return Task.CompletedTask;
                 };
@@ -469,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
                 var csmsNotifyNetworkTopologyRequests  = new ConcurrentList<NotifyNetworkTopologyRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyNetworkTopologyRequestReceived += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
+                testCSMS01.OCPP.IN.OnNotifyNetworkTopologyRequestReceived += (timestamp, sender, connection, notifyNetworkTopologyRequest, ct) => {
                     csmsNotifyNetworkTopologyRequests.TryAdd(notifyNetworkTopologyRequest);
                     return Task.CompletedTask;
                 };

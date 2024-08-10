@@ -198,6 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new HeartbeatResponse(
                                        request,
+                                       Timestamp.Now,
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 

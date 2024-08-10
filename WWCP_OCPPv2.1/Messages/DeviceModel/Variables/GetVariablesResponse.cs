@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The GetVariables response.
     /// </summary>
-    public class GetVariablesResponse : AResponse<CSMS.GetVariablesRequest,
+    public class GetVariablesResponse : AResponse<GetVariablesRequest,
                                                   GetVariablesResponse>,
                                         IResponse
     {
@@ -65,8 +66,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region GetVariablesResponse(Request, Results, ...)
-
         /// <summary>
         /// Create a new GetVariables response.
         /// </summary>
@@ -79,8 +78,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public GetVariablesResponse(CSMS.GetVariablesRequest        Request,
+        public GetVariablesResponse(GetVariablesRequest             Request,
                                     IEnumerable<GetVariableResult>  Results,
+
+                                    Result?                         Result              = null,
                                     DateTime?                       ResponseTimestamp   = null,
 
                                     NetworkingNode_Id?              DestinationId       = null,
@@ -93,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     CustomData?                     CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -107,9 +108,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            if (!Results.Any())
-                throw new ArgumentException("The given enumeration of GetVariables results must not be empty!",
-                                            nameof(Results));
+            //if (!Results.Any())
+            //    throw new ArgumentException("The given enumeration of GetVariables results must not be empty!",
+            //                                nameof(Results));
 
             this.Results = Results.Distinct();
 
@@ -122,49 +123,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
         }
-
-        #endregion
-
-        #region GetVariablesResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new GetVariables response.
-        /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetVariablesResponse(CSMS.GetVariablesRequest  Request,
-                                    Result                    Result,
-                                    DateTime?                 ResponseTimestamp   = null,
-
-                                    NetworkingNode_Id?        DestinationId       = null,
-                                    NetworkPath?              NetworkPath         = null,
-
-                                    IEnumerable<KeyPair>?     SignKeys            = null,
-                                    IEnumerable<SignInfo>?    SignInfos           = null,
-                                    IEnumerable<Signature>?   Signatures          = null,
-
-                                    CustomData?               CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Results = [];
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -381,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom GetVariables responses.</param>
-        public static GetVariablesResponse Parse(CSMS.GetVariablesRequest                            Request,
+        public static GetVariablesResponse Parse(GetVariablesRequest                                 Request,
                                                  JObject                                             JSON,
                                                  NetworkingNode_Id                                   DestinationId,
                                                  NetworkPath                                         NetworkPath,
@@ -433,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom GetVariables responses.</param>
-        public static Boolean TryParse(CSMS.GetVariablesRequest                            Request,
+        public static Boolean TryParse(GetVariablesRequest                                 Request,
                                        JObject                                             JSON,
                                        NetworkingNode_Id                                   DestinationId,
                                        NetworkPath                                         NetworkPath,
@@ -501,6 +459,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                            Request,
                                            Results,
+
+                                           null,
                                            ResponseTimestamp,
 
                                            DestinationId,
@@ -590,25 +550,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetVariables failed because of a request error.
         /// </summary>
         /// <param name="Request">The GetVariables request.</param>
-        public static GetVariablesResponse RequestError(CSMS.GetVariablesRequest  Request,
-                                                        EventTracking_Id          EventTrackingId,
-                                                        ResultCode                ErrorCode,
-                                                        String?                   ErrorDescription    = null,
-                                                        JObject?                  ErrorDetails        = null,
-                                                        DateTime?                 ResponseTimestamp   = null,
+        public static GetVariablesResponse RequestError(GetVariablesRequest      Request,
+                                                        EventTracking_Id         EventTrackingId,
+                                                        ResultCode               ErrorCode,
+                                                        String?                  ErrorDescription    = null,
+                                                        JObject?                 ErrorDetails        = null,
+                                                        DateTime?                ResponseTimestamp   = null,
 
-                                                        NetworkingNode_Id?        DestinationId       = null,
-                                                        NetworkPath?              NetworkPath         = null,
+                                                        NetworkingNode_Id?       DestinationId       = null,
+                                                        NetworkPath?             NetworkPath         = null,
 
-                                                        IEnumerable<KeyPair>?     SignKeys            = null,
-                                                        IEnumerable<SignInfo>?    SignInfos           = null,
-                                                        IEnumerable<Signature>?   Signatures          = null,
+                                                        IEnumerable<KeyPair>?    SignKeys            = null,
+                                                        IEnumerable<SignInfo>?   SignInfos           = null,
+                                                        IEnumerable<Signature>?  Signatures          = null,
 
-                                                        CustomData?               CustomData          = null)
+                                                        CustomData?              CustomData          = null)
 
             => new (
 
                    Request,
+                   [],
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -633,10 +594,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetVariables request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static GetVariablesResponse FormationViolation(CSMS.GetVariablesRequest  Request,
-                                                              String                    ErrorDescription)
+        public static GetVariablesResponse FormationViolation(GetVariablesRequest  Request,
+                                                              String               ErrorDescription)
 
             => new (Request,
+                    [],
                     Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
@@ -647,10 +609,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetVariables request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static GetVariablesResponse SignatureError(CSMS.GetVariablesRequest  Request,
-                                                          String                    ErrorDescription)
+        public static GetVariablesResponse SignatureError(GetVariablesRequest  Request,
+                                                          String               ErrorDescription)
 
             => new (Request,
+                    [],
                     Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
@@ -661,10 +624,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetVariables request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static GetVariablesResponse Failed(CSMS.GetVariablesRequest  Request,
-                                                  String?                   Description   = null)
+        public static GetVariablesResponse Failed(GetVariablesRequest  Request,
+                                                  String?              Description   = null)
 
             => new (Request,
+                    [],
                     Result.Server(Description));
 
 
@@ -673,10 +637,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetVariables request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetVariablesResponse ExceptionOccured(CSMS.GetVariablesRequest  Request,
-                                                            Exception                 Exception)
+        public static GetVariablesResponse ExceptionOccured(GetVariablesRequest  Request,
+                                                            Exception            Exception)
 
             => new (Request,
+                    [],
                     Result.FromException(Exception));
 
         #endregion

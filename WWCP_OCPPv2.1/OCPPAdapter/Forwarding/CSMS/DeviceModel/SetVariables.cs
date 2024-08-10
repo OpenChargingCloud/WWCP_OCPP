@@ -194,6 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new SetVariablesResponse(
                                        request,
+                                       [],
                                        Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 

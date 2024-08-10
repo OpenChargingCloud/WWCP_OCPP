@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The Heartbeat response.
     /// </summary>
-    public class HeartbeatResponse : AResponse<CS.HeartbeatRequest,
+    public class HeartbeatResponse : AResponse<HeartbeatRequest,
                                                HeartbeatResponse>,
                                      IResponse
     {
@@ -64,35 +65,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region HeartbeatResponse(Request, CurrentTime, ...)
-
         /// <summary>
         /// Create a new Heartbeat response.
         /// </summary>
         /// <param name="Request">The Heartbeat request leading to this response.</param>
         /// <param name="CurrentTime">The current time at the central system.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public HeartbeatResponse(CS.HeartbeatRequest           Request,
-                                 DateTime                      CurrentTime,
-                                 DateTime?                     ResponseTimestamp   = null,
+        public HeartbeatResponse(HeartbeatRequest         Request,
+                                 DateTime                 CurrentTime,
 
-                                 NetworkingNode_Id?            DestinationId       = null,
-                                 NetworkPath?                  NetworkPath         = null,
+                                 Result?                  Result              = null,
+                                 DateTime?                ResponseTimestamp   = null,
 
-                                 IEnumerable<KeyPair>?         SignKeys            = null,
-                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                 IEnumerable<Signature>?       Signatures          = null,
+                                 NetworkingNode_Id?       DestinationId       = null,
+                                 NetworkPath?             NetworkPath         = null,
 
-                                 CustomData?                   CustomData          = null)
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<Signature>?  Signatures          = null,
+
+                                 CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -108,50 +114,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.CurrentTime  = CurrentTime;
 
-        }
+            unchecked
+            {
 
-        #endregion
+                hashCode = this.CurrentTime.GetHashCode() * 3 ^
+                           base.GetHashCode();
 
-        #region HeartbeatResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new Heartbeat response.
-        /// </summary>
-        /// <param name="Request">The Heartbeat request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public HeartbeatResponse(CS.HeartbeatRequest      Request,
-                                 Result                   Result,
-                                 DateTime?                ResponseTimestamp   = null,
-
-                                 NetworkingNode_Id?       DestinationId       = null,
-                                 NetworkPath?             NetworkPath         = null,
-
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
-                                 IEnumerable<Signature>?  Signatures          = null,
-
-                                 CustomData?              CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.CurrentTime = Timestamp.Now;
+            }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -205,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The Heartbeat request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom Heartbeat responses.</param>
-        public static HeartbeatResponse Parse(CS.HeartbeatRequest                              Request,
+        public static HeartbeatResponse Parse(HeartbeatRequest                                 Request,
                                               JObject                                          JSON,
                                               NetworkingNode_Id                                DestinationId,
                                               NetworkPath                                      NetworkPath,
@@ -246,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="HeartbeatResponse">The parsed Heartbeat response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom Heartbeat responses.</param>
-        public static Boolean TryParse(CS.HeartbeatRequest                              Request,
+        public static Boolean TryParse(HeartbeatRequest                                 Request,
                                        JObject                                          JSON,
                                        NetworkingNode_Id                                DestinationId,
                                        NetworkPath                                      NetworkPath,
@@ -308,6 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         Request,
                                         CurrentTime,
+
+                                        null,
                                         ResponseTimestamp,
 
                                         DestinationId,
@@ -382,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Heartbeat failed because of a request error.
         /// </summary>
         /// <param name="Request">The Heartbeat request.</param>
-        public static HeartbeatResponse RequestError(CS.HeartbeatRequest      Request,
+        public static HeartbeatResponse RequestError(HeartbeatRequest         Request,
                                                      EventTracking_Id         EventTrackingId,
                                                      ResultCode               ErrorCode,
                                                      String?                  ErrorDescription    = null,
@@ -401,6 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => new (
 
                    Request,
+                   Timestamp.Now,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -425,10 +399,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Heartbeat request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static HeartbeatResponse FormationViolation(CS.HeartbeatRequest  Request,
-                                                           String               ErrorDescription)
+        public static HeartbeatResponse FormationViolation(HeartbeatRequest  Request,
+                                                           String            ErrorDescription)
 
             => new (Request,
+                    Timestamp.Now,
                     Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
@@ -439,10 +414,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Heartbeat request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static HeartbeatResponse SignatureError(CS.HeartbeatRequest  Request,
-                                                       String               ErrorDescription)
+        public static HeartbeatResponse SignatureError(HeartbeatRequest  Request,
+                                                       String            ErrorDescription)
 
             => new (Request,
+                    Timestamp.Now,
                     Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
@@ -453,10 +429,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Heartbeat request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static HeartbeatResponse Failed(CS.HeartbeatRequest  Request,
-                                               String?              Description   = null)
+        public static HeartbeatResponse Failed(HeartbeatRequest  Request,
+                                               String?           Description   = null)
 
             => new (Request,
+                    Timestamp.Now,
                     Result.Server(Description));
 
 
@@ -465,10 +442,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Heartbeat request.</param>
         /// <param name="Exception">The exception.</param>
-        public static HeartbeatResponse ExceptionOccured(CS.HeartbeatRequest  Request,
-                                                         Exception            Exception)
+        public static HeartbeatResponse ExceptionOccured(HeartbeatRequest  Request,
+                                                         Exception         Exception)
 
             => new (Request,
+                    Timestamp.Now,
                     Result.FromException(Exception));
 
         #endregion
@@ -554,20 +532,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return CurrentTime.GetHashCode() * 3 ^
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

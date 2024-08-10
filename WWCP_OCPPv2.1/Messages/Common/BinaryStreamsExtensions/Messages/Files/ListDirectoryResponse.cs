@@ -75,8 +75,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Constructor(s)
 
-        #region ListDirectoryResponse(Request, Status = null, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new ListDirectory response.
         /// </summary>
@@ -84,17 +82,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="DirectoryPath">The name of the stored file including its absolute path.</param>
         /// <param name="Status">An optional response status.</param>
         /// <param name="DirectoryListing">An optional directory listing.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ListDirectoryResponse(ListDirectoryRequest     Request,
                                      FilePath                 DirectoryPath,
                                      ListDirectoryStatus      Status,
                                      DirectoryListing?        DirectoryListing    = null,
+
+                                     Result?                  Result              = null,
                                      DateTime?                ResponseTimestamp   = null,
 
                                      NetworkingNode_Id?       DestinationId       = null,
@@ -107,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -140,49 +145,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ListDirectoryResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new ListDirectory response.
-        /// </summary>
-        /// <param name="Request">The authorize request.</param>
-        /// <param name="Result">A result.</param>
-        public ListDirectoryResponse(ListDirectoryRequest     Request,
-                                     Result                   Result,
-                                     DateTime?                ResponseTimestamp   = null,
-
-                                     NetworkingNode_Id?       DestinationId       = null,
-                                     NetworkPath?             NetworkPath         = null,
-
-                                     IEnumerable<KeyPair>?    SignKeys            = null,
-                                     IEnumerable<SignInfo>?   SignInfos           = null,
-                                     IEnumerable<Signature>?  Signatures          = null,
-
-                                     CustomData?              CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Status = ListDirectoryStatus.Rejected;
-
-        }
-
-        #endregion
-
-        #endregion
-
 
         #region Documentation
 
@@ -200,15 +162,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom ListDirectory responses.</param>
         public static ListDirectoryResponse Parse(ListDirectoryRequest                                 Request,
                                                   JObject                                              JSON,
-                                                  CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser   = null)
+                                                  NetworkingNode_Id                                    DestinationId,
+                                                  NetworkPath                                          NetworkPath,
+                                                  DateTime?                                            ResponseTimestamp                   = null,
+                                                  CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser   = null,
+                                                  CustomJObjectParserDelegate<StatusInfo>?             CustomStatusInfoParser              = null,
+                                                  CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                                  CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var listDirectoryResponse,
                          out var errorResponse,
-                         CustomListDirectoryResponseParser))
+                         ResponseTimestamp,
+                         CustomListDirectoryResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return listDirectoryResponse;
             }
@@ -232,9 +206,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom ListDirectory responses.</param>
         public static Boolean TryParse(ListDirectoryRequest                                 Request,
                                        JObject                                              JSON,
+                                       NetworkingNode_Id                                    DestinationId,
+                                       NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out ListDirectoryResponse?      ListDirectoryResponse,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser   = null)
+                                       DateTime?                                            ResponseTimestamp                   = null,
+                                       CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?             CustomStatusInfoParser              = null,
+                                       CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                       CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             try
@@ -332,10 +312,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             DirectoryPath,
                                             Status,
                                             DirectoryListing,
-                                            null,
 
                                             null,
-                                            null,
+                                            ResponseTimestamp,
+
+                                            DestinationId,
+                                            NetworkPath,
 
                                             null,
                                             null,
@@ -432,6 +414,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (
 
                    Request,
+                   Request.DirectoryPath,
+                   ListDirectoryStatus.Rejected,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -456,13 +441,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The ListDirectory request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
+        public static ListDirectoryResponse FormationViolation(ListDirectoryRequest  Request,
+                                                               String                ErrorDescription)
+
+            => new (Request,
+                    Request.DirectoryPath,
+                    ListDirectoryStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The ListDirectory failed.
+        /// </summary>
+        /// <param name="Request">The ListDirectory request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static ListDirectoryResponse SignatureError(ListDirectoryRequest  Request,
                                                            String                ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    Request.DirectoryPath,
+                    ListDirectoryStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -474,7 +477,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    String?               Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    Request.DirectoryPath,
+                    ListDirectoryStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -486,7 +491,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              Exception             Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    Request.DirectoryPath,
+                    ListDirectoryStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

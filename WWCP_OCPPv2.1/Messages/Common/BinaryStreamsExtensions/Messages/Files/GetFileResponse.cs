@@ -173,8 +173,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             unchecked
             {
 
-                hashCode = this.FileName.GetHashCode() * 5 ^
-                          //(this.Priority?.GetHashCode() ?? 0) * 3 ^
+                hashCode = this.FileName.       GetHashCode() * 19 ^
+                           this.Status.         GetHashCode() * 17 ^
+                           this.FileContent.    GetHashCode() * 13 ^
+                           this.FileContentType.GetHashCode() * 11 ^
+                           this.FileSHA256.     GetHashCode() *  7 ^
+                           this.FileSHA512.     GetHashCode() *  5 ^
+                           this.FileSignatures. GetHashCode() *  3 ^
                            base.GetHashCode();
 
             }

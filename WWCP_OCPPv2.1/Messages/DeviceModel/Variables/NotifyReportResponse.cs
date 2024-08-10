@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The NotifyReport response.
     /// </summary>
-    public class NotifyReportResponse : AResponse<CS.NotifyReportRequest,
+    public class NotifyReportResponse : AResponse<NotifyReportRequest,
                                                   NotifyReportResponse>,
                                         IResponse
     {
@@ -59,57 +60,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region NotifyReportResponse(Request, ...)
-
         /// <summary>
         /// Create a new NotifyReport response.
         /// </summary>
         /// <param name="Request">The NotifyReport request leading to this response.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public NotifyReportResponse(CS.NotifyReportRequest        Request,
-                                    DateTime?                     ResponseTimestamp   = null,
+        public NotifyReportResponse(NotifyReportRequest      Request,
 
-                                    NetworkingNode_Id?            DestinationId       = null,
-                                    NetworkPath?                  NetworkPath         = null,
-
-                                    IEnumerable<KeyPair>?         SignKeys            = null,
-                                    IEnumerable<SignInfo>?        SignInfos           = null,
-                                    IEnumerable<Signature>?       Signatures          = null,
-
-                                    CustomData?                   CustomData          = null)
-
-            : base(Request,
-                   Result.OK(),
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
-
-        #region NotifyReportResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new NotifyReport response.
-        /// </summary>
-        /// <param name="Request">The NotifyReport request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public NotifyReportResponse(CS.NotifyReportRequest   Request,
-                                    Result                   Result,
+                                    Result?                  Result              = null,
                                     DateTime?                ResponseTimestamp   = null,
 
                                     NetworkingNode_Id?       DestinationId       = null,
@@ -122,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result,
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -135,8 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData)
 
         { }
-
-        #endregion
 
         #endregion
 
@@ -182,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The NotifyReport request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomNotifyReportResponseParser">A delegate to parse custom NotifyReport responses.</param>
-        public static NotifyReportResponse Parse(CS.NotifyReportRequest                              Request,
+        public static NotifyReportResponse Parse(NotifyReportRequest                                 Request,
                                                  JObject                                             JSON,
                                                  NetworkingNode_Id                                   DestinationId,
                                                  NetworkPath                                         NetworkPath,
@@ -223,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NotifyReportResponse">The parsed NotifyReport response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyReportResponseParser">A delegate to parse custom NotifyReport responses.</param>
-        public static Boolean TryParse(CS.NotifyReportRequest                              Request,
+        public static Boolean TryParse(NotifyReportRequest                                 Request,
                                        JObject                                             JSON,
                                        NetworkingNode_Id                                   DestinationId,
                                        NetworkPath                                         NetworkPath,
@@ -274,6 +241,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 NotifyReportResponse = new NotifyReportResponse(
 
                                            Request,
+
+                                           null,
                                            ResponseTimestamp,
 
                                            DestinationId,
@@ -346,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyReport failed because of a request error.
         /// </summary>
         /// <param name="Request">The NotifyReport request.</param>
-        public static NotifyReportResponse RequestError(CS.NotifyReportRequest   Request,
+        public static NotifyReportResponse RequestError(NotifyReportRequest      Request,
                                                         EventTracking_Id         EventTrackingId,
                                                         ResultCode               ErrorCode,
                                                         String?                  ErrorDescription    = null,
@@ -389,8 +358,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyReport request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyReportResponse FormationViolation(CS.NotifyReportRequest  Request,
-                                                              String                  ErrorDescription)
+        public static NotifyReportResponse FormationViolation(NotifyReportRequest  Request,
+                                                              String               ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -403,8 +372,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyReport request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyReportResponse SignatureError(CS.NotifyReportRequest  Request,
-                                                          String                  ErrorDescription)
+        public static NotifyReportResponse SignatureError(NotifyReportRequest  Request,
+                                                          String               ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -417,8 +386,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyReport request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static NotifyReportResponse Failed(CS.NotifyReportRequest  Request,
-                                                  String?                 Description   = null)
+        public static NotifyReportResponse Failed(NotifyReportRequest  Request,
+                                                  String?              Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -429,8 +398,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyReport request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyReportResponse ExceptionOccured(CS.NotifyReportRequest  Request,
-                                                            Exception               Exception)
+        public static NotifyReportResponse ExceptionOccured(NotifyReportRequest  Request,
+                                                            Exception            Exception)
 
             => new (Request,
                     Result.FromException(Exception));

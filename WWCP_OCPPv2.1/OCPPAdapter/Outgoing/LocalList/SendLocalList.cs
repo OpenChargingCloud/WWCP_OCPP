@@ -239,7 +239,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new SendLocalListResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     SendLocalListStatus.Failed,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

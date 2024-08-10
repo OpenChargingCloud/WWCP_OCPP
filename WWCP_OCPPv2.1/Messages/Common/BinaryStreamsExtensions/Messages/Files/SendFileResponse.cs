@@ -75,8 +75,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Constructor(s)
 
-        #region SendFileResponse(Request, Status = null, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new SendFile response.
         /// </summary>
@@ -84,20 +82,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="FileName">The name of the stored file including its absolute path.</param>
         /// <param name="Status">An optional response status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the response status.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SendFileResponse(SendFileRequest          Request,
                                 FilePath                 FileName,
                                 SendFileStatus           Status,
                                 StatusInfo?              StatusInfo          = null,
+
+                                Result?                  Result              = null,
                                 DateTime?                ResponseTimestamp   = null,
 
-                                NetworkingNode_Id?       DestinationId   = null,
+                                NetworkingNode_Id?       DestinationId       = null,
                                 NetworkPath?             NetworkPath         = null,
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
@@ -107,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -125,7 +130,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.Status      = Status;
             this.StatusInfo  = StatusInfo;
 
-
             unchecked
             {
 
@@ -137,49 +141,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
         }
-
-        #endregion
-
-        #region SendFileResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new SendFile response.
-        /// </summary>
-        /// <param name="Request">The authorize request.</param>
-        /// <param name="Result">A result.</param>
-        public SendFileResponse(SendFileRequest          Request,
-                                Result                   Result,
-                                DateTime?                ResponseTimestamp   = null,
-
-                                NetworkingNode_Id?       DestinationId       = null,
-                                NetworkPath?             NetworkPath         = null,
-
-                                IEnumerable<KeyPair>?    SignKeys            = null,
-                                IEnumerable<SignInfo>?   SignInfos           = null,
-                                IEnumerable<Signature>?  Signatures          = null,
-
-                                CustomData?              CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Status = SendFileStatus.Rejected;
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -200,15 +161,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomSendFileResponseParser">An optional delegate to parse custom SendFile responses.</param>
         public static SendFileResponse Parse(SendFileRequest                                 Request,
                                              JObject                                         JSON,
-                                             CustomJObjectParserDelegate<SendFileResponse>?  CustomSendFileResponseParser   = null)
+                                             NetworkingNode_Id                               DestinationId,
+                                             NetworkPath                                     NetworkPath,
+                                             DateTime?                                       ResponseTimestamp              = null,
+                                             CustomJObjectParserDelegate<SendFileResponse>?  CustomSendFileResponseParser   = null,
+                                             CustomJObjectParserDelegate<StatusInfo>?        CustomStatusInfoParser         = null,
+                                             CustomJObjectParserDelegate<Signature>?         CustomSignatureParser          = null,
+                                             CustomJObjectParserDelegate<CustomData>?        CustomCustomDataParser         = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var sendFileResponse,
                          out var errorResponse,
-                         CustomSendFileResponseParser))
+                         ResponseTimestamp,
+                         CustomSendFileResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return sendFileResponse;
             }
@@ -232,9 +205,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomSendFileResponseParser">An optional delegate to parse custom SendFile responses.</param>
         public static Boolean TryParse(SendFileRequest                                 Request,
                                        JObject                                         JSON,
+                                       NetworkingNode_Id                               DestinationId,
+                                       NetworkPath                                     NetworkPath,
                                        [NotNullWhen(true)]  out SendFileResponse?      SendFileResponse,
                                        [NotNullWhen(false)] out String?                ErrorResponse,
-                                       CustomJObjectParserDelegate<SendFileResponse>?  CustomSendFileResponseParser   = null)
+                                       DateTime?                                       ResponseTimestamp              = null,
+                                       CustomJObjectParserDelegate<SendFileResponse>?  CustomSendFileResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?        CustomStatusInfoParser         = null,
+                                       CustomJObjectParserDelegate<Signature>?         CustomSignatureParser          = null,
+                                       CustomJObjectParserDelegate<CustomData>?        CustomCustomDataParser         = null)
         {
 
             try
@@ -273,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "status info",
                                            OCPPv2_1.StatusInfo.TryParse,
-                                           out StatusInfo StatusInfo,
+                                           out StatusInfo? StatusInfo,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -317,10 +296,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        FileName,
                                        Status,
                                        StatusInfo,
-                                       null,
 
                                        null,
-                                       null,
+                                       ResponseTimestamp,
+
+                                       DestinationId,
+                                       NetworkPath,
 
                                        null,
                                        null,
@@ -418,6 +399,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (
 
                    Request,
+                   Request.FileName,
+                   SendFileStatus.Rejected,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -442,13 +426,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The SendFile request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
+        public static SendFileResponse FormationViolation(SendFileRequest  Request,
+                                                          String           ErrorDescription)
+
+            => new (Request,
+                    Request.FileName,
+                    SendFileStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The SendFile failed.
+        /// </summary>
+        /// <param name="Request">The SendFile request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static SendFileResponse SignatureError(SendFileRequest  Request,
                                                       String           ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    Request.FileName,
+                    SendFileStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -460,7 +462,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               String?          Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    Request.FileName,
+                    SendFileStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -472,7 +476,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         Exception        Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    Request.FileName,
+                    SendFileStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

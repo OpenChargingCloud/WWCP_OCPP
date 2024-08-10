@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var sendFileRequests = new ConcurrentList<SendFileRequest>();
 
-                chargingStation1.OCPP.IN.OnSendFileRequestReceived += (timestamp, sender, connection, sendFileRequest) => {
+                chargingStation1.OCPP.IN.OnSendFileRequestReceived += (timestamp, sender, connection, sendFileRequest, ct) => {
                     sendFileRequests.TryAdd(sendFileRequest);
                     return Task.CompletedTask;
                 };

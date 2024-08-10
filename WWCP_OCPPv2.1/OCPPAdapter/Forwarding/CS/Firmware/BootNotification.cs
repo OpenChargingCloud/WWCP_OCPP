@@ -204,7 +204,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var dataTransferResponse = forwardingDecision?.RejectResponse ??
                                                new BootNotificationResponse(
                                                    request,
-                                                   Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                                   RegistrationStatus.Rejected,
+                                                   Timestamp.Now,
+                                                   BootNotificationResponse.DefaultInterval,
+                                                   Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                                );
 
                 forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(

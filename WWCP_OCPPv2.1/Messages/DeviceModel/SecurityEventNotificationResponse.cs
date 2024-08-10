@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The SecurityEventNotification response.
     /// </summary>
-    public class SecurityEventNotificationResponse : AResponse<CS.SecurityEventNotificationRequest,
+    public class SecurityEventNotificationResponse : AResponse<SecurityEventNotificationRequest,
                                                                SecurityEventNotificationResponse>,
                                                      IResponse
     {
@@ -59,8 +60,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region SecurityEventNotificationResponse(Request, ...)
-
         /// <summary>
         /// Create a new SecurityEventNotification response.
         /// </summary>
@@ -72,20 +71,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SecurityEventNotificationResponse(CS.SecurityEventNotificationRequest  Request,
-                                                 DateTime?                            ResponseTimestamp   = null,
+        public SecurityEventNotificationResponse(SecurityEventNotificationRequest  Request,
 
-                                                 NetworkingNode_Id?                   DestinationId       = null,
-                                                 NetworkPath?                         NetworkPath         = null,
+                                                 Result?                           Result              = null,
+                                                 DateTime?                         ResponseTimestamp   = null,
 
-                                                 IEnumerable<KeyPair>?                SignKeys            = null,
-                                                 IEnumerable<SignInfo>?               SignInfos           = null,
-                                                 IEnumerable<Signature>?              Signatures          = null,
+                                                 NetworkingNode_Id?                DestinationId       = null,
+                                                 NetworkPath?                      NetworkPath         = null,
 
-                                                 CustomData?                          CustomData          = null)
+                                                 IEnumerable<KeyPair>?             SignKeys            = null,
+                                                 IEnumerable<SignInfo>?            SignInfos           = null,
+                                                 IEnumerable<Signature>?           Signatures          = null,
+
+                                                 CustomData?                       CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -98,45 +99,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData)
 
         { }
-
-        #endregion
-
-        #region SecurityEventNotificationResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new SecurityEventNotification response.
-        /// </summary>
-        /// <param name="Request">The SecurityEventNotification request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public SecurityEventNotificationResponse(CS.SecurityEventNotificationRequest  Request,
-                                                 Result                               Result,
-                                                 DateTime?                            ResponseTimestamp   = null,
-
-                                                 NetworkingNode_Id?                   DestinationId       = null,
-                                                 NetworkPath?                         NetworkPath         = null,
-
-                                                 IEnumerable<KeyPair>?                SignKeys            = null,
-                                                 IEnumerable<SignInfo>?               SignInfos           = null,
-                                                 IEnumerable<Signature>?              Signatures          = null,
-
-                                                 CustomData?                          CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -182,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The SecurityEventNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom SecurityEventNotification responses.</param>
-        public static SecurityEventNotificationResponse Parse(CS.SecurityEventNotificationRequest                              Request,
+        public static SecurityEventNotificationResponse Parse(SecurityEventNotificationRequest                                 Request,
                                                               JObject                                                          JSON,
                                                               NetworkingNode_Id                                                DestinationId,
                                                               NetworkPath                                                      NetworkPath,
@@ -223,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="SecurityEventNotificationResponse">The parsed SecurityEventNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom SecurityEventNotification responses.</param>
-        public static Boolean TryParse(CS.SecurityEventNotificationRequest                              Request,
+        public static Boolean TryParse(SecurityEventNotificationRequest                                 Request,
                                        JObject                                                          JSON,
                                        NetworkingNode_Id                                                DestinationId,
                                        NetworkPath                                                      NetworkPath,
@@ -272,6 +234,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 SecurityEventNotificationResponse = new SecurityEventNotificationResponse(
 
                                                         Request,
+
+                                                        null,
                                                         ResponseTimestamp,
 
                                                         DestinationId,
@@ -344,21 +308,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The SecurityEventNotification failed because of a request error.
         /// </summary>
         /// <param name="Request">The SecurityEventNotification request.</param>
-        public static SecurityEventNotificationResponse RequestError(CS.SecurityEventNotificationRequest  Request,
-                                                                     EventTracking_Id                     EventTrackingId,
-                                                                     ResultCode                           ErrorCode,
-                                                                     String?                              ErrorDescription    = null,
-                                                                     JObject?                             ErrorDetails        = null,
-                                                                     DateTime?                            ResponseTimestamp   = null,
+        public static SecurityEventNotificationResponse RequestError(SecurityEventNotificationRequest  Request,
+                                                                     EventTracking_Id                  EventTrackingId,
+                                                                     ResultCode                        ErrorCode,
+                                                                     String?                           ErrorDescription    = null,
+                                                                     JObject?                          ErrorDetails        = null,
+                                                                     DateTime?                         ResponseTimestamp   = null,
 
-                                                                     NetworkingNode_Id?                   DestinationId       = null,
-                                                                     NetworkPath?                         NetworkPath         = null,
+                                                                     NetworkingNode_Id?                DestinationId       = null,
+                                                                     NetworkPath?                      NetworkPath         = null,
 
-                                                                     IEnumerable<KeyPair>?                SignKeys            = null,
-                                                                     IEnumerable<SignInfo>?               SignInfos           = null,
-                                                                     IEnumerable<Signature>?              Signatures          = null,
+                                                                     IEnumerable<KeyPair>?             SignKeys            = null,
+                                                                     IEnumerable<SignInfo>?            SignInfos           = null,
+                                                                     IEnumerable<Signature>?           Signatures          = null,
 
-                                                                     CustomData?                          CustomData          = null)
+                                                                     CustomData?                       CustomData          = null)
 
             => new (
 
@@ -387,8 +351,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The SecurityEventNotification request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SecurityEventNotificationResponse FormationViolation(CS.SecurityEventNotificationRequest  Request,
-                                                                           String                               ErrorDescription)
+        public static SecurityEventNotificationResponse FormationViolation(SecurityEventNotificationRequest  Request,
+                                                                           String                            ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -401,8 +365,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The SecurityEventNotification request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SecurityEventNotificationResponse SignatureError(CS.SecurityEventNotificationRequest  Request,
-                                                                       String                               ErrorDescription)
+        public static SecurityEventNotificationResponse SignatureError(SecurityEventNotificationRequest  Request,
+                                                                       String                            ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -415,8 +379,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The SecurityEventNotification request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static SecurityEventNotificationResponse Failed(CS.SecurityEventNotificationRequest  Request,
-                                                               String?                              Description   = null)
+        public static SecurityEventNotificationResponse Failed(SecurityEventNotificationRequest  Request,
+                                                               String?                           Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -427,8 +391,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The SecurityEventNotification request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SecurityEventNotificationResponse ExceptionOccured(CS.SecurityEventNotificationRequest  Request,
-                                                                         Exception                            Exception)
+        public static SecurityEventNotificationResponse ExceptionOccured(SecurityEventNotificationRequest  Request,
+                                                                         Exception                         Exception)
 
             => new (Request,
                     Result.FromException(Exception));

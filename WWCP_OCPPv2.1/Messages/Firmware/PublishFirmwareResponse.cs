@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The PublishFirmware response.
     /// </summary>
-    public class PublishFirmwareResponse : AResponse<CSMS.PublishFirmwareRequest,
+    public class PublishFirmwareResponse : AResponse<PublishFirmwareRequest,
                                                      PublishFirmwareResponse>,
                                            IResponse
     {
@@ -71,37 +72,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region PublishFirmwareResponse(Request, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new PublishFirmware response.
         /// </summary>
         /// <param name="Request">The PublishFirmware request leading to this response.</param>
         /// <param name="Status">The success or failure of the PublishFirmware request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public PublishFirmwareResponse(CSMS.PublishFirmwareRequest   Request,
-                                       GenericStatus                 Status,
-                                       StatusInfo?                   StatusInfo          = null,
-                                       DateTime?                     ResponseTimestamp   = null,
+        public PublishFirmwareResponse(PublishFirmwareRequest   Request,
+                                       GenericStatus            Status,
+                                       StatusInfo?              StatusInfo          = null,
 
-                                       NetworkingNode_Id?            DestinationId       = null,
-                                       NetworkPath?                  NetworkPath         = null,
+                                       Result?                  Result              = null,
+                                       DateTime?                ResponseTimestamp   = null,
 
-                                       IEnumerable<KeyPair>?         SignKeys            = null,
-                                       IEnumerable<SignInfo>?        SignInfos           = null,
-                                       IEnumerable<Signature>?       Signatures          = null,
+                                       NetworkingNode_Id?       DestinationId       = null,
+                                       NetworkPath?             NetworkPath         = null,
 
-                                       CustomData?                   CustomData          = null)
+                                       IEnumerable<KeyPair>?    SignKeys            = null,
+                                       IEnumerable<SignInfo>?   SignInfos           = null,
+                                       IEnumerable<Signature>?  Signatures          = null,
+
+                                       CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -118,46 +124,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.Status      = Status;
             this.StatusInfo  = StatusInfo;
 
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region PublishFirmwareResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new PublishFirmware response.
-        /// </summary>
-        /// <param name="Request">The PublishFirmware request leading to this response.</param>
-        /// <param name="Result">A result.</param>
-        public PublishFirmwareResponse(CSMS.PublishFirmwareRequest  Request,
-                                       Result                       Result,
-                                       DateTime?                    ResponseTimestamp   = null,
-
-                                       NetworkingNode_Id?           DestinationId       = null,
-                                       NetworkPath?                 NetworkPath         = null,
-
-                                       IEnumerable<KeyPair>?        SignKeys            = null,
-                                       IEnumerable<SignInfo>?       SignInfos           = null,
-                                       IEnumerable<Signature>?      Signatures          = null,
-
-                                       CustomData?                  CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -246,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The PublishFirmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomPublishFirmwareResponseParser">A delegate to parse custom PublishFirmware responses.</param>
-        public static PublishFirmwareResponse Parse(CSMS.PublishFirmwareRequest                            Request,
+        public static PublishFirmwareResponse Parse(PublishFirmwareRequest                                 Request,
                                                     JObject                                                JSON,
                                                     NetworkingNode_Id                                      DestinationId,
                                                     NetworkPath                                            NetworkPath,
@@ -255,7 +231,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     CustomJObjectParserDelegate<StatusInfo>?               CustomStatusInfoParser                = null,
                                                     CustomJObjectParserDelegate<Signature>?                CustomSignatureParser                 = null,
                                                     CustomJObjectParserDelegate<CustomData>?               CustomCustomDataParser                = null)
-                                                    
         {
 
             if (TryParse(Request,
@@ -290,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="PublishFirmwareResponse">The parsed PublishFirmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomPublishFirmwareResponseParser">A delegate to parse custom PublishFirmware responses.</param>
-        public static Boolean TryParse(CSMS.PublishFirmwareRequest                            Request,
+        public static Boolean TryParse(PublishFirmwareRequest                                 Request,
                                        JObject                                                JSON,
                                        NetworkingNode_Id                                      DestinationId,
                                        NetworkPath                                            NetworkPath,
@@ -369,6 +344,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               Request,
                                               Status,
                                               StatusInfo,
+
+                                              null,
                                               ResponseTimestamp,
 
                                               DestinationId,
@@ -450,25 +427,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The PublishFirmware failed because of a request error.
         /// </summary>
         /// <param name="Request">The PublishFirmware request.</param>
-        public static PublishFirmwareResponse RequestError(CSMS.PublishFirmwareRequest  Request,
-                                                           EventTracking_Id             EventTrackingId,
-                                                           ResultCode                   ErrorCode,
-                                                           String?                      ErrorDescription    = null,
-                                                           JObject?                     ErrorDetails        = null,
-                                                           DateTime?                    ResponseTimestamp   = null,
+        public static PublishFirmwareResponse RequestError(PublishFirmwareRequest   Request,
+                                                           EventTracking_Id         EventTrackingId,
+                                                           ResultCode               ErrorCode,
+                                                           String?                  ErrorDescription    = null,
+                                                           JObject?                 ErrorDetails        = null,
+                                                           DateTime?                ResponseTimestamp   = null,
 
-                                                           NetworkingNode_Id?           DestinationId       = null,
-                                                           NetworkPath?                 NetworkPath         = null,
+                                                           NetworkingNode_Id?       DestinationId       = null,
+                                                           NetworkPath?             NetworkPath         = null,
 
-                                                           IEnumerable<KeyPair>?        SignKeys            = null,
-                                                           IEnumerable<SignInfo>?       SignInfos           = null,
-                                                           IEnumerable<Signature>?      Signatures          = null,
+                                                           IEnumerable<KeyPair>?    SignKeys            = null,
+                                                           IEnumerable<SignInfo>?   SignInfos           = null,
+                                                           IEnumerable<Signature>?  Signatures          = null,
 
-                                                           CustomData?                  CustomData          = null)
+                                                           CustomData?              CustomData          = null)
 
             => new (
 
                    Request,
+                   GenericStatus.Rejected,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -493,13 +472,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The PublishFirmware request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static PublishFirmwareResponse FormationViolation(CSMS.PublishFirmwareRequest  Request,
-                                                                 String                       ErrorDescription)
+        public static PublishFirmwareResponse FormationViolation(PublishFirmwareRequest  Request,
+                                                                 String                  ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    GenericStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -507,13 +487,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The PublishFirmware request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static PublishFirmwareResponse SignatureError(CSMS.PublishFirmwareRequest  Request,
-                                                             String                       ErrorDescription)
+        public static PublishFirmwareResponse SignatureError(PublishFirmwareRequest  Request,
+                                                             String                  ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    GenericStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -521,11 +502,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The PublishFirmware request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static PublishFirmwareResponse Failed(CSMS.PublishFirmwareRequest  Request,
-                                                     String?                      Description   = null)
+        public static PublishFirmwareResponse Failed(PublishFirmwareRequest  Request,
+                                                     String?                 Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    GenericStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -533,11 +515,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The PublishFirmware request.</param>
         /// <param name="Exception">The exception.</param>
-        public static PublishFirmwareResponse ExceptionOccured(CSMS.PublishFirmwareRequest  Request,
-                                                               Exception                    Exception)
+        public static PublishFirmwareResponse ExceptionOccured(PublishFirmwareRequest  Request,
+                                                               Exception               Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    GenericStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -625,22 +608,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

@@ -229,6 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new HeartbeatResponse(
                                      Request,
+                                     Timestamp.Now,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
 

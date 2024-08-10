@@ -23,7 +23,9 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using System.Runtime.Versioning;
 
 #endregion
 
@@ -33,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The UnpublishFirmware response.
     /// </summary>
-    public class UnpublishFirmwareResponse : AResponse<CSMS.UnpublishFirmwareRequest,
+    public class UnpublishFirmwareResponse : AResponse<UnpublishFirmwareRequest,
                                                        UnpublishFirmwareResponse>,
                                              IResponse
     {
@@ -64,35 +66,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region UnpublishFirmwareResponse(Request, Status, ...)
-
         /// <summary>
         /// Create a new UnpublishFirmware response.
         /// </summary>
         /// <param name="Request">The UnpublishFirmware request leading to this response.</param>
         /// <param name="Status">The success or failure of the UnpublishFirmware request.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UnpublishFirmwareResponse(CSMS.UnpublishFirmwareRequest  Request,
-                                         UnpublishFirmwareStatus        Status,
-                                         DateTime?                      ResponseTimestamp   = null,
+        public UnpublishFirmwareResponse(UnpublishFirmwareRequest  Request,
+                                         UnpublishFirmwareStatus   Status,
 
-                                         NetworkingNode_Id?             DestinationId       = null,
-                                         NetworkPath?                   NetworkPath         = null,
+                                         Result?                   Result              = null,
+                                         DateTime?                 ResponseTimestamp   = null,
 
-                                         IEnumerable<KeyPair>?          SignKeys            = null,
-                                         IEnumerable<SignInfo>?         SignInfos           = null,
-                                         IEnumerable<Signature>?        Signatures          = null,
+                                         NetworkingNode_Id?        DestinationId       = null,
+                                         NetworkPath?              NetworkPath         = null,
 
-                                         CustomData?                    CustomData          = null)
+                                         IEnumerable<KeyPair>?     SignKeys            = null,
+                                         IEnumerable<SignInfo>?    SignInfos           = null,
+                                         IEnumerable<Signature>?   Signatures          = null,
+
+                                         CustomData?               CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -109,45 +116,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.Status  = Status;
 
         }
-
-        #endregion
-
-        #region UnpublishFirmwareResponse(Result)
-
-        /// <summary>
-        /// Create a new UnpublishFirmware response.
-        /// </summary>
-        /// <param name="Request">The UnpublishFirmware request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public UnpublishFirmwareResponse(CSMS.UnpublishFirmwareRequest  Request,
-                                         Result                         Result,
-                                         DateTime?                      ResponseTimestamp   = null,
-
-                                         NetworkingNode_Id?             DestinationId       = null,
-                                         NetworkPath?                   NetworkPath         = null,
-
-                                         IEnumerable<KeyPair>?          SignKeys            = null,
-                                         IEnumerable<SignInfo>?         SignInfos           = null,
-                                         IEnumerable<Signature>?        Signatures          = null,
-
-                                         CustomData?                    CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -210,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The UnpublishFirmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom UnpublishFirmware responses.</param>
-        public static UnpublishFirmwareResponse Parse(CSMS.UnpublishFirmwareRequest                            Request,
+        public static UnpublishFirmwareResponse Parse(UnpublishFirmwareRequest                                 Request,
                                                       JObject                                                  JSON,
                                                       NetworkingNode_Id                                        DestinationId,
                                                       NetworkPath                                              NetworkPath,
@@ -251,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="UnpublishFirmwareResponse">The parsed UnpublishFirmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom UnpublishFirmware responses.</param>
-        public static Boolean TryParse(CSMS.UnpublishFirmwareRequest                            Request,
+        public static Boolean TryParse(UnpublishFirmwareRequest                                 Request,
                                        JObject                                                  JSON,
                                        NetworkingNode_Id                                        DestinationId,
                                        NetworkPath                                              NetworkPath,
@@ -314,6 +282,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                 Request,
                                                 Status,
+
+                                                null,
                                                 ResponseTimestamp,
 
                                                 DestinationId,
@@ -388,25 +358,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The UnpublishFirmware failed because of a request error.
         /// </summary>
         /// <param name="Request">The UnpublishFirmware request.</param>
-        public static UnpublishFirmwareResponse RequestError(CSMS.UnpublishFirmwareRequest  Request,
-                                                             EventTracking_Id               EventTrackingId,
-                                                             ResultCode                     ErrorCode,
-                                                             String?                        ErrorDescription    = null,
-                                                             JObject?                       ErrorDetails        = null,
-                                                             DateTime?                      ResponseTimestamp   = null,
+        public static UnpublishFirmwareResponse RequestError(UnpublishFirmwareRequest  Request,
+                                                             EventTracking_Id          EventTrackingId,
+                                                             ResultCode                ErrorCode,
+                                                             String?                   ErrorDescription    = null,
+                                                             JObject?                  ErrorDetails        = null,
+                                                             DateTime?                 ResponseTimestamp   = null,
 
-                                                             NetworkingNode_Id?             DestinationId       = null,
-                                                             NetworkPath?                   NetworkPath         = null,
+                                                             NetworkingNode_Id?        DestinationId       = null,
+                                                             NetworkPath?              NetworkPath         = null,
 
-                                                             IEnumerable<KeyPair>?          SignKeys            = null,
-                                                             IEnumerable<SignInfo>?         SignInfos           = null,
-                                                             IEnumerable<Signature>?        Signatures          = null,
+                                                             IEnumerable<KeyPair>?     SignKeys            = null,
+                                                             IEnumerable<SignInfo>?    SignInfos           = null,
+                                                             IEnumerable<Signature>?   Signatures          = null,
 
-                                                             CustomData?                    CustomData          = null)
+                                                             CustomData?               CustomData          = null)
 
             => new (
 
                    Request,
+                   UnpublishFirmwareStatus.Error,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -431,13 +402,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UnpublishFirmware request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static UnpublishFirmwareResponse FormationViolation(CSMS.UnpublishFirmwareRequest  Request,
-                                                                   String                         ErrorDescription)
+        public static UnpublishFirmwareResponse FormationViolation(UnpublishFirmwareRequest  Request,
+                                                                   String                    ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    UnpublishFirmwareStatus.Error,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -445,13 +417,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UnpublishFirmware request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static UnpublishFirmwareResponse SignatureError(CSMS.UnpublishFirmwareRequest  Request,
-                                                               String                         ErrorDescription)
+        public static UnpublishFirmwareResponse SignatureError(UnpublishFirmwareRequest  Request,
+                                                               String                    ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    UnpublishFirmwareStatus.Error,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -459,11 +432,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UnpublishFirmware request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static UnpublishFirmwareResponse Failed(CSMS.UnpublishFirmwareRequest  Request,
-                                                       String?                        Description   = null)
+        public static UnpublishFirmwareResponse Failed(UnpublishFirmwareRequest  Request,
+                                                       String?                   Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    UnpublishFirmwareStatus.Error,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -471,11 +445,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UnpublishFirmware request.</param>
         /// <param name="Exception">The exception.</param>
-        public static UnpublishFirmwareResponse ExceptionOccured(CSMS.UnpublishFirmwareRequest  Request,
-                                                                 Exception                      Exception)
+        public static UnpublishFirmwareResponse ExceptionOccured(UnpublishFirmwareRequest  Request,
+                                                                 Exception                 Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    UnpublishFirmwareStatus.Error,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

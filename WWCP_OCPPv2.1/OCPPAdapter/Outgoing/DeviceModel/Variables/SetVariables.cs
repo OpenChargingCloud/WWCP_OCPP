@@ -237,6 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new SetVariablesResponse(
                                      Request,
+                                     [],
                                      Result.FromSendRequestState(sendRequestState)
                                  );
 

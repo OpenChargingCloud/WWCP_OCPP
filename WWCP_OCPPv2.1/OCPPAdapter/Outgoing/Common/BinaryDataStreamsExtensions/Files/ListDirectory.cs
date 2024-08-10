@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
@@ -27,119 +28,222 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Logging Delegates
+
     /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
+    /// A delegate called whenever a ListDirectory request was sent.
     /// </summary>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnListDirectoryRequestSentDelegate(DateTime               Timestamp,
+                                                            IEventSender           Sender,
+                                                            IWebSocketConnection   Connection,
+                                                            ListDirectoryRequest   Request,
+                                                            SentMessageResults     SendMessageResult,
+                                                            CancellationToken      CancellationToken = default);
+
+
+    /// <summary>
+    /// A ListDirectory response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnListDirectoryResponseSentDelegate(DateTime                Timestamp,
+                                            IEventSender            Sender,
+                                            IWebSocketConnection    Connection,
+                                            ListDirectoryRequest    Request,
+                                            ListDirectoryResponse   Response,
+                                            TimeSpan                Runtime,
+                                            SentMessageResults      SendMessageResult,
+                                            CancellationToken       CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a ListDirectory request error was sent.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request error.</param>
+    /// <param name="Connection">The connection of the request error.</param>
+    /// <param name="Request">The optional request (when parsable).</param>
+    /// <param name="RequestErrorMessage">The request error message.</param>
+    /// <param name="Runtime">The optional runtime of the request error message.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnListDirectoryRequestErrorSentDelegate(DateTime                       Timestamp,
+                                                IEventSender                   Sender,
+                                                IWebSocketConnection           Connection,
+                                                ListDirectoryRequest?          Request,
+                                                OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                TimeSpan?                      Runtime,
+                                                SentMessageResults             SendMessageResult,
+                                                CancellationToken              CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a ListDirectory response error was sent.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response error.</param>
+    /// <param name="Connection">The connection of the response error.</param>
+    /// <param name="Request">The optional request.</param>
+    /// <param name="Response">The optional response.</param>
+    /// <param name="ResponseErrorMessage">The response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response error message.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnListDirectoryResponseErrorSentDelegate(DateTime                        Timestamp,
+                                                 IEventSender                    Sender,
+                                                 IWebSocketConnection            Connection,
+                                                 ListDirectoryRequest?           Request,
+                                                 ListDirectoryResponse?          Response,
+                                                 OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                 TimeSpan?                       Runtime,
+                                                 SentMessageResults              SendMessageResult,
+                                                 CancellationToken               CancellationToken = default);
+
+    #endregion
+
+
     public partial class OCPPWebSocketAdapterOUT
     {
 
-        #region Events
+        #region Send ListDirectory request
 
         /// <summary>
-        /// An event sent whenever a ListDirectory request was sent.
+        /// An event fired whenever a ListDirectory request was sent.
         /// </summary>
         public event OnListDirectoryRequestSentDelegate?  OnListDirectoryRequestSent;
 
-        #endregion
 
-        #region ListDirectory(Request)
+        /// <summary>
+        /// Send a ListDirectory request.
+        /// </summary>
+        /// <param name="Request">A ListDirectory request.</param>
+        public async Task<ListDirectoryResponse>
 
-        public async Task<ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
+            ListDirectory(ListDirectoryRequest Request)
+
         {
-
-            #region Send OnListDirectoryRequestSent event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnListDirectoryRequestSent?.Invoke(startTime,
-                                                   parentNetworkingNode,
-                                                   null,
-                                                   Request,
-                                                   SentMessageResults.Success);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnListDirectoryRequestSent));
-            }
-
-            #endregion
-
 
             ListDirectoryResponse? response = null;
 
             try
             {
 
-                var sendRequestState = await SendJSONRequestAndWait(
-                                                 OCPP_JSONRequestMessage.FromRequest(
-                                                     Request,
-                                                     Request.ToJSON(
-                                                         parentNetworkingNode.OCPP.CustomListDirectoryRequestSerializer,
-                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                     )
-                                                 )
-                                             );
+                #region Sign request message
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.JSONResponse is not null)
+                if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomListDirectoryRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var signingErrors
+                    ))
                 {
 
-                    if (!ListDirectoryResponse.TryParse(Request,
-                                                        sendRequestState.JSONResponse.Payload,
-                                                        out response,
-                                                        out var errorResponse,
-                                                        parentNetworkingNode.OCPP.CustomListDirectoryResponseParser))
-                    {
-                        response = new ListDirectoryResponse(
-                                       Request,
-                                       Result.FormationViolation(errorResponse)
-                                   );
-                    }
+                    response = ListDirectoryResponse.SignatureError(
+                                   Request,
+                                   signingErrors
+                               );
 
                 }
 
-                response ??= new ListDirectoryResponse(
-                                 Request,
-                                 Request.DirectoryPath,
-                                 ListDirectoryStatus.Rejected
-                             );
+                #endregion
+
+                else
+                {
+
+                    #region Send request message
+
+                    var sendRequestState = await SendJSONRequestAndWait(
+
+                                                     OCPP_JSONRequestMessage.FromRequest(
+                                                         Request,
+                                                         Request.ToJSON(
+                                                             parentNetworkingNode.OCPP.CustomListDirectoryRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                         )
+                                                     ),
+
+                                                     sendMessageResult => LogEvent(
+                                                         OnListDirectoryRequestSent,
+                                                         loggingDelegate => loggingDelegate.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             sendMessageResult.Connection,
+                                                             Request,
+                                                             sendMessageResult.Result
+                                                         )
+                                                     )
+
+                                                 );
+
+                    #endregion
+
+                    if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_ListDirectoryResponse(
+                                             Request,
+                                             jsonResponse,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.         EventTrackingId,
+                                             Request.         RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.         CancellationToken
+                                         );
+
+                    if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_ListDirectoryRequestError(
+                                             Request,
+                                             jsonRequestError,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.CancellationToken
+                                         );
+
+                    response ??= new ListDirectoryResponse(
+                                     Request,
+                                     Request.DirectoryPath,
+                                     ListDirectoryStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
+                                 );
+
+                }
 
             }
             catch (Exception e)
             {
 
-                response = new ListDirectoryResponse(
+                response = ListDirectoryResponse.ExceptionOccured(
                                Request,
-                               Result.FromException(e)
+                               e
                            );
 
             }
-
-
-            #region Send OnListDirectoryResponseReceived event
-
-            //var endTime = Timestamp.Now;
-
-            //try
-            //{
-
-            //    OnListDirectoryResponseReceived?.Invoke(endTime,
-            //                                            parentNetworkingNode,
-            //                                            Request,
-            //                                            response,
-            //                                            endTime - startTime);
-
-            //}
-            //catch (Exception e)
-            //{
-            //    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnListDirectoryResponseReceived));
-            //}
-
-            #endregion
 
             return response;
 
@@ -147,89 +251,104 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-    }
 
-    public partial class OCPPWebSocketAdapterIN
-    {
-
-        #region Events
+        #region Send OnListDirectoryResponseSent event
 
         /// <summary>
-        /// An event sent whenever a response to a ListDirectory request was received.
+        /// An event sent whenever a ListDirectory response was sent.
         /// </summary>
-        public event OnListDirectoryResponseReceivedDelegate?  OnListDirectoryResponseReceived;
+        public event OnListDirectoryResponseSentDelegate?  OnListDirectoryResponseSent;
+
+        public Task SendOnListDirectoryResponseSent(DateTime               Timestamp,
+                                                    IEventSender           Sender,
+                                                    IWebSocketConnection   Connection,
+                                                    ListDirectoryRequest   Request,
+                                                    ListDirectoryResponse  Response,
+                                                    TimeSpan               Runtime,
+                                                    SentMessageResults     SendMessageResult,
+                                                    CancellationToken      CancellationToken = default)
+
+            => LogEvent(
+                   OnListDirectoryResponseSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
 
         #endregion
 
+        #region Send OnListDirectoryRequestErrorSent event
 
-        #region Receive ListDirectoryRequestError
+        /// <summary>
+        /// An event sent whenever a ListDirectory request error was sent.
+        /// </summary>
+        public event OnListDirectoryRequestErrorSentDelegate? OnListDirectoryRequestErrorSent;
 
-        public async Task<ListDirectoryResponse>
 
-            Receive_ListDirectoryRequestError(ListDirectoryRequest          Request,
-                                              OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                              IWebSocketConnection          WebSocketConnection)
+        public Task SendOnListDirectoryRequestErrorSent(DateTime                      Timestamp,
+                                                        IEventSender                  Sender,
+                                                        IWebSocketConnection          Connection,
+                                                        ListDirectoryRequest?         Request,
+                                                        OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                        TimeSpan                      Runtime,
+                                                        SentMessageResults            SendMessageResult,
+                                                        CancellationToken             CancellationToken = default)
 
-        {
+            => LogEvent(
+                   OnListDirectoryRequestErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       RequestErrorMessage,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
 
-            var response = ListDirectoryResponse.RequestError(
-                               Request,
-                               RequestErrorMessage.EventTrackingId,
-                               RequestErrorMessage.ErrorCode,
-                               RequestErrorMessage.ErrorDescription,
-                               RequestErrorMessage.ErrorDetails,
-                               RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
-                               RequestErrorMessage.NetworkPath
-                           );
+        #endregion
 
-            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-            //    response,
-            //    response.ToJSON(
-            //        parentNetworkingNode.OCPP.CustomListDirectoryResponseSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
-            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-            //    ),
-            //    out errorResponse
-            //);
+        #region Send OnListDirectoryResponseErrorSent event
 
-            #region Send OnListDirectoryResponseReceived event
+        /// <summary>
+        /// An event sent whenever a ListDirectory response error was sent.
+        /// </summary>
+        public event OnListDirectoryResponseErrorSentDelegate? OnListDirectoryResponseErrorSent;
 
-            var logger = OnListDirectoryResponseReceived;
-            if (logger is not null)
-            {
-                try
-                {
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                           OfType<OnListDirectoryResponseReceivedDelegate>().
-                                           Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                          Timestamp.Now,
-                                                                          parentNetworkingNode,
-                                                                          //    WebSocketConnection,
-                                                                          Request,
-                                                                          response,
-                                                                          response.Runtime
-                                                                      )).
-                                           ToArray());
+        public Task SendOnListDirectoryResponseErrorSent(DateTime                       Timestamp,
+                                                         IEventSender                   Sender,
+                                                         IWebSocketConnection           Connection,
+                                                         ListDirectoryRequest?          Request,
+                                                         ListDirectoryResponse?         Response,
+                                                         OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                         TimeSpan                       Runtime,
+                                                         SentMessageResults             SendMessageResult,
+                                                         CancellationToken              CancellationToken = default)
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnListDirectoryResponseReceived));
-                }
-            }
-
-            #endregion
-
-            return response;
-
-        }
+            => LogEvent(
+                   OnListDirectoryResponseErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       ResponseErrorMessage,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
 
         #endregion
 
