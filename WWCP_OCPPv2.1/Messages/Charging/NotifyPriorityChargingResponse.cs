@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,48 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The NotifyPriorityCharging response.
     /// </summary>
-    /// <param name="Request">The request leading to this response.</param>
-    /// 
-    /// <param name="Result">The machine-readable result code.</param>
-    /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
-    /// 
-    /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
-    /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
-    /// 
-    /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
-    /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
-    /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
-    /// 
-    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-    public class NotifyPriorityChargingResponse(CS.NotifyPriorityChargingRequest  Request,
-
-                                                Result?                           Result              = null,
-                                                DateTime?                         ResponseTimestamp   = null,
-
-                                                NetworkingNode_Id?                DestinationId       = null,
-                                                NetworkPath?                      NetworkPath         = null,
-
-                                                IEnumerable<KeyPair>?             SignKeys            = null,
-                                                IEnumerable<SignInfo>?            SignInfos           = null,
-                                                IEnumerable<Signature>?           Signatures          = null,
-
-                                                CustomData?                       CustomData          = null)
-
-            : AResponse<CS.NotifyPriorityChargingRequest,
-                        NotifyPriorityChargingResponse>(Request,
-                                                        Result ?? Result.OK(),
-                                                        ResponseTimestamp,
-
-                                                        DestinationId,
-                                                        NetworkPath,
-
-                                                        SignKeys,
-                                                        SignInfos,
-                                                        Signatures,
-
-                                                        CustomData),
-                        IResponse
-
+    public class NotifyPriorityChargingResponse : AResponse<NotifyPriorityChargingRequest,
+                                                            NotifyPriorityChargingResponse>,
+                                                  IResponse
     {
 
         #region Data
@@ -96,6 +58,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new NotifyPriorityCharging response.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public NotifyPriorityChargingResponse(NotifyPriorityChargingRequest  Request,
+
+                                              Result?                        Result              = null,
+                                              DateTime?                      ResponseTimestamp   = null,
+
+                                              NetworkingNode_Id?             DestinationId       = null,
+                                              NetworkPath?                   NetworkPath         = null,
+
+                                              IEnumerable<KeyPair>?          SignKeys            = null,
+                                              IEnumerable<SignInfo>?         SignInfos           = null,
+                                              IEnumerable<Signature>?        Signatures          = null,
+
+                                              CustomData?                    CustomData          = null)
+
+            : base(Request,
+                   Result ?? Result.OK(),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
+
+        {
+
+            unchecked
+            {
+                hashCode = base.GetHashCode();
+            }
+
+        }
+
+        #endregion
+
 
         //ToDo: Update schema documentation after the official release of OCPP v2.1!
 
@@ -112,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The NotifyPriorityCharging request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomNotifyPriorityChargingResponseParser">A delegate to parse custom NotifyPriorityCharging responses.</param>
-        public static NotifyPriorityChargingResponse Parse(CS.NotifyPriorityChargingRequest                              Request,
+        public static NotifyPriorityChargingResponse Parse(NotifyPriorityChargingRequest                                 Request,
                                                            JObject                                                       JSON,
                                                            NetworkingNode_Id                                             DestinationId,
                                                            NetworkPath                                                   NetworkPath,
@@ -153,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NotifyPriorityChargingResponse">The parsed NotifyPriorityCharging response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyPriorityChargingResponseParser">A delegate to parse custom NotifyPriorityCharging responses.</param>
-        public static Boolean TryParse(CS.NotifyPriorityChargingRequest                              Request,
+        public static Boolean TryParse(NotifyPriorityChargingRequest                                 Request,
                                        JObject                                                       JSON,
                                        NetworkingNode_Id                                             DestinationId,
                                        NetworkPath                                                   NetworkPath,
@@ -277,21 +295,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyPriorityCharging failed because of a request error.
         /// </summary>
         /// <param name="Request">The NotifyPriorityCharging request.</param>
-        public static NotifyPriorityChargingResponse RequestError(CS.NotifyPriorityChargingRequest  Request,
-                                                                  EventTracking_Id                  EventTrackingId,
-                                                                  ResultCode                        ErrorCode,
-                                                                  String?                           ErrorDescription    = null,
-                                                                  JObject?                          ErrorDetails        = null,
-                                                                  DateTime?                         ResponseTimestamp   = null,
+        public static NotifyPriorityChargingResponse RequestError(NotifyPriorityChargingRequest  Request,
+                                                                  EventTracking_Id               EventTrackingId,
+                                                                  ResultCode                     ErrorCode,
+                                                                  String?                        ErrorDescription    = null,
+                                                                  JObject?                       ErrorDetails        = null,
+                                                                  DateTime?                      ResponseTimestamp   = null,
 
-                                                                  NetworkingNode_Id?                DestinationId       = null,
-                                                                  NetworkPath?                      NetworkPath         = null,
+                                                                  NetworkingNode_Id?             DestinationId       = null,
+                                                                  NetworkPath?                   NetworkPath         = null,
 
-                                                                  IEnumerable<KeyPair>?             SignKeys            = null,
-                                                                  IEnumerable<SignInfo>?            SignInfos           = null,
-                                                                  IEnumerable<Signature>?           Signatures          = null,
+                                                                  IEnumerable<KeyPair>?          SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?         SignInfos           = null,
+                                                                  IEnumerable<Signature>?        Signatures          = null,
 
-                                                                  CustomData?                       CustomData          = null)
+                                                                  CustomData?                    CustomData          = null)
 
             => new (
 
@@ -320,8 +338,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyPriorityCharging request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyPriorityChargingResponse FormationViolation(CS.NotifyPriorityChargingRequest  Request,
-                                                                        String                            ErrorDescription)
+        public static NotifyPriorityChargingResponse FormationViolation(NotifyPriorityChargingRequest  Request,
+                                                                        String                         ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -334,8 +352,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyPriorityCharging request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyPriorityChargingResponse SignatureError(CS.NotifyPriorityChargingRequest  Request,
-                                                                    String                            ErrorDescription)
+        public static NotifyPriorityChargingResponse SignatureError(NotifyPriorityChargingRequest  Request,
+                                                                    String                         ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -348,8 +366,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyPriorityCharging request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static NotifyPriorityChargingResponse Failed(CS.NotifyPriorityChargingRequest  Request,
-                                                            String?                           Description   = null)
+        public static NotifyPriorityChargingResponse Failed(NotifyPriorityChargingRequest  Request,
+                                                            String?                        Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -360,8 +378,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyPriorityCharging request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyPriorityChargingResponse ExceptionOccured(CS.NotifyPriorityChargingRequest  Request,
-                                                                      Exception                         Exception)
+        public static NotifyPriorityChargingResponse ExceptionOccured(NotifyPriorityChargingRequest  Request,
+                                                                      Exception                      Exception)
 
             => new (Request,
                     Result.FromException(Exception));
@@ -446,13 +464,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => base.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

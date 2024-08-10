@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,52 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The NotifyEVChargingSchedule response.
     /// </summary>
-    /// <param name="Request">The request leading to this response.</param>
-    /// <param name="Status">The success or failure status of the NotifyEVChargingSchedule request.</param>
-    /// <param name="StatusInfo">Optional detailed status information.</param>
-    /// 
-    /// <param name="Result">The machine-readable result code.</param>
-    /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
-    /// 
-    /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
-    /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
-    /// 
-    /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
-    /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
-    /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
-    /// 
-    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-    public class NotifyEVChargingScheduleResponse(CS.NotifyEVChargingScheduleRequest  Request,
-                                                  GenericStatus                       Status,
-                                                  StatusInfo?                         StatusInfo          = null,
-
-                                                  Result?                             Result              = null,
-                                                  DateTime?                           ResponseTimestamp   = null,
-
-                                                  NetworkingNode_Id?                  DestinationId       = null,
-                                                  NetworkPath?                        NetworkPath         = null,
-
-                                                  IEnumerable<KeyPair>?               SignKeys            = null,
-                                                  IEnumerable<SignInfo>?              SignInfos           = null,
-                                                  IEnumerable<Signature>?             Signatures          = null,
-
-                                                  CustomData?                         CustomData          = null)
-
-            : AResponse<CS.NotifyEVChargingScheduleRequest,
-                        NotifyEVChargingScheduleResponse>(Request,
-                                                          Result ?? Result.OK(),
-                                                          ResponseTimestamp,
-
-                                                          DestinationId,
-                                                          NetworkPath,
-
-                                                          SignKeys,
-                                                          SignInfos,
-                                                          Signatures,
-
-                                                          CustomData),
-                        IResponse
-
+    public class NotifyEVChargingScheduleResponse : AResponse<NotifyEVChargingScheduleRequest,
+                                                              NotifyEVChargingScheduleResponse>,
+                                                    IResponse
     {
 
         #region Data
@@ -103,13 +61,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// It does not imply any approval of the charging schedule.
         /// </summary>
         [Mandatory]
-        public GenericStatus  Status        { get; } = Status;
+        public GenericStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?    StatusInfo    { get; } = StatusInfo;
+        public StatusInfo?    StatusInfo    { get; }
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new NotifyEVChargingSchedule response.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="Status">The success or failure status of the NotifyEVChargingSchedule request.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public NotifyEVChargingScheduleResponse(NotifyEVChargingScheduleRequest  Request,
+                                                GenericStatus                    Status,
+                                                StatusInfo?                      StatusInfo          = null,
+
+                                                Result?                          Result              = null,
+                                                DateTime?                        ResponseTimestamp   = null,
+
+                                                NetworkingNode_Id?               DestinationId       = null,
+                                                NetworkPath?                     NetworkPath         = null,
+
+                                                IEnumerable<KeyPair>?            SignKeys            = null,
+                                                IEnumerable<SignInfo>?           SignInfos           = null,
+                                                IEnumerable<Signature>?          Signatures          = null,
+
+                                                CustomData?                      CustomData          = null)
+
+            : base(Request,
+                   Result ?? Result.OK(),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
+
+        {
+
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
+
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
+
+        }
 
         #endregion
 
@@ -129,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The NotifyEVChargingSchedule request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomNotifyEVChargingScheduleResponseParser">A delegate to parse custom NotifyEVChargingSchedule responses.</param>
-        public static NotifyEVChargingScheduleResponse Parse(CS.NotifyEVChargingScheduleRequest                              Request,
+        public static NotifyEVChargingScheduleResponse Parse(NotifyEVChargingScheduleRequest                                 Request,
                                                              JObject                                                         JSON,
                                                              NetworkingNode_Id                                               DestinationId,
                                                              NetworkPath                                                     NetworkPath,
@@ -172,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NotifyEVChargingScheduleResponse">The parsed NotifyEVChargingSchedule response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyEVChargingScheduleResponseParser">A delegate to parse custom NotifyEVChargingSchedule responses.</param>
-        public static Boolean TryParse(CS.NotifyEVChargingScheduleRequest                              Request,
+        public static Boolean TryParse(NotifyEVChargingScheduleRequest                                 Request,
                                        JObject                                                         JSON,
                                        NetworkingNode_Id                                               DestinationId,
                                        NetworkPath                                                     NetworkPath,
@@ -333,21 +358,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyEVChargingSchedule failed because of a request error.
         /// </summary>
         /// <param name="Request">The NotifyEVChargingSchedule request.</param>
-        public static NotifyEVChargingScheduleResponse RequestError(CS.NotifyEVChargingScheduleRequest  Request,
-                                                                    EventTracking_Id                    EventTrackingId,
-                                                                    ResultCode                          ErrorCode,
-                                                                    String?                             ErrorDescription    = null,
-                                                                    JObject?                            ErrorDetails        = null,
-                                                                    DateTime?                           ResponseTimestamp   = null,
+        public static NotifyEVChargingScheduleResponse RequestError(NotifyEVChargingScheduleRequest  Request,
+                                                                    EventTracking_Id                 EventTrackingId,
+                                                                    ResultCode                       ErrorCode,
+                                                                    String?                          ErrorDescription    = null,
+                                                                    JObject?                         ErrorDetails        = null,
+                                                                    DateTime?                        ResponseTimestamp   = null,
 
-                                                                    NetworkingNode_Id?                  DestinationId       = null,
-                                                                    NetworkPath?                        NetworkPath         = null,
+                                                                    NetworkingNode_Id?               DestinationId       = null,
+                                                                    NetworkPath?                     NetworkPath         = null,
 
-                                                                    IEnumerable<KeyPair>?               SignKeys            = null,
-                                                                    IEnumerable<SignInfo>?              SignInfos           = null,
-                                                                    IEnumerable<Signature>?             Signatures          = null,
+                                                                    IEnumerable<KeyPair>?            SignKeys            = null,
+                                                                    IEnumerable<SignInfo>?           SignInfos           = null,
+                                                                    IEnumerable<Signature>?          Signatures          = null,
 
-                                                                    CustomData?                         CustomData          = null)
+                                                                    CustomData?                      CustomData          = null)
 
             => new (
 
@@ -378,8 +403,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyEVChargingSchedule request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyEVChargingScheduleResponse FormationViolation(CS.NotifyEVChargingScheduleRequest  Request,
-                                                                          String                              ErrorDescription)
+        public static NotifyEVChargingScheduleResponse FormationViolation(NotifyEVChargingScheduleRequest  Request,
+                                                                          String                           ErrorDescription)
 
             => new (Request,
                     GenericStatus.Rejected,
@@ -393,8 +418,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyEVChargingSchedule request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyEVChargingScheduleResponse SignatureError(CS.NotifyEVChargingScheduleRequest  Request,
-                                                                      String                              ErrorDescription)
+        public static NotifyEVChargingScheduleResponse SignatureError(NotifyEVChargingScheduleRequest  Request,
+                                                                      String                           ErrorDescription)
 
             => new (Request,
                     GenericStatus.Rejected,
@@ -408,8 +433,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyEVChargingSchedule request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static NotifyEVChargingScheduleResponse Failed(CS.NotifyEVChargingScheduleRequest  Request,
-                                                              String?                             Description   = null)
+        public static NotifyEVChargingScheduleResponse Failed(NotifyEVChargingScheduleRequest  Request,
+                                                              String?                          Description   = null)
 
             => new (Request,
                     GenericStatus.Rejected,
@@ -421,8 +446,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyEVChargingSchedule request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyEVChargingScheduleResponse ExceptionOccured(CS.NotifyEVChargingScheduleRequest  Request,
-                                                                        Exception                           Exception)
+        public static NotifyEVChargingScheduleResponse ExceptionOccured(NotifyEVChargingScheduleRequest  Request,
+                                                                        Exception                        Exception)
 
             => new (Request,
                     GenericStatus.Rejected,
@@ -514,22 +539,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The UnlockConnector response.
     /// </summary>
-    public class UnlockConnectorResponse : AResponse<CSMS.UnlockConnectorRequest,
+    public class UnlockConnectorResponse : AResponse<UnlockConnectorRequest,
                                                      UnlockConnectorResponse>,
                                            IResponse
     {
@@ -70,37 +71,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region UnlockConnectorResponse(Request, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new UnlockConnector response.
         /// </summary>
         /// <param name="Request">The UnlockConnector request leading to this response.</param>
         /// <param name="Status">The success or failure of the UnlockConnector request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UnlockConnectorResponse(CSMS.UnlockConnectorRequest   Request,
-                                       UnlockStatus                  Status,
-                                       StatusInfo?                   StatusInfo          = null,
-                                       DateTime?                     ResponseTimestamp   = null,
+        public UnlockConnectorResponse(UnlockConnectorRequest   Request,
+                                       UnlockStatus             Status,
+                                       StatusInfo?              StatusInfo          = null,
 
-                                       NetworkingNode_Id?            DestinationId       = null,
-                                       NetworkPath?                  NetworkPath         = null,
+                                       Result?                  Result              = null,
+                                       DateTime?                ResponseTimestamp   = null,
 
-                                       IEnumerable<KeyPair>?         SignKeys            = null,
-                                       IEnumerable<SignInfo>?        SignInfos           = null,
-                                       IEnumerable<Signature>?       Signatures          = null,
+                                       NetworkingNode_Id?       DestinationId       = null,
+                                       NetworkPath?             NetworkPath         = null,
 
-                                       CustomData?                   CustomData          = null)
+                                       IEnumerable<KeyPair>?    SignKeys            = null,
+                                       IEnumerable<SignInfo>?   SignInfos           = null,
+                                       IEnumerable<Signature>?  Signatures          = null,
+
+                                       CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -117,46 +123,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.Status      = Status;
             this.StatusInfo  = StatusInfo;
 
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region UnlockConnectorResponse(Result)
-
-        /// <summary>
-        /// Create a new UnlockConnector response.
-        /// </summary>
-        /// <param name="Request">The UnlockConnector request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public UnlockConnectorResponse(CSMS.UnlockConnectorRequest  Request,
-                                       Result                       Result,
-                                       DateTime?                    ResponseTimestamp   = null,
-
-                                       NetworkingNode_Id?           DestinationId       = null,
-                                       NetworkPath?                 NetworkPath         = null,
-
-                                       IEnumerable<KeyPair>?        SignKeys            = null,
-                                       IEnumerable<SignInfo>?       SignInfos           = null,
-                                       IEnumerable<Signature>?      Signatures          = null,
-
-                                       CustomData?                  CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -247,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The UnlockConnector request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom UnlockConnector responses.</param>
-        public static UnlockConnectorResponse Parse(CSMS.UnlockConnectorRequest                            Request,
+        public static UnlockConnectorResponse Parse(UnlockConnectorRequest                                 Request,
                                                     JObject                                                JSON,
                                                     NetworkingNode_Id                                      DestinationId,
                                                     NetworkPath                                            NetworkPath,
@@ -290,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="UnlockConnectorResponse">The parsed UnlockConnector response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom UnlockConnector responses.</param>
-        public static Boolean TryParse(CSMS.UnlockConnectorRequest                            Request,
+        public static Boolean TryParse(UnlockConnectorRequest                                 Request,
                                        JObject                                                JSON,
                                        NetworkingNode_Id                                      DestinationId,
                                        NetworkPath                                            NetworkPath,
@@ -369,6 +345,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               Request,
                                               UnlockStatus,
                                               StatusInfo,
+
+                                              null,
                                               ResponseTimestamp,
 
                                               DestinationId,
@@ -450,25 +428,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The UnlockConnector failed because of a request error.
         /// </summary>
         /// <param name="Request">The UnlockConnector request.</param>
-        public static UnlockConnectorResponse RequestError(CSMS.UnlockConnectorRequest  Request,
-                                                           EventTracking_Id             EventTrackingId,
-                                                           ResultCode                   ErrorCode,
-                                                           String?                      ErrorDescription    = null,
-                                                           JObject?                     ErrorDetails        = null,
-                                                           DateTime?                    ResponseTimestamp   = null,
+        public static UnlockConnectorResponse RequestError(UnlockConnectorRequest   Request,
+                                                           EventTracking_Id         EventTrackingId,
+                                                           ResultCode               ErrorCode,
+                                                           String?                  ErrorDescription    = null,
+                                                           JObject?                 ErrorDetails        = null,
+                                                           DateTime?                ResponseTimestamp   = null,
 
-                                                           NetworkingNode_Id?           DestinationId       = null,
-                                                           NetworkPath?                 NetworkPath         = null,
+                                                           NetworkingNode_Id?       DestinationId       = null,
+                                                           NetworkPath?             NetworkPath         = null,
 
-                                                           IEnumerable<KeyPair>?        SignKeys            = null,
-                                                           IEnumerable<SignInfo>?       SignInfos           = null,
-                                                           IEnumerable<Signature>?      Signatures          = null,
+                                                           IEnumerable<KeyPair>?    SignKeys            = null,
+                                                           IEnumerable<SignInfo>?   SignInfos           = null,
+                                                           IEnumerable<Signature>?  Signatures          = null,
 
-                                                           CustomData?                  CustomData          = null)
+                                                           CustomData?              CustomData          = null)
 
             => new (
 
                    Request,
+                   UnlockStatus.UnlockFailed,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -493,13 +473,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UnlockConnector request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static UnlockConnectorResponse FormationViolation(CSMS.UnlockConnectorRequest  Request,
-                                                                 String                       ErrorDescription)
+        public static UnlockConnectorResponse FormationViolation(UnlockConnectorRequest  Request,
+                                                                 String                  ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    UnlockStatus.UnlockFailed,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -507,13 +488,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UnlockConnector request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static UnlockConnectorResponse SignatureError(CSMS.UnlockConnectorRequest  Request,
-                                                             String                       ErrorDescription)
+        public static UnlockConnectorResponse SignatureError(UnlockConnectorRequest  Request,
+                                                             String                  ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    UnlockStatus.UnlockFailed,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -521,11 +503,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UnlockConnector request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static UnlockConnectorResponse Failed(CSMS.UnlockConnectorRequest  Request,
-                                                     String?                      Description   = null)
+        public static UnlockConnectorResponse Failed(UnlockConnectorRequest  Request,
+                                                     String?                 Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    UnlockStatus.UnlockFailed,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -533,11 +516,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UnlockConnector request.</param>
         /// <param name="Exception">The exception.</param>
-        public static UnlockConnectorResponse ExceptionOccured(CSMS.UnlockConnectorRequest  Request,
-                                                               Exception                    Exception)
+        public static UnlockConnectorResponse ExceptionOccured(UnlockConnectorRequest  Request,
+                                                               Exception               Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    UnlockStatus.UnlockFailed,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -625,22 +609,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

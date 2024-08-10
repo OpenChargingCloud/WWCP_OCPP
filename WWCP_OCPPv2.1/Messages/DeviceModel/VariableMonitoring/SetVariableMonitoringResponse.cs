@@ -23,7 +23,9 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using System;
 
 #endregion
 
@@ -33,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A SetVariableMonitoring response.
     /// </summary>
-    public class SetVariableMonitoringResponse : AResponse<CSMS.SetVariableMonitoringRequest,
+    public class SetVariableMonitoringResponse : AResponse<SetVariableMonitoringRequest,
                                                            SetVariableMonitoringResponse>,
                                                  IResponse
     {
@@ -65,22 +67,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region SetVariableMonitoringResponse(Request, SetMonitoringResults, ...)
-
         /// <summary>
         /// Create a new SetVariableMonitoring response.
         /// </summary>
         /// <param name="Request">The SetVariableMonitoring request leading to this response.</param>
         /// <param name="SetMonitoringResults">An enumeration of SetVariableMonitoring result status per monitor.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SetVariableMonitoringResponse(CSMS.SetVariableMonitoringRequest  Request,
+        public SetVariableMonitoringResponse(SetVariableMonitoringRequest       Request,
                                              IEnumerable<SetMonitoringResult>   SetMonitoringResults,
+
+                                             Result?                            Result              = null,
                                              DateTime?                          ResponseTimestamp   = null,
 
                                              NetworkingNode_Id?                 DestinationId       = null,
@@ -93,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              CustomData?                        CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -107,52 +114,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            this.SetMonitoringResults = SetMonitoringResults;
+            this.SetMonitoringResults = SetMonitoringResults.Distinct();
+
+            unchecked
+            {
+
+                hashCode = SetMonitoringResults.CalcHashCode() * 3 ^
+                           base.                GetHashCode();
+
+            }
 
         }
-
-        #endregion
-
-        #region SetVariableMonitoringResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new SetVariableMonitoring response.
-        /// </summary>
-        /// <param name="Request">The SetVariableMonitoring request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public SetVariableMonitoringResponse(CSMS.SetVariableMonitoringRequest  Request,
-                                             Result                             Result,
-                                             DateTime?                          ResponseTimestamp   = null,
-
-                                             NetworkingNode_Id?                 DestinationId       = null,
-                                             NetworkPath?                       NetworkPath         = null,
-
-                                             IEnumerable<KeyPair>?              SignKeys            = null,
-                                             IEnumerable<SignInfo>?             SignInfos           = null,
-                                             IEnumerable<Signature>?            Signatures          = null,
-
-                                             CustomData?                        CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.SetMonitoringResults = [];
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -374,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The SetVariableMonitoring request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom SetVariableMonitoring responses.</param>
-        public static SetVariableMonitoringResponse Parse(CSMS.SetVariableMonitoringRequest                            Request,
+        public static SetVariableMonitoringResponse Parse(SetVariableMonitoringRequest                                 Request,
                                                           JObject                                                      JSON,
                                                           NetworkingNode_Id                                            DestinationId,
                                                           NetworkPath                                                  NetworkPath,
@@ -425,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="SetVariableMonitoringResponse">The parsed SetVariableMonitoring response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom SetVariableMonitoring responses.</param>
-        public static Boolean TryParse(CSMS.SetVariableMonitoringRequest                            Request,
+        public static Boolean TryParse(SetVariableMonitoringRequest                                 Request,
                                        JObject                                                      JSON,
                                        NetworkingNode_Id                                            DestinationId,
                                        NetworkPath                                                  NetworkPath,
@@ -493,6 +465,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                     Request,
                                                     SetMonitoringResults,
+
+                                                    null,
                                                     ResponseTimestamp,
 
                                                     DestinationId,
@@ -582,25 +556,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetVariableMonitoring failed because of a request error.
         /// </summary>
         /// <param name="Request">The SetVariableMonitoring request.</param>
-        public static SetVariableMonitoringResponse RequestError(CSMS.SetVariableMonitoringRequest  Request,
-                                                                 EventTracking_Id                   EventTrackingId,
-                                                                 ResultCode                         ErrorCode,
-                                                                 String?                            ErrorDescription    = null,
-                                                                 JObject?                           ErrorDetails        = null,
-                                                                 DateTime?                          ResponseTimestamp   = null,
+        public static SetVariableMonitoringResponse RequestError(SetVariableMonitoringRequest  Request,
+                                                                 EventTracking_Id              EventTrackingId,
+                                                                 ResultCode                    ErrorCode,
+                                                                 String?                       ErrorDescription    = null,
+                                                                 JObject?                      ErrorDetails        = null,
+                                                                 DateTime?                     ResponseTimestamp   = null,
 
-                                                                 NetworkingNode_Id?                 DestinationId       = null,
-                                                                 NetworkPath?                       NetworkPath         = null,
+                                                                 NetworkingNode_Id?            DestinationId       = null,
+                                                                 NetworkPath?                  NetworkPath         = null,
 
-                                                                 IEnumerable<KeyPair>?              SignKeys            = null,
-                                                                 IEnumerable<SignInfo>?             SignInfos           = null,
-                                                                 IEnumerable<Signature>?            Signatures          = null,
+                                                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                 IEnumerable<Signature>?       Signatures          = null,
 
-                                                                 CustomData?                        CustomData          = null)
+                                                                 CustomData?                   CustomData          = null)
 
             => new (
 
                    Request,
+                   [],
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -625,10 +600,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetVariableMonitoring request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SetVariableMonitoringResponse FormationViolation(CSMS.SetVariableMonitoringRequest  Request,
+        public static SetVariableMonitoringResponse FormationViolation(SetVariableMonitoringRequest  Request,
                                                                        String                             ErrorDescription)
 
             => new (Request,
+                    [],
                     Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
@@ -639,10 +615,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetVariableMonitoring request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SetVariableMonitoringResponse SignatureError(CSMS.SetVariableMonitoringRequest  Request,
+        public static SetVariableMonitoringResponse SignatureError(SetVariableMonitoringRequest  Request,
                                                                    String                             ErrorDescription)
 
             => new (Request,
+                    [],
                     Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
@@ -653,10 +630,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetVariableMonitoring request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static SetVariableMonitoringResponse Failed(CSMS.SetVariableMonitoringRequest  Request,
+        public static SetVariableMonitoringResponse Failed(SetVariableMonitoringRequest  Request,
                                                            String?                            Description   = null)
 
             => new (Request,
+                    [],
                     Result.Server(Description));
 
 
@@ -665,10 +643,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetVariableMonitoring request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetVariableMonitoringResponse ExceptionOccured(CSMS.SetVariableMonitoringRequest  Request,
+        public static SetVariableMonitoringResponse ExceptionOccured(SetVariableMonitoringRequest  Request,
                                                                      Exception                          Exception)
 
             => new (Request,
+                    [],
                     Result.FromException(Exception));
 
         #endregion
@@ -755,20 +734,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-{
-            unchecked
-            {
-
-                return SetMonitoringResults.CalcHashCode() * 3 ^
-                       base.                GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

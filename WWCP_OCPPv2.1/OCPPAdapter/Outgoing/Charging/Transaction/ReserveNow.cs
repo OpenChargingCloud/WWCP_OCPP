@@ -233,7 +233,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new ReserveNowResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     ReservationStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

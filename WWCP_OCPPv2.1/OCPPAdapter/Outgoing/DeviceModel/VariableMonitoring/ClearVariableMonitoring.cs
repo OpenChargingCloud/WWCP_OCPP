@@ -229,6 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new ClearVariableMonitoringResponse(
                                      Request,
+                                     [],
                                      Result.FromSendRequestState(sendRequestState)
                                  );
 

@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The NotifyDisplayMessages response.
     /// </summary>
-    public class NotifyDisplayMessagesResponse : AResponse<CS.NotifyDisplayMessagesRequest,
+    public class NotifyDisplayMessagesResponse : AResponse<NotifyDisplayMessagesRequest,
                                                            NotifyDisplayMessagesResponse>,
                                                  IResponse
     {
@@ -59,33 +60,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region NotifyDisplayMessagesResponse(Request, ...)
-
         /// <summary>
         /// Create a new NotifyDisplayMessages response.
         /// </summary>
         /// <param name="Request">The NotifyDisplayMessages request leading to this response.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public NotifyDisplayMessagesResponse(CS.NotifyDisplayMessagesRequest  Request,
-                                             DateTime?                        ResponseTimestamp   = null,
+        public NotifyDisplayMessagesResponse(NotifyDisplayMessagesRequest  Request,
 
-                                             NetworkingNode_Id?               DestinationId       = null,
-                                             NetworkPath?                     NetworkPath         = null,
+                                             Result?                       Result              = null,
+                                             DateTime?                     ResponseTimestamp   = null,
 
-                                             IEnumerable<KeyPair>?            SignKeys            = null,
-                                             IEnumerable<SignInfo>?           SignInfos           = null,
-                                             IEnumerable<Signature>?          Signatures          = null,
+                                             NetworkingNode_Id?            DestinationId       = null,
+                                             NetworkPath?                  NetworkPath         = null,
 
-                                             CustomData?                      CustomData          = null)
+                                             IEnumerable<KeyPair>?         SignKeys            = null,
+                                             IEnumerable<SignInfo>?        SignInfos           = null,
+                                             IEnumerable<Signature>?       Signatures          = null,
+
+                                             CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -97,46 +103,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    CustomData)
 
-        { }
+        {
 
-        #endregion
+            unchecked
+            {
+                hashCode = base.GetHashCode();
+            }
 
-        #region NotifyDisplayMessagesResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new NotifyDisplayMessages response.
-        /// </summary>
-        /// <param name="Request">The NotifyDisplayMessages request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public NotifyDisplayMessagesResponse(CS.NotifyDisplayMessagesRequest  Request,
-                                             Result                           Result,
-                                             DateTime?                        ResponseTimestamp   = null,
-
-                                             NetworkingNode_Id?               DestinationId       = null,
-                                             NetworkPath?                     NetworkPath         = null,
-
-                                             IEnumerable<KeyPair>?            SignKeys            = null,
-                                             IEnumerable<SignInfo>?           SignInfos           = null,
-                                             IEnumerable<Signature>?          Signatures          = null,
-
-                                             CustomData?                      CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
+        }
 
         #endregion
 
@@ -182,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The NotifyDisplayMessages request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomNotifyDisplayMessagesResponseParser">A delegate to parse custom NotifyDisplayMessages responses.</param>
-        public static NotifyDisplayMessagesResponse Parse(CS.NotifyDisplayMessagesRequest                              Request,
+        public static NotifyDisplayMessagesResponse Parse(NotifyDisplayMessagesRequest                                 Request,
                                                           JObject                                                      JSON,
                                                           NetworkingNode_Id                                            DestinationId,
                                                           NetworkPath                                                  NetworkPath,
@@ -223,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NotifyDisplayMessagesResponse">The parsed NotifyDisplayMessages response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyDisplayMessagesResponseParser">A delegate to parse custom NotifyDisplayMessages responses.</param>
-        public static Boolean TryParse(CS.NotifyDisplayMessagesRequest                              Request,
+        public static Boolean TryParse(NotifyDisplayMessagesRequest                                 Request,
                                        JObject                                                      JSON,
                                        NetworkingNode_Id                                            DestinationId,
                                        NetworkPath                                                  NetworkPath,
@@ -274,6 +248,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 NotifyDisplayMessagesResponse = new NotifyDisplayMessagesResponse(
 
                                                     Request,
+
+                                                    null,
                                                     ResponseTimestamp,
 
                                                     DestinationId,
@@ -346,21 +322,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyDisplayMessages failed because of a request error.
         /// </summary>
         /// <param name="Request">The NotifyDisplayMessages request.</param>
-        public static NotifyDisplayMessagesResponse RequestError(CS.NotifyDisplayMessagesRequest  Request,
-                                                                 EventTracking_Id                 EventTrackingId,
-                                                                 ResultCode                       ErrorCode,
-                                                                 String?                          ErrorDescription    = null,
-                                                                 JObject?                         ErrorDetails        = null,
-                                                                 DateTime?                        ResponseTimestamp   = null,
+        public static NotifyDisplayMessagesResponse RequestError(NotifyDisplayMessagesRequest  Request,
+                                                                 EventTracking_Id              EventTrackingId,
+                                                                 ResultCode                    ErrorCode,
+                                                                 String?                       ErrorDescription    = null,
+                                                                 JObject?                      ErrorDetails        = null,
+                                                                 DateTime?                     ResponseTimestamp   = null,
 
-                                                                 NetworkingNode_Id?               DestinationId       = null,
-                                                                 NetworkPath?                     NetworkPath         = null,
+                                                                 NetworkingNode_Id?            DestinationId       = null,
+                                                                 NetworkPath?                  NetworkPath         = null,
 
-                                                                 IEnumerable<KeyPair>?            SignKeys            = null,
-                                                                 IEnumerable<SignInfo>?           SignInfos           = null,
-                                                                 IEnumerable<Signature>?          Signatures          = null,
+                                                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                 IEnumerable<Signature>?       Signatures          = null,
 
-                                                                 CustomData?                      CustomData          = null)
+                                                                 CustomData?                   CustomData          = null)
 
             => new (
 
@@ -389,8 +365,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyDisplayMessages request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyDisplayMessagesResponse FormationViolation(CS.NotifyDisplayMessagesRequest  Request,
-                                                                       String                           ErrorDescription)
+        public static NotifyDisplayMessagesResponse FormationViolation(NotifyDisplayMessagesRequest  Request,
+                                                                       String                        ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -403,8 +379,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyDisplayMessages request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyDisplayMessagesResponse SignatureError(CS.NotifyDisplayMessagesRequest  Request,
-                                                                   String                           ErrorDescription)
+        public static NotifyDisplayMessagesResponse SignatureError(NotifyDisplayMessagesRequest  Request,
+                                                                   String                        ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -417,8 +393,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyDisplayMessages request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static NotifyDisplayMessagesResponse Failed(CS.NotifyDisplayMessagesRequest  Request,
-                                                           String?                          Description   = null)
+        public static NotifyDisplayMessagesResponse Failed(NotifyDisplayMessagesRequest  Request,
+                                                           String?                       Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -429,8 +405,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyDisplayMessages request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyDisplayMessagesResponse ExceptionOccured(CS.NotifyDisplayMessagesRequest  Request,
-                                                                     Exception                        Exception)
+        public static NotifyDisplayMessagesResponse ExceptionOccured(NotifyDisplayMessagesRequest  Request,
+                                                                     Exception                     Exception)
 
             => new (Request,
                     Result.FromException(Exception));
@@ -515,13 +491,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => base.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

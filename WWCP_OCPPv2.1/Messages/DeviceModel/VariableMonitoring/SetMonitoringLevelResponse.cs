@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A SetMonitoringLevel response.
     /// </summary>
-    public class SetMonitoringLevelResponse : AResponse<CSMS.SetMonitoringLevelRequest,
+    public class SetMonitoringLevelResponse : AResponse<SetMonitoringLevelRequest,
                                                         SetMonitoringLevelResponse>,
                                               IResponse
     {
@@ -71,8 +72,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region SetMonitoringLevelResponse(Request, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new SetMonitoringLevel response.
         /// </summary>
@@ -86,22 +85,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SetMonitoringLevelResponse(CSMS.SetMonitoringLevelRequest  Request,
-                                         GenericStatus                    Status,
-                                         StatusInfo?                      StatusInfo          = null,
-                                         DateTime?                        ResponseTimestamp   = null,
+        public SetMonitoringLevelResponse(SetMonitoringLevelRequest  Request,
+                                          GenericStatus              Status,
+                                          StatusInfo?                StatusInfo          = null,
 
-                                         NetworkingNode_Id?               DestinationId       = null,
-                                         NetworkPath?                     NetworkPath         = null,
+                                          Result?                    Result              = null,
+                                          DateTime?                  ResponseTimestamp   = null,
 
-                                         IEnumerable<KeyPair>?            SignKeys            = null,
-                                         IEnumerable<SignInfo>?           SignInfos           = null,
-                                         IEnumerable<Signature>?          Signatures          = null,
+                                          NetworkingNode_Id?         DestinationId       = null,
+                                          NetworkPath?               NetworkPath         = null,
 
-                                         CustomData?                      CustomData          = null)
+                                          IEnumerable<KeyPair>?      SignKeys            = null,
+                                          IEnumerable<SignInfo>?     SignInfos           = null,
+                                          IEnumerable<Signature>?    Signatures          = null,
+
+                                          CustomData?                CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -118,46 +119,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.Status      = Status;
             this.StatusInfo  = StatusInfo;
 
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region SetMonitoringLevelResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new SetMonitoringLevel response.
-        /// </summary>
-        /// <param name="Request">The SetMonitoringLevel request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public SetMonitoringLevelResponse(CSMS.SetMonitoringLevelRequest  Request,
-                                          Result                          Result,
-                                          DateTime?                       ResponseTimestamp   = null,
-
-                                          NetworkingNode_Id?              DestinationId       = null,
-                                          NetworkPath?                    NetworkPath         = null,
-
-                                          IEnumerable<KeyPair>?           SignKeys            = null,
-                                          IEnumerable<SignInfo>?          SignInfos           = null,
-                                          IEnumerable<Signature>?         Signatures          = null,
-
-                                          CustomData?                     CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -246,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The SetMonitoringLevel request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom SetMonitoringLevel responses.</param>
-        public static SetMonitoringLevelResponse Parse(CSMS.SetMonitoringLevelRequest                            Request,
+        public static SetMonitoringLevelResponse Parse(SetMonitoringLevelRequest                                 Request,
                                                        JObject                                                   JSON,
                                                        NetworkingNode_Id                                         DestinationId,
                                                        NetworkPath                                               NetworkPath,
@@ -289,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="SetMonitoringLevelResponse">The parsed SetMonitoringLevel response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom SetMonitoringLevel responses.</param>
-        public static Boolean TryParse(CSMS.SetMonitoringLevelRequest                            Request,
+        public static Boolean TryParse(SetMonitoringLevelRequest                                 Request,
                                        JObject                                                   JSON,
                                        NetworkingNode_Id                                         DestinationId,
                                        NetworkPath                                               NetworkPath,
@@ -368,6 +339,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                  Request,
                                                  Status,
                                                  StatusInfo,
+
+                                                 null,
                                                  ResponseTimestamp,
 
                                                  DestinationId,
@@ -449,25 +422,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetMonitoringLevel failed because of a request error.
         /// </summary>
         /// <param name="Request">The SetMonitoringLevel request.</param>
-        public static SetMonitoringLevelResponse RequestError(CSMS.SetMonitoringLevelRequest    Request,
-                                                     EventTracking_Id         EventTrackingId,
-                                                     ResultCode               ErrorCode,
-                                                     String?                  ErrorDescription    = null,
-                                                     JObject?                 ErrorDetails        = null,
-                                                     DateTime?                ResponseTimestamp   = null,
+        public static SetMonitoringLevelResponse RequestError(SetMonitoringLevelRequest  Request,
+                                                              EventTracking_Id           EventTrackingId,
+                                                              ResultCode                 ErrorCode,
+                                                              String?                    ErrorDescription    = null,
+                                                              JObject?                   ErrorDetails        = null,
+                                                              DateTime?                  ResponseTimestamp   = null,
 
-                                                     NetworkingNode_Id?       DestinationId       = null,
-                                                     NetworkPath?             NetworkPath         = null,
+                                                              NetworkingNode_Id?         DestinationId       = null,
+                                                              NetworkPath?               NetworkPath         = null,
 
-                                                     IEnumerable<KeyPair>?    SignKeys            = null,
-                                                     IEnumerable<SignInfo>?   SignInfos           = null,
-                                                     IEnumerable<Signature>?  Signatures          = null,
+                                                              IEnumerable<KeyPair>?      SignKeys            = null,
+                                                              IEnumerable<SignInfo>?     SignInfos           = null,
+                                                              IEnumerable<Signature>?    Signatures          = null,
 
-                                                     CustomData?              CustomData          = null)
+                                                              CustomData?                CustomData          = null)
 
             => new (
 
                    Request,
+                   GenericStatus.Rejected,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -492,13 +467,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetMonitoringLevel request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SetMonitoringLevelResponse FormationViolation(CSMS.SetMonitoringLevelRequest  Request,
-                                                                    String                          ErrorDescription)
+        public static SetMonitoringLevelResponse FormationViolation(SetMonitoringLevelRequest  Request,
+                                                                    String                     ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    GenericStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -506,13 +482,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetMonitoringLevel request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SetMonitoringLevelResponse SignatureError(CSMS.SetMonitoringLevelRequest  Request,
-                                                                String                          ErrorDescription)
+        public static SetMonitoringLevelResponse SignatureError(SetMonitoringLevelRequest  Request,
+                                                                String                     ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    GenericStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -520,11 +497,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetMonitoringLevel request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static SetMonitoringLevelResponse Failed(CSMS.SetMonitoringLevelRequest  Request,
-                                                        String?                         Description   = null)
+        public static SetMonitoringLevelResponse Failed(SetMonitoringLevelRequest  Request,
+                                                        String?                    Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    GenericStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -532,11 +510,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetMonitoringLevel request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetMonitoringLevelResponse ExceptionOccured(CSMS.SetMonitoringLevelRequest  Request,
-                                                                  Exception                       Exception)
+        public static SetMonitoringLevelResponse ExceptionOccured(SetMonitoringLevelRequest  Request,
+                                                                  Exception                  Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    GenericStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -624,22 +603,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-{
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

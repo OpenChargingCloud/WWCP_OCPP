@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The GetTransactionStatus response.
     /// </summary>
-    public class GetTransactionStatusResponse : AResponse<CSMS.GetTransactionStatusRequest,
+    public class GetTransactionStatusResponse : AResponse<GetTransactionStatusRequest,
                                                           GetTransactionStatusResponse>,
                                                 IResponse
     {
@@ -71,37 +72,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region GetTransactionStatusResponse(Request, MessagesInQueue, OngoingIndicator = null, ...)
-
         /// <summary>
         /// Create a new GetTransactionStatus response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="MessagesInQueue">Whether there are still message to be delivered.</param>
         /// <param name="OngoingIndicator">An optional indication whether the transaction is still ongoing.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public GetTransactionStatusResponse(CSMS.GetTransactionStatusRequest  Request,
-                                            Boolean                           MessagesInQueue,
-                                            Boolean?                          OngoingIndicator    = null,
-                                            DateTime?                         ResponseTimestamp   = null,
+        public GetTransactionStatusResponse(GetTransactionStatusRequest  Request,
+                                            Boolean                      MessagesInQueue,
+                                            Boolean?                     OngoingIndicator    = null,
 
-                                            NetworkingNode_Id?                DestinationId       = null,
-                                            NetworkPath?                      NetworkPath         = null,
+                                            Result?                      Result              = null,
+                                            DateTime?                    ResponseTimestamp   = null,
 
-                                            IEnumerable<KeyPair>?             SignKeys            = null,
-                                            IEnumerable<SignInfo>?            SignInfos           = null,
-                                            IEnumerable<Signature>?           Signatures          = null,
+                                            NetworkingNode_Id?           DestinationId       = null,
+                                            NetworkPath?                 NetworkPath         = null,
 
-                                            CustomData?                       CustomData          = null)
+                                            IEnumerable<KeyPair>?        SignKeys            = null,
+                                            IEnumerable<SignInfo>?       SignInfos           = null,
+                                            IEnumerable<Signature>?      Signatures          = null,
+
+                                            CustomData?                  CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -118,46 +124,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.MessagesInQueue   = MessagesInQueue;
             this.OngoingIndicator  = OngoingIndicator;
 
+            unchecked
+            {
+
+                hashCode = this.MessagesInQueue.  GetHashCode()       * 5 ^
+                          (this.OngoingIndicator?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region GetTransactionStatusResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new GetTransactionStatus response.
-        /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetTransactionStatusResponse(CSMS.GetTransactionStatusRequest  Request,
-                                            Result                            Result,
-                                            DateTime?                         ResponseTimestamp   = null,
-
-                                            NetworkingNode_Id?                DestinationId       = null,
-                                            NetworkPath?                      NetworkPath         = null,
-
-                                            IEnumerable<KeyPair>?             SignKeys            = null,
-                                            IEnumerable<SignInfo>?            SignInfos           = null,
-                                            IEnumerable<Signature>?           Signatures          = null,
-
-                                            CustomData?                       CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -214,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomGetTransactionStatusResponseParser">A delegate to parse custom GetTransactionStatus responses.</param>
-        public static GetTransactionStatusResponse Parse(CSMS.GetTransactionStatusRequest                            Request,
+        public static GetTransactionStatusResponse Parse(GetTransactionStatusRequest                                 Request,
                                                          JObject                                                     JSON,
                                                          NetworkingNode_Id                                           DestinationId,
                                                          NetworkPath                                                 NetworkPath,
@@ -255,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="GetTransactionStatusResponse">The parsed GetTransactionStatus response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetTransactionStatusResponseParser">A delegate to parse custom GetTransactionStatus responses.</param>
-        public static Boolean TryParse(CSMS.GetTransactionStatusRequest                            Request,
+        public static Boolean TryParse(GetTransactionStatusRequest                                 Request,
                                        JObject                                                     JSON,
                                        NetworkingNode_Id                                           DestinationId,
                                        NetworkPath                                                 NetworkPath,
@@ -331,6 +307,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    Request,
                                                    MessagesInQueue,
                                                    OngoingIndicator,
+
+                                                   null,
                                                    ResponseTimestamp,
 
                                                    DestinationId,
@@ -409,25 +387,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetTransactionStatus failed because of a request error.
         /// </summary>
         /// <param name="Request">The GetTransactionStatus request.</param>
-        public static GetTransactionStatusResponse RequestError(CSMS.GetTransactionStatusRequest  Request,
-                                                                EventTracking_Id                  EventTrackingId,
-                                                                ResultCode                        ErrorCode,
-                                                                String?                           ErrorDescription    = null,
-                                                                JObject?                          ErrorDetails        = null,
-                                                                DateTime?                         ResponseTimestamp   = null,
+        public static GetTransactionStatusResponse RequestError(GetTransactionStatusRequest  Request,
+                                                                EventTracking_Id             EventTrackingId,
+                                                                ResultCode                   ErrorCode,
+                                                                String?                      ErrorDescription    = null,
+                                                                JObject?                     ErrorDetails        = null,
+                                                                DateTime?                    ResponseTimestamp   = null,
 
-                                                                NetworkingNode_Id?                DestinationId       = null,
-                                                                NetworkPath?                      NetworkPath         = null,
+                                                                NetworkingNode_Id?           DestinationId       = null,
+                                                                NetworkPath?                 NetworkPath         = null,
 
-                                                                IEnumerable<KeyPair>?             SignKeys            = null,
-                                                                IEnumerable<SignInfo>?            SignInfos           = null,
-                                                                IEnumerable<Signature>?           Signatures          = null,
+                                                                IEnumerable<KeyPair>?        SignKeys            = null,
+                                                                IEnumerable<SignInfo>?       SignInfos           = null,
+                                                                IEnumerable<Signature>?      Signatures          = null,
 
-                                                                CustomData?                       CustomData          = null)
+                                                                CustomData?                  CustomData          = null)
 
             => new (
 
                    Request,
+                   false,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -452,13 +432,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetTransactionStatus request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static GetTransactionStatusResponse FormationViolation(CSMS.GetTransactionStatusRequest  Request,
-                                                                      String                            ErrorDescription)
+        public static GetTransactionStatusResponse FormationViolation(GetTransactionStatusRequest  Request,
+                                                                      String                       ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    false,
+                    Result: Result.FormationViolation(
+                                $"Invalid data format: {ErrorDescription}"
+                            ));
 
 
         /// <summary>
@@ -466,13 +447,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetTransactionStatus request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static GetTransactionStatusResponse SignatureError(CSMS.GetTransactionStatusRequest  Request,
-                                                                  String                            ErrorDescription)
+        public static GetTransactionStatusResponse SignatureError(GetTransactionStatusRequest  Request,
+                                                                  String                       ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    false,
+                    Result: Result.SignatureError(
+                                $"Invalid signature(s): {ErrorDescription}"
+                            ));
 
 
         /// <summary>
@@ -480,11 +462,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetTransactionStatus request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static GetTransactionStatusResponse Failed(CSMS.GetTransactionStatusRequest  Request,
-                                                          String?                           Description   = null)
+        public static GetTransactionStatusResponse Failed(GetTransactionStatusRequest  Request,
+                                                          String?                      Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    false,
+                    Result: Result.Server(Description));
 
 
         /// <summary>
@@ -492,11 +475,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetTransactionStatus request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetTransactionStatusResponse ExceptionOccured(CSMS.GetTransactionStatusRequest  Request,
-                                                                    Exception                         Exception)
+        public static GetTransactionStatusResponse ExceptionOccured(GetTransactionStatusRequest  Request,
+                                                                    Exception                    Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    false,
+                    Result: Result.FromException(Exception));
 
         #endregion
 
@@ -584,22 +568,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return MessagesInQueue.  GetHashCode()       * 5 ^
-                      (OngoingIndicator?.GetHashCode() ?? 0) * 3 ^
-
-                       base.             GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

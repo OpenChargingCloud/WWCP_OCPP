@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,48 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The StatusNotification response.
     /// </summary>
-    /// <param name="Request">The request leading to this response.</param>
-    /// 
-    /// <param name="Result">The machine-readable result code.</param>
-    /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
-    /// 
-    /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
-    /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
-    /// 
-    /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
-    /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
-    /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
-    /// 
-    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-    public class StatusNotificationResponse(CS.StatusNotificationRequest  Request,
-
-                                            Result?                       Result              = null,
-                                            DateTime?                     ResponseTimestamp   = null,
-
-                                            NetworkingNode_Id?            DestinationId       = null,
-                                            NetworkPath?                  NetworkPath         = null,
-
-                                            IEnumerable<KeyPair>?         SignKeys            = null,
-                                            IEnumerable<SignInfo>?        SignInfos           = null,
-                                            IEnumerable<Signature>?       Signatures          = null,
-
-                                            CustomData?                   CustomData          = null)
-
-            : AResponse<CS.StatusNotificationRequest,
-                        StatusNotificationResponse>(Request,
-                                                    Result ?? Result.OK(),
-                                                    ResponseTimestamp,
-
-                                                    DestinationId,
-                                                    NetworkPath,
-
-                                                    SignKeys,
-                                                    SignInfos,
-                                                    Signatures,
-
-                                                    CustomData),
-                        IResponse
-
+    public class StatusNotificationResponse : AResponse<StatusNotificationRequest,
+                                                        StatusNotificationResponse>,
+                                              IResponse
     {
 
         #region Data
@@ -93,6 +55,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public JSONLDContext Context
             => DefaultJSONLDContext;
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new StatusNotification response.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public StatusNotificationResponse(StatusNotificationRequest  Request,
+
+                                          Result?                    Result              = null,
+                                          DateTime?                  ResponseTimestamp   = null,
+
+                                          NetworkingNode_Id?         DestinationId       = null,
+                                          NetworkPath?               NetworkPath         = null,
+
+                                          IEnumerable<KeyPair>?      SignKeys            = null,
+                                          IEnumerable<SignInfo>?     SignInfos           = null,
+                                          IEnumerable<Signature>?    Signatures          = null,
+
+                                          CustomData?                CustomData          = null)
+
+            : base(Request,
+                   Result ?? Result.OK(),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
+
+        { }
 
         #endregion
 
@@ -138,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The StatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom StatusNotification responses.</param>
-        public static StatusNotificationResponse Parse(CS.StatusNotificationRequest                              Request,
+        public static StatusNotificationResponse Parse(StatusNotificationRequest                                 Request,
                                                        JObject                                                   JSON,
                                                        NetworkingNode_Id                                         DestinationId,
                                                        NetworkPath                                               NetworkPath,
@@ -179,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="StatusNotificationResponse">The parsed StatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom StatusNotification responses.</param>
-        public static Boolean TryParse(CS.StatusNotificationRequest                              Request,
+        public static Boolean TryParse(StatusNotificationRequest                                 Request,
                                        JObject                                                   JSON,
                                        NetworkingNode_Id                                         DestinationId,
                                        NetworkPath                                               NetworkPath,
@@ -301,21 +312,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The StatusNotification failed because of a request error.
         /// </summary>
         /// <param name="Request">The StatusNotification request.</param>
-        public static StatusNotificationResponse RequestError(CS.StatusNotificationRequest  Request,
-                                                              EventTracking_Id              EventTrackingId,
-                                                              ResultCode                    ErrorCode,
-                                                              String?                       ErrorDescription    = null,
-                                                              JObject?                      ErrorDetails        = null,
-                                                              DateTime?                     ResponseTimestamp   = null,
+        public static StatusNotificationResponse RequestError(StatusNotificationRequest  Request,
+                                                              EventTracking_Id           EventTrackingId,
+                                                              ResultCode                 ErrorCode,
+                                                              String?                    ErrorDescription    = null,
+                                                              JObject?                   ErrorDetails        = null,
+                                                              DateTime?                  ResponseTimestamp   = null,
 
-                                                              NetworkingNode_Id?            DestinationId       = null,
-                                                              NetworkPath?                  NetworkPath         = null,
+                                                              NetworkingNode_Id?         DestinationId       = null,
+                                                              NetworkPath?               NetworkPath         = null,
 
-                                                              IEnumerable<KeyPair>?         SignKeys            = null,
-                                                              IEnumerable<SignInfo>?        SignInfos           = null,
-                                                              IEnumerable<Signature>?       Signatures          = null,
+                                                              IEnumerable<KeyPair>?      SignKeys            = null,
+                                                              IEnumerable<SignInfo>?     SignInfos           = null,
+                                                              IEnumerable<Signature>?    Signatures          = null,
 
-                                                              CustomData?                   CustomData          = null)
+                                                              CustomData?                CustomData          = null)
 
             => new (
 
@@ -344,8 +355,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The StatusNotification request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static StatusNotificationResponse FormationViolation(CS.StatusNotificationRequest  Request,
-                                                                    String                        ErrorDescription)
+        public static StatusNotificationResponse FormationViolation(StatusNotificationRequest  Request,
+                                                                    String                     ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -358,8 +369,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The StatusNotification request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static StatusNotificationResponse SignatureError(CS.StatusNotificationRequest  Request,
-                                                                String                        ErrorDescription)
+        public static StatusNotificationResponse SignatureError(StatusNotificationRequest  Request,
+                                                                String                     ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -372,8 +383,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The StatusNotification request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static StatusNotificationResponse Failed(CS.StatusNotificationRequest  Request,
-                                                        String?                       Description   = null)
+        public static StatusNotificationResponse Failed(StatusNotificationRequest  Request,
+                                                        String?                    Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -384,8 +395,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The StatusNotification request.</param>
         /// <param name="Exception">The exception.</param>
-        public static StatusNotificationResponse ExceptionOccured(CS.StatusNotificationRequest  Request,
-                                                                  Exception                     Exception)
+        public static StatusNotificationResponse ExceptionOccured(StatusNotificationRequest  Request,
+                                                                  Exception                  Exception)
 
             => new (Request,
                     Result.FromException(Exception));

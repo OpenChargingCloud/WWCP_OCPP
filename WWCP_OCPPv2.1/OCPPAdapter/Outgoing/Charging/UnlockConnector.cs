@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new UnlockConnectorResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     UnlockStatus.UnlockFailed,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

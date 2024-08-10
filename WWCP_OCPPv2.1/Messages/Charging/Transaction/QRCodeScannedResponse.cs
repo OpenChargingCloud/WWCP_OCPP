@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,8 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The QRCodeScanned response.
     /// </summary>
-    public class QRCodeScannedResponse : AResponse<CSMS.QRCodeScannedRequest,
-                                                        QRCodeScannedResponse>,
+    public class QRCodeScannedResponse : AResponse<QRCodeScannedRequest,
+                                                   QRCodeScannedResponse>,
                                          IResponse
     {
 
@@ -59,33 +60,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region QRCodeScannedResponse(Request, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new QRCodeScanned response.
         /// </summary>
         /// <param name="Request">The QRCodeScanned request leading to this response.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public QRCodeScannedResponse(CSMS.QRCodeScannedRequest     Request,
-                                     DateTime?                     ResponseTimestamp   = null,
+        public QRCodeScannedResponse(QRCodeScannedRequest     Request,
 
-                                     NetworkingNode_Id?            DestinationId       = null,
-                                     NetworkPath?                  NetworkPath         = null,
+                                     Result?                  Result              = null,
+                                     DateTime?                ResponseTimestamp   = null,
 
-                                     IEnumerable<KeyPair>?         SignKeys            = null,
-                                     IEnumerable<SignInfo>?        SignInfos           = null,
-                                     IEnumerable<Signature>?       Signatures          = null,
+                                     NetworkingNode_Id?       DestinationId       = null,
+                                     NetworkPath?             NetworkPath         = null,
 
-                                     CustomData?                   CustomData          = null)
+                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                     CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -98,45 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CustomData)
 
         { }
-
-        #endregion
-
-        #region QRCodeScannedResponse(Result)
-
-        /// <summary>
-        /// Create a new QRCodeScanned response.
-        /// </summary>
-        /// <param name="Request">The QRCodeScanned request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public QRCodeScannedResponse(CSMS.QRCodeScannedRequest  Request,
-                                     Result                     Result,
-                                     DateTime?                  ResponseTimestamp   = null,
-
-                                     NetworkingNode_Id?         DestinationId       = null,
-                                     NetworkPath?               NetworkPath         = null,
-
-                                     IEnumerable<KeyPair>?      SignKeys            = null,
-                                     IEnumerable<SignInfo>?     SignInfos           = null,
-                                     IEnumerable<Signature>?    Signatures          = null,
-
-                                     CustomData?                CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -156,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The QRCodeScanned request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomQRCodeScannedResponseParser">A delegate to parse custom QRCodeScanned responses.</param>
-        public static QRCodeScannedResponse Parse(CSMS.QRCodeScannedRequest                            Request,
+        public static QRCodeScannedResponse Parse(QRCodeScannedRequest                                 Request,
                                                   JObject                                              JSON,
                                                   NetworkingNode_Id                                    DestinationId,
                                                   NetworkPath                                          NetworkPath,
@@ -198,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="QRCodeScannedResponse">The parsed QRCodeScanned response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomQRCodeScannedResponseParser">A delegate to parse custom QRCodeScanned responses.</param>
-        public static Boolean TryParse(CSMS.QRCodeScannedRequest                            Request,
+        public static Boolean TryParse(QRCodeScannedRequest                                 Request,
                                        JObject                                              JSON,
                                        NetworkingNode_Id                                    DestinationId,
                                        NetworkPath                                          NetworkPath,
@@ -247,6 +214,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 QRCodeScannedResponse = new QRCodeScannedResponse(
 
                                             Request,
+
+                                            null,
                                             ResponseTimestamp,
 
                                             DestinationId,
@@ -319,21 +288,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The QRCodeScanned failed because of a request error.
         /// </summary>
         /// <param name="Request">The QRCodeScanned request.</param>
-        public static QRCodeScannedResponse RequestError(CSMS.QRCodeScannedRequest  Request,
-                                                         EventTracking_Id           EventTrackingId,
-                                                         ResultCode                 ErrorCode,
-                                                         String?                    ErrorDescription    = null,
-                                                         JObject?                   ErrorDetails        = null,
-                                                         DateTime?                  ResponseTimestamp   = null,
+        public static QRCodeScannedResponse RequestError(QRCodeScannedRequest     Request,
+                                                         EventTracking_Id         EventTrackingId,
+                                                         ResultCode               ErrorCode,
+                                                         String?                  ErrorDescription    = null,
+                                                         JObject?                 ErrorDetails        = null,
+                                                         DateTime?                ResponseTimestamp   = null,
 
-                                                         NetworkingNode_Id?         DestinationId       = null,
-                                                         NetworkPath?               NetworkPath         = null,
+                                                         NetworkingNode_Id?       DestinationId       = null,
+                                                         NetworkPath?             NetworkPath         = null,
 
-                                                         IEnumerable<KeyPair>?      SignKeys            = null,
-                                                         IEnumerable<SignInfo>?     SignInfos           = null,
-                                                         IEnumerable<Signature>?    Signatures          = null,
+                                                         IEnumerable<KeyPair>?    SignKeys            = null,
+                                                         IEnumerable<SignInfo>?   SignInfos           = null,
+                                                         IEnumerable<Signature>?  Signatures          = null,
 
-                                                         CustomData?                CustomData          = null)
+                                                         CustomData?              CustomData          = null)
 
             => new (
 
@@ -362,8 +331,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The QRCodeScanned request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static QRCodeScannedResponse FormationViolation(CSMS.QRCodeScannedRequest  Request,
-                                                               String                     ErrorDescription)
+        public static QRCodeScannedResponse FormationViolation(QRCodeScannedRequest  Request,
+                                                               String                ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -376,8 +345,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The QRCodeScanned request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static QRCodeScannedResponse SignatureError(CSMS.QRCodeScannedRequest  Request,
-                                                           String                     ErrorDescription)
+        public static QRCodeScannedResponse SignatureError(QRCodeScannedRequest  Request,
+                                                           String                ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -390,8 +359,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The QRCodeScanned request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static QRCodeScannedResponse Failed(CSMS.QRCodeScannedRequest  Request,
-                                                   String?                    Description   = null)
+        public static QRCodeScannedResponse Failed(QRCodeScannedRequest  Request,
+                                                   String?               Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -402,8 +371,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The QRCodeScanned request.</param>
         /// <param name="Exception">The exception.</param>
-        public static QRCodeScannedResponse ExceptionOccured(CSMS.QRCodeScannedRequest  Request,
-                                                             Exception                  Exception)
+        public static QRCodeScannedResponse ExceptionOccured(QRCodeScannedRequest  Request,
+                                                             Exception             Exception)
 
             => new (Request,
                     Result.FromException(Exception));

@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new NotifyAllowedEnergyTransferResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     NotifyAllowedEnergyTransferStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

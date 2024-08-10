@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new SetMonitoringLevelResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     GenericStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

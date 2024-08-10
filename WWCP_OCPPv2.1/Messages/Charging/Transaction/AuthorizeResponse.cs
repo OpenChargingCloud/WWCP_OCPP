@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The Authorize response.
     /// </summary>
-    public class AuthorizeResponse : AResponse<CS.AuthorizeRequest,
+    public class AuthorizeResponse : AResponse<AuthorizeRequest,
                                                AuthorizeResponse>,
                                      IResponse
     {
@@ -84,8 +85,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region AuthorizeResponse(Request, IdTokenInfo, CertificateStatus = null, ...)
-
         /// <summary>
         /// Create an authorize response.
         /// </summary>
@@ -94,21 +93,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CertificateStatus">The optional certificate status information.</param>
         /// <param name="AllowedEnergyTransfer">Optional energy transfer modes accepted by the CSMS.</param>
         /// <param name="TransactionLimits">Optional maximum cost/energy/time limit allowed for this charging session.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="DestinationId">The destination networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public AuthorizeResponse(CS.AuthorizeRequest          Request,
+        public AuthorizeResponse(AuthorizeRequest             Request,
                                  IdTokenInfo                  IdTokenInfo,
                                  AuthorizeCertificateStatus?  CertificateStatus       = null,
                                  EnergyTransferMode?          AllowedEnergyTransfer   = null,
                                  TransactionLimits?           TransactionLimits       = null,
+
+                                 Result?                      Result                  = null,
                                  DateTime?                    ResponseTimestamp       = null,
 
                                  NetworkingNode_Id?           DestinationId           = null,
@@ -121,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  CustomData?                  CustomData              = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -153,50 +156,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
         }
-
-        #endregion
-
-        #region AuthorizeResponse(Request, Result)
-
-        /// <summary>
-        /// Create an authorize response.
-        /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public AuthorizeResponse(CS.AuthorizeRequest      Request,
-                                 Result                   Result,
-                                 AuthorizationStatus      AuthorizationStatus,
-                                 DateTime?                ResponseTimestamp   = null,
-
-                                 NetworkingNode_Id?       DestinationId       = null,
-                                 NetworkPath?             NetworkPath         = null,
-
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
-                                 IEnumerable<Signature>?  Signatures          = null,
-
-                                 CustomData?              CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.IdTokenInfo = new IdTokenInfo(AuthorizationStatus);
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -452,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
-        public static AuthorizeResponse Parse(CS.AuthorizeRequest                              Request,
+        public static AuthorizeResponse Parse(AuthorizeRequest                                 Request,
                                               JObject                                          JSON,
                                               NetworkingNode_Id                                DestinationId,
                                               NetworkPath                                      NetworkPath,
@@ -493,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
-        public static Boolean TryParse(CS.AuthorizeRequest                              Request,
+        public static Boolean TryParse(AuthorizeRequest                                 Request,
                                        JObject                                          JSON,
                                        NetworkingNode_Id                                DestinationId,
                                        NetworkPath                                      NetworkPath,
@@ -602,6 +561,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         CertificateStatus,
                                         AllowedEnergyTransfer,
                                         TransactionLimits,
+
+                                        null,
                                         ResponseTimestamp,
 
                                         DestinationId,
@@ -703,7 +664,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Authorize failed because of a request error.
         /// </summary>
         /// <param name="Request">The Authorize request.</param>
-        public static AuthorizeResponse RequestError(CS.AuthorizeRequest      Request,
+        public static AuthorizeResponse RequestError(AuthorizeRequest         Request,
                                                      EventTracking_Id         EventTrackingId,
                                                      ResultCode               ErrorCode,
                                                      String?                  ErrorDescription    = null,
@@ -722,12 +683,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => new (
 
                    Request,
+                   IdTokenInfo.Error(),
+                   null,
+                   null,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
                    ),
-                   AuthorizationStatus.RequestError,
                    ResponseTimestamp,
 
                    DestinationId,
@@ -747,14 +711,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Authorize request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static AuthorizeResponse FormationViolation(CS.AuthorizeRequest  Request,
-                                                           String               ErrorDescription)
+        public static AuthorizeResponse FormationViolation(AuthorizeRequest  Request,
+                                                           String            ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ),
-                    AuthorizationStatus.ParsingError);
+                    IdTokenInfo.Error(AuthorizationStatus.ParsingError),
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -762,14 +726,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Authorize request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static AuthorizeResponse SignatureError(CS.AuthorizeRequest  Request,
-                                                       String               ErrorDescription)
+        public static AuthorizeResponse SignatureError(AuthorizeRequest  Request,
+                                                       String            ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ),
-                    AuthorizationStatus.SignatureError);
+                    IdTokenInfo.Error(AuthorizationStatus.SignatureError),
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -777,12 +741,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Authorize request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static AuthorizeResponse Failed(CS.AuthorizeRequest  Request,
-                                               String?              Description   = null)
+        public static AuthorizeResponse Failed(AuthorizeRequest  Request,
+                                               String?           Description   = null)
 
             => new (Request,
-                    Result.Server(Description),
-                    AuthorizationStatus.Error);
+                    IdTokenInfo.Error(),
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -790,12 +754,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Authorize request.</param>
         /// <param name="Exception">The exception.</param>
-        public static AuthorizeResponse ExceptionOccured(CS.AuthorizeRequest  Request,
-                                                         Exception            Exception)
+        public static AuthorizeResponse ExceptionOccured(AuthorizeRequest  Request,
+                                                         Exception         Exception)
 
             => new (Request,
-                    Result.FromException(Exception),
-                    AuthorizationStatus.Error);
+                    IdTokenInfo.Error(),
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

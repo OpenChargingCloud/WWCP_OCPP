@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The CostUpdated response.
     /// </summary>
-    public class CostUpdatedResponse : AResponse<CSMS.CostUpdatedRequest,
+    public class CostUpdatedResponse : AResponse<CostUpdatedRequest,
                                                  CostUpdatedResponse>,
                                        IResponse
     {
@@ -59,57 +60,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region CostUpdatedResponse(Request, ...)
-
         /// <summary>
         /// Create a new CostUpdated response.
         /// </summary>
         /// <param name="Request">The CostUpdated request leading to this response.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public CostUpdatedResponse(CSMS.CostUpdatedRequest       Request,
-                                   DateTime?                     ResponseTimestamp   = null,
+        public CostUpdatedResponse(CostUpdatedRequest       Request,
 
-                                   NetworkingNode_Id?            DestinationId       = null,
-                                   NetworkPath?                  NetworkPath         = null,
-
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<Signature>?       Signatures          = null,
-
-                                   CustomData?                   CustomData          = null)
-
-            : base(Request,
-                   Result.OK(),
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
-
-        #region CostUpdatedResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new CostUpdated response.
-        /// </summary>
-        /// <param name="Request">The CostUpdated request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public CostUpdatedResponse(CSMS.CostUpdatedRequest  Request,
-                                   Result                   Result,
+                                   Result?                  Result              = null,
                                    DateTime?                ResponseTimestamp   = null,
 
                                    NetworkingNode_Id?       DestinationId       = null,
@@ -122,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    CustomData?              CustomData          = null)
 
             : base(Request,
-                   Result,
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -134,9 +103,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    CustomData)
 
-        { }
+        {
 
-        #endregion
+            unchecked
+            {
+                hashCode = base.GetHashCode();
+            }
+
+        }
 
         #endregion
 
@@ -182,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The CostUpdated request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomCostUpdatedResponseParser">A delegate to parse custom CostUpdated responses.</param>
-        public static CostUpdatedResponse Parse(CSMS.CostUpdatedRequest                            Request,
+        public static CostUpdatedResponse Parse(CostUpdatedRequest                                 Request,
                                                 JObject                                            JSON,
                                                 NetworkingNode_Id                                  DestinationId,
                                                 NetworkPath                                        NetworkPath,
@@ -223,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CostUpdatedResponse">The parsed CostUpdated response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCostUpdatedResponseParser">A delegate to parse custom CostUpdated responses.</param>
-        public static Boolean TryParse(CSMS.CostUpdatedRequest                            Request,
+        public static Boolean TryParse(CostUpdatedRequest                                 Request,
                                        JObject                                            JSON,
                                        NetworkingNode_Id                                  DestinationId,
                                        NetworkPath                                        NetworkPath,
@@ -272,6 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 CostUpdatedResponse = new CostUpdatedResponse(
 
                                           Request,
+
+                                          null,
                                           ResponseTimestamp,
 
                                           DestinationId,
@@ -344,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The CostUpdated failed because of a request error.
         /// </summary>
         /// <param name="Request">The CostUpdated request.</param>
-        public static CostUpdatedResponse RequestError(CSMS.CostUpdatedRequest  Request,
+        public static CostUpdatedResponse RequestError(CostUpdatedRequest       Request,
                                                        EventTracking_Id         EventTrackingId,
                                                        ResultCode               ErrorCode,
                                                        String?                  ErrorDescription    = null,
@@ -387,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The CostUpdated request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static CostUpdatedResponse FormationViolation(CSMS.CostUpdatedRequest  Request,
-                                                             String                   ErrorDescription)
+        public static CostUpdatedResponse FormationViolation(CostUpdatedRequest  Request,
+                                                             String              ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -401,8 +377,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The CostUpdated request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static CostUpdatedResponse SignatureError(CSMS.CostUpdatedRequest  Request,
-                                                         String                   ErrorDescription)
+        public static CostUpdatedResponse SignatureError(CostUpdatedRequest  Request,
+                                                         String              ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -415,8 +391,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The CostUpdated request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static CostUpdatedResponse Failed(CSMS.CostUpdatedRequest  Request,
-                                                 String?                  Description   = null)
+        public static CostUpdatedResponse Failed(CostUpdatedRequest  Request,
+                                                 String?             Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -427,8 +403,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The CostUpdated request.</param>
         /// <param name="Exception">The exception.</param>
-        public static CostUpdatedResponse ExceptionOccured(CSMS.CostUpdatedRequest  Request,
-                                                           Exception                Exception)
+        public static CostUpdatedResponse ExceptionOccured(CostUpdatedRequest  Request,
+                                                           Exception           Exception)
 
             => new (Request,
                     Result.FromException(Exception));
@@ -514,13 +490,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => base.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

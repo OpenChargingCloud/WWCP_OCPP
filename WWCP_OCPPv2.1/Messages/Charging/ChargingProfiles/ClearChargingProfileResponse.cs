@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The ClearChargingProfile response.
     /// </summary>
-    public class ClearChargingProfileResponse : AResponse<CSMS.ClearChargingProfileRequest,
+    public class ClearChargingProfileResponse : AResponse<ClearChargingProfileRequest,
                                                           ClearChargingProfileResponse>,
                                                 IResponse
     {
@@ -89,21 +90,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public ClearChargingProfileResponse(CSMS.ClearChargingProfileRequest  Request,
-                                            ClearChargingProfileStatus        Status,
-                                            StatusInfo?                       StatusInfo          = null,
+        public ClearChargingProfileResponse(ClearChargingProfileRequest  Request,
+                                            ClearChargingProfileStatus   Status,
+                                            StatusInfo?                  StatusInfo          = null,
 
-                                            Result?                           Result              = null,
-                                            DateTime?                         ResponseTimestamp   = null,
+                                            Result?                      Result              = null,
+                                            DateTime?                    ResponseTimestamp   = null,
 
-                                            NetworkingNode_Id?                DestinationId       = null,
-                                            NetworkPath?                      NetworkPath         = null,
+                                            NetworkingNode_Id?           DestinationId       = null,
+                                            NetworkPath?                 NetworkPath         = null,
 
-                                            IEnumerable<KeyPair>?             SignKeys            = null,
-                                            IEnumerable<SignInfo>?            SignInfos           = null,
-                                            IEnumerable<Signature>?           Signatures          = null,
+                                            IEnumerable<KeyPair>?        SignKeys            = null,
+                                            IEnumerable<SignInfo>?       SignInfos           = null,
+                                            IEnumerable<Signature>?      Signatures          = null,
 
-                                            CustomData?                       CustomData          = null)
+                                            CustomData?                  CustomData          = null)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -221,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The ClearChargingProfile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom ClearChargingProfile responses.</param>
-        public static ClearChargingProfileResponse Parse(CSMS.ClearChargingProfileRequest                            Request,
+        public static ClearChargingProfileResponse Parse(ClearChargingProfileRequest                                 Request,
                                                          JObject                                                     JSON,
                                                          NetworkingNode_Id                                           DestinationId,
                                                          NetworkPath                                                 NetworkPath,
@@ -264,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ClearChargingProfileResponse">The parsed ClearChargingProfile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom ClearChargingProfile responses.</param>
-        public static Boolean TryParse(CSMS.ClearChargingProfileRequest                            Request,
+        public static Boolean TryParse(ClearChargingProfileRequest                                 Request,
                                        JObject                                                     JSON,
                                        NetworkingNode_Id                                           DestinationId,
                                        NetworkPath                                                 NetworkPath,
@@ -426,21 +427,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ClearChargingProfile failed because of a request error.
         /// </summary>
         /// <param name="Request">The ClearChargingProfile request.</param>
-        public static ClearChargingProfileResponse RequestError(CSMS.ClearChargingProfileRequest  Request,
-                                                                EventTracking_Id                  EventTrackingId,
-                                                                ResultCode                        ErrorCode,
-                                                                String?                           ErrorDescription    = null,
-                                                                JObject?                          ErrorDetails        = null,
-                                                                DateTime?                         ResponseTimestamp   = null,
+        public static ClearChargingProfileResponse RequestError(ClearChargingProfileRequest  Request,
+                                                                EventTracking_Id             EventTrackingId,
+                                                                ResultCode                   ErrorCode,
+                                                                String?                      ErrorDescription    = null,
+                                                                JObject?                     ErrorDetails        = null,
+                                                                DateTime?                    ResponseTimestamp   = null,
 
-                                                                NetworkingNode_Id?                DestinationId       = null,
-                                                                NetworkPath?                      NetworkPath         = null,
+                                                                NetworkingNode_Id?           DestinationId       = null,
+                                                                NetworkPath?                 NetworkPath         = null,
 
-                                                                IEnumerable<KeyPair>?             SignKeys            = null,
-                                                                IEnumerable<SignInfo>?            SignInfos           = null,
-                                                                IEnumerable<Signature>?           Signatures          = null,
+                                                                IEnumerable<KeyPair>?        SignKeys            = null,
+                                                                IEnumerable<SignInfo>?       SignInfos           = null,
+                                                                IEnumerable<Signature>?      Signatures          = null,
 
-                                                                CustomData?                       CustomData          = null)
+                                                                CustomData?                  CustomData          = null)
 
             => new (
 
@@ -471,8 +472,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ClearChargingProfile request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static ClearChargingProfileResponse FormationViolation(CSMS.ClearChargingProfileRequest  Request,
-                                                                      String                            ErrorDescription)
+        public static ClearChargingProfileResponse FormationViolation(ClearChargingProfileRequest  Request,
+                                                                      String                       ErrorDescription)
 
             => new (Request,
                     ClearChargingProfileStatus.Unknown,
@@ -486,8 +487,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ClearChargingProfile request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static ClearChargingProfileResponse SignatureError(CSMS.ClearChargingProfileRequest  Request,
-                                                                  String                            ErrorDescription)
+        public static ClearChargingProfileResponse SignatureError(ClearChargingProfileRequest  Request,
+                                                                  String                       ErrorDescription)
 
             => new (Request,
                     ClearChargingProfileStatus.Unknown,
@@ -501,8 +502,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ClearChargingProfile request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static ClearChargingProfileResponse Failed(CSMS.ClearChargingProfileRequest  Request,
-                                                          String?                           Description   = null)
+        public static ClearChargingProfileResponse Failed(ClearChargingProfileRequest  Request,
+                                                          String?                      Description   = null)
 
             => new (Request,
                     ClearChargingProfileStatus.Unknown,
@@ -514,8 +515,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ClearChargingProfile request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ClearChargingProfileResponse ExceptionOccured(CSMS.ClearChargingProfileRequest  Request,
-                                                                    Exception                         Exception)
+        public static ClearChargingProfileResponse ExceptionOccured(ClearChargingProfileRequest  Request,
+                                                                    Exception                    Exception)
 
             => new (Request,
                     ClearChargingProfileStatus.Unknown,

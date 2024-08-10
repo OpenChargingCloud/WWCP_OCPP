@@ -287,7 +287,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new RequestStartTransactionResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     RequestStartStopStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

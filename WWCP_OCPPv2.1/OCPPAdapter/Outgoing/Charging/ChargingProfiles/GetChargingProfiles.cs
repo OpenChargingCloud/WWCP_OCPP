@@ -231,7 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new GetChargingProfilesResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     GetChargingProfileStatus.NoProfiles,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

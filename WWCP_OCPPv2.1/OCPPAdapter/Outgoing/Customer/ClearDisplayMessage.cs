@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new ClearDisplayMessageResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     ClearMessageStatus.Unknown,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

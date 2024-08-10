@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,50 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The NotifyChargingLimit response.
     /// </summary>
-    /// <param name="Request">The request leading to this response.</param>
-    /// <param name="Status">The success or failure status of the NotifyChargingLimit request.</param>
-    /// <param name="StatusInfo">Optional detailed status information.</param>
-    /// 
-    /// <param name="Result">The machine-readable result code.</param>
-    /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
-    /// 
-    /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
-    /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
-    /// 
-    /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
-    /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
-    /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
-    /// 
-    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-    public class NotifyChargingLimitResponse(CS.NotifyChargingLimitRequest  Request,
-
-                                             Result?                        Result              = null,
-                                             DateTime?                      ResponseTimestamp   = null,
-
-                                             NetworkingNode_Id?             DestinationId       = null,
-                                             NetworkPath?                   NetworkPath         = null,
-
-                                             IEnumerable<KeyPair>?          SignKeys            = null,
-                                             IEnumerable<SignInfo>?         SignInfos           = null,
-                                             IEnumerable<Signature>?        Signatures          = null,
-
-                                             CustomData?                    CustomData          = null)
-
-            : AResponse<CS.NotifyChargingLimitRequest,
-                        NotifyChargingLimitResponse>(Request,
-                                                     Result ?? Result.OK(),
-                                                     ResponseTimestamp,
-
-                                                     DestinationId,
-                                                     NetworkPath,
-
-                                                     SignKeys,
-                                                     SignInfos,
-                                                     Signatures,
-
-                                                     CustomData),
-                        IResponse
-
+    public class NotifyChargingLimitResponse : AResponse<NotifyChargingLimitRequest,
+                                                         NotifyChargingLimitResponse>,
+                                               IResponse
     {
 
         #region Data
@@ -95,6 +55,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public JSONLDContext Context
             => DefaultJSONLDContext;
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new NotifyChargingLimit response.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public NotifyChargingLimitResponse(NotifyChargingLimitRequest  Request,
+
+                                           Result?                     Result              = null,
+                                           DateTime?                   ResponseTimestamp   = null,
+
+                                           NetworkingNode_Id?          DestinationId       = null,
+                                           NetworkPath?                NetworkPath         = null,
+
+                                           IEnumerable<KeyPair>?       SignKeys            = null,
+                                           IEnumerable<SignInfo>?      SignInfos           = null,
+                                           IEnumerable<Signature>?     Signatures          = null,
+
+                                           CustomData?                 CustomData          = null)
+
+            : base(Request,
+                   Result ?? Result.OK(),
+                   ResponseTimestamp,
+
+                   DestinationId,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
+
+        { }
 
         #endregion
 
@@ -140,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The NotifyChargingLimit request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomNotifyChargingLimitResponseParser">A delegate to parse custom NotifyChargingLimit responses.</param>
-        public static NotifyChargingLimitResponse Parse(CS.NotifyChargingLimitRequest                              Request,
+        public static NotifyChargingLimitResponse Parse(NotifyChargingLimitRequest                                 Request,
                                                         JObject                                                    JSON,
                                                         NetworkingNode_Id                                          DestinationId,
                                                         NetworkPath                                                NetworkPath,
@@ -181,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NotifyChargingLimitResponse">The parsed NotifyChargingLimit response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyChargingLimitResponseParser">A delegate to parse custom NotifyChargingLimit responses.</param>
-        public static Boolean TryParse(CS.NotifyChargingLimitRequest                              Request,
+        public static Boolean TryParse(NotifyChargingLimitRequest                                 Request,
                                        JObject                                                    JSON,
                                        NetworkingNode_Id                                          DestinationId,
                                        NetworkPath                                                NetworkPath,
@@ -305,21 +314,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyChargingLimit failed because of a request error.
         /// </summary>
         /// <param name="Request">The NotifyChargingLimit request.</param>
-        public static NotifyChargingLimitResponse RequestError(CS.NotifyChargingLimitRequest  Request,
-                                                               EventTracking_Id               EventTrackingId,
-                                                               ResultCode                     ErrorCode,
-                                                               String?                        ErrorDescription    = null,
-                                                               JObject?                       ErrorDetails        = null,
-                                                               DateTime?                      ResponseTimestamp   = null,
+        public static NotifyChargingLimitResponse RequestError(NotifyChargingLimitRequest  Request,
+                                                               EventTracking_Id            EventTrackingId,
+                                                               ResultCode                  ErrorCode,
+                                                               String?                     ErrorDescription    = null,
+                                                               JObject?                    ErrorDetails        = null,
+                                                               DateTime?                   ResponseTimestamp   = null,
 
-                                                               NetworkingNode_Id?             DestinationId       = null,
-                                                               NetworkPath?                   NetworkPath         = null,
+                                                               NetworkingNode_Id?          DestinationId       = null,
+                                                               NetworkPath?                NetworkPath         = null,
 
-                                                               IEnumerable<KeyPair>?          SignKeys            = null,
-                                                               IEnumerable<SignInfo>?         SignInfos           = null,
-                                                               IEnumerable<Signature>?        Signatures          = null,
+                                                               IEnumerable<KeyPair>?       SignKeys            = null,
+                                                               IEnumerable<SignInfo>?      SignInfos           = null,
+                                                               IEnumerable<Signature>?     Signatures          = null,
 
-                                                               CustomData?                    CustomData          = null)
+                                                               CustomData?                 CustomData          = null)
 
             => new (
 
@@ -348,8 +357,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyChargingLimit request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyChargingLimitResponse FormationViolation(CS.NotifyChargingLimitRequest  Request,
-                                                                     String                         ErrorDescription)
+        public static NotifyChargingLimitResponse FormationViolation(NotifyChargingLimitRequest  Request,
+                                                                     String                      ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -362,8 +371,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyChargingLimit request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyChargingLimitResponse SignatureError(CS.NotifyChargingLimitRequest  Request,
-                                                                 String                         ErrorDescription)
+        public static NotifyChargingLimitResponse SignatureError(NotifyChargingLimitRequest  Request,
+                                                                 String                      ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -376,8 +385,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyChargingLimit request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static NotifyChargingLimitResponse Failed(CS.NotifyChargingLimitRequest  Request,
-                                                         String?                        Description   = null)
+        public static NotifyChargingLimitResponse Failed(NotifyChargingLimitRequest  Request,
+                                                         String?                     Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -388,8 +397,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyChargingLimit request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyChargingLimitResponse ExceptionOccured(CS.NotifyChargingLimitRequest  Request,
-                                                                   Exception                      Exception)
+        public static NotifyChargingLimitResponse ExceptionOccured(NotifyChargingLimitRequest  Request,
+                                                                   Exception                   Exception)
 
             => new (Request,
                     Result.FromException(Exception));

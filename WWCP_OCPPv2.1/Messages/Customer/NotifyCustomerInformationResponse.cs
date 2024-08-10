@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The NotifyCustomerInformation response.
     /// </summary>
-    public class NotifyCustomerInformationResponse : AResponse<CS.NotifyCustomerInformationRequest,
+    public class NotifyCustomerInformationResponse : AResponse<NotifyCustomerInformationRequest,
                                                                NotifyCustomerInformationResponse>,
                                                      IResponse
     {
@@ -59,33 +60,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region NotifyCustomerInformationResponse(Request, ...)
-
         /// <summary>
         /// Create a new NotifyCustomerInformation response.
         /// </summary>
         /// <param name="Request">The NotifyCustomerInformation request leading to this response.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public NotifyCustomerInformationResponse(CS.NotifyCustomerInformationRequest  Request,
-                                                 DateTime?                            ResponseTimestamp   = null,
+        public NotifyCustomerInformationResponse(NotifyCustomerInformationRequest  Request,
 
-                                                 NetworkingNode_Id?                   DestinationId       = null,
-                                                 NetworkPath?                         NetworkPath         = null,
+                                                 Result?                           Result              = null,
+                                                 DateTime?                         ResponseTimestamp   = null,
 
-                                                 IEnumerable<KeyPair>?                SignKeys            = null,
-                                                 IEnumerable<SignInfo>?               SignInfos           = null,
-                                                 IEnumerable<Signature>?              Signatures          = null,
+                                                 NetworkingNode_Id?                DestinationId       = null,
+                                                 NetworkPath?                      NetworkPath         = null,
 
-                                                 CustomData?                          CustomData          = null)
+                                                 IEnumerable<KeyPair>?             SignKeys            = null,
+                                                 IEnumerable<SignInfo>?            SignInfos           = null,
+                                                 IEnumerable<Signature>?           Signatures          = null,
+
+                                                 CustomData?                       CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -98,45 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData)
 
         { }
-
-        #endregion
-
-        #region NotifyCustomerInformationResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new NotifyCustomerInformation response.
-        /// </summary>
-        /// <param name="Request">The NotifyCustomerInformation request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public NotifyCustomerInformationResponse(CS.NotifyCustomerInformationRequest  Request,
-                                                 Result                               Result,
-                                                 DateTime?                            ResponseTimestamp   = null,
-
-                                                 NetworkingNode_Id?                   DestinationId       = null,
-                                                 NetworkPath?                         NetworkPath         = null,
-
-                                                 IEnumerable<KeyPair>?                SignKeys            = null,
-                                                 IEnumerable<SignInfo>?               SignInfos           = null,
-                                                 IEnumerable<Signature>?              Signatures          = null,
-
-                                                 CustomData?                          CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -182,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The NotifyCustomerInformation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomNotifyCustomerInformationResponseParser">A delegate to parse custom NotifyCustomerInformation responses.</param>
-        public static NotifyCustomerInformationResponse Parse(CS.NotifyCustomerInformationRequest                              Request,
+        public static NotifyCustomerInformationResponse Parse(NotifyCustomerInformationRequest                                 Request,
                                                               JObject                                                          JSON,
                                                               NetworkingNode_Id                                                DestinationId,
                                                               NetworkPath                                                      NetworkPath,
@@ -223,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NotifyCustomerInformationResponse">The parsed NotifyCustomerInformation response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyCustomerInformationResponseParser">A delegate to parse custom NotifyCustomerInformation responses.</param>
-        public static Boolean TryParse(CS.NotifyCustomerInformationRequest                              Request,
+        public static Boolean TryParse(NotifyCustomerInformationRequest                                 Request,
                                        JObject                                                          JSON,
                                        NetworkingNode_Id                                                DestinationId,
                                        NetworkPath                                                      NetworkPath,
@@ -274,6 +241,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 NotifyCustomerInformationResponse = new NotifyCustomerInformationResponse(
 
                                                         Request,
+
+                                                        null,
                                                         ResponseTimestamp,
 
                                                         DestinationId,
@@ -346,21 +315,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The NotifyCustomerInformation failed because of a request error.
         /// </summary>
         /// <param name="Request">The NotifyCustomerInformation request.</param>
-        public static NotifyCustomerInformationResponse RequestError(CS.NotifyCustomerInformationRequest  Request,
-                                                                     EventTracking_Id                     EventTrackingId,
-                                                                     ResultCode                           ErrorCode,
-                                                                     String?                              ErrorDescription    = null,
-                                                                     JObject?                             ErrorDetails        = null,
-                                                                     DateTime?                            ResponseTimestamp   = null,
+        public static NotifyCustomerInformationResponse RequestError(NotifyCustomerInformationRequest  Request,
+                                                                     EventTracking_Id                  EventTrackingId,
+                                                                     ResultCode                        ErrorCode,
+                                                                     String?                           ErrorDescription    = null,
+                                                                     JObject?                          ErrorDetails        = null,
+                                                                     DateTime?                         ResponseTimestamp   = null,
 
-                                                                     NetworkingNode_Id?                   DestinationId       = null,
-                                                                     NetworkPath?                         NetworkPath         = null,
+                                                                     NetworkingNode_Id?                DestinationId       = null,
+                                                                     NetworkPath?                      NetworkPath         = null,
 
-                                                                     IEnumerable<KeyPair>?                SignKeys            = null,
-                                                                     IEnumerable<SignInfo>?               SignInfos           = null,
-                                                                     IEnumerable<Signature>?              Signatures          = null,
+                                                                     IEnumerable<KeyPair>?             SignKeys            = null,
+                                                                     IEnumerable<SignInfo>?            SignInfos           = null,
+                                                                     IEnumerable<Signature>?           Signatures          = null,
 
-                                                                     CustomData?                          CustomData          = null)
+                                                                     CustomData?                       CustomData          = null)
 
             => new (
 
@@ -389,8 +358,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyCustomerInformation request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyCustomerInformationResponse FormationViolation(CS.NotifyCustomerInformationRequest  Request,
-                                                                           String                               ErrorDescription)
+        public static NotifyCustomerInformationResponse FormationViolation(NotifyCustomerInformationRequest  Request,
+                                                                           String                            ErrorDescription)
 
             => new (Request,
                     Result.FormationViolation(
@@ -403,8 +372,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyCustomerInformation request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static NotifyCustomerInformationResponse SignatureError(CS.NotifyCustomerInformationRequest  Request,
-                                                                       String                               ErrorDescription)
+        public static NotifyCustomerInformationResponse SignatureError(NotifyCustomerInformationRequest  Request,
+                                                                       String                            ErrorDescription)
 
             => new (Request,
                     Result.SignatureError(
@@ -417,8 +386,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyCustomerInformation request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static NotifyCustomerInformationResponse Failed(CS.NotifyCustomerInformationRequest  Request,
-                                                               String?                              Description   = null)
+        public static NotifyCustomerInformationResponse Failed(NotifyCustomerInformationRequest  Request,
+                                                               String?                           Description   = null)
 
             => new (Request,
                     Result.Server(Description));
@@ -429,8 +398,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyCustomerInformation request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyCustomerInformationResponse ExceptionOccured(CS.NotifyCustomerInformationRequest  Request,
-                                                                         Exception                            Exception)
+        public static NotifyCustomerInformationResponse ExceptionOccured(NotifyCustomerInformationRequest  Request,
+                                                                         Exception                         Exception)
 
             => new (Request,
                     Result.FromException(Exception));

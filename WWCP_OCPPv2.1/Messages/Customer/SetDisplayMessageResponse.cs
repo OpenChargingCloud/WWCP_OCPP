@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The SetDisplayMessage response.
     /// </summary>
-    public class SetDisplayMessageResponse : AResponse<CSMS.SetDisplayMessageRequest,
+    public class SetDisplayMessageResponse : AResponse<SetDisplayMessageRequest,
                                                        SetDisplayMessageResponse>,
                                              IResponse
     {
@@ -71,37 +72,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region SetDisplayMessageResponse(Request, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new SetDisplayMessage response.
         /// </summary>
         /// <param name="Request">The SetDisplayMessage request leading to this response.</param>
         /// <param name="Status">Whether the charging station is able to display the message.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SetDisplayMessageResponse(CSMS.SetDisplayMessageRequest  Request,
-                                         DisplayMessageStatus           Status,
-                                         StatusInfo?                    StatusInfo          = null,
-                                         DateTime?                      ResponseTimestamp   = null,
+        public SetDisplayMessageResponse(SetDisplayMessageRequest  Request,
+                                         DisplayMessageStatus      Status,
+                                         StatusInfo?               StatusInfo          = null,
 
-                                         NetworkingNode_Id?             DestinationId       = null,
-                                         NetworkPath?                   NetworkPath         = null,
+                                         Result?                   Result              = null,
+                                         DateTime?                 ResponseTimestamp   = null,
 
-                                         IEnumerable<KeyPair>?          SignKeys            = null,
-                                         IEnumerable<SignInfo>?         SignInfos           = null,
-                                         IEnumerable<Signature>?        Signatures          = null,
+                                         NetworkingNode_Id?        DestinationId       = null,
+                                         NetworkPath?              NetworkPath         = null,
 
-                                         CustomData?                    CustomData          = null)
+                                         IEnumerable<KeyPair>?     SignKeys            = null,
+                                         IEnumerable<SignInfo>?    SignInfos           = null,
+                                         IEnumerable<Signature>?   Signatures          = null,
+
+                                         CustomData?               CustomData          = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -118,46 +124,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.Status      = Status;
             this.StatusInfo  = StatusInfo;
 
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region SetDisplayMessageResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new SetDisplayMessage response.
-        /// </summary>
-        /// <param name="Request">The SetDisplayMessage request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public SetDisplayMessageResponse(CSMS.SetDisplayMessageRequest  Request,
-                                         Result                         Result,
-                                         DateTime?                      ResponseTimestamp   = null,
-
-                                         NetworkingNode_Id?             DestinationId       = null,
-                                         NetworkPath?                   NetworkPath         = null,
-
-                                         IEnumerable<KeyPair>?          SignKeys            = null,
-                                         IEnumerable<SignInfo>?         SignInfos           = null,
-                                         IEnumerable<Signature>?        Signatures          = null,
-
-                                         CustomData?                    CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -250,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The SetDisplayMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom SetDisplayMessage responses.</param>
-        public static SetDisplayMessageResponse Parse(CSMS.SetDisplayMessageRequest                            Request,
+        public static SetDisplayMessageResponse Parse(SetDisplayMessageRequest                                 Request,
                                                       JObject                                                  JSON,
                                                       NetworkingNode_Id                                        DestinationId,
                                                       NetworkPath                                              NetworkPath,
@@ -293,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="SetDisplayMessageResponse">The parsed SetDisplayMessage response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom SetDisplayMessage responses.</param>
-        public static Boolean TryParse(CSMS.SetDisplayMessageRequest                            Request,
+        public static Boolean TryParse(SetDisplayMessageRequest                                 Request,
                                        JObject                                                  JSON,
                                        NetworkingNode_Id                                        DestinationId,
                                        NetworkPath                                              NetworkPath,
@@ -372,6 +348,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 Request,
                                                 Status,
                                                 StatusInfo,
+
+                                                null,
                                                 ResponseTimestamp,
 
                                                 DestinationId,
@@ -453,25 +431,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The SetDisplayMessage failed because of a request error.
         /// </summary>
         /// <param name="Request">The SetDisplayMessage request.</param>
-        public static SetDisplayMessageResponse RequestError(CSMS.SetDisplayMessageRequest    Request,
-                                                     EventTracking_Id         EventTrackingId,
-                                                     ResultCode               ErrorCode,
-                                                     String?                  ErrorDescription    = null,
-                                                     JObject?                 ErrorDetails        = null,
-                                                     DateTime?                ResponseTimestamp   = null,
+        public static SetDisplayMessageResponse RequestError(SetDisplayMessageRequest  Request,
+                                                             EventTracking_Id          EventTrackingId,
+                                                             ResultCode                ErrorCode,
+                                                             String?                   ErrorDescription    = null,
+                                                             JObject?                  ErrorDetails        = null,
+                                                             DateTime?                 ResponseTimestamp   = null,
 
-                                                     NetworkingNode_Id?       DestinationId       = null,
-                                                     NetworkPath?             NetworkPath         = null,
+                                                             NetworkingNode_Id?        DestinationId       = null,
+                                                             NetworkPath?              NetworkPath         = null,
 
-                                                     IEnumerable<KeyPair>?    SignKeys            = null,
-                                                     IEnumerable<SignInfo>?   SignInfos           = null,
-                                                     IEnumerable<Signature>?  Signatures          = null,
+                                                             IEnumerable<KeyPair>?     SignKeys            = null,
+                                                             IEnumerable<SignInfo>?    SignInfos           = null,
+                                                             IEnumerable<Signature>?   Signatures          = null,
 
-                                                     CustomData?              CustomData          = null)
+                                                             CustomData?               CustomData          = null)
 
             => new (
 
                    Request,
+                   DisplayMessageStatus.Rejected,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -496,13 +476,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetDisplayMessage request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SetDisplayMessageResponse FormationViolation(CSMS.SetDisplayMessageRequest  Request,
-                                                                   String                         ErrorDescription)
+        public static SetDisplayMessageResponse FormationViolation(SetDisplayMessageRequest  Request,
+                                                                   String                    ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    DisplayMessageStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -510,13 +491,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetDisplayMessage request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SetDisplayMessageResponse SignatureError(CSMS.SetDisplayMessageRequest  Request,
-                                                       String                 ErrorDescription)
+        public static SetDisplayMessageResponse SignatureError(SetDisplayMessageRequest  Request,
+                                                               String                    ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    DisplayMessageStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -524,11 +506,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetDisplayMessage request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static SetDisplayMessageResponse Failed(CSMS.SetDisplayMessageRequest  Request,
-                                               String?                Description   = null)
+        public static SetDisplayMessageResponse Failed(SetDisplayMessageRequest  Request,
+                                                       String?                   Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    DisplayMessageStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -536,11 +519,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetDisplayMessage request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetDisplayMessageResponse ExceptionOccured(CSMS.SetDisplayMessageRequest  Request,
-                                                         Exception              Exception)
+        public static SetDisplayMessageResponse ExceptionOccured(SetDisplayMessageRequest  Request,
+                                                                 Exception                 Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    DisplayMessageStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -628,22 +612,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-{
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

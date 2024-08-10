@@ -235,7 +235,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new CustomerInformationResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     CustomerInformationStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

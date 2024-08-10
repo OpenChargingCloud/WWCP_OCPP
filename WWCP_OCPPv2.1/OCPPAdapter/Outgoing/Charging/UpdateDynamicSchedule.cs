@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new UpdateDynamicScheduleResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     ChargingProfileStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

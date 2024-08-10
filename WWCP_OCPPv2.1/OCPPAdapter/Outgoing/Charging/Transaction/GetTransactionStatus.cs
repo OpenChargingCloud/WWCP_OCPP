@@ -229,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new GetTransactionStatusResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     false,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

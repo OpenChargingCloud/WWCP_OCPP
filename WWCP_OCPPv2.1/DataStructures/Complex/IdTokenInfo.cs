@@ -111,14 +111,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             this.Status               = Status;
-            this.ChargingPriority     = ChargingPriority ?? 0;
+            this.ChargingPriority     = ChargingPriority         ?? 0;
             this.CacheExpiryDateTime  = CacheExpiryDateTime;
-            this.ValidEVSEIds         = ValidEVSEIds?.Distinct() ?? Array.Empty<EVSE_Id>();
+            this.ValidEVSEIds         = ValidEVSEIds?.Distinct() ?? [];
             this.HasChargingTariff    = HasChargingTariff;
             this.GroupIdToken         = GroupIdToken;
             this.Language1            = Language1;
             this.Language2            = Language2;
-            this.PersonalMessage      = PersonalMessage ?? MessageContents.Empty;
+            this.PersonalMessage      = PersonalMessage          ?? MessageContents.Empty;
+
+            unchecked
+            {
+
+                hashCode = this.Status.              GetHashCode()       * 23 ^
+                           this.ChargingPriority.    GetHashCode()       * 19 ^
+                           this.ValidEVSEIds.        CalcHashCode()      * 17 ^
+
+                          (this.CacheExpiryDateTime?.GetHashCode() ?? 0) * 13 ^
+                          (this.GroupIdToken?.       GetHashCode() ?? 0) * 11 ^
+                          (this.Language1?.          GetHashCode() ?? 0) *  7 ^
+                          (this.Language2?.          GetHashCode() ?? 0) *  5 ^
+                           this.PersonalMessage.     GetHashCode()       *  3 ^
+
+                           base.                     GetHashCode();
+
+            }
 
         }
 
@@ -506,6 +523,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region Static
+
+        public static IdTokenInfo Error(AuthorizationStatus? Status = null)
+            => new (Status ?? AuthorizationStatus.Error);
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (IdTokenInfo1, IdTokenInfo2)
@@ -605,29 +630,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.              GetHashCode()       * 23 ^
-                       ChargingPriority.    GetHashCode()       * 19 ^
-                       ValidEVSEIds.        CalcHashCode()      * 17 ^
-
-                      (CacheExpiryDateTime?.GetHashCode() ?? 0) * 13 ^
-                      (GroupIdToken?.       GetHashCode() ?? 0) * 11 ^
-                      (Language1?.          GetHashCode() ?? 0) *  7 ^
-                      (Language2?.          GetHashCode() ?? 0) *  5 ^
-                      (PersonalMessage?.    GetHashCode() ?? 0) *  3 ^
-
-                       base.                GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -638,8 +647,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
-                             CacheExpiryDateTime.HasValue ? " (expires: " + CacheExpiryDateTime.Value + ")" : "");
+            => String.Concat(
+                   Status,
+                   CacheExpiryDateTime.HasValue
+                       ? " (expires: " + CacheExpiryDateTime.Value + ")"
+                       : ""
+               );
 
         #endregion
 
