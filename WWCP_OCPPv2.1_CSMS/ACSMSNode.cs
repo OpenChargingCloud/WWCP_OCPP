@@ -33,6 +33,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -277,33 +278,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a JSON message request was received.
         /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a JSON message was sent.
         /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
-
-        ///// <summary>
-        ///// An event sent whenever the error response to a JSON message was sent.
-        ///// </summary>
-        //public event NetworkingNode.CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
 
         /// <summary>
         /// An event sent whenever a JSON message request was sent.
         /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever the response to a JSON message request was received.
         /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
-
-        ///// <summary>
-        ///// An event sent whenever an error response to a JSON message request was received.
-        ///// </summary>
-        //public event NetworkingNode.CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
 
         #endregion
 
@@ -312,33 +303,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a binary message request was received.
         /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a binary message was sent.
         /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
-
-        /// <summary>
-        /// An event sent whenever the error response to a binary message was sent.
-        /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
 
 
         /// <summary>
         /// An event sent whenever a binary message request was sent.
         /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever the response to a binary message request was received.
         /// </summary>
-        public event NetworkingNode.CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
-
-        /// <summary>
-        /// An event sent whenever the error response to a binary message request was sent.
-        /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
 
         #endregion
 

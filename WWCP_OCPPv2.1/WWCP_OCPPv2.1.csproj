@@ -9,26 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Devices\CSMS\IncomingMessages\Networking\**" />
-    <EmbeddedResource Remove="Devices\CSMS\IncomingMessages\Networking\**" />
-    <None Remove="Devices\CSMS\IncomingMessages\Networking\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Devices\Gateway\IncomingMessages\.gitkeep" />
-    <None Remove="Devices\Gateway\OutgoingMessages\.gitkeep" />
-    <None Remove="Devices\LocalController\IncomingMessages\.gitkeep" />
-    <None Remove="Devices\LocalController\OutgoingMessages\.gitkeep" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Devices\Gateway\IncomingMessages\.gitkeep" />
-    <Compile Include="Devices\Gateway\OutgoingMessages\.gitkeep" />
-    <Compile Include="Devices\LocalController\IncomingMessages\.gitkeep" />
-    <Compile Include="Devices\LocalController\OutgoingMessages\.gitkeep" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
