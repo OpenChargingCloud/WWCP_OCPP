@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomUpdateSignaturePolicyRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a UpdateSignaturePolicy request.
+        /// Parse the given JSON representation of an UpdateSignaturePolicy request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return updateSignaturePolicyRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a UpdateSignaturePolicy request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UpdateSignaturePolicy request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out UpdateSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a UpdateSignaturePolicy request.
+        /// Try to parse the given JSON representation of an UpdateSignaturePolicy request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 UpdateSignaturePolicyRequest  = null;
-                ErrorResponse                 = "The given JSON representation of a UpdateSignaturePolicy request is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of an UpdateSignaturePolicy request is invalid: " + e.Message;
                 return false;
             }
 

@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnBinaryResponseMessagesSent             = new ConcurrentList<OCPP_BinaryResponseMessage>();
                 var csmsSecureDataTransferResponsesReceived  = new ConcurrentList<SecureDataTransferResponse>();
 
-                CSMS.           OCPP.OUT.OnSecureDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sentMessageResult) => {
+                CSMS.           OCPP.OUT.OnSecureDataTransferRequestSent      += (timestamp, sender, connection, dataTransferRequest, sentMessageResult, ct) => {
                     csmsSecureDataTransferRequestsSent.   TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -345,12 +345,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.IN. OnSecureDataTransferRequestReceived  += (timestamp, sender, connection, dataTransferRequest) => {
+                localController.OCPP.IN. OnSecureDataTransferRequestReceived  += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     nnSecureDataTransferRequestsReceived. TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.OUT.OnSecureDataTransferResponseSent     += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime) => {
+                localController.OCPP.OUT.OnSecureDataTransferResponseSent     += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime, sentMessageResult, ct) => {
                     nnSecureDataTransferResponsesSent.    TryAdd(dataTransferResponse);
                     return Task.CompletedTask;
                 };
@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.IN. OnSecureDataTransferResponseReceived += (timestamp, sender, dataTransferRequest, dataTransferResponse, runtime) => {
+                CSMS.           OCPP.IN. OnSecureDataTransferResponseReceived += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime, ct) => {
                     csmsSecureDataTransferResponsesReceived.TryAdd(dataTransferResponse);
                     return Task.CompletedTask;
                 };

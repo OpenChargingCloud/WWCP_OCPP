@@ -302,6 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DestinationId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom SecureDataTransfer requests.</param>
+        /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static SecureDataTransferRequest Parse(Byte[]                                                  Secure,
                                                       Request_Id                                              RequestId,
                                                       NetworkingNode_Id                                       DestinationId,
@@ -309,7 +310,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       DateTime?                                               RequestTimestamp                  = null,
                                                       TimeSpan?                                               RequestTimeout                    = null,
                                                       EventTracking_Id?                                       EventTrackingId                   = null,
-                                                      CustomBinaryParserDelegate<SecureDataTransferRequest>?  CustomDataTransferRequestParser   = null)
+                                                      CustomBinaryParserDelegate<SecureDataTransferRequest>?  CustomDataTransferRequestParser   = null,
+                                                      CustomBinaryParserDelegate<Signature>?                  CustomBinarySignatureParser       = null)
         {
 
             if (TryParse(Secure,
@@ -321,7 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          RequestTimestamp,
                          RequestTimeout,
                          EventTrackingId,
-                         CustomDataTransferRequestParser))
+                         CustomDataTransferRequestParser,
+                         CustomBinarySignatureParser))
             {
                 return secureDataTransferRequest;
             }
@@ -348,6 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimeout">An optional request timeout.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomSecureDataTransferRequestParser">An optional delegate to parse custom SecureDataTransfer requests.</param>
+        /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static Boolean TryParse(Byte[]                                                  Secure,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       DestinationId,
@@ -357,7 +361,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        DateTime?                                               RequestTimestamp                        = null,
                                        TimeSpan?                                               RequestTimeout                          = null,
                                        EventTracking_Id?                                       EventTrackingId                         = null,
-                                       CustomBinaryParserDelegate<SecureDataTransferRequest>?  CustomSecureDataTransferRequestParser   = null)
+                                       CustomBinaryParserDelegate<SecureDataTransferRequest>?  CustomSecureDataTransferRequestParser   = null,
+                                       CustomBinaryParserDelegate<Signature>?                  CustomBinarySignatureParser             = null)
         {
 
             try
@@ -441,10 +446,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return a binary representation of this object.
         /// </summary>
         /// <param name="CustomSecureDataTransferRequestSerializer">A delegate to serialize custom SecureDataTransfer requests.</param>
-        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomBinarySignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<SecureDataTransferRequest>?  CustomSecureDataTransferRequestSerializer   = null,
-                               CustomBinarySerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
+                               CustomBinarySerializerDelegate<Signature>?                  CustomBinarySignatureSerializer             = null,
                                Boolean                                                     IncludeSignatures                           = true)
         {
 
@@ -465,7 +470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (IncludeSignatures) {
                 foreach (var signature in Signatures)
                 {
-                    var binarySignature = signature.ToBinary(CustomSignatureSerializer);
+                    var binarySignature = signature.ToBinary(CustomBinarySignatureSerializer);
                     binaryStream.WriteUInt16((UInt16) binarySignature.Length);
                     binaryStream.Write(binarySignature);
                 }

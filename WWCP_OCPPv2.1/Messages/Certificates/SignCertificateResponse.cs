@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure status of the SignCertificate request.
+        /// The success or failure status of the request.
         /// </summary>
         [Mandatory]
         public GenericStatus  Status        { get; }
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a SignCertificate response.
         /// </summary>
         /// <param name="Request">The request leading to this response.</param>
-        /// <param name="Status">The success or failure status of the SignCertificate request.</param>
+        /// <param name="Status">The success or failure status of the request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// 
         /// <param name="Result">The machine-readable result code.</param>

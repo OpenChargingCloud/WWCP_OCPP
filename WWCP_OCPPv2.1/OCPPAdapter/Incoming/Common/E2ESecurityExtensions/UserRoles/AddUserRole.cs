@@ -30,10 +30,108 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Logging Delegates
+
+    /// <summary>
+    /// A logging delegate called whenever an AddUserRole request was received.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnAddUserRoleRequestReceivedDelegate(DateTime               Timestamp,
+                                                              IEventSender           Sender,
+                                                              IWebSocketConnection   Connection,
+                                                              AddUserRoleRequest     Request,
+                                                              CancellationToken      CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an AddUserRole response was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnAddUserRoleResponseReceivedDelegate(DateTime               Timestamp,
+                                                               IEventSender           Sender,
+                                                               IWebSocketConnection   Connection,
+                                                               AddUserRoleRequest?    Request,
+                                                               AddUserRoleResponse    Response,
+                                                               TimeSpan?              Runtime,
+                                                               CancellationToken      CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an AddUserRole request error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="RequestErrorMessage">The request error message.</param>
+    /// <param name="Runtime">The runtime of the request/request error pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnAddUserRoleRequestErrorReceivedDelegate(DateTime                       Timestamp,
+                                                                   IEventSender                   Sender,
+                                                                   IWebSocketConnection           Connection,
+                                                                   AddUserRoleRequest?            Request,
+                                                                   OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                                   TimeSpan?                      Runtime,
+                                                                   CancellationToken              CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an AddUserRole response error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response error.</param>
+    /// <param name="Connection">The connection of the response error.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response, when available.</param>
+    /// <param name="ResponseErrorMessage">The response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnAddUserRoleResponseErrorReceivedDelegate(DateTime                        Timestamp,
+                                                                    IEventSender                    Sender,
+                                                                    IWebSocketConnection            Connection,
+                                                                    AddUserRoleRequest?             Request,
+                                                                    AddUserRoleResponse?            Response,
+                                                                    OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                                    TimeSpan?                       Runtime,
+                                                                    CancellationToken               CancellationToken = default);
+
+    #endregion
+
+
+    /// <summary>
+    /// A delegate called whenever an AddUserRole response is expected
+    /// for a received AddUserRole request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<AddUserRoleResponse>
+
+        OnAddUserRoleDelegate(DateTime               Timestamp,
+                              IEventSender           Sender,
+                              IWebSocketConnection   Connection,
+                              AddUserRoleRequest     Request,
+                              CancellationToken      CancellationToken = default);
+
+
     public partial class OCPPWebSocketAdapterIN
     {
 
-        #region Events
+        // Wired via reflection!
+
+        #region Receive AddUserRole request
 
         /// <summary>
         /// An event sent whenever an AddUserRole request was received.
@@ -45,9 +143,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnAddUserRoleDelegate?                 OnAddUserRole;
 
-        #endregion
-
-        #region Receive AddUserRoleRequest (wired via reflection!)
 
         public async Task<OCPP_Response>
 
@@ -86,6 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         request,
                         request.ToJSON(
                             parentNetworkingNode.OCPP.CustomAddUserRoleRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomUserRoleSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
@@ -103,32 +199,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnAddUserRoleRequestReceived event
 
-                    var logger = OnAddUserRoleRequestReceived;
-                    if (logger is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType<OnAddUserRoleRequestReceivedDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
-                                      nameof(OnAddUserRoleRequestReceived),
-                                      e
-                                  );
-                        }
-                    }
+                    await LogEvent(
+                              OnAddUserRoleRequestReceived,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  parentNetworkingNode,
+                                  WebSocketConnection,
+                                  request,
+                                  CancellationToken
+                              )
+                          );
 
                     #endregion
 
@@ -162,7 +242,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             response = AddUserRoleResponse.ExceptionOccured(request, e);
 
                             await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
                                       nameof(OnAddUserRole),
                                       e
                                   );
@@ -184,7 +263,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
-                        out var errorResponse2);
+                        out var errorResponse2
+                    );
 
                     #endregion
 
@@ -197,7 +277,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                               WebSocketConnection,
                               request,
                               response,
-                              response.Runtime
+                              response.Runtime,
+                              SentMessageResults.Unknown
                           );
 
                     #endregion
@@ -231,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                ocppResponse = OCPP_Response.FormationViolation(
+                ocppResponse = OCPP_Response.ExceptionOccurred(
                                    EventTrackingId,
                                    RequestId,
                                    nameof(Receive_AddUserRole)[8..],
@@ -247,26 +328,131 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Receive AddUserRoleRequestError
+        #region Receive AddUserRole response
+
+        /// <summary>
+        /// An event fired whenever an AddUserRole response was received.
+        /// </summary>
+        public event OnAddUserRoleResponseReceivedDelegate? OnAddUserRoleResponseReceived;
+
+
+        public async Task<AddUserRoleResponse>
+
+            Receive_AddUserRoleResponse(AddUserRoleRequest    Request,
+                                        JObject               ResponseJSON,
+                                        IWebSocketConnection  WebSocketConnection,
+                                        NetworkingNode_Id     DestinationId,
+                                        NetworkPath           NetworkPath,
+                                        EventTracking_Id      EventTrackingId,
+                                        Request_Id            RequestId,
+                                        DateTime?             ResponseTimestamp   = null,
+                                        CancellationToken     CancellationToken   = default)
+
+        {
+
+            AddUserRoleResponse? response = null;
+
+            try
+            {
+
+                if (AddUserRoleResponse.TryParse(Request,
+                                                 ResponseJSON,
+                                                 DestinationId,
+                                                 NetworkPath,
+                                                 out response,
+                                                 out var errorResponse,
+                                                 ResponseTimestamp,
+                                                 parentNetworkingNode.OCPP.CustomAddUserRoleResponseParser,
+                                                 parentNetworkingNode.OCPP.CustomStatusInfoParser,
+                                                 parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                 parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+
+                    #region Verify response signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+                            response,
+                            response.ToJSON(
+                                parentNetworkingNode.OCPP.CustomAddUserRoleResponseSerializer,
+                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            ),
+                            out errorResponse
+                        ))
+                    {
+
+                        response = AddUserRoleResponse.SignatureError(
+                                       Request,
+                                       errorResponse
+                                   );
+
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    response = AddUserRoleResponse.FormationViolation(
+                                   Request,
+                                   errorResponse
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                response = AddUserRoleResponse.ExceptionOccured(
+                               Request,
+                               e
+                           );
+
+            }
+
+
+            #region Send OnAddUserRoleResponseReceived event
+
+            await LogEvent(
+                      OnAddUserRoleResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Receive AddUserRole request error
+
+        /// <summary>
+        /// An event fired whenever an AddUserRole request error was received.
+        /// </summary>
+        public event OnAddUserRoleRequestErrorReceivedDelegate? AddUserRoleRequestErrorReceived;
+
 
         public async Task<AddUserRoleResponse>
 
             Receive_AddUserRoleRequestError(AddUserRoleRequest            Request,
                                             OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                            IWebSocketConnection          WebSocketConnection)
-
+                                            IWebSocketConnection          Connection,
+                                            NetworkingNode_Id             DestinationId,
+                                            NetworkPath                   NetworkPath,
+                                            EventTracking_Id              EventTrackingId,
+                                            Request_Id                    RequestId,
+                                            DateTime?                     ResponseTimestamp   = null,
+                                            CancellationToken             CancellationToken   = default)
         {
-
-            var response = AddUserRoleResponse.RequestError(
-                               Request,
-                               RequestErrorMessage.EventTrackingId,
-                               RequestErrorMessage.ErrorCode,
-                               RequestErrorMessage.ErrorDescription,
-                               RequestErrorMessage.ErrorDetails,
-                               RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
-                               RequestErrorMessage.NetworkPath
-                           );
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
             //    response,
@@ -283,32 +469,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //    out errorResponse
             //);
 
+            #region Send AddUserRoleRequestErrorReceived event
+
+            await LogEvent(
+                      AddUserRoleRequestErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          RequestErrorMessage,
+                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+
+            var response = AddUserRoleResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
             #region Send OnAddUserRoleResponseReceived event
 
-            var logger = OnAddUserRoleResponseReceived;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(logger.GetInvocationList().
-                                                OfType<OnAddUserRoleResponseReceivedDelegate>().
-                                                Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                               Timestamp.Now,
-                                                                               parentNetworkingNode,
-                                                                               //    WebSocketConnection,
-                                                                               Request,
-                                                                               response,
-                                                                               response.Runtime
-                                                                           )).
-                                                ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAddUserRoleResponseReceived));
-                }
-            }
+            await LogEvent(
+                      OnAddUserRoleResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -318,57 +521,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-    }
-
-    public partial class OCPPWebSocketAdapterOUT
-    {
-
-        #region Events
+        #region Receive AddUserRole response error
 
         /// <summary>
-        /// An event sent whenever a response to an AddUserRole was sent.
+        /// An event fired whenever an AddUserRole response error was received.
         /// </summary>
-        public event OnAddUserRoleResponseSentDelegate?  OnAddUserRoleResponseSent;
+        public event OnAddUserRoleResponseErrorReceivedDelegate? AddUserRoleResponseErrorReceived;
 
-        #endregion
 
-        #region Send OnAddUserRoleResponse event
+        public async Task
 
-        public async Task SendOnAddUserRoleResponseSent(DateTime              Timestamp,
-                                                        IEventSender          Sender,
-                                                        IWebSocketConnection  Connection,
-                                                        AddUserRoleRequest    Request,
-                                                        AddUserRoleResponse   Response,
-                                                        TimeSpan              Runtime)
+            Receive_AddUserRoleResponseError(AddUserRoleRequest?            Request,
+                                             AddUserRoleResponse?           Response,
+                                             OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                             IWebSocketConnection           Connection,
+                                             NetworkingNode_Id              DestinationId,
+                                             NetworkPath                    NetworkPath,
+                                             EventTracking_Id               EventTrackingId,
+                                             Request_Id                     RequestId,
+                                             DateTime?                      ResponseTimestamp   = null,
+                                             CancellationToken              CancellationToken   = default)
+
         {
 
-            var logger = OnAddUserRoleResponseSent;
-            if (logger is not null)
-            {
-                try
-                {
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomAddUserRoleResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                              OfType<OnAddUserRoleResponseSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
-                                                                                             Sender,
-                                                                                             Connection,
-                                                                                             Request,
-                                                                                             Response,
-                                                                                             Runtime)).
-                                              ToArray());
+            #region Send AddUserRoleResponseErrorReceived event
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(OCPPWebSocketAdapterOUT),
-                              nameof(OnAddUserRoleResponseSent),
-                              e
-                          );
-                }
+            await LogEvent(
+                      AddUserRoleResponseErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          Response,
+                          ResponseErrorMessage,
+                          Response is not null
+                              ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
+                              : null,
+                          CancellationToken
+                      )
+                  );
 
-            }
+            #endregion
+
 
         }
 

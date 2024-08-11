@@ -24,67 +24,8 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
-    /// <summary>
-    /// The common interface of all outgoing OCPP messages
-    /// from a charging station management system.
-    /// </summary>
-    public interface INetworkingNodeOutgoingMessages
+    public interface E2ESecurityExtensions_OutgoingMessages
     {
-
-        // Binary Data Streams Extensions
-
-        #region BinaryDataTransfer          (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A BinaryDataTransfer request.</param>
-        Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
-
-        #endregion
-
-        #region GetFile                     (Request)
-
-        /// <summary>
-        /// Request to download the specified file.
-        /// </summary>
-        /// <param name="Request">A GetFile request.</param>
-        Task<GetFileResponse> GetFile(GetFileRequest Request);
-
-        #endregion
-
-        #region SendFile                    (Request)
-
-        /// <summary>
-        /// Send the given file to the charging station.
-        /// </summary>
-        /// <param name="Request">A SendFile request.</param>
-        Task<SendFileResponse> SendFile(SendFileRequest Request);
-
-        #endregion
-
-        #region DeleteFile                  (Request)
-
-        /// <summary>
-        /// Delete the given file from the charging station.
-        /// </summary>
-        /// <param name="Request">A DeleteFile request.</param>
-        Task<DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
-
-        #endregion
-
-        #region ListDirectory               (Request)
-
-        /// <summary>
-        /// List the given directory of the charging station or networking node.
-        /// </summary>
-        /// <param name="Request">A ListDirectory request.</param>
-        Task<ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request);
-
-        #endregion
-
-
-        // E2E Security Extensions
 
         #region AddSignaturePolicy          (Request)
 

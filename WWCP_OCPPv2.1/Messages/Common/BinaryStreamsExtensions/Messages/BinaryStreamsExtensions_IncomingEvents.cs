@@ -24,7 +24,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public interface INNIncomingMessagesEvents_BinaryDataStreamsExtensions
+    public interface BinaryStreamsExtensions_IncomingEvents
     {
 
         #region OnBinaryDataTransfer (RequestReceived/-ResponseSent)
@@ -40,6 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponseReceived;
 
         #endregion
+
 
         #region OnDeleteFile         (RequestReceived/-ResponseSent)
 
@@ -96,6 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         event OnSendFileResponseReceivedDelegate            OnSendFileResponseReceived;
 
         #endregion
+
 
     }
 

@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Delegates
 
     /// <summary>
-    /// A AddUserRole request.
+    /// An AddUserRole request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -191,7 +191,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new AddUserRoleResponse(
                                        request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       GenericStatus.Rejected,
+                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
                 forwardingDecision = new ForwardingDecision<AddUserRoleRequest, AddUserRoleResponse>(
@@ -213,6 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (forwardingDecision.NewRequest is not null)
                 forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
                                                         parentNetworkingNode.OCPP.CustomAddUserRoleRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomUserRoleSerializer,
                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                     );

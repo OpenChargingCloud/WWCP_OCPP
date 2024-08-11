@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Logging Delegates
 
     /// <summary>
-    /// A delegate called whenever a SecureDataTransfer request was sent.
+    /// A delegate called whenever a AddSignaturePolicy request was sent.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -39,16 +39,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SendMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecureDataTransferRequestSentDelegate(DateTime                    Timestamp,
+    public delegate Task OnAddSignaturePolicyRequestSentDelegate(DateTime                    Timestamp,
                                                                  IEventSender                Sender,
                                                                  IWebSocketConnection        Connection,
-                                                                 SecureDataTransferRequest   Request,
+                                                                 AddSignaturePolicyRequest   Request,
                                                                  SentMessageResults          SendMessageResult,
                                                                  CancellationToken           CancellationToken = default);
 
 
     /// <summary>
-    /// A SecureDataTransfer response.
+    /// A AddSignaturePolicy response.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
@@ -60,18 +60,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSecureDataTransferResponseSentDelegate(DateTime                     Timestamp,
+        OnAddSignaturePolicyResponseSentDelegate(DateTime                     Timestamp,
                                                  IEventSender                 Sender,
                                                  IWebSocketConnection         Connection,
-                                                 SecureDataTransferRequest    Request,
-                                                 SecureDataTransferResponse   Response,
+                                                 AddSignaturePolicyRequest    Request,
+                                                 AddSignaturePolicyResponse   Response,
                                                  TimeSpan                     Runtime,
                                                  SentMessageResults           SendMessageResult,
                                                  CancellationToken            CancellationToken = default);
 
 
     /// <summary>
-    /// A logging delegate called whenever a SecureDataTransfer request error was sent.
+    /// A logging delegate called whenever a AddSignaturePolicy request error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the request error.</param>
@@ -83,10 +83,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSecureDataTransferRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnAddSignaturePolicyRequestErrorSentDelegate(DateTime                       Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection           Connection,
-                                                     SecureDataTransferRequest?     Request,
+                                                     AddSignaturePolicyRequest?     Request,
                                                      OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                      TimeSpan?                      Runtime,
                                                      SentMessageResults             SendMessageResult,
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
     /// <summary>
-    /// A logging delegate called whenever a SecureDataTransfer response error was sent.
+    /// A logging delegate called whenever a AddSignaturePolicy response error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the response error.</param>
@@ -107,11 +107,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSecureDataTransferResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnAddSignaturePolicyResponseErrorSentDelegate(DateTime                        Timestamp,
                                                       IEventSender                    Sender,
                                                       IWebSocketConnection            Connection,
-                                                      SecureDataTransferRequest?      Request,
-                                                      SecureDataTransferResponse?     Response,
+                                                      AddSignaturePolicyRequest?      Request,
+                                                      AddSignaturePolicyResponse?     Response,
                                                       OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
                                                       TimeSpan?                       Runtime,
                                                       SentMessageResults              SendMessageResult,
@@ -123,25 +123,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT
     {
 
-        #region Send SecureDataTransfer request
+        #region Send AddSignaturePolicy request
 
         /// <summary>
-        /// An event fired whenever a SecureDataTransfer request was sent.
+        /// An event fired whenever a AddSignaturePolicy request was sent.
         /// </summary>
-        public event OnSecureDataTransferRequestSentDelegate?  OnSecureDataTransferRequestSent;
+        public event OnAddSignaturePolicyRequestSentDelegate?  OnAddSignaturePolicyRequestSent;
 
 
         /// <summary>
-        /// Send a SecureDataTransfer request.
+        /// Send a AddSignaturePolicy request.
         /// </summary>
-        /// <param name="Request">A SecureDataTransfer request.</param>
-        public async Task<SecureDataTransferResponse>
+        /// <param name="Request">A AddSignaturePolicy request.</param>
+        public async Task<AddSignaturePolicyResponse>
 
-            SecureDataTransfer(SecureDataTransferRequest Request)
+            AddSignaturePolicy(AddSignaturePolicyRequest Request)
 
         {
 
-            SecureDataTransferResponse? response = null;
+            AddSignaturePolicyResponse? response = null;
 
             try
             {
@@ -150,16 +150,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
                         Request,
-                        Request.ToBinary(
-                            parentNetworkingNode.OCPP.CustomSecureDataTransferRequestSerializer,
-                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
-                            IncludeSignatures: false
+                        Request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomAddSignaturePolicyRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignaturePolicySerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
                         out var signingErrors
                     ))
                 {
 
-                    response = SecureDataTransferResponse.SignatureError(
+                    response = AddSignaturePolicyResponse.SignatureError(
                                    Request,
                                    signingErrors
                                );
@@ -173,19 +174,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send request message
 
-                    var sendRequestState = await SendBinaryRequestAndWait(
+                    var sendRequestState = await SendJSONRequestAndWait(
 
-                                                     OCPP_BinaryRequestMessage.FromRequest(
+                                                     OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
-                                                         Request.ToBinary(
-                                                             parentNetworkingNode.OCPP.CustomSecureDataTransferRequestSerializer,
-                                                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
-                                                             IncludeSignatures: true
+                                                         Request.ToJSON(
+                                                             parentNetworkingNode.OCPP.CustomAddSignaturePolicyRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomSignaturePolicySerializer,
+                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                          )
                                                      ),
 
                                                      sendMessageResult => LogEvent(
-                                                         OnSecureDataTransferRequestSent,
+                                                         OnAddSignaturePolicyRequestSent,
                                                          loggingDelegate => loggingDelegate.Invoke(
                                                              Timestamp.Now,
                                                              parentNetworkingNode,
@@ -199,10 +201,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    if (sendRequestState.IsValidBinaryResponse(Request, out var binaryResponse))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_SecureDataTransferResponse(
+                    if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_AddSignaturePolicyResponse(
                                              Request,
-                                             binaryResponse,
+                                             jsonResponse,
                                              sendRequestState.WebSocketConnectionReceived,
                                              sendRequestState.DestinationIdReceived,
                                              sendRequestState.NetworkPathReceived,
@@ -213,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
                     if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_SecureDataTransferRequestError(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_AddSignaturePolicyRequestError(
                                              Request,
                                              jsonRequestError,
                                              sendRequestState.WebSocketConnectionReceived,
@@ -225,9 +227,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              Request.CancellationToken
                                          );
 
-                    response ??= new SecureDataTransferResponse(
+                    response ??= new AddSignaturePolicyResponse(
                                      Request,
-                                     SecureDataTransferStatus.Rejected,
+                                     GenericStatus.Rejected,
                                      Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
@@ -237,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = SecureDataTransferResponse.ExceptionOccured(
+                response = AddSignaturePolicyResponse.ExceptionOccured(
                                Request,
                                e
                            );
@@ -251,24 +253,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region Send OnSecureDataTransferResponseSent event
+        #region Send OnAddSignaturePolicyResponseSent event
 
         /// <summary>
-        /// An event sent whenever a SecureDataTransfer response was sent.
+        /// An event sent whenever a AddSignaturePolicy response was sent.
         /// </summary>
-        public event OnSecureDataTransferResponseSentDelegate?  OnSecureDataTransferResponseSent;
+        public event OnAddSignaturePolicyResponseSentDelegate?  OnAddSignaturePolicyResponseSent;
 
-        public Task SendOnSecureDataTransferResponseSent(DateTime                    Timestamp,
+        public Task SendOnAddSignaturePolicyResponseSent(DateTime                    Timestamp,
                                                          IEventSender                Sender,
                                                          IWebSocketConnection        Connection,
-                                                         SecureDataTransferRequest   Request,
-                                                         SecureDataTransferResponse  Response,
+                                                         AddSignaturePolicyRequest   Request,
+                                                         AddSignaturePolicyResponse  Response,
                                                          TimeSpan                    Runtime,
                                                          SentMessageResults          SendMessageResult,
                                                          CancellationToken           CancellationToken = default)
 
             => LogEvent(
-                   OnSecureDataTransferResponseSent,
+                   OnAddSignaturePolicyResponseSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,
@@ -283,25 +285,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Send OnSecureDataTransferRequestErrorSent event
+        #region Send OnAddSignaturePolicyRequestErrorSent event
 
         /// <summary>
-        /// An event sent whenever a SecureDataTransfer request error was sent.
+        /// An event sent whenever a AddSignaturePolicy request error was sent.
         /// </summary>
-        public event OnSecureDataTransferRequestErrorSentDelegate? OnSecureDataTransferRequestErrorSent;
+        public event OnAddSignaturePolicyRequestErrorSentDelegate? OnAddSignaturePolicyRequestErrorSent;
 
 
-        public Task SendOnSecureDataTransferRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnAddSignaturePolicyRequestErrorSent(DateTime                      Timestamp,
                                                              IEventSender                  Sender,
                                                              IWebSocketConnection          Connection,
-                                                             SecureDataTransferRequest?    Request,
+                                                             AddSignaturePolicyRequest?    Request,
                                                              OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                              TimeSpan                      Runtime,
                                                              SentMessageResults            SendMessageResult,
                                                              CancellationToken             CancellationToken = default)
 
             => LogEvent(
-                   OnSecureDataTransferRequestErrorSent,
+                   OnAddSignaturePolicyRequestErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,
@@ -316,26 +318,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Send OnSecureDataTransferResponseErrorSent event
+        #region Send OnAddSignaturePolicyResponseErrorSent event
 
         /// <summary>
-        /// An event sent whenever a SecureDataTransfer response error was sent.
+        /// An event sent whenever a AddSignaturePolicy response error was sent.
         /// </summary>
-        public event OnSecureDataTransferResponseErrorSentDelegate? OnSecureDataTransferResponseErrorSent;
+        public event OnAddSignaturePolicyResponseErrorSentDelegate? OnAddSignaturePolicyResponseErrorSent;
 
 
-        public Task SendOnSecureDataTransferResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnAddSignaturePolicyResponseErrorSent(DateTime                       Timestamp,
                                                               IEventSender                   Sender,
                                                               IWebSocketConnection           Connection,
-                                                              SecureDataTransferRequest?     Request,
-                                                              SecureDataTransferResponse?    Response,
+                                                              AddSignaturePolicyRequest?     Request,
+                                                              AddSignaturePolicyResponse?    Response,
                                                               OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
                                                               TimeSpan                       Runtime,
                                                               SentMessageResults             SendMessageResult,
                                                               CancellationToken              CancellationToken = default)
 
             => LogEvent(
-                   OnSecureDataTransferResponseErrorSent,
+                   OnAddSignaturePolicyResponseErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,

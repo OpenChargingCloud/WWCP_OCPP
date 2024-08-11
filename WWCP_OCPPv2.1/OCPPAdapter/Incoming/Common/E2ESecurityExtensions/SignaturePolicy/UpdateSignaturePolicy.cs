@@ -30,10 +30,108 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Logging Delegates
+
+    /// <summary>
+    /// A logging delegate called whenever an UpdateSignaturePolicy request was received.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnUpdateSignaturePolicyRequestReceivedDelegate(DateTime                       Timestamp,
+                                                                        IEventSender                   Sender,
+                                                                        IWebSocketConnection           Connection,
+                                                                        UpdateSignaturePolicyRequest   Request,
+                                                                        CancellationToken              CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an UpdateSignaturePolicy response was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the response logging.</param>
+    /// <param name="Sender">The sender of the request/response.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnUpdateSignaturePolicyResponseReceivedDelegate(DateTime                        Timestamp,
+                                                                         IEventSender                    Sender,
+                                                                         IWebSocketConnection            Connection,
+                                                                         UpdateSignaturePolicyRequest?   Request,
+                                                                         UpdateSignaturePolicyResponse   Response,
+                                                                         TimeSpan?                       Runtime,
+                                                                         CancellationToken               CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an UpdateSignaturePolicy request error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="RequestErrorMessage">The request error message.</param>
+    /// <param name="Runtime">The runtime of the request/request error pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnUpdateSignaturePolicyRequestErrorReceivedDelegate(DateTime                        Timestamp,
+                                                                             IEventSender                    Sender,
+                                                                             IWebSocketConnection            Connection,
+                                                                             UpdateSignaturePolicyRequest?   Request,
+                                                                             OCPP_JSONRequestErrorMessage    RequestErrorMessage,
+                                                                             TimeSpan?                       Runtime,
+                                                                             CancellationToken               CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an UpdateSignaturePolicy response error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response error.</param>
+    /// <param name="Connection">The connection of the response error.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response, when available.</param>
+    /// <param name="ResponseErrorMessage">The response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnUpdateSignaturePolicyResponseErrorReceivedDelegate(DateTime                         Timestamp,
+                                                                              IEventSender                     Sender,
+                                                                              IWebSocketConnection             Connection,
+                                                                              UpdateSignaturePolicyRequest?    Request,
+                                                                              UpdateSignaturePolicyResponse?   Response,
+                                                                              OCPP_JSONResponseErrorMessage    ResponseErrorMessage,
+                                                                              TimeSpan?                        Runtime,
+                                                                              CancellationToken                CancellationToken = default);
+
+    #endregion
+
+
+    /// <summary>
+    /// A delegate called whenever an UpdateSignaturePolicy response is expected
+    /// for a received UpdateSignaturePolicy request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<UpdateSignaturePolicyResponse>
+
+        OnUpdateSignaturePolicyDelegate(DateTime                       Timestamp,
+                                        IEventSender                   Sender,
+                                        IWebSocketConnection           Connection,
+                                        UpdateSignaturePolicyRequest   Request,
+                                        CancellationToken              CancellationToken = default);
+
+
     public partial class OCPPWebSocketAdapterIN
     {
 
-        #region Events
+        // Wired via reflection!
+
+        #region Receive UpdateSignaturePolicy request
 
         /// <summary>
         /// An event sent whenever an UpdateSignaturePolicy request was received.
@@ -45,9 +143,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnUpdateSignaturePolicyDelegate?                 OnUpdateSignaturePolicy;
 
-        #endregion
-
-        #region Receive UpdateSignaturePolicyRequest (wired via reflection!)
 
         public async Task<OCPP_Response>
 
@@ -103,32 +198,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnUpdateSignaturePolicyRequestReceived event
 
-                    var logger = OnUpdateSignaturePolicyRequestReceived;
-                    if (logger is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType<OnUpdateSignaturePolicyRequestReceivedDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
-                                      nameof(OnUpdateSignaturePolicyRequestReceived),
-                                      e
-                                  );
-                        }
-                    }
+                    await LogEvent(
+                              OnUpdateSignaturePolicyRequestReceived,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  parentNetworkingNode,
+                                  WebSocketConnection,
+                                  request,
+                                  CancellationToken
+                              )
+                          );
 
                     #endregion
 
@@ -162,7 +241,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             response = UpdateSignaturePolicyResponse.ExceptionOccured(request, e);
 
                             await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
                                       nameof(OnUpdateSignaturePolicy),
                                       e
                                   );
@@ -184,7 +262,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
-                        out var errorResponse2);
+                        out var errorResponse2
+                    );
 
                     #endregion
 
@@ -197,7 +276,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                               WebSocketConnection,
                               request,
                               response,
-                              response.Runtime
+                              response.Runtime,
+                              SentMessageResults.Unknown
                           );
 
                     #endregion
@@ -231,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                ocppResponse = OCPP_Response.FormationViolation(
+                ocppResponse = OCPP_Response.ExceptionOccurred(
                                    EventTrackingId,
                                    RequestId,
                                    nameof(Receive_UpdateSignaturePolicy)[8..],
@@ -247,26 +327,131 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Receive UpdateSignaturePolicyRequestError
+        #region Receive UpdateSignaturePolicy response
+
+        /// <summary>
+        /// An event fired whenever an UpdateSignaturePolicy response was received.
+        /// </summary>
+        public event OnUpdateSignaturePolicyResponseReceivedDelegate? OnUpdateSignaturePolicyResponseReceived;
+
+
+        public async Task<UpdateSignaturePolicyResponse>
+
+            Receive_UpdateSignaturePolicyResponse(UpdateSignaturePolicyRequest  Request,
+                                                  JObject                       ResponseJSON,
+                                                  IWebSocketConnection          WebSocketConnection,
+                                                  NetworkingNode_Id             DestinationId,
+                                                  NetworkPath                   NetworkPath,
+                                                  EventTracking_Id              EventTrackingId,
+                                                  Request_Id                    RequestId,
+                                                  DateTime?                     ResponseTimestamp   = null,
+                                                  CancellationToken             CancellationToken   = default)
+
+        {
+
+            UpdateSignaturePolicyResponse? response = null;
+
+            try
+            {
+
+                if (UpdateSignaturePolicyResponse.TryParse(Request,
+                                                           ResponseJSON,
+                                                           DestinationId,
+                                                           NetworkPath,
+                                                           out response,
+                                                           out var errorResponse,
+                                                           ResponseTimestamp,
+                                                           parentNetworkingNode.OCPP.CustomUpdateSignaturePolicyResponseParser,
+                                                           parentNetworkingNode.OCPP.CustomStatusInfoParser,
+                                                           parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                           parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+
+                    #region Verify response signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+                            response,
+                            response.ToJSON(
+                                parentNetworkingNode.OCPP.CustomUpdateSignaturePolicyResponseSerializer,
+                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            ),
+                            out errorResponse
+                        ))
+                    {
+
+                        response = UpdateSignaturePolicyResponse.SignatureError(
+                                       Request,
+                                       errorResponse
+                                   );
+
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    response = UpdateSignaturePolicyResponse.FormationViolation(
+                                   Request,
+                                   errorResponse
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                response = UpdateSignaturePolicyResponse.ExceptionOccured(
+                               Request,
+                               e
+                           );
+
+            }
+
+
+            #region Send OnUpdateSignaturePolicyResponseReceived event
+
+            await LogEvent(
+                      OnUpdateSignaturePolicyResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Receive UpdateSignaturePolicy request error
+
+        /// <summary>
+        /// An event fired whenever an UpdateSignaturePolicy request error was received.
+        /// </summary>
+        public event OnUpdateSignaturePolicyRequestErrorReceivedDelegate? UpdateSignaturePolicyRequestErrorReceived;
+
 
         public async Task<UpdateSignaturePolicyResponse>
 
             Receive_UpdateSignaturePolicyRequestError(UpdateSignaturePolicyRequest  Request,
                                                       OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                      IWebSocketConnection          WebSocketConnection)
-
+                                                      IWebSocketConnection          Connection,
+                                                      NetworkingNode_Id             DestinationId,
+                                                      NetworkPath                   NetworkPath,
+                                                      EventTracking_Id              EventTrackingId,
+                                                      Request_Id                    RequestId,
+                                                      DateTime?                     ResponseTimestamp   = null,
+                                                      CancellationToken             CancellationToken   = default)
         {
-
-            var response = UpdateSignaturePolicyResponse.RequestError(
-                               Request,
-                               RequestErrorMessage.EventTrackingId,
-                               RequestErrorMessage.ErrorCode,
-                               RequestErrorMessage.ErrorDescription,
-                               RequestErrorMessage.ErrorDetails,
-                               RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
-                               RequestErrorMessage.NetworkPath
-                           );
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
             //    response,
@@ -283,32 +468,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //    out errorResponse
             //);
 
+            #region Send UpdateSignaturePolicyRequestErrorReceived event
+
+            await LogEvent(
+                      UpdateSignaturePolicyRequestErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          RequestErrorMessage,
+                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+
+            var response = UpdateSignaturePolicyResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
             #region Send OnUpdateSignaturePolicyResponseReceived event
 
-            var logger = OnUpdateSignaturePolicyResponseReceived;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(logger.GetInvocationList().
-                                                OfType<OnUpdateSignaturePolicyResponseReceivedDelegate>().
-                                                Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                               Timestamp.Now,
-                                                                               parentNetworkingNode,
-                                                                               //    WebSocketConnection,
-                                                                               Request,
-                                                                               response,
-                                                                               response.Runtime
-                                                                           )).
-                                                ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateSignaturePolicyResponseReceived));
-                }
-            }
+            await LogEvent(
+                      OnUpdateSignaturePolicyResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -318,57 +520,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-    }
-
-    public partial class OCPPWebSocketAdapterOUT
-    {
-
-        #region Events
+        #region Receive UpdateSignaturePolicy response error
 
         /// <summary>
-        /// An event sent whenever a response to an UpdateSignaturePolicy was sent.
+        /// An event fired whenever an UpdateSignaturePolicy response error was received.
         /// </summary>
-        public event OnUpdateSignaturePolicyResponseSentDelegate?  OnUpdateSignaturePolicyResponseSent;
+        public event OnUpdateSignaturePolicyResponseErrorReceivedDelegate? UpdateSignaturePolicyResponseErrorReceived;
 
-        #endregion
 
-        #region Send OnUpdateSignaturePolicyResponse event
+        public async Task
 
-        public async Task SendOnUpdateSignaturePolicyResponseSent(DateTime                       Timestamp,
-                                                                  IEventSender                   Sender,
-                                                                  IWebSocketConnection           Connection,
-                                                                  UpdateSignaturePolicyRequest   Request,
-                                                                  UpdateSignaturePolicyResponse  Response,
-                                                                  TimeSpan                       Runtime)
+            Receive_UpdateSignaturePolicyResponseError(UpdateSignaturePolicyRequest?   Request,
+                                                       UpdateSignaturePolicyResponse?  Response,
+                                                       OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                       IWebSocketConnection            Connection,
+                                                       NetworkingNode_Id               DestinationId,
+                                                       NetworkPath                     NetworkPath,
+                                                       EventTracking_Id                EventTrackingId,
+                                                       Request_Id                      RequestId,
+                                                       DateTime?                       ResponseTimestamp   = null,
+                                                       CancellationToken               CancellationToken   = default)
+
         {
 
-            var logger = OnUpdateSignaturePolicyResponseSent;
-            if (logger is not null)
-            {
-                try
-                {
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomUpdateSignaturePolicyResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                              OfType<OnUpdateSignaturePolicyResponseSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
-                                                                                             Sender,
-                                                                                             Connection,
-                                                                                             Request,
-                                                                                             Response,
-                                                                                             Runtime)).
-                                              ToArray());
+            #region Send UpdateSignaturePolicyResponseErrorReceived event
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(OCPPWebSocketAdapterOUT),
-                              nameof(OnUpdateSignaturePolicyResponseSent),
-                              e
-                          );
-                }
+            await LogEvent(
+                      UpdateSignaturePolicyResponseErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          Response,
+                          ResponseErrorMessage,
+                          Response is not null
+                              ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
+                              : null,
+                          CancellationToken
+                      )
+                  );
 
-            }
+            #endregion
+
 
         }
 

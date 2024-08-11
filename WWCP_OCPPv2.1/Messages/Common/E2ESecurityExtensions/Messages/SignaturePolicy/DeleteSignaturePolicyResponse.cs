@@ -54,29 +54,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The registration status.
+        /// The success or failure status of the request.
         /// </summary>
         [Mandatory]
         public GenericStatus       Status        { get; }
 
         /// <summary>
-        /// The current time at the central system. [UTC]
-        /// </summary>
-        [Mandatory]
-        public DateTime            CurrentTime   { get; }
-
-        /// <summary>
-        /// When the registration status is 'accepted', the interval defines
-        /// the heartbeat interval in seconds.
-        /// In all other cases, the value of the interval field indicates
-        /// the minimum wait time before sending a next DeleteSignaturePolicy
-        /// request.
-        /// </summary>
-        [Mandatory]
-        public TimeSpan            Interval      { get; }
-
-        /// <summary>
-        /// An optional element providing more information about the registration status.
+        /// An optional element providing more information about the status.
         /// </summary>
         [Optional]
         public StatusInfo?         StatusInfo    { get; }
@@ -85,68 +69,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Constructor(s)
 
-        #region DeleteSignaturePolicyResponse(Request, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new DeleteSignaturePolicy response.
         /// </summary>
-        /// <param name="Request">The DeleteSignaturePolicy request leading to this response.</param>
-        /// <param name="Status">The registration status.</param>
-        /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="Status">The success or failure status of the request.</param>
+        /// <param name="StatusInfo">An optional element providing more information about the status.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public DeleteSignaturePolicyResponse(DeleteSignaturePolicyRequest  Request,
                                              GenericStatus                 Status,
                                              StatusInfo?                   StatusInfo          = null,
-                                             DateTime?                     ResponseTimestamp   = null,
 
-                                             NetworkingNode_Id?            DestinationNodeId   = null,
-                                             NetworkPath?                  NetworkPath         = null,
-
-                                             IEnumerable<KeyPair>?         SignKeys            = null,
-                                             IEnumerable<SignInfo>?        SignInfos           = null,
-                                             IEnumerable<Signature>?       Signatures          = null,
-
-                                             CustomData?                   CustomData          = null)
-
-            : base(Request,
-                   Result.OK(),
-                   ResponseTimestamp,
-
-                   DestinationNodeId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Status       = Status;
-            this.CurrentTime  = CurrentTime;
-            this.Interval     = Interval;
-            this.StatusInfo   = StatusInfo;
-
-        }
-
-        #endregion
-
-        #region DeleteSignaturePolicyResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new DeleteSignaturePolicy response.
-        /// </summary>
-        /// <param name="Request">The authorize request.</param>
-        /// <param name="Result">A result.</param>
-        public DeleteSignaturePolicyResponse(DeleteSignaturePolicyRequest  Request,
-                                             Result                        Result,
+                                             Result?                       Result              = null,
                                              DateTime?                     ResponseTimestamp   = null,
 
                                              NetworkingNode_Id?            DestinationId       = null,
@@ -159,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result,
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -173,102 +118,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            this.Status       = GenericStatus.Rejected;
-            this.CurrentTime  = Timestamp.Now;
-            this.Interval     = TimeSpan.Zero;
+            this.Status       = Status;
+            this.StatusInfo   = StatusInfo;
+
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
 
         }
-
-        #endregion
 
         #endregion
 
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:DeleteSignaturePolicyResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
-        //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     },
-        //     "RegistrationStatusEnumType": {
-        //       "description": "This contains whether the Charging Station has been registered\r\nwithin the CSMS.",
-        //       "javaType": "RegistrationStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Pending",
-        //         "Rejected"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "currentTime": {
-        //       "description": "This contains the CSMS’s current time.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "interval": {
-        //       "description": "When &lt;&lt;cmn_registrationstatusenumtype,Status&gt;&gt; is Accepted, this contains the heartbeat interval in seconds. If the CSMS returns something other than Accepted, the value of the interval field indicates the minimum wait time before sending a next DeleteSignaturePolicy request.",
-        //       "type": "integer"
-        //     },
-        //     "status": {
-        //       "$ref": "#/definitions/RegistrationStatusEnumType"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     }
-        //   },
-        //   "required": [
-        //     "currentTime",
-        //     "interval",
-        //     "status"
-        //   ]
-        // }
+        // tba.
 
         #endregion
 
@@ -282,15 +151,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteSignaturePolicyResponseParser">An optional delegate to parse custom DeleteSignaturePolicy responses.</param>
         public static DeleteSignaturePolicyResponse Parse(DeleteSignaturePolicyRequest                                 Request,
                                                           JObject                                                      JSON,
-                                                          CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?  CustomDeleteSignaturePolicyResponseParser   = null)
+                                                          NetworkingNode_Id                                            DestinationId,
+                                                          NetworkPath                                                  NetworkPath,
+                                                          DateTime?                                                    ResponseTimestamp                           = null,
+                                                          CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?  CustomDeleteSignaturePolicyResponseParser   = null,
+                                                          CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                                          CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                                          CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         DestinationId,
+                         NetworkPath,
                          out var deleteSignaturePolicyResponse,
                          out var errorResponse,
-                         CustomDeleteSignaturePolicyResponseParser))
+                         ResponseTimestamp,
+                         CustomDeleteSignaturePolicyResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return deleteSignaturePolicyResponse;
             }
@@ -314,9 +195,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteSignaturePolicyResponseParser">An optional delegate to parse custom DeleteSignaturePolicy responses.</param>
         public static Boolean TryParse(DeleteSignaturePolicyRequest                                 Request,
                                        JObject                                                      JSON,
+                                       NetworkingNode_Id                                            DestinationId,
+                                       NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out DeleteSignaturePolicyResponse?      DeleteSignaturePolicyResponse,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
-                                       CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?  CustomDeleteSignaturePolicyResponseParser   = null)
+                                       DateTime?                                                    ResponseTimestamp                           = null,
+                                       CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?  CustomDeleteSignaturePolicyResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                       CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                       CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             try
@@ -415,10 +302,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     Request,
                                                     RegistrationStatus,
                                                     StatusInfo,
-                                                    null,
 
                                                     null,
-                                                    null,
+                                                    ResponseTimestamp,
+
+                                                    DestinationId,
+                                                    NetworkPath,
 
                                                     null,
                                                     null,
@@ -430,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (CustomDeleteSignaturePolicyResponseParser is not null)
                     DeleteSignaturePolicyResponse = CustomDeleteSignaturePolicyResponseParser(JSON,
-                                                                                    DeleteSignaturePolicyResponse);
+                                                                                              DeleteSignaturePolicyResponse);
 
                 return true;
 
@@ -438,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 DeleteSignaturePolicyResponse  = null;
-                ErrorResponse             = "The given JSON representation of a DeleteSignaturePolicy response is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a DeleteSignaturePolicy response is invalid: " + e.Message;
                 return false;
             }
 
@@ -464,8 +353,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var json = JSONObject.Create(
 
                                  new JProperty("status",        Status.           AsText()),
-                                 new JProperty("currentTime",   CurrentTime.      ToIso8601()),
-                                 new JProperty("interval",      (UInt32) Interval.TotalSeconds),
 
                            StatusInfo is not null
                                ? new JProperty("statusInfo",    StatusInfo.       ToJSON(CustomStatusInfoSerializer,
@@ -517,6 +404,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (
 
                    Request,
+                   GenericStatus.Rejected,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -541,13 +430,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The DeleteSignaturePolicy request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
+        public static DeleteSignaturePolicyResponse FormationViolation(DeleteSignaturePolicyRequest  Request,
+                                                                       String                        ErrorDescription)
+
+            => new (Request,
+                    GenericStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The DeleteSignaturePolicy failed.
+        /// </summary>
+        /// <param name="Request">The DeleteSignaturePolicy request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
         public static DeleteSignaturePolicyResponse SignatureError(DeleteSignaturePolicyRequest  Request,
                                                                    String                        ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    GenericStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -559,7 +464,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            String?                       Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    GenericStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -571,7 +477,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                      Exception                     Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    GenericStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -646,9 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             => DeleteSignaturePolicyResponse is not null &&
 
-               Status.     Equals(DeleteSignaturePolicyResponse.Status)      &&
-               CurrentTime.Equals(DeleteSignaturePolicyResponse.CurrentTime) &&
-               Interval.   Equals(DeleteSignaturePolicyResponse.Interval)    &&
+               Status.Equals(DeleteSignaturePolicyResponse.Status) &&
 
              ((StatusInfo is     null && DeleteSignaturePolicyResponse.StatusInfo is     null) ||
               (StatusInfo is not null && DeleteSignaturePolicyResponse.StatusInfo is not null && StatusInfo.Equals(DeleteSignaturePolicyResponse.StatusInfo))) &&
@@ -661,24 +566,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 11 ^
-                       CurrentTime.GetHashCode()       *  7 ^
-                       Interval.   GetHashCode()       *  5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) *  3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -689,9 +583,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
-                             " (", CurrentTime.ToIso8601(), ", ",
-                                   Interval.TotalSeconds, " sec(s))");
+            => Status.AsText();
 
         #endregion
 

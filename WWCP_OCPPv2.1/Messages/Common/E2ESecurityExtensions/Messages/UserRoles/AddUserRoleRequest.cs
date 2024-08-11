@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/addUserRoleRequest");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/addUserRoleRequest");
 
         #endregion
 
@@ -49,8 +49,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext    Context
+        public JSONLDContext  Context
             => DefaultJSONLDContext;
+
+        /// <summary>
+        /// The user role.
+        /// </summary>
+        [Mandatory]
+        public UserRole       UserRole    { get; }
 
         #endregion
 
@@ -60,6 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a new AddUserRole request.
         /// </summary>
         /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="UserRole">A user role.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -71,6 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public AddUserRoleRequest(NetworkingNode_Id        DestinationId,
+                                  UserRole                 UserRole,
 
                                   IEnumerable<KeyPair>?    SignKeys            = null,
                                   IEnumerable<SignInfo>?   SignInfos           = null,
@@ -103,11 +111,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-           
+            this.UserRole = UserRole;
 
             unchecked
             {
-                hashCode = base.                GetHashCode();
+                hashCode = this.UserRole.GetHashCode() * 3 ^
+                           base.         GetHashCode();
             }
 
         }
@@ -117,127 +126,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:AddUserRoleRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
-        //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     },
-        //     "BootReasonEnumType": {
-        //       "description": "This contains the reason for sending this message to the CSMS.",
-        //       "javaType": "BootReasonEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ApplicationReset",
-        //         "FirmwareUpdate",
-        //         "LocalReset",
-        //         "PowerUp",
-        //         "RemoteReset",
-        //         "ScheduledReset",
-        //         "Triggered",
-        //         "Unknown",
-        //         "Watchdog"
-        //       ]
-        //     },
-        //     "ChargingStationType": {
-        //       "description": "Charge_ Point\r\nurn:x-oca:ocpp:uid:2:233122\r\nThe physical system where an Electrical Vehicle (EV) can be charged.",
-        //       "javaType": "ChargingStation",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "serialNumber": {
-        //           "description": "Device. Serial_ Number. Serial_ Number\r\nurn:x-oca:ocpp:uid:1:569324\r\nVendor-specific device identifier.",
-        //           "type": "string",
-        //           "maxLength": 25
-        //         },
-        //         "model": {
-        //           "description": "Device. Model. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569325\r\nDefines the model of the device.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "modem": {
-        //           "$ref": "#/definitions/ModemType"
-        //         },
-        //         "vendorName": {
-        //           "description": "Identifies the vendor (not necessarily in a unique manner).",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "firmwareVersion": {
-        //           "description": "This contains the firmware version of the Charging Station.\r\n\r\n",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "model",
-        //         "vendorName"
-        //       ]
-        //     },
-        //     "ModemType": {
-        //       "description": "Wireless_ Communication_ Module\r\nurn:x-oca:ocpp:uid:2:233306\r\nDefines parameters required for initiating and maintaining wireless communication with other devices.",
-        //       "javaType": "Modem",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "iccid": {
-        //           "description": "Wireless_ Communication_ Module. ICCID. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569327\r\nThis contains the ICCID of the modem’s SIM card.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "imsi": {
-        //           "description": "Wireless_ Communication_ Module. IMSI. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569328\r\nThis contains the IMSI of the modem’s SIM card.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         }
-        //       }
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "chargingStation": {
-        //       "$ref": "#/definitions/ChargingStationType"
-        //     },
-        //     "reason": {
-        //       "$ref": "#/definitions/BootReasonEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "reason",
-        //     "chargingStation"
-        //   ]
-        // }
+        // tba.
 
         #endregion
 
         #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomAddUserRoleRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a AddUserRole request.
+        /// Parse the given JSON representation of an AddUserRole request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -272,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return addUserRoleRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a AddUserRole request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an AddUserRole request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -282,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out AddUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a AddUserRole request.
+        /// Try to parse the given JSON representation of an AddUserRole request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -310,6 +206,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 AddUserRoleRequest = null;
+
+                #region UserRole      [mandatory]
+
+                if (!JSON.ParseMandatoryJSON("signaturePolicy",
+                                             "user role",
+                                             OCPPv2_1.UserRole.TryParse,
+                                             out UserRole? UserRole,
+                                             out ErrorResponse) ||
+                     UserRole is null)
+                {
+                    return false;
+                }
+
+                #endregion
 
                 #region Signatures           [optional, OCPP_CSE]
 
@@ -343,6 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 AddUserRoleRequest = new AddUserRoleRequest(
 
                                          DestinationId,
+                                         UserRole,
 
                                          null,
                                          null,
@@ -368,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 AddUserRoleRequest  = null;
-                ErrorResponse       = "The given JSON representation of a AddUserRole request is invalid: " + e.Message;
+                ErrorResponse       = "The given JSON representation of an AddUserRole request is invalid: " + e.Message;
                 return false;
             }
 
@@ -376,28 +287,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ToJSON(CustomAddUserRoleRequestSerializer = null, CustomChargingStationSerializer = null, ...)
+        #region ToJSON(CustomAddUserRoleRequestSerializer = null, CustomUserRoleSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomAddUserRoleRequestSerializer">A delegate to serialize custom AddUserRole requests.</param>
+        /// <param name="CustomUserRoleSerializer">A delegate to serialize custom signature policies.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AddUserRoleRequest>?  CustomAddUserRoleRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<UserRole>?            CustomUserRoleSerializer             = null,
                               CustomJObjectSerializerDelegate<Signature>?           CustomSignatureSerializer            = null,
                               CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
             var json = JSONObject.Create(
 
+                                 new JProperty("signaturePolicy",   UserRole.ToJSON()),
+
                            Signatures.Any()
-                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                          CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                               CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -418,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Compares two AddUserRole requests for equality.
         /// </summary>
-        /// <param name="AddUserRoleRequest1">A AddUserRole request.</param>
+        /// <param name="AddUserRoleRequest1">An AddUserRole request.</param>
         /// <param name="AddUserRoleRequest2">Another AddUserRole request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AddUserRoleRequest? AddUserRoleRequest1,
@@ -444,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Compares two AddUserRole requests for inequality.
         /// </summary>
-        /// <param name="AddUserRoleRequest1">A AddUserRole request.</param>
+        /// <param name="AddUserRoleRequest1">An AddUserRole request.</param>
         /// <param name="AddUserRoleRequest2">Another AddUserRole request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AddUserRoleRequest? AddUserRoleRequest1,
@@ -463,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Compares two AddUserRole requests for equality.
         /// </summary>
-        /// <param name="Object">A AddUserRole request to compare with.</param>
+        /// <param name="Object">An AddUserRole request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is AddUserRoleRequest addUserRoleRequest &&
@@ -476,12 +391,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Compares two AddUserRole requests for equality.
         /// </summary>
-        /// <param name="AddUserRoleRequest">A AddUserRole request to compare with.</param>
+        /// <param name="AddUserRoleRequest">An AddUserRole request to compare with.</param>
         public override Boolean Equals(AddUserRoleRequest? AddUserRoleRequest)
 
             => AddUserRoleRequest is not null &&
 
-             
+               UserRole.Equals(AddUserRoleRequest.UserRole) &&
+
                base.    GenericEquals(AddUserRoleRequest);
 
         #endregion
@@ -507,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public override String ToString()
 
-            => $"Boot reason: ";
+            => UserRole.ToString();
 
         #endregion
 

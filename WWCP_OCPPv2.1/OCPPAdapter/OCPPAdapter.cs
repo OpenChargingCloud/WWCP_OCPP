@@ -396,6 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
         public CustomJObjectSerializerDelegate<SignaturePolicy>?                                     CustomSignaturePolicySerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<UserRole>?                                            CustomUserRoleSerializer                                     { get; set; }
         public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
         public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
@@ -762,8 +763,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectParserDelegate<UpdateUserRoleResponse>?                                    CustomUpdateUserRoleResponseParser                       { get; set; }
 
 
-        public CustomJObjectParserDelegate<OCPPv2_1.ChargingStation>?                                  CustomChargingStationParser                              { get; set; }
+        public CustomJObjectParserDelegate<ChargingStation>?                                           CustomChargingStationParser                              { get; set; }
         public CustomJObjectParserDelegate<Signature>?                                                 CustomSignatureParser                                    { get; set; }
+        public CustomBinaryParserDelegate<Signature>?                                                  CustomBinarySignatureParser                              { get; set; }
         public CustomJObjectParserDelegate<CustomData>?                                                CustomCustomDataParser                                   { get; set; }
         public CustomJObjectParserDelegate<StatusInfo>?                                                CustomStatusInfoParser                                   { get; set; }
         public CustomJObjectParserDelegate<CompositeSchedule>?                                         CustomCompositeScheduleParser                            { get; set; }

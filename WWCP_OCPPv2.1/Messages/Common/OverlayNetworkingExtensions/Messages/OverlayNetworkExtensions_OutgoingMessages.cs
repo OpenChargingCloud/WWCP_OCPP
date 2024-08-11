@@ -21,25 +21,22 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
-    public interface INNIncomingMessagesEvents_OverlayNetworkExtensions
+    public interface OverlayNetworkExtensions_OutgoingMessages
     {
 
-        #region OnNotifyNetworkTopology    (RequestReceived/-ResponseSent)
+        #region NotifyNetworkTopology          (Request)
 
         /// <summary>
-        /// An event sent whenever a NotifyNetworkTopology request was received.
+        /// Notify about network topology changes.
         /// </summary>
-        event OnNotifyNetworkTopologyRequestReceivedDelegate?      OnNotifyNetworkTopologyRequestReceived;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyNetworkTopology request was received.
-        /// </summary>
-        event OnNotifyNetworkTopologyResponseReceivedDelegate?     OnNotifyNetworkTopologyResponseReceived;
+        /// <param name="Request">A NotifyNetworkTopology request.</param>
+        Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request);
 
         #endregion
+
 
     }
 

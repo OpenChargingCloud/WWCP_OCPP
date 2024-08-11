@@ -106,8 +106,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Constructor(s)
 
-        #region SecureDataTransferResponse(Request, Status, AdditionalStatusInfo = null, SecureData = null, ...)
-
         /// <summary>
         /// Create a new SecureDataTransfer response.
         /// </summary>
@@ -119,11 +117,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Nonce">The optional first half of the cryptographic nonce.</param>
         /// <param name="Counter">The optional counter part of the cryptographic nonce.</param>
         /// <param name="Ciphertext">The encrypted encapsulated optional security payload.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         public SecureDataTransferResponse(SecureDataTransferRequest  Request,
                                           SecureDataTransferStatus   Status,
                                           String?                    AdditionalStatusInfo   = null,
@@ -132,6 +135,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           UInt64?                    Nonce                  = null,
                                           UInt64?                    Counter                = null,
                                           Byte[]?                    Ciphertext             = null,
+
+                                          Result?                    Result                 = null,
                                           DateTime?                  ResponseTimestamp      = null,
 
                                           NetworkingNode_Id?         DestinationId          = null,
@@ -142,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           IEnumerable<Signature>?    Signatures             = null)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
                    DestinationId,
@@ -177,49 +182,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
         }
-
-        #endregion
-
-        #region SecureDataTransferResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new SecureDataTransfer response.
-        /// </summary>
-        /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public SecureDataTransferResponse(SecureDataTransferRequest  Request,
-                                          Result                     Result,
-                                          DateTime?                  ResponseTimestamp   = null,
-
-                                          NetworkingNode_Id?         DestinationId       = null,
-                                          NetworkPath?               NetworkPath         = null,
-
-                                          IEnumerable<KeyPair>?      SignKeys            = null,
-                                          IEnumerable<SignInfo>?     SignInfos           = null,
-                                          IEnumerable<Signature>?    Signatures          = null,
-
-                                          CustomData?                CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                   DestinationId,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Status = SecureDataTransferStatus.Rejected;
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -295,7 +257,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            Counter,
                            ciphertext,
 
+                           Result.OK(),
                            ResponseTimestamp,
+
                            DestinationId,
                            NetworkPath,
 
@@ -356,12 +320,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
         /// <param name="SecureData">The binary to be parsed.</param>
         /// <param name="CustomSecureDataTransferResponseParser">An optional delegate to parse custom SecureDataTransfer responses.</param>
+        /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static SecureDataTransferResponse Parse(SecureDataTransferRequest                                Request,
                                                        Byte[]                                                   SecureData,
                                                        NetworkingNode_Id                                        DestinationId,
                                                        NetworkPath                                              NetworkPath,
-                                                       DateTime?                                                ResponseTimestamp                       = null,
-                                                       CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser  = null)
+                                                       DateTime?                                                ResponseTimestamp                        = null,
+                                                       CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser   = null,
+                                                       CustomBinaryParserDelegate<Signature>?                   CustomBinarySignatureParser              = null)
         {
 
             if (TryParse(Request,
@@ -371,7 +337,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          out var secureDataTransferResponse,
                          out var errorResponse,
                          ResponseTimestamp,
-                         CustomSecureDataTransferResponseParser))
+                         CustomSecureDataTransferResponseParser,
+                         CustomBinarySignatureParser))
             {
                 return secureDataTransferResponse;
             }
@@ -393,6 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SecureDataTransferResponse">The parsed SecureDataTransfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSecureDataTransferResponseParser">An optional delegate to parse custom SecureDataTransfer responses.</param>
+        /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static Boolean TryParse(SecureDataTransferRequest                                Request,
                                        Byte[]                                                   SecureData,
                                        NetworkingNode_Id                                        DestinationId,
@@ -400,7 +368,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        [NotNullWhen(true)]  out SecureDataTransferResponse?     SecureDataTransferResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
                                        DateTime?                                                ResponseTimestamp                        = null,
-                                       CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser   = null)
+                                       CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser   = null,
+                                       CustomBinaryParserDelegate<Signature>?                   CustomBinarySignatureParser              = null)
         {
 
             try
@@ -457,6 +426,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       nonce,
                                                       counter,
                                                       ciphertext,
+
+                                                      null,
                                                       ResponseTimestamp,
 
                                                       DestinationId,
@@ -565,13 +536,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                                               IEnumerable<KeyPair>?      SignKeys            = null,
                                                               IEnumerable<SignInfo>?     SignInfos           = null,
-                                                              IEnumerable<Signature>?    Signatures          = null,
-
-                                                              CustomData?                CustomData          = null)
+                                                              IEnumerable<Signature>?    Signatures          = null)
 
             => new (
 
                    Request,
+                   SecureDataTransferStatus.Rejected,
+                   null,
+                   null,
+                   null,
+                   null,
+                   null,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -584,11 +560,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    SignKeys,
                    SignInfos,
-                   Signatures,
-
-                   CustomData
+                   Signatures
 
                );
+
+
+        /// <summary>
+        /// The SecureDataTransfer failed.
+        /// </summary>
+        /// <param name="Request">The SecureDataTransfer request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SecureDataTransferResponse FormationViolation(SecureDataTransferRequest  Request,
+                                                                    String                     ErrorDescription)
+
+            => new (Request,
+                    SecureDataTransferStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -600,9 +589,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                 String                     ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    SecureDataTransferStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -614,7 +604,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                         String?                    Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    SecureDataTransferStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -626,7 +617,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                   Exception                  Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    SecureDataTransferStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
