@@ -585,28 +585,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     ForwardingDecision<CS.BootNotificationRequest, BootNotificationResponse>.FORWARD(request)
                 );
 
-                //Task.FromResult(
-                //    ForwardingDecision<CS.BootNotificationRequest, BootNotificationResponse>.REPLACE(
-                //        request,
-                //        new CS.BootNotificationRequest(
-                //            request.DestinationId,
-                //            request.ChargingStation,
-                //            request.Reason,
-                //            request.SignKeys,
-                //            request.SignInfos,
-                //            request.Signatures,
-                //            request.CustomData,
-                //            request.RequestId,
-                //            request.RequestTimestamp,
-                //            request.RequestTimeout,
-                //            request.EventTrackingId,
-                //            request.NetworkPath,
-                //            request.CancellationToken
-                //        ),
-                //        nameof(CS.BootNotificationRequest)[..^7],
-                //        NetworkingNode_Id.Parse("/dev/null")
-                //    )
-                //);
+            //Task.FromResult(
+            //    ForwardingDecision<CS.BootNotificationRequest, BootNotificationResponse>.REPLACE(
+            //        request,
+            //        new CS.BootNotificationRequest(
+            //            request.DestinationId,
+            //            request.ChargingStation,
+            //            request.Reason,
+            //            request.SignKeys,
+            //            request.SignInfos,
+            //            request.Signatures,
+            //            request.CustomData,
+            //            request.RequestId,
+            //            request.RequestTimestamp,
+            //            request.RequestTimeout,
+            //            request.EventTrackingId,
+            //            request.NetworkPath,
+            //            request.CancellationToken
+            //        ),
+            //        nameof(CS.BootNotificationRequest)[..^7],
+            //        NetworkingNode_Id.Parse("/dev/null")
+            //    )
+            //);
 
             #endregion
 

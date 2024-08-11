@@ -57,13 +57,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
         OnAuthorizeRequestFilteredDelegate(DateTime                                                  Timestamp,
                                            IEventSender                                              Sender,
                                            IWebSocketConnection                                      Connection,
                                            AuthorizeRequest                                          Request,
-                                           ForwardingDecision<AuthorizeRequest, AuthorizeResponse>   ForwardingDecision);
+                                           ForwardingDecision<AuthorizeRequest, AuthorizeResponse>   ForwardingDecision,
+                                           CancellationToken                                         CancellationToken);
 
     #endregion
 
@@ -85,10 +87,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision>
 
             Forward_Authorize(OCPP_JSONRequestMessage  JSONRequestMessage,
-                              IWebSocketConnection     Connection,
+                              IWebSocketConnection     WebSocketConnection,
                               CancellationToken        CancellationToken   = default)
 
         {
+
+            #region Parse Authorize request
 
             if (!AuthorizeRequest.TryParse(JSONRequestMessage.Payload,
                                            JSONRequestMessage.RequestId,
@@ -104,77 +108,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<AuthorizeRequest, AuthorizeResponse>? forwardingDecision = null;
+            #endregion
 
             #region Send OnAuthorizeRequestReceived event
 
-            var receivedLogging = OnAuthorizeRequestReceived;
-            if (receivedLogging is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              receivedLogging.GetInvocationList().
-                                  OfType<OnAuthorizeRequestReceivedDelegate>().
-                                  Select(filterDelegate => filterDelegate.Invoke(
-                                                               Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               Connection,
-                                                               request
-                                                           )).
-                                  ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnAuthorizeRequestReceived),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnAuthorizeRequestReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
-            #region Send OnAuthorizeRequestFilter event
+            #region Call OnAuthorizeRequest filter
 
-            var requestFilter = OnAuthorizeRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
+            ForwardingDecision<AuthorizeRequest, AuthorizeResponse>? forwardingDecision = null;
 
-                    var results = await Task.WhenAll(
-                                            requestFilter.GetInvocationList().
-                                                OfType<OnAuthorizeRequestFilterDelegate>().
-                                                Select(filterDelegate => filterDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             parentNetworkingNode,
-                                                                             Connection,
-                                                                             request,
-                                                                             CancellationToken
-                                                                         )).
-                                                ToArray()
-                                        );
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnAuthorizeRequestFilter),
-                              e
-                          );
-                }
-
-            }
+            forwardingDecision = await CallFilter(
+                                           OnAuthorizeRequestFilter,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
             #endregion
 
@@ -232,35 +197,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnAuthorizeRequestFiltered event
 
-            var logger = OnAuthorizeRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              logger.GetInvocationList().
-                                  OfType<OnAuthorizeRequestFilteredDelegate>().
-                                  Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                Connection,
-                                                                request,
-                                                                forwardingDecision
-                                                            )).
-                                  ToArray()
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(OnAuthorizeRequestFiltered),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnAuthorizeRequestFiltered,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          forwardingDecision,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -272,34 +219,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sentLogging = OnAuthorizeRequestSent;
                 if (sentLogging is not null)
-                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
-
-                        try
-                        {
-
-                            await Task.WhenAll(
-                                      sentLogging.GetInvocationList().
-                                          OfType<OnAuthorizeRequestSentDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(
-                                                                       Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       sentMessageResult.Connection,
-                                                                       request,
-                                                                       sentMessageResult.Result
-                                                                   )).
-                                          ToArray()
-                                  );
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(OnAuthorizeRequestSent),
-                                      e
-                                  );
-                        }
-
-                    };
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
+                        await LogEvent(
+                                   OnAuthorizeRequestSent,
+                                   loggingDelegate => loggingDelegate.Invoke(
+                                       Timestamp.Now,
+                                       parentNetworkingNode,
+                                       sentMessageResult.Connection,
+                                       request,
+                                       sentMessageResult.Result,
+                                       CancellationToken
+                                   )
+                               );
 
             }
 

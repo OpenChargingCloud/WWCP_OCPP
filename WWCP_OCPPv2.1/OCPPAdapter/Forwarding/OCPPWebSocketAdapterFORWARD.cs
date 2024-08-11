@@ -1032,7 +1032,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        #region (private) LogEvent(Logger, LogHandler, ...)
+        #region (private) LogEvent     (Logger, LogHandler,    ...)
 
         private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
                                          Func<TDelegate, Task>                              LogHandler,
@@ -1045,7 +1045,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (private) HandleErrors(Caller, ExceptionOccured)
+        #region (private) CallFilter   (Filter, FilterHandler, ...)
+
+        private async Task<T?> CallFilter<TDelegate, T>(TDelegate?                                         Filter,
+                                                        Func<TDelegate, Task<T>>                           FilterHandler,
+                                                        [CallerArgumentExpression(nameof(Filter))] String  EventName     = "",
+                                                        [CallerMemberName()]                       String  OCPPCommand   = "")
+
+            where TDelegate : Delegate
+
+        {
+            if (Filter is not null)
+            {
+                try
+                {
+
+                    var handler = Filter.GetInvocationList().OfType<TDelegate>().FirstOrDefault();
+
+                    if (handler is not null)
+                        return await FilterHandler(handler);
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors($"{OCPPCommand}.{EventName}", e);
+                }
+            }
+
+            return default;
+
+        }
+
+        #endregion
+
+        #region (private) HandleErrors (Caller, ExceptionOccured)
 
         private Task HandleErrors(String     Caller,
                                   Exception  ExceptionOccured)
@@ -1057,7 +1090,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                );
 
         #endregion
-
 
 
 
