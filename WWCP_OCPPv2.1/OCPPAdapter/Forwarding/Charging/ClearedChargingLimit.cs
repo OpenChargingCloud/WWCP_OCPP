@@ -128,18 +128,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnClearedChargingLimitRequestFilter event
 
-            ForwardingDecision<ClearedChargingLimitRequest, ClearedChargingLimitResponse>? forwardingDecision = null;
-
-            forwardingDecision = await CallFilter(
-                                           OnClearedChargingLimitRequestFilter,
-                                           filter => filter.Invoke(
-                                                         Timestamp.Now,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         request,
-                                                         CancellationToken
-                                                     )
-                                       );
+            var forwardingDecision = await CallFilter(
+                                               OnClearedChargingLimitRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 

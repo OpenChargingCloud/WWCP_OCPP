@@ -3022,7 +3022,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         {
                             response = new SetDefaultChargingTariffResponse(
                                            Request:   request,
-                                           Result:    Result.SignatureError(
+                                           Status:    SetDefaultChargingTariffStatus.Rejected,
+                                           Result:    Result.GenericError(
                                                           $"Invalid EVSE identification: {evseId}"
                                                       )
                                        );
@@ -3032,7 +3033,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (response == null)
                     {
 
-                        evseStatusInfos = new List<EVSEStatusInfo<SetDefaultChargingTariffStatus>>();
+                        evseStatusInfos = [];
 
                         foreach (var evseId in request.EVSEIds)
                         {

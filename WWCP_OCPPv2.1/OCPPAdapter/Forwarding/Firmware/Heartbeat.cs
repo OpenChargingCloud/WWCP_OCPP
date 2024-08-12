@@ -58,20 +58,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
         OnHeartbeatRequestFilteredDelegate(DateTime                                                  Timestamp,
                                            IEventSender                                              Sender,
                                            IWebSocketConnection                                      Connection,
                                            HeartbeatRequest                                          Request,
-                                           ForwardingDecision<HeartbeatRequest, HeartbeatResponse>   ForwardingDecision);
+                                           ForwardingDecision<HeartbeatRequest, HeartbeatResponse>   ForwardingDecision,
+                                           CancellationToken                                         CancellationToken);
 
     #endregion
 
 
-    /// <summary>
-    /// The OCPP adapter for forwarding messages.
-    /// </summary>
     public partial class OCPPWebSocketAdapterFORWARD
     {
 
@@ -90,10 +89,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision>
 
             Forward_Heartbeat(OCPP_JSONRequestMessage  JSONRequestMessage,
-                              IWebSocketConnection     Connection,
+                              IWebSocketConnection     WebSocketConnection,
                               CancellationToken        CancellationToken   = default)
 
         {
+
+            #region Parse the Heartbeat request
 
             if (!HeartbeatRequest.TryParse(JSONRequestMessage.Payload,
                                            JSONRequestMessage.RequestId,
@@ -109,77 +110,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<HeartbeatRequest, HeartbeatResponse>? forwardingDecision = null;
+            #endregion
 
             #region Send OnHeartbeatRequestReceived event
 
-            var receivedLogging = OnHeartbeatRequestReceived;
-            if (receivedLogging is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              receivedLogging.GetInvocationList().
-                                  OfType<OnHeartbeatRequestReceivedDelegate>().
-                                  Select(filterDelegate => filterDelegate.Invoke(
-                                                               Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               Connection,
-                                                               request
-                                                           )).
-                                  ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnHeartbeatRequestReceived),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnHeartbeatRequestReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
             #region Send OnHeartbeatRequestFilter event
 
-            var requestFilter = OnHeartbeatRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
-
-                    var results = await Task.WhenAll(
-                                            requestFilter.GetInvocationList().
-                                                OfType<OnHeartbeatRequestFilterDelegate>().
-                                                Select(filterDelegate => filterDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             parentNetworkingNode,
-                                                                             Connection,
-                                                                             request,
-                                                                             CancellationToken
-                                                                         )).
-                                                ToArray()
-                                        );
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnHeartbeatRequestFilter),
-                              e
-                          );
-                }
-
-            }
+            var forwardingDecision = await CallFilter(
+                                               OnHeartbeatRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 
@@ -226,36 +186,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnHeartbeatRequestFiltered event
 
-            var logger = OnHeartbeatRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              logger.GetInvocationList().
-                                  OfType<OnHeartbeatRequestFilteredDelegate>().
-                                  Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                Connection,
-                                                                request,
-                                                                forwardingDecision
-                                                            )).
-                                  ToArray()
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnHeartbeatRequestFiltered),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnHeartbeatRequestFiltered,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          forwardingDecision,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -267,35 +208,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sentLogging = OnHeartbeatRequestSent;
                 if (sentLogging is not null)
-                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
-
-                        try
-                        {
-
-                            await Task.WhenAll(
-                                      sentLogging.GetInvocationList().
-                                          OfType<OnHeartbeatRequestSentDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(
-                                                                       Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       sentMessageResult.Connection,
-                                                                       request,
-                                                                       sentMessageResult.Result
-                                                                   )).
-                                          ToArray()
-                                  );
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(NetworkingNode),
-                                      nameof(OnHeartbeatRequestSent),
-                                      e
-                                  );
-                        }
-
-                    };
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
+                        await LogEvent(
+                                  OnHeartbeatRequestSent,
+                                  loggingDelegate => loggingDelegate.Invoke(
+                                      Timestamp.Now,
+                                      parentNetworkingNode,
+                                      sentMessageResult.Connection,
+                                      request,
+                                      sentMessageResult.Result,
+                                      CancellationToken
+                                  )
+                              );
 
             }
 

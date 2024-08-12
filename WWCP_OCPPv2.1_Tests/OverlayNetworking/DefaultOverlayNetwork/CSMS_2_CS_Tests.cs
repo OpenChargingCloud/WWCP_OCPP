@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                localController.OCPP.FORWARD.OnResetRequestFiltered    += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
+                localController.OCPP.FORWARD.OnResetRequestFiltered    += (timestamp, sender, connection, resetRequest, forwardingDecision, ct) => {
                     nnResetRequestsForwarded.  TryAdd(forwardingDecision);
                     return Task.CompletedTask;
                 };

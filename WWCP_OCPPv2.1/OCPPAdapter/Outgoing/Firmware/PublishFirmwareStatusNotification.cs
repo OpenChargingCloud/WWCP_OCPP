@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnPublishFirmwareStatusNotificationRequestSentDelegate(DateTime                                   Timestamp,
                                                                                 IEventSender                               Sender,
-                                                                                IWebSocketConnection                       Connection,
+                                                                                IWebSocketConnection?                      Connection,
                                                                                 PublishFirmwareStatusNotificationRequest   Request,
                                                                                 SentMessageResults                         SendMessageResult,
                                                                                 CancellationToken                          CancellationToken = default);

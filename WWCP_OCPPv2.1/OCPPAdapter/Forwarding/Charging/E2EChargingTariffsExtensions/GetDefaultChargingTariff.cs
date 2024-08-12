@@ -127,18 +127,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnGetDefaultChargingTariffRequestFilter event
 
-            ForwardingDecision<GetDefaultChargingTariffRequest, GetDefaultChargingTariffResponse>? forwardingDecision = null;
-
-            forwardingDecision = await CallFilter(
-                                           OnGetDefaultChargingTariffRequestFilter,
-                                           filter => filter.Invoke(
-                                                         Timestamp.Now,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         request,
-                                                         CancellationToken
-                                                     )
-                                       );
+            var forwardingDecision = await CallFilter(
+                                               OnGetDefaultChargingTariffRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 

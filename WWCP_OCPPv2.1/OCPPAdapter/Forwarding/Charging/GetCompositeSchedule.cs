@@ -128,18 +128,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnGetCompositeScheduleRequestFilter event
 
-            ForwardingDecision<GetCompositeScheduleRequest, GetCompositeScheduleResponse>? forwardingDecision = null;
-
-            forwardingDecision = await CallFilter(
-                                           OnGetCompositeScheduleRequestFilter,
-                                           filter => filter.Invoke(
-                                                         Timestamp.Now,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         request,
-                                                         CancellationToken
-                                                     )
-                                       );
+            var forwardingDecision = await CallFilter(
+                                               OnGetCompositeScheduleRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 

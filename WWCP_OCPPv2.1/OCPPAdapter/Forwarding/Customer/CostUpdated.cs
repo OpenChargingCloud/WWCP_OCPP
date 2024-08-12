@@ -128,18 +128,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnCostUpdatedRequestFilter event
 
-            ForwardingDecision<CostUpdatedRequest, CostUpdatedResponse>? forwardingDecision = null;
-
-            forwardingDecision = await CallFilter(
-                                           OnCostUpdatedRequestFilter,
-                                           filter => filter.Invoke(
-                                                         Timestamp.Now,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         request,
-                                                         CancellationToken
-                                                     )
-                                       );
+            var forwardingDecision = await CallFilter(
+                                               OnCostUpdatedRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 

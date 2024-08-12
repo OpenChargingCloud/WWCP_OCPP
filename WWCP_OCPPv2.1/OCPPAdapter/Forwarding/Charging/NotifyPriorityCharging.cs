@@ -128,18 +128,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnNotifyPriorityChargingRequestFilter event
 
-            ForwardingDecision<NotifyPriorityChargingRequest, NotifyPriorityChargingResponse>? forwardingDecision = null;
-
-            forwardingDecision = await CallFilter(
-                                           OnNotifyPriorityChargingRequestFilter,
-                                           filter => filter.Invoke(
-                                                         Timestamp.Now,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         request,
-                                                         CancellationToken
-                                                     )
-                                       );
+            var forwardingDecision = await CallFilter(
+                                               OnNotifyPriorityChargingRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 

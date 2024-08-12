@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                localController1.OCPP.FORWARD.OnResetRequestFiltered  += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
+                localController1.OCPP.FORWARD.OnResetRequestFiltered  += (timestamp, sender, connection, resetRequest, forwardingDecision, ct) => {
                     nnResetRequestsFWD.TryAdd(new Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>(resetRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };

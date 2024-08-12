@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGet15118EVCertificateRequestSentDelegate(DateTime                       Timestamp,
                                                                     IEventSender                   Sender,
-                                                                    IWebSocketConnection           Connection,
+                                                                    IWebSocketConnection?          Connection,
                                                                     Get15118EVCertificateRequest   Request,
                                                                     SentMessageResults             SendMessageResult,
                                                                     CancellationToken              CancellationToken = default);

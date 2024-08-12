@@ -57,13 +57,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
         OnGetCertificateStatusRequestFilteredDelegate(DateTime                                                                        Timestamp,
                                                       IEventSender                                                                    Sender,
                                                       IWebSocketConnection                                                            Connection,
                                                       GetCertificateStatusRequest                                                     Request,
-                                                      ForwardingDecision<GetCertificateStatusRequest, GetCertificateStatusResponse>   ForwardingDecision);
+                                                      ForwardingDecision<GetCertificateStatusRequest, GetCertificateStatusResponse>   ForwardingDecision,
+                                                      CancellationToken                                                               CancellationToken);
 
     #endregion
 
@@ -85,10 +87,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision>
 
             Forward_GetCertificateStatus(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                         IWebSocketConnection     Connection,
+                                         IWebSocketConnection     WebSocketConnection,
                                          CancellationToken        CancellationToken   = default)
 
         {
+
+            #region Parse the GetCertificateStatus request
 
             if (!GetCertificateStatusRequest.TryParse(JSONRequestMessage.Payload,
                                                       JSONRequestMessage.RequestId,
@@ -104,77 +108,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<GetCertificateStatusRequest, GetCertificateStatusResponse>? forwardingDecision = null;
+            #endregion
 
             #region Send OnGetCertificateStatusRequestReceived event
 
-            var receivedLogging = OnGetCertificateStatusRequestReceived;
-            if (receivedLogging is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              receivedLogging.GetInvocationList().
-                                  OfType<OnGetCertificateStatusRequestReceivedDelegate>().
-                                  Select(filterDelegate => filterDelegate.Invoke(
-                                                               Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               Connection,
-                                                               request
-                                                           )).
-                                  ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnGetCertificateStatusRequestReceived),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnGetCertificateStatusRequestReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
             #region Send OnGetCertificateStatusRequestFilter event
 
-            var requestFilter = OnGetCertificateStatusRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
-
-                    var results = await Task.WhenAll(
-                                            requestFilter.GetInvocationList().
-                                                OfType<OnGetCertificateStatusRequestFilterDelegate>().
-                                                Select(filterDelegate => filterDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             parentNetworkingNode,
-                                                                             Connection,
-                                                                             request,
-                                                                             CancellationToken
-                                                                         )).
-                                                ToArray()
-                                        );
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnGetCertificateStatusRequestFilter),
-                              e
-                          );
-                }
-
-            }
+            var forwardingDecision = await CallFilter(
+                                               OnGetCertificateStatusRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 
@@ -224,36 +187,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnGetCertificateStatusRequestFiltered event
 
-            var logger = OnGetCertificateStatusRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              logger.GetInvocationList().
-                                  OfType<OnGetCertificateStatusRequestFilteredDelegate>().
-                                  Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                Connection,
-                                                                request,
-                                                                forwardingDecision
-                                                            )).
-                                  ToArray()
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnGetCertificateStatusRequestFiltered),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnGetCertificateStatusRequestFiltered,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          forwardingDecision,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -265,35 +209,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sentLogging = OnGetCertificateStatusRequestSent;
                 if (sentLogging is not null)
-                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
-
-                        try
-                        {
-
-                            await Task.WhenAll(
-                                      sentLogging.GetInvocationList().
-                                          OfType<OnGetCertificateStatusRequestSentDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(
-                                                                       Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       sentMessageResult.Connection,
-                                                                       request,
-                                                                       sentMessageResult.Result
-                                                                   )).
-                                          ToArray()
-                                  );
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(NetworkingNode),
-                                      nameof(OnGetCertificateStatusRequestSent),
-                                      e
-                                  );
-                        }
-
-                    };
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
+                        await LogEvent(
+                                  OnGetCertificateStatusRequestSent,
+                                  loggingDelegate => loggingDelegate.Invoke(
+                                      Timestamp.Now,
+                                      parentNetworkingNode,
+                                      sentMessageResult.Connection,
+                                      request,
+                                      sentMessageResult.Result,
+                                      CancellationToken
+                                  )
+                              );
 
             }
 

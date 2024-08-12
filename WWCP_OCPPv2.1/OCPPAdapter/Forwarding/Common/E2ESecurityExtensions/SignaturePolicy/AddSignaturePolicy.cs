@@ -126,18 +126,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnAddSignaturePolicyRequestFilter event
 
-            ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>? forwardingDecision = null;
-
-            forwardingDecision = await CallFilter(
-                                           OnAddSignaturePolicyRequestFilter,
-                                           filter => filter.Invoke(
-                                                         Timestamp.Now,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         request,
-                                                         CancellationToken
-                                                     )
-                                       );
+            var forwardingDecision = await CallFilter(
+                                               OnAddSignaturePolicyRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 

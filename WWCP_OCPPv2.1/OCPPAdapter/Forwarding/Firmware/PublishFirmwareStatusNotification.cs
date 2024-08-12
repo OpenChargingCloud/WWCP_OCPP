@@ -58,20 +58,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
         OnPublishFirmwareStatusNotificationRequestFilteredDelegate(DateTime                                                                                                  Timestamp,
                                                                    IEventSender                                                                                              Sender,
                                                                    IWebSocketConnection                                                                                      Connection,
                                                                    PublishFirmwareStatusNotificationRequest                                                                  Request,
-                                                                   ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>   ForwardingDecision);
+                                                                   ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>   ForwardingDecision,
+                                                                   CancellationToken                                                                                         CancellationToken);
 
     #endregion
 
 
-    /// <summary>
-    /// The OCPP adapter for forwarding messages.
-    /// </summary>
     public partial class OCPPWebSocketAdapterFORWARD
     {
 
@@ -90,10 +89,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision>
 
             Forward_PublishFirmwareStatusNotification(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                                      IWebSocketConnection     Connection,
+                                                      IWebSocketConnection     WebSocketConnection,
                                                       CancellationToken        CancellationToken   = default)
 
         {
+
+            #region Parse the PublishFirmwareStatusNotification request
 
             if (!PublishFirmwareStatusNotificationRequest.TryParse(JSONRequestMessage.Payload,
                                                                    JSONRequestMessage.RequestId,
@@ -109,77 +110,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>? forwardingDecision = null;
+            #endregion
 
             #region Send OnPublishFirmwareStatusNotificationRequestReceived event
 
-            var receivedLogging = OnPublishFirmwareStatusNotificationRequestReceived;
-            if (receivedLogging is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              receivedLogging.GetInvocationList().
-                                  OfType<OnPublishFirmwareStatusNotificationRequestReceivedDelegate>().
-                                  Select(filterDelegate => filterDelegate.Invoke(
-                                                               Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               Connection,
-                                                               request
-                                                           )).
-                                  ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnPublishFirmwareStatusNotificationRequestReceived),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnPublishFirmwareStatusNotificationRequestReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
             #region Send OnPublishFirmwareStatusNotificationRequestFilter event
 
-            var requestFilter = OnPublishFirmwareStatusNotificationRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
-
-                    var results = await Task.WhenAll(
-                                            requestFilter.GetInvocationList().
-                                                OfType<OnPublishFirmwareStatusNotificationRequestFilterDelegate>().
-                                                Select(filterDelegate => filterDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             parentNetworkingNode,
-                                                                             Connection,
-                                                                             request,
-                                                                             CancellationToken
-                                                                         )).
-                                                ToArray()
-                                        );
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnPublishFirmwareStatusNotificationRequestFilter),
-                              e
-                          );
-                }
-
-            }
+            var forwardingDecision = await CallFilter(
+                                               OnPublishFirmwareStatusNotificationRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 
@@ -225,36 +185,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnPublishFirmwareStatusNotificationRequestFiltered event
 
-            var logger = OnPublishFirmwareStatusNotificationRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              logger.GetInvocationList().
-                                  OfType<OnPublishFirmwareStatusNotificationRequestFilteredDelegate>().
-                                  Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                Connection,
-                                                                request,
-                                                                forwardingDecision
-                                                            )).
-                                  ToArray()
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnPublishFirmwareStatusNotificationRequestFiltered),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnPublishFirmwareStatusNotificationRequestFiltered,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          forwardingDecision,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -266,35 +207,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sentLogging = OnPublishFirmwareStatusNotificationRequestSent;
                 if (sentLogging is not null)
-                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
-
-                        try
-                        {
-
-                            await Task.WhenAll(
-                                      sentLogging.GetInvocationList().
-                                          OfType<OnPublishFirmwareStatusNotificationRequestSentDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(
-                                                                       Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       sentMessageResult.Connection,
-                                                                       request,
-                                                                       sentMessageResult.Result
-                                                                   )).
-                                          ToArray()
-                                  );
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(NetworkingNode),
-                                      nameof(OnPublishFirmwareStatusNotificationRequestSent),
-                                      e
-                                  );
-                        }
-
-                    };
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
+                        await LogEvent(
+                                  OnPublishFirmwareStatusNotificationRequestSent,
+                                  loggingDelegate => loggingDelegate.Invoke(
+                                      Timestamp.Now,
+                                      parentNetworkingNode,
+                                      sentMessageResult.Connection,
+                                      request,
+                                      sentMessageResult.Result,
+                                      CancellationToken
+                                  )
+                              );
 
             }
 

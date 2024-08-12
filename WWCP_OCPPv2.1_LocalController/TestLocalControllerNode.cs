@@ -578,7 +578,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                              sender,
                                                              connection,
                                                              request,
-                                                             previousFilterStep,
                                                              cancellationToken) =>
 
                 Task.FromResult(

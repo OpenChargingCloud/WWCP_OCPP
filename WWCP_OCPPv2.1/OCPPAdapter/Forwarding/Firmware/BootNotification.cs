@@ -21,7 +21,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
@@ -47,7 +46,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 IEventSender              Sender,
                                                 IWebSocketConnection      Connection,
                                                 BootNotificationRequest   Request,
-                                                ForwardingDecision?       PreviousFilterStep,
                                                 CancellationToken         CancellationToken);
 
 
@@ -59,20 +57,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
         OnBootNotificationRequestFilteredDelegate(DateTime                                                                Timestamp,
                                                   IEventSender                                                            Sender,
                                                   IWebSocketConnection                                                    Connection,
                                                   BootNotificationRequest                                                 Request,
-                                                  ForwardingDecision<BootNotificationRequest, BootNotificationResponse>   ForwardingDecision);
+                                                  ForwardingDecision<BootNotificationRequest, BootNotificationResponse>   ForwardingDecision,
+                                                  CancellationToken                                                       CancellationToken);
 
     #endregion
 
 
-    /// <summary>
-    /// The OCPP adapter for forwarding messages.
-    /// </summary>
     public partial class OCPPWebSocketAdapterFORWARD
     {
 
@@ -91,12 +88,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision>
 
             Forward_BootNotification(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                     IWebSocketConnection     Connection,
+                                     IWebSocketConnection     WebSocketConnection,
                                      CancellationToken        CancellationToken   = default)
 
         {
 
-            ForwardingDecision? previousFilterStep = null;
+            #region Parse the BootNotification request
 
             if (!BootNotificationRequest.TryParse(JSONRequestMessage.Payload,
                                                   JSONRequestMessage.RequestId,
@@ -115,77 +112,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<BootNotificationRequest, BootNotificationResponse>? forwardingDecision = null;
+            #endregion
 
             #region Send OnBootNotificationRequestReceived event
 
-            var receivedLogging = OnBootNotificationRequestReceived;
-            if (receivedLogging is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              receivedLogging.GetInvocationList().
-                                  OfType<OnBootNotificationRequestReceivedDelegate>().
-                                  Select(filterDelegate => filterDelegate.Invoke(
-                                                               Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               Connection,
-                                                               request
-                                                           )).
-                                  ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnBootNotificationRequestReceived),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnBootNotificationRequestReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
             #region Send OnBootNotificationRequestFilter event
 
-            var requestFilter = OnBootNotificationRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
-
-                    var results = await Task.WhenAll(
-                                            requestFilter.GetInvocationList().
-                                                OfType<OnBootNotificationRequestFilterDelegate>().
-                                                Select(filterDelegate => filterDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             parentNetworkingNode,
-                                                                             Connection,
-                                                                             request,
-                                                                             previousFilterStep,
-                                                                             CancellationToken
-                                                                         ))
-                                        );
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnBootNotificationRequestFilter),
-                              e
-                          );
-                }
-
-            }
+            var forwardingDecision = await CallFilter(
+                                               OnBootNotificationRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 
@@ -236,35 +192,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnBootNotificationRequestFiltered event
 
-            var logger = OnBootNotificationRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              logger.GetInvocationList().
-                                  OfType<OnBootNotificationRequestFilteredDelegate>().
-                                  Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                Connection,
-                                                                request,
-                                                                forwardingDecision
-                                                            ))
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnBootNotificationRequestFiltered),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnBootNotificationRequestFiltered,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          forwardingDecision,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -276,34 +214,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sentLogging = OnBootNotificationRequestSent;
                 if (sentLogging is not null)
-                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
-
-                        try
-                        {
-
-                            await Task.WhenAll(
-                                      sentLogging.GetInvocationList().
-                                          OfType<OnBootNotificationRequestSentDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(
-                                                                       Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       sentMessageResult.Connection,
-                                                                       request,
-                                                                       sentMessageResult.Result
-                                                                   ))
-                                  );
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(NetworkingNode),
-                                      nameof(OnBootNotificationRequestSent),
-                                      e
-                                  );
-                        }
-
-                    };
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
+                        await LogEvent(
+                                  OnBootNotificationRequestSent,
+                                  loggingDelegate => loggingDelegate.Invoke(
+                                      Timestamp.Now,
+                                      parentNetworkingNode,
+                                      sentMessageResult.Connection,
+                                      request,
+                                      sentMessageResult.Result,
+                                      CancellationToken
+                                  )
+                              );
 
             }
 

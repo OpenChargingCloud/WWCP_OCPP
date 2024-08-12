@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var setDefaultChargingTariffRequests = new ConcurrentList<SetDefaultChargingTariffRequest>();
 
-                chargingStation1.OCPP.IN.OnSetDefaultChargingTariffRequestReceived += (timestamp, sender, connection, setDefaultChargingTariffRequest) => {
+                chargingStation1.OCPP.IN.OnSetDefaultChargingTariffRequestReceived += (timestamp, sender, connection, setDefaultChargingTariffRequest, ct) => {
                     setDefaultChargingTariffRequests.TryAdd(setDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
