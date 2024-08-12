@@ -35,6 +35,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using System.Net.Sockets;
 
 #endregion
 
@@ -233,13 +234,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
 
 
-        public HTTPExtAPI                  HTTPAPI                    { get; }
+        public HTTPExtAPI?                 HTTPAPI                    { get; }
 
-        public WebAPI                      WebAPI                     { get; }
+        public WebAPI?                     WebAPI                     { get; }
 
-        public UploadAPI                   HTTPUploadAPI              { get; }
+        public UploadAPI?                  HTTPUploadAPI              { get; }
 
-        public DownloadAPI                 HTTPDownloadAPI            { get; }
+        public DownloadAPI?                HTTPDownloadAPI            { get; }
 
 
 
@@ -346,6 +347,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          SignaturePolicy?          SignaturePolicy             = null,
                          SignaturePolicy?          ForwardingSignaturePolicy   = null,
 
+                         Boolean                   DisableHTTPAPI              = false,
+                         IPPort?                   HTTPAPIPort                 = null,
                          IPPort?                   HTTPUploadPort              = null,
                          IPPort?                   HTTPDownloadPort            = null,
 
@@ -396,16 +399,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region Setup HTTP API
 
-            this.HTTPAPI  = new HTTPExtAPI(
-                                HTTPServerPort:         IPPort.Parse(3532),
-                                HTTPServerName:         "GraphDefined OCPP Test Central System",
-                                HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
-                                APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                APIRobotGPGPassphrase:  "test123",
-                                SMTPClient:             new NullMailer(),
-                                DNSClient:              DNSClient,
-                                AutoStart:              true
-                            );
+            this.HTTPAPI  = !DisableHTTPAPI
+
+                                ? new HTTPExtAPI(
+                                      HTTPServerPort:         HTTPAPIPort ?? IPPort.Auto,
+                                      HTTPServerName:         "GraphDefined OCPP Test Central System",
+                                      HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
+                                      APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+                                      APIRobotGPGPassphrase:  "test123",
+                                      SMTPClient:             new NullMailer(),
+                                      DNSClient:              DNSClient,
+                                      AutoStart:              true
+                                  )
+
+                                : null;
 
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
@@ -2463,20 +2470,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public WebAPI AttachWebAPI(HTTPHostname?                               HTTPHostname            = null,
-                                                 String?                                     ExternalDNSName         = null,
-                                                 IPPort?                                     HTTPServerPort          = null,
-                                                 HTTPPath?                                   BasePath                = null,
-                                                 String?                                     HTTPServerName          = null,
+                                   String?                                     ExternalDNSName         = null,
+                                   IPPort?                                     HTTPServerPort          = null,
+                                   HTTPPath?                                   BasePath                = null,
+                                   String?                                     HTTPServerName          = null,
 
-                                                 HTTPPath?                                   URLPathPrefix           = null,
-                                                 String?                                     HTTPServiceName         = null,
+                                   HTTPPath?                                   URLPathPrefix           = null,
+                                   String?                                     HTTPServiceName         = null,
 
-                                                 String                                      HTTPRealm               = "...",
-                                                 Boolean                                     RequireAuthentication   = true,
-                                                 IEnumerable<KeyValuePair<String, String>>?  HTTPLogins              = null,
+                                   String                                      HTTPRealm               = "...",
+                                   Boolean                                     RequireAuthentication   = true,
+                                   IEnumerable<KeyValuePair<String, String>>?  HTTPLogins              = null,
 
-                                                 String?                                     HTMLTemplate            = null,
-                                                 Boolean                                     AutoStart               = false)
+                                   String?                                     HTMLTemplate            = null,
+                                   Boolean                                     AutoStart               = false)
         {
 
             var httpAPI  = new HTTPExtAPI(

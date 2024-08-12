@@ -32,24 +32,119 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Logging Delegates
+
+    /// <summary>
+    /// A logging delegate called whenever an RemoveDefaultChargingTariff request was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The RemoveDefaultChargingTariff request.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnRemoveDefaultChargingTariffRequestReceivedDelegate(DateTime                             Timestamp,
+                                                             IEventSender                         Sender,
+                                                             IWebSocketConnection                 Connection,
+                                                             RemoveDefaultChargingTariffRequest   Request,
+                                                             CancellationToken                    CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an RemoveDefaultChargingTariff response was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The connection of the response.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnRemoveDefaultChargingTariffResponseReceivedDelegate(DateTime                              Timestamp,
+                                                                               IEventSender                          Sender,
+                                                                               IWebSocketConnection                  Connection,
+                                                                               RemoveDefaultChargingTariffRequest?   Request,
+                                                                               RemoveDefaultChargingTariffResponse   Response,
+                                                                               TimeSpan?                             Runtime,
+                                                                               CancellationToken                     CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an RemoveDefaultChargingTariff request error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="RequestErrorMessage">The request error message.</param>
+    /// <param name="Runtime">The runtime of the request/request error pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnRemoveDefaultChargingTariffRequestErrorReceivedDelegate(DateTime                              Timestamp,
+                                                                                   IEventSender                          Sender,
+                                                                                   IWebSocketConnection                  Connection,
+                                                                                   RemoveDefaultChargingTariffRequest?   Request,
+                                                                                   OCPP_JSONRequestErrorMessage          RequestErrorMessage,
+                                                                                   TimeSpan?                             Runtime,
+                                                                                   CancellationToken                     CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an RemoveDefaultChargingTariff response error was received.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response error.</param>
+    /// <param name="Connection">The connection of the response error.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response, when available.</param>
+    /// <param name="ResponseErrorMessage">The response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnRemoveDefaultChargingTariffResponseErrorReceivedDelegate(DateTime                               Timestamp,
+                                                                                    IEventSender                           Sender,
+                                                                                    IWebSocketConnection                   Connection,
+                                                                                    RemoveDefaultChargingTariffRequest?    Request,
+                                                                                    RemoveDefaultChargingTariffResponse?   Response,
+                                                                                    OCPP_JSONResponseErrorMessage          ResponseErrorMessage,
+                                                                                    TimeSpan?                              Runtime,
+                                                                                    CancellationToken                      CancellationToken = default);
+
+    #endregion
+
+
+    /// <summary>
+    /// A delegate called whenever an RemoveDefaultChargingTariff response is expected
+    /// for a received RemoveDefaultChargingTariff request.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The RemoveDefaultChargingTariff request.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task<RemoveDefaultChargingTariffResponse>
+
+        OnRemoveDefaultChargingTariffDelegate(DateTime                             Timestamp,
+                                              IEventSender                         Sender,
+                                              IWebSocketConnection                 Connection,
+                                              RemoveDefaultChargingTariffRequest   Request,
+                                              CancellationToken                    CancellationToken = default);
+
+
     public partial class OCPPWebSocketAdapterIN
     {
 
-        #region Events
+        #region Receive RemoveDefaultChargingTariff request
 
         /// <summary>
-        /// An event sent whenever a RemoveDefaultChargingTariff request was received.
+        /// An event sent whenever an RemoveDefaultChargingTariff request was received.
         /// </summary>
         public event OnRemoveDefaultChargingTariffRequestReceivedDelegate?  OnRemoveDefaultChargingTariffRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a RemoveDefaultChargingTariff request was received for processing.
+        /// An event sent whenever an RemoveDefaultChargingTariff request was received for processing.
         /// </summary>
         public event OnRemoveDefaultChargingTariffDelegate?                 OnRemoveDefaultChargingTariff;
 
-        #endregion
-
-        #region Receive RemoveDefaultChargingTariffRequest (wired via reflection!)
 
         public async Task<OCPP_Response>
 
@@ -105,32 +200,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnRemoveDefaultChargingTariffRequestReceived event
 
-                    var logger = OnRemoveDefaultChargingTariffRequestReceived;
-                    if (logger is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType<OnRemoveDefaultChargingTariffRequestReceivedDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
-                                      nameof(OnRemoveDefaultChargingTariffRequestReceived),
-                                      e
-                                  );
-                        }
-                    }
+                    await LogEvent(
+                              OnRemoveDefaultChargingTariffRequestReceived,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  parentNetworkingNode,
+                                  WebSocketConnection,
+                                  request,
+                                  CancellationToken
+                              )
+                          );
 
                     #endregion
 
@@ -145,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             var responseTasks = OnRemoveDefaultChargingTariff?.
                                                     GetInvocationList()?.
                                                     SafeSelect(subscriber => (subscriber as OnRemoveDefaultChargingTariffDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
+                                                                                                                               Timestamp.Now,
+                                                                                                                               parentNetworkingNode,
+                                                                                                                               WebSocketConnection,
+                                                                                                                               request,
+                                                                                                                               CancellationToken
+                                                                                                                           )).
                                                     ToArray();
 
                             response = responseTasks?.Length > 0
@@ -164,7 +243,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             response = RemoveDefaultChargingTariffResponse.ExceptionOccured(request, e);
 
                             await HandleErrors(
-                                      nameof(OCPPWebSocketAdapterIN),
                                       nameof(OnRemoveDefaultChargingTariff),
                                       e
                                   );
@@ -187,7 +265,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
-                        out var errorResponse2);
+                        out var errorResponse2
+                    );
 
                     #endregion
 
@@ -200,7 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                               WebSocketConnection,
                               request,
                               response,
-                              response.Runtime
+                              response.Runtime,
+                              SentMessageResults.Unknown
                           );
 
                     #endregion
@@ -235,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                ocppResponse = OCPP_Response.FormationViolation(
+                ocppResponse = OCPP_Response.ExceptionOccurred(
                                    EventTrackingId,
                                    RequestId,
                                    nameof(Receive_RemoveDefaultChargingTariff)[8..],
@@ -251,26 +331,129 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Receive RemoveDefaultChargingTariffRequestError
+        #region Receive RemoveDefaultChargingTariff response
+
+        /// <summary>
+        /// An event fired whenever an RemoveDefaultChargingTariff response was received.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffResponseReceivedDelegate? OnRemoveDefaultChargingTariffResponseReceived;
+
+
+        public async Task<RemoveDefaultChargingTariffResponse>
+
+            Receive_RemoveDefaultChargingTariffResponse(RemoveDefaultChargingTariffRequest  Request,
+                                                        JObject                             ResponseJSON,
+                                                        IWebSocketConnection                WebSocketConnection,
+                                                        NetworkingNode_Id                   DestinationId,
+                                                        NetworkPath                         NetworkPath,
+                                                        EventTracking_Id                    EventTrackingId,
+                                                        Request_Id                          RequestId,
+                                                        DateTime?                           ResponseTimestamp   = null,
+                                                        CancellationToken                   CancellationToken   = default)
+
+        {
+
+            RemoveDefaultChargingTariffResponse? response = null;
+
+            try
+            {
+
+                if (RemoveDefaultChargingTariffResponse.TryParse(Request,
+                                                                 ResponseJSON,
+                                                                 DestinationId,
+                                                                 NetworkPath,
+                                                                 out response,
+                                                                 out var errorResponse,
+                                                                 ResponseTimestamp,
+                                                                 parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffResponseParser)) {
+
+                    #region Verify response signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+                            response,
+                            response.ToJSON(
+                                parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffResponseSerializer,
+                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                parentNetworkingNode.OCPP.CustomEVSEStatusInfoSerializer2,
+                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            ),
+                            out errorResponse
+                        ))
+                    {
+
+                        response = RemoveDefaultChargingTariffResponse.SignatureError(
+                                       Request,
+                                       errorResponse
+                                   );
+
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    response = RemoveDefaultChargingTariffResponse.FormationViolation(
+                                   Request,
+                                   errorResponse
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                response = RemoveDefaultChargingTariffResponse.ExceptionOccured(
+                               Request,
+                               e
+                           );
+
+            }
+
+
+            #region Send OnRemoveDefaultChargingTariffResponseReceived event
+
+            await LogEvent(
+                      OnRemoveDefaultChargingTariffResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Receive RemoveDefaultChargingTariff RequestError
+
+        /// <summary>
+        /// An event fired whenever an RemoveDefaultChargingTariff request error was received.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffRequestErrorReceivedDelegate? RemoveDefaultChargingTariffRequestErrorReceived;
+
 
         public async Task<RemoveDefaultChargingTariffResponse>
 
             Receive_RemoveDefaultChargingTariffRequestError(RemoveDefaultChargingTariffRequest  Request,
                                                             OCPP_JSONRequestErrorMessage        RequestErrorMessage,
-                                                            IWebSocketConnection                WebSocketConnection)
-
+                                                            IWebSocketConnection                Connection,
+                                                            NetworkingNode_Id                   DestinationId,
+                                                            NetworkPath                         NetworkPath,
+                                                            EventTracking_Id                    EventTrackingId,
+                                                            Request_Id                          RequestId,
+                                                            DateTime?                           ResponseTimestamp   = null,
+                                                            CancellationToken                   CancellationToken   = default)
         {
-
-            var response = RemoveDefaultChargingTariffResponse.RequestError(
-                               Request,
-                               RequestErrorMessage.EventTrackingId,
-                               RequestErrorMessage.ErrorCode,
-                               RequestErrorMessage.ErrorDescription,
-                               RequestErrorMessage.ErrorDetails,
-                               RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
-                               RequestErrorMessage.NetworkPath
-                           );
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
             //    response,
@@ -287,32 +470,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //    out errorResponse
             //);
 
+            #region Send RemoveDefaultChargingTariffRequestErrorReceived event
+
+            await LogEvent(
+                      RemoveDefaultChargingTariffRequestErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          RequestErrorMessage,
+                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+
+            var response = RemoveDefaultChargingTariffResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.NetworkPath
+                           );
+
             #region Send OnRemoveDefaultChargingTariffResponseReceived event
 
-            var logger = OnRemoveDefaultChargingTariffResponseReceived;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(logger.GetInvocationList().
-                                                OfType<OnRemoveDefaultChargingTariffResponseReceivedDelegate>().
-                                                Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                               Timestamp.Now,
-                                                                               parentNetworkingNode,
-                                                                               //    WebSocketConnection,
-                                                                               Request,
-                                                                               response,
-                                                                               response.Runtime
-                                                                           )).
-                                                ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnRemoveDefaultChargingTariffResponseReceived));
-                }
-            }
+            await LogEvent(
+                      OnRemoveDefaultChargingTariffResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -322,57 +522,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-    }
-
-    public partial class OCPPWebSocketAdapterOUT
-    {
-
-        #region Events
+        #region Receive RemoveDefaultChargingTariff ResponseError
 
         /// <summary>
-        /// An event sent whenever a response to a RemoveDefaultChargingTariff was sent.
+        /// An event fired whenever an RemoveDefaultChargingTariff response error was received.
         /// </summary>
-        public event OnRemoveDefaultChargingTariffResponseSentDelegate?  OnRemoveDefaultChargingTariffResponseSent;
+        public event OnRemoveDefaultChargingTariffResponseErrorReceivedDelegate? RemoveDefaultChargingTariffResponseErrorReceived;
 
-        #endregion
 
-        #region Send OnRemoveDefaultChargingTariffResponse event
+        public async Task
 
-        public async Task SendOnRemoveDefaultChargingTariffResponseSent(DateTime                             Timestamp,
-                                                                        IEventSender                         Sender,
-                                                                        IWebSocketConnection                 Connection,
-                                                                        RemoveDefaultChargingTariffRequest   Request,
-                                                                        RemoveDefaultChargingTariffResponse  Response,
-                                                                        TimeSpan                             Runtime)
+            Receive_RemoveDefaultChargingTariffResponseError(RemoveDefaultChargingTariffRequest?   Request,
+                                                             RemoveDefaultChargingTariffResponse?  Response,
+                                                             OCPP_JSONResponseErrorMessage         ResponseErrorMessage,
+                                                             IWebSocketConnection                  Connection,
+                                                             NetworkingNode_Id                     DestinationId,
+                                                             NetworkPath                           NetworkPath,
+                                                             EventTracking_Id                      EventTrackingId,
+                                                             Request_Id                            RequestId,
+                                                             DateTime?                             ResponseTimestamp   = null,
+                                                             CancellationToken                     CancellationToken   = default)
+
         {
 
-            var logger = OnRemoveDefaultChargingTariffResponseSent;
-            if (logger is not null)
-            {
-                try
-                {
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
 
-                    await Task.WhenAll(logger.GetInvocationList().
-                                              OfType<OnRemoveDefaultChargingTariffResponseSentDelegate>().
-                                              Select(filterDelegate => filterDelegate.Invoke(Timestamp,
-                                                                                             Sender,
-                                                                                             Connection,
-                                                                                             Request,
-                                                                                             Response,
-                                                                                             Runtime)).
-                                              ToArray());
+            #region Send RemoveDefaultChargingTariffResponseErrorReceived event
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(OCPPWebSocketAdapterOUT),
-                              nameof(OnRemoveDefaultChargingTariffResponseSent),
-                              e
-                          );
-                }
+            await LogEvent(
+                      RemoveDefaultChargingTariffResponseErrorReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          Response,
+                          ResponseErrorMessage,
+                          Response is not null
+                              ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
+                              : null,
+                          CancellationToken
+                      )
+                  );
 
-            }
+            #endregion
+
 
         }
 

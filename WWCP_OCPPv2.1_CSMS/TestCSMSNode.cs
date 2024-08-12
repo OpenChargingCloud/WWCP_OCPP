@@ -71,6 +71,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             SignaturePolicy?          SignaturePolicy             = null,
                             SignaturePolicy?          ForwardingSignaturePolicy   = null,
 
+                            Boolean                   DisableHTTPAPI              = false,
+                            IPPort?                   HTTPAPIPort                 = null,
                             IPPort?                   HTTPUploadPort              = null,
                             IPPort?                   HTTPDownloadPort            = null,
 
@@ -98,6 +100,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
+                   DisableHTTPAPI,
+                   HTTPAPIPort,
                    HTTPUploadPort,
                    HTTPDownloadPort,
 

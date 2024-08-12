@@ -416,7 +416,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               NetworkingNode_Id                                DestinationId,
                                               NetworkPath                                      NetworkPath,
                                               DateTime?                                        ResponseTimestamp               = null,
-                                              CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null)
+                                              CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null,
+                                              CustomJObjectParserDelegate<IdTokenInfo>?        CustomIdTokenInfoParser         = null,
+                                              CustomJObjectParserDelegate<IdToken>?            CustomIdTokenParser             = null,
+                                              CustomJObjectParserDelegate<AdditionalInfo>?     CustomAdditionalInfoParser      = null,
+                                              CustomJObjectParserDelegate<MessageContent>?     CustomMessageContentParser      = null,
+                                              CustomJObjectParserDelegate<TransactionLimits>?  CustomTransactionLimitsParser   = null,
+                                              CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
+                                              CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
         {
 
 
@@ -427,7 +434,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          out var authorizeResponse,
                          out var errorResponse,
                          ResponseTimestamp,
-                         CustomAuthorizeResponseParser))
+                         CustomAuthorizeResponseParser,
+                         CustomIdTokenInfoParser,
+                         CustomIdTokenParser,
+                         CustomAdditionalInfoParser,
+                         CustomMessageContentParser,
+                         CustomTransactionLimitsParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return authorizeResponse;
             }
@@ -459,7 +473,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        [NotNullWhen(true)]  out AuthorizeResponse?      AuthorizeResponse,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
                                        DateTime?                                        ResponseTimestamp               = null,
-                                       CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null)
+                                       CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null,
+                                       CustomJObjectParserDelegate<IdTokenInfo>?        CustomIdTokenInfoParser         = null,
+                                       CustomJObjectParserDelegate<IdToken>?            CustomIdTokenParser             = null,
+                                       CustomJObjectParserDelegate<AdditionalInfo>?     CustomAdditionalInfoParser      = null,
+                                       CustomJObjectParserDelegate<MessageContent>?     CustomMessageContentParser      = null,
+                                       CustomJObjectParserDelegate<TransactionLimits>?  CustomTransactionLimitsParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
+                                       CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
         {
 
             try

@@ -55,13 +55,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
         OnNotifyNetworkTopologyRequestFilteredDelegate(DateTime                                                                          Timestamp,
                                                        IEventSender                                                                      Sender,
                                                        IWebSocketConnection                                                              Connection,
                                                        NotifyNetworkTopologyRequest                                                      Request,
-                                                       ForwardingDecision<NotifyNetworkTopologyRequest, NotifyNetworkTopologyResponse>   ForwardingDecision);
+                                                       ForwardingDecision<NotifyNetworkTopologyRequest, NotifyNetworkTopologyResponse>   ForwardingDecision,
+                                                       CancellationToken                                                                 CancellationToken);
 
     #endregion
 
@@ -83,10 +85,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision>
 
             Forward_NotifyNetworkTopology(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                          IWebSocketConnection     Connection,
+                                          IWebSocketConnection     WebSocketConnection,
                                           CancellationToken        CancellationToken   = default)
 
         {
+
+            #region Parse the NotifyNetworkTopology request
 
             if (!NotifyNetworkTopologyRequest.TryParse(JSONRequestMessage.Payload,
                                                        JSONRequestMessage.RequestId,
@@ -102,77 +106,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<NotifyNetworkTopologyRequest, NotifyNetworkTopologyResponse>? forwardingDecision = null;
+            #endregion
 
             #region Send OnNotifyNetworkTopologyRequestReceived event
 
-            var receivedLogging = OnNotifyNetworkTopologyRequestReceived;
-            if (receivedLogging is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              receivedLogging.GetInvocationList().
-                                  OfType<OnNotifyNetworkTopologyRequestReceivedDelegate>().
-                                  Select(filterDelegate => filterDelegate.Invoke(
-                                                               Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               Connection,
-                                                               request
-                                                           )).
-                                  ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnNotifyNetworkTopologyRequestReceived),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnNotifyNetworkTopologyRequestReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
             #region Send OnNotifyNetworkTopologyRequestFilter event
 
-            var requestFilter = OnNotifyNetworkTopologyRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
+            ForwardingDecision<NotifyNetworkTopologyRequest, NotifyNetworkTopologyResponse>? forwardingDecision = null;
 
-                    var results = await Task.WhenAll(
-                                            requestFilter.GetInvocationList().
-                                                OfType<OnNotifyNetworkTopologyRequestFilterDelegate>().
-                                                Select(filterDelegate => filterDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             parentNetworkingNode,
-                                                                             Connection,
-                                                                             request,
-                                                                             CancellationToken
-                                                                         )).
-                                                ToArray()
-                                        );
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnNotifyNetworkTopologyRequestFilter),
-                              e
-                          );
-                }
-
-            }
+            forwardingDecision = await CallFilter(
+                                           OnNotifyNetworkTopologyRequestFilter,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
             #endregion
 
@@ -221,36 +186,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnNotifyNetworkTopologyRequestFiltered event
 
-            var logger = OnNotifyNetworkTopologyRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              logger.GetInvocationList().
-                                  OfType<OnNotifyNetworkTopologyRequestFilteredDelegate>().
-                                  Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                Connection,
-                                                                request,
-                                                                forwardingDecision
-                                                            )).
-                                  ToArray()
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnNotifyNetworkTopologyRequestFiltered),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnNotifyNetworkTopologyRequestFiltered,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          forwardingDecision,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -262,35 +208,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sentLogging = OnNotifyNetworkTopologyRequestSent;
                 if (sentLogging is not null)
-                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
-
-                        try
-                        {
-
-                            await Task.WhenAll(
-                                      sentLogging.GetInvocationList().
-                                          OfType<OnNotifyNetworkTopologyRequestSentDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(
-                                                                       Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       sentMessageResult.Connection,
-                                                                       request,
-                                                                       sentMessageResult.Result
-                                                                   )).
-                                          ToArray()
-                                  );
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(NetworkingNode),
-                                      nameof(OnNotifyNetworkTopologyRequestSent),
-                                      e
-                                  );
-                        }
-
-                    };
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
+                        await LogEvent(
+                                  OnNotifyNetworkTopologyRequestSent,
+                                  loggingDelegate => loggingDelegate.Invoke(
+                                      Timestamp.Now,
+                                      parentNetworkingNode,
+                                      sentMessageResult.Connection,
+                                      request,
+                                      sentMessageResult.Result,
+                                      CancellationToken
+                                  )
+                              );
 
             }
 

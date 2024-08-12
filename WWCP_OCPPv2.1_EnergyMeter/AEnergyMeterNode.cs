@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
         #region Data
 
-        private readonly HTTPExtAPI  HTTPAPI;
+        private readonly HTTPExtAPI?  HTTPAPI;
 
         #endregion
 
@@ -170,6 +170,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                 SignaturePolicy?   SignaturePolicy             = null,
                                 SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
+                                Boolean            DisableHTTPAPI              = false,
+                                IPPort?            HTTPAPIPort                 = null,
+
                                 Boolean            DisableSendHeartbeats       = false,
                                 TimeSpan?          SendHeartbeatsEvery         = null,
                                 TimeSpan?          DefaultRequestTimeout       = null,
@@ -211,16 +214,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
             #region Setup generic HTTP API
 
-            this.HTTPAPI  = new HTTPExtAPI(
-                                HTTPServerPort:         IPPort.Parse(3532),
-                                HTTPServerName:         "GraphDefined OCPP Test EnergyMeter",
-                                HTTPServiceName:        "GraphDefined OCPP Test EnergyMeter Service",
-                                APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test EnergyMeter Robot <robot@charging.cloud>"),
-                                APIRobotGPGPassphrase:  "test123",
-                                SMTPClient:             new NullMailer(),
-                                DNSClient:              DNSClient,
-                                AutoStart:              true
-                            );
+            this.HTTPAPI  = !DisableHTTPAPI
+
+                                ? new HTTPExtAPI(
+                                      HTTPServerPort:         HTTPAPIPort ?? IPPort.Auto,
+                                      HTTPServerName:         "GraphDefined OCPP Test Energy Meter",
+                                      HTTPServiceName:        "GraphDefined OCPP Test Energy Meter Service",
+                                      APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Energy Meter Robot <robot@charging.cloud>"),
+                                      APIRobotGPGPassphrase:  "test123",
+                                      SMTPClient:             new NullMailer(),
+                                      DNSClient:              DNSClient,
+                                      AutoStart:              true
+                                  )
+
+                                : null;
 
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
@@ -249,9 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
             this.WebAPI             = new WebAPI(
                                           this,
                                           HTTPAPI,
-
                                           URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
-
                                       );
 
             #endregion

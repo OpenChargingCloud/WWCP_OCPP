@@ -22,6 +22,7 @@ using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
         #region Constructor(s)
 
-        /// <summary>
+        /// <summarysss>
         /// Create a new energy meter node for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this energy meter node.</param>
@@ -60,6 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                                    SignaturePolicy?   SignaturePolicy             = null,
                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
+
+                                   Boolean            DisableHTTPAPI              = false,
+                                   IPPort?            HTTPAPIPort                 = null,
 
                                    Boolean            DisableSendHeartbeats       = false,
                                    TimeSpan?          SendHeartbeatsEvery         = null,
@@ -80,6 +84,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
+
+                   DisableHTTPAPI,
+                   HTTPAPIPort,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,

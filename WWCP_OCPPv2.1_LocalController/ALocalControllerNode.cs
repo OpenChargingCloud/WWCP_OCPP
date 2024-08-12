@@ -378,15 +378,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region Setup generic HTTP API
 
             this.HTTPAPI  = new HTTPExtAPI(
-                                          HTTPServerPort:         IPPort.Parse(3532),
-                                          HTTPServerName:         "GraphDefined OCPP Test Central System",
-                                          HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
-                                          APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                          APIRobotGPGPassphrase:  "test123",
-                                          SMTPClient:             new NullMailer(),
-                                          DNSClient:              DNSClient,
-                                          AutoStart:              true
-                                      );
+                                HTTPServerPort:         IPPort.Auto,
+                                HTTPServerName:         "GraphDefined OCPP Test Local Controller",
+                                HTTPServiceName:        "GraphDefined OCPP Test Local Controller Service",
+                                APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Local Controller Robot <robot@charging.cloud>"),
+                                APIRobotGPGPassphrase:  "test123",
+                                SMTPClient:             new NullMailer(),
+                                DNSClient:              DNSClient,
+                                AutoStart:              true
+                            );
 
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 

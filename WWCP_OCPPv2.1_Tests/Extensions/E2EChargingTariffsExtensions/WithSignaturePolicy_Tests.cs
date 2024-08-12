@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var getDefaultChargingTariffRequests = new ConcurrentList<GetDefaultChargingTariffRequest>();
 
-                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived += (timestamp, sender, connection, getDefaultChargingTariffRequest, ct) => {
                     getDefaultChargingTariffRequests.TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation1.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest, ct) => {
                     getDefaultChargingTariffRequests.   TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -743,7 +743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     return Task.CompletedTask;
                 };
 
-                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest, ct) => {
                     getDefaultChargingTariffRequests.   TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -1075,7 +1075,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     return Task.CompletedTask;
                 };
 
-                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest, ct) => {
                     getDefaultChargingTariffRequests.   TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -1410,7 +1410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     return Task.CompletedTask;
                 };
 
-                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest) => {
+                chargingStation2.OCPP.IN.OnGetDefaultChargingTariffRequestReceived    += (timestamp, sender, connection, getDefaultChargingTariffRequest, ct) => {
                     getDefaultChargingTariffRequests.   TryAdd(getDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };

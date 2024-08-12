@@ -39,12 +39,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SendMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnDeleteFileRequestSentDelegate(DateTime               Timestamp,
-                                                         IEventSender           Sender,
-                                                         IWebSocketConnection   Connection,
-                                                         DeleteFileRequest      Request,
-                                                         SentMessageResults     SendMessageResult,
-                                                         CancellationToken      CancellationToken = default);
+    public delegate Task OnDeleteFileRequestSentDelegate(DateTime                Timestamp,
+                                                         IEventSender            Sender,
+                                                         IWebSocketConnection?   Connection,
+                                                         DeleteFileRequest       Request,
+                                                         SentMessageResults      SendMessageResult,
+                                                         CancellationToken       CancellationToken = default);
 
 
     /// <summary>

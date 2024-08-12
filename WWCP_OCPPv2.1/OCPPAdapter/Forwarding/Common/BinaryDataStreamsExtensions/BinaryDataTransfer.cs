@@ -85,10 +85,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision>
 
             Forward_BinaryDataTransfer(OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                                       IWebSocketConnection       Connection,
+                                       IWebSocketConnection       WebSocketConnection,
                                        CancellationToken          CancellationToken   = default)
 
         {
+
+            #region Parse the Authorize request
 
             if (!BinaryDataTransferRequest.TryParse(BinaryRequestMessage.Payload,
                                                     BinaryRequestMessage.RequestId,
@@ -104,77 +106,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>? forwardingDecision = null;
+            #endregion
 
             #region Send OnBinaryDataTransferRequestReceived event
 
-            var receivedLogging = OnBinaryDataTransferRequestReceived;
-            if (receivedLogging is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              receivedLogging.GetInvocationList().
-                                  OfType<OnBinaryDataTransferRequestReceivedDelegate>().
-                                  Select(filterDelegate => filterDelegate.Invoke(
-                                                               Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               Connection,
-                                                               request
-                                                           )).
-                                  ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnBinaryDataTransferRequestReceived),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnBinaryDataTransferRequestReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
             #region Send OnBinaryDataTransferRequestFilter event
 
-            var requestFilter = OnBinaryDataTransferRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
+            ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>? forwardingDecision = null;
 
-                    var results = await Task.WhenAll(
-                                            requestFilter.GetInvocationList().
-                                                OfType<OnBinaryDataTransferRequestFilterDelegate>().
-                                                Select(filterDelegate => filterDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             parentNetworkingNode,
-                                                                             Connection,
-                                                                             request,
-                                                                             CancellationToken
-                                                                         )).
-                                                ToArray()
-                                        );
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnBinaryDataTransferRequestFilter),
-                              e
-                          );
-                }
-
-            }
+            forwardingDecision = await CallFilter(
+                                           OnBinaryDataTransferRequestFilter,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
             #endregion
 
@@ -221,36 +184,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnBinaryDataTransferRequestFiltered event
 
-            var logger = OnBinaryDataTransferRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              logger.GetInvocationList().
-                                  OfType<OnBinaryDataTransferRequestFilteredDelegate>().
-                                  Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                Connection,
-                                                                request,
-                                                                forwardingDecision
-                                                            )).
-                                  ToArray()
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnBinaryDataTransferRequestFiltered),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnBinaryDataTransferRequestFiltered,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          forwardingDecision,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -262,35 +206,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sentLogging = OnBinaryDataTransferRequestSent;
                 if (sentLogging is not null)
-                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
-
-                        try
-                        {
-
-                            await Task.WhenAll(
-                                      sentLogging.GetInvocationList().
-                                          OfType<OnBinaryDataTransferRequestSentDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(
-                                                                       Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       sentMessageResult.Connection,
-                                                                       request,
-                                                                       sentMessageResult.Result
-                                                                   )).
-                                          ToArray()
-                                  );
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(NetworkingNode),
-                                      nameof(OnBinaryDataTransferRequestSent),
-                                      e
-                                  );
-                        }
-
-                    };
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
+                        await LogEvent(
+                                  OnBinaryDataTransferRequestSent,
+                                  loggingDelegate => loggingDelegate.Invoke(
+                                      Timestamp.Now,
+                                      parentNetworkingNode,
+                                      sentMessageResult.Connection,
+                                      request,
+                                      sentMessageResult.Result,
+                                      CancellationToken
+                                  )
+                              );
 
             }
 

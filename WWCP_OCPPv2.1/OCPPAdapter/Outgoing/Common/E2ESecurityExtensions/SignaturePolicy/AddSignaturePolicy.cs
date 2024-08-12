@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnAddSignaturePolicyRequestSentDelegate(DateTime                    Timestamp,
                                                                  IEventSender                Sender,
-                                                                 IWebSocketConnection        Connection,
+                                                                 IWebSocketConnection?       Connection,
                                                                  AddSignaturePolicyRequest   Request,
                                                                  SentMessageResults          SendMessageResult,
                                                                  CancellationToken           CancellationToken = default);

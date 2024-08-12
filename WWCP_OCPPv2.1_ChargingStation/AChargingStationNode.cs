@@ -765,7 +765,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #region Setup generic HTTP API
 
             this.NetworkingNodeAPI  = new HTTPExtAPI(
-                                          HTTPServerPort:         IPPort.Parse(3532),
+                                          HTTPServerPort:         IPPort.Auto,
                                           HTTPServerName:         "GraphDefined OCPP Test Charging Station",
                                           HTTPServiceName:        "GraphDefined OCPP Test Charging Station Service",
                                           APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Charging Station Robot <robot@charging.cloud>"),

@@ -55,13 +55,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
         OnSecureDataTransferRequestFilteredDelegate(DateTime                                                                    Timestamp,
                                                     IEventSender                                                                Sender,
                                                     IWebSocketConnection                                                        Connection,
                                                     SecureDataTransferRequest                                                   Request,
-                                                    ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>   ForwardingDecision);
+                                                    ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>   ForwardingDecision,
+                                                    CancellationToken                                                           CancellationToken);
 
     #endregion
 
@@ -83,10 +85,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision>
 
             Forward_SecureDataTransfer(OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                                       IWebSocketConnection       Connection,
+                                       IWebSocketConnection       WebSocketConnection,
                                        CancellationToken          CancellationToken   = default)
 
         {
+
+            #region Parse the SecureDataTransfer request
 
             if (!SecureDataTransferRequest.TryParse(BinaryRequestMessage.Payload,
                                                     BinaryRequestMessage.RequestId,
@@ -95,84 +99,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     out var request,
                                                     out var errorResponse,
                                                     BinaryRequestMessage.RequestTimestamp,
-                                                    null, //BinaryRequestMessage.RequestTimeout,
+                                                    BinaryRequestMessage.RequestTimeout - Timestamp.Now,
                                                     BinaryRequestMessage.EventTrackingId,
                                                     parentNetworkingNode.OCPP.CustomSecureDataTransferRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>? forwardingDecision = null;
+            #endregion
 
             #region Send OnSecureDataTransferRequestReceived event
 
-            var receivedLogging = OnSecureDataTransferRequestReceived;
-            if (receivedLogging is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              receivedLogging.GetInvocationList().
-                                  OfType<OnSecureDataTransferRequestReceivedDelegate>().
-                                  Select(filterDelegate => filterDelegate.Invoke(
-                                                               Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               Connection,
-                                                               request
-                                                           )).
-                                  ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnSecureDataTransferRequestReceived),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnSecureDataTransferRequestReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
             #region Send OnSecureDataTransferRequestFilter event
 
-            var requestFilter = OnSecureDataTransferRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
+            ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>? forwardingDecision = null;
 
-                    var results = await Task.WhenAll(
-                                            requestFilter.GetInvocationList().
-                                                OfType<OnSecureDataTransferRequestFilterDelegate>().
-                                                Select(filterDelegate => filterDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             parentNetworkingNode,
-                                                                             Connection,
-                                                                             request,
-                                                                             CancellationToken
-                                                                         )).
-                                                ToArray()
-                                        );
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnSecureDataTransferRequestFilter),
-                              e
-                          );
-                }
-
-            }
+            forwardingDecision = await CallFilter(
+                                           OnSecureDataTransferRequestFilter,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
             #endregion
 
@@ -218,36 +183,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnSecureDataTransferRequestFiltered event
 
-            var logger = OnSecureDataTransferRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              logger.GetInvocationList().
-                                  OfType<OnSecureDataTransferRequestFilteredDelegate>().
-                                  Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                Connection,
-                                                                request,
-                                                                forwardingDecision
-                                                            )).
-                                  ToArray()
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnSecureDataTransferRequestFiltered),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnSecureDataTransferRequestFiltered,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          forwardingDecision,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -259,35 +205,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sentLogging = OnSecureDataTransferRequestSent;
                 if (sentLogging is not null)
-                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
-
-                        try
-                        {
-
-                            await Task.WhenAll(
-                                      sentLogging.GetInvocationList().
-                                          OfType<OnSecureDataTransferRequestSentDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(
-                                                                       Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       sentMessageResult.Connection,
-                                                                       request,
-                                                                       sentMessageResult.Result
-                                                                   )).
-                                          ToArray()
-                                  );
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(NetworkingNode),
-                                      nameof(OnSecureDataTransferRequestSent),
-                                      e
-                                  );
-                        }
-
-                    };
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
+                        await LogEvent(
+                                  OnSecureDataTransferRequestSent,
+                                  loggingDelegate => loggingDelegate.Invoke(
+                                      Timestamp.Now,
+                                      parentNetworkingNode,
+                                      sentMessageResult.Connection,
+                                      request,
+                                      sentMessageResult.Result,
+                                      CancellationToken
+                                  )
+                              );
 
             }
 

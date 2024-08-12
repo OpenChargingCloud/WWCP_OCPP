@@ -18,6 +18,8 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -28,146 +30,240 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    #region Logging Delegates
+
     /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
+    /// A logging delegate called whenever an SetDefaultChargingTariff request was sent.
     /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The connection of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task OnSetDefaultChargingTariffRequestSentDelegate(DateTime                          Timestamp,
+                                                                       IEventSender                      Sender,
+                                                                       IWebSocketConnection?             Connection,
+                                                                       SetDefaultChargingTariffRequest   Request,
+                                                                       SentMessageResults                SendMessageResult,
+                                                                       CancellationToken                 CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an SetDefaultChargingTariff response was sent.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The connection of the response.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnSetDefaultChargingTariffResponseSentDelegate(DateTime                           Timestamp,
+                                                       IEventSender                       Sender,
+                                                       IWebSocketConnection               Connection,
+                                                       SetDefaultChargingTariffRequest?   Request,
+                                                       SetDefaultChargingTariffResponse   Response,
+                                                       TimeSpan                           Runtime,
+                                                       SentMessageResults                 SendMessageResult,
+                                                       CancellationToken                  CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an SetDefaultChargingTariff request error was sent.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the request error.</param>
+    /// <param name="Connection">The connection of the request error.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="RequestErrorMessage">The request error message.</param>
+    /// <param name="Runtime">The optional runtime of the request/request error message pair.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnSetDefaultChargingTariffRequestErrorSentDelegate(DateTime                           Timestamp,
+                                                           IEventSender                       Sender,
+                                                           IWebSocketConnection               Connection,
+                                                           SetDefaultChargingTariffRequest?   Request,
+                                                           OCPP_JSONRequestErrorMessage       RequestErrorMessage,
+                                                           TimeSpan?                          Runtime,
+                                                           SentMessageResults                 SendMessageResult,
+                                                           CancellationToken                  CancellationToken = default);
+
+
+    /// <summary>
+    /// A logging delegate called whenever an SetDefaultChargingTariff response error was sent.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response error.</param>
+    /// <param name="Connection">The connection of the response error.</param>
+    /// <param name="Request">The request, when available.</param>
+    /// <param name="Response">The response, when available.</param>
+    /// <param name="ResponseErrorMessage">The response error message.</param>
+    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnSetDefaultChargingTariffResponseErrorSentDelegate(DateTime                            Timestamp,
+                                                            IEventSender                        Sender,
+                                                            IWebSocketConnection                Connection,
+                                                            SetDefaultChargingTariffRequest?    Request,
+                                                            SetDefaultChargingTariffResponse?   Response,
+                                                            OCPP_JSONResponseErrorMessage       ResponseErrorMessage,
+                                                            TimeSpan?                           Runtime,
+                                                            SentMessageResults                  SendMessageResult,
+                                                            CancellationToken                   CancellationToken = default);
+
+    #endregion
+
     public partial class OCPPWebSocketAdapterOUT
     {
 
-        #region Custom JSON serializer delegates
-
-        public CustomJObjectSerializerDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestSerializer    { get; set; }
-
-        public CustomJObjectParserDelegate<SetDefaultChargingTariffResponse>?     CustomSetDefaultChargingTariffResponseParser       { get; set; }
-
-        #endregion
-
-        #region Events
+        #region Send SetDefaultChargingTariff request
 
         /// <summary>
-        /// An event sent whenever a SetDefaultChargingTariff request was sent.
+        /// An event fired whenever an SetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OnSetDefaultChargingTariffRequestSentDelegate?         OnSetDefaultChargingTariffRequestSent;
+        public event OnSetDefaultChargingTariffRequestSentDelegate?  OnSetDefaultChargingTariffRequestSent;
+
 
         /// <summary>
-        /// An event sent whenever a response to a SetDefaultChargingTariff request was sent.
+        /// SetDefaultChargingTariff the given identification token.
         /// </summary>
-        public event OnSetDefaultChargingTariffResponseReceivedDelegate?    OnSetDefaultChargingTariffResponseReceived;
-
-        #endregion
-
-
-        #region SetDefaultChargingTariff(Request)
-
+        /// <param name="Request">An SetDefaultChargingTariff request.</param>
         public async Task<SetDefaultChargingTariffResponse> SetDefaultChargingTariff(SetDefaultChargingTariffRequest Request)
         {
-
-            #region Send OnSetDefaultChargingTariffRequestSent event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSetDefaultChargingTariffRequestSent?.Invoke(startTime,
-                                                              parentNetworkingNode,
-                                                              null,
-                                                              Request,
-                                                SentMessageResults.Success);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetDefaultChargingTariffRequestSent));
-            }
-
-            #endregion
-
 
             SetDefaultChargingTariffResponse? response = null;
 
             try
             {
 
-                var sendRequestState = await SendJSONRequestAndWait(
-                                                 OCPP_JSONRequestMessage.FromRequest(
-                                                     Request,
-                                                     Request.ToJSON(
-                                                         CustomSetDefaultChargingTariffRequestSerializer,
-                                                         parentNetworkingNode.OCPP.CustomChargingTariffSerializer,
-                                                         parentNetworkingNode.OCPP.CustomPriceSerializer,
-                                                         parentNetworkingNode.OCPP.CustomTariffElementSerializer,
-                                                         parentNetworkingNode.OCPP.CustomPriceComponentSerializer,
-                                                         parentNetworkingNode.OCPP.CustomTaxRateSerializer,
-                                                         parentNetworkingNode.OCPP.CustomTariffRestrictionsSerializer,
-                                                         parentNetworkingNode.OCPP.CustomEnergyMixSerializer,
-                                                         parentNetworkingNode.OCPP.CustomEnergySourceSerializer,
-                                                         parentNetworkingNode.OCPP.CustomEnvironmentalImpactSerializer,
-                                                         parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-                                                         parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                     )
-                                                 )
-                                             );
+                #region Sign request message
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.JSONResponse is not null)
+                if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomSetDefaultChargingTariffRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingTariffSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceSerializer,
+                            parentNetworkingNode.OCPP.CustomTariffElementSerializer,
+                            parentNetworkingNode.OCPP.CustomPriceComponentSerializer,
+                            parentNetworkingNode.OCPP.CustomTaxRateSerializer,
+                            parentNetworkingNode.OCPP.CustomTariffRestrictionsSerializer,
+                            parentNetworkingNode.OCPP.CustomEnergyMixSerializer,
+                            parentNetworkingNode.OCPP.CustomEnergySourceSerializer,
+                            parentNetworkingNode.OCPP.CustomEnvironmentalImpactSerializer,
+                            parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                            parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var signingErrors
+                    ))
                 {
 
-                    if (SetDefaultChargingTariffResponse.TryParse(Request,
-                                                                  sendRequestState.JSONResponse.Payload,
-                                                                  out var setDisplayMessageResponse,
-                                                                  out var errorResponse,
-                                                                  CustomSetDefaultChargingTariffResponseParser) &&
-                        setDisplayMessageResponse is not null)
-                    {
-                        response = setDisplayMessageResponse;
-                    }
+                    response = SetDefaultChargingTariffResponse.SignatureError(
+                                   Request,
+                                   signingErrors
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    #region Send request message
+
+                    var sendRequestState = await SendJSONRequestAndWait(
+
+                                               OCPP_JSONRequestMessage.FromRequest(
+                                                   Request,
+                                                   Request.ToJSON(
+                                                       parentNetworkingNode.OCPP.CustomSetDefaultChargingTariffRequestSerializer,
+                                                       parentNetworkingNode.OCPP.CustomChargingTariffSerializer,
+                                                       parentNetworkingNode.OCPP.CustomPriceSerializer,
+                                                       parentNetworkingNode.OCPP.CustomTariffElementSerializer,
+                                                       parentNetworkingNode.OCPP.CustomPriceComponentSerializer,
+                                                       parentNetworkingNode.OCPP.CustomTaxRateSerializer,
+                                                       parentNetworkingNode.OCPP.CustomTariffRestrictionsSerializer,
+                                                       parentNetworkingNode.OCPP.CustomEnergyMixSerializer,
+                                                       parentNetworkingNode.OCPP.CustomEnergySourceSerializer,
+                                                       parentNetworkingNode.OCPP.CustomEnvironmentalImpactSerializer,
+                                                       parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                                                       parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+                                                       parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                       parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                   )
+                                               ),
+
+                                               sendMessageResult => LogEvent(
+                                                   OnSetDefaultChargingTariffRequestSent,
+                                                   loggingDelegate => loggingDelegate.Invoke(
+                                                       Timestamp.Now,
+                                                       parentNetworkingNode,
+                                                       sendMessageResult.Connection,
+                                                       Request,
+                                                       sendMessageResult.Result
+                                                   )
+                                               )
+
+                                           );
+
+                    #endregion
+
+
+                    if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_SetDefaultChargingTariffResponse(
+                                             Request,
+                                             jsonResponse,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.CancellationToken
+                                         );
+
+                    if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_SetDefaultChargingTariffRequestError(
+                                             Request,
+                                             jsonRequestError,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.CancellationToken
+                                         );
 
                     response ??= new SetDefaultChargingTariffResponse(
                                      Request,
-                                     Result.FormationViolation(errorResponse)
+                                     SetDefaultChargingTariffStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }
 
-                response ??= new SetDefaultChargingTariffResponse(
-                                 Request,
-                                 Result.FromSendRequestState(sendRequestState)
-                             );
-
             }
             catch (Exception e)
             {
 
-                response = new SetDefaultChargingTariffResponse(
+                response = SetDefaultChargingTariffResponse.ExceptionOccured(
                                Request,
-                               Result.FromException(e)
+                               e
                            );
 
             }
-
-
-            #region Send OnSetDefaultChargingTariffResponseReceived event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSetDefaultChargingTariffResponseReceived?.Invoke(endTime,
-                                                                   parentNetworkingNode,
-                                                                   Request,
-                                                                   response,
-                                                                   endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetDefaultChargingTariffResponseReceived));
-            }
-
-            #endregion
 
             return response;
 
@@ -176,16 +272,106 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-    }
-
-
-    public partial class OCPPWebSocketAdapterIN
-    {
+        #region Send OnSetDefaultChargingTariffResponseSent event
 
         /// <summary>
-        /// An event sent whenever a response to a OnSetDefaultChargingTariff request was sent.
+        /// An event sent whenever an SetDefaultChargingTariff response was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetDefaultChargingTariffResponseReceivedDelegate? OnSetDefaultChargingTariffResponseReceived;
+        public event OnSetDefaultChargingTariffResponseSentDelegate?  OnSetDefaultChargingTariffResponseSent;
+
+
+        public Task SendOnSetDefaultChargingTariffResponseSent(DateTime                          Timestamp,
+                                                               IEventSender                      Sender,
+                                                               IWebSocketConnection              Connection,
+                                                               SetDefaultChargingTariffRequest   Request,
+                                                               SetDefaultChargingTariffResponse  Response,
+                                                               TimeSpan                          Runtime,
+                                                               SentMessageResults                SendMessageResult,
+                                                               CancellationToken                 CancellationToken = default)
+
+            => LogEvent(
+                   OnSetDefaultChargingTariffResponseSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
+
+        #endregion
+
+        #region Send OnSetDefaultChargingTariffRequestErrorSent event
+
+        /// <summary>
+        /// An event sent whenever an SetDefaultChargingTariff request error was sent.
+        /// </summary>
+        public event OnSetDefaultChargingTariffRequestErrorSentDelegate? OnSetDefaultChargingTariffRequestErrorSent;
+
+
+        public Task SendOnSetDefaultChargingTariffRequestErrorSent(DateTime                          Timestamp,
+                                                                   IEventSender                      Sender,
+                                                                   IWebSocketConnection              Connection,
+                                                                   SetDefaultChargingTariffRequest?  Request,
+                                                                   OCPP_JSONRequestErrorMessage      RequestErrorMessage,
+                                                                   TimeSpan                          Runtime,
+                                                                   SentMessageResults                SendMessageResult,
+                                                                   CancellationToken                 CancellationToken = default)
+
+            => LogEvent(
+                   OnSetDefaultChargingTariffRequestErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       RequestErrorMessage,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
+
+        #endregion
+
+        #region Send OnSetDefaultChargingTariffResponseErrorSent event
+
+        /// <summary>
+        /// An event sent whenever an SetDefaultChargingTariff response error was sent.
+        /// </summary>
+        public event OnSetDefaultChargingTariffResponseErrorSentDelegate? OnSetDefaultChargingTariffResponseErrorSent;
+
+
+        public Task SendOnSetDefaultChargingTariffResponseErrorSent(DateTime                           Timestamp,
+                                                                    IEventSender                       Sender,
+                                                                    IWebSocketConnection               Connection,
+                                                                    SetDefaultChargingTariffRequest?   Request,
+                                                                    SetDefaultChargingTariffResponse?  Response,
+                                                                    OCPP_JSONResponseErrorMessage      ResponseErrorMessage,
+                                                                    TimeSpan                           Runtime,
+                                                                    SentMessageResults                 SendMessageResult,
+                                                                    CancellationToken                  CancellationToken = default)
+
+            => LogEvent(
+                   OnSetDefaultChargingTariffResponseErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       ResponseErrorMessage,
+                       Runtime,
+                       SendMessageResult,
+                       CancellationToken
+                   )
+               );
+
+        #endregion
 
     }
 
