@@ -64,7 +64,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         IEventSender                                                                        Sender,
                                                         IWebSocketConnection                                                                Connection,
                                                         NotifyMonitoringReportRequest                                                       Request,
-                                                        ForwardingDecision<NotifyMonitoringReportRequest, NotifyMonitoringReportResponse>   ForwardingDecision);
+                                                        ForwardingDecision<NotifyMonitoringReportRequest, NotifyMonitoringReportResponse>   ForwardingDecision,
+                                                        CancellationToken                                                                   CancellationToken);
 
     #endregion
 
@@ -90,10 +91,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision>
 
             Forward_NotifyMonitoringReport(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                           IWebSocketConnection     Connection,
+                                           IWebSocketConnection     WebSocketConnection,
                                            CancellationToken        CancellationToken   = default)
 
         {
+
+            #region Parse the NotifyMonitoringReport request
 
             if (!NotifyMonitoringReportRequest.TryParse(JSONRequestMessage.Payload,
                                                         JSONRequestMessage.RequestId,
@@ -109,77 +112,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
-            ForwardingDecision<NotifyMonitoringReportRequest, NotifyMonitoringReportResponse>? forwardingDecision = null;
+            #endregion
 
             #region Send OnNotifyMonitoringReportRequestReceived event
 
-            var receivedLogging = OnNotifyMonitoringReportRequestReceived;
-            if (receivedLogging is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              receivedLogging.GetInvocationList().
-                                  OfType<OnNotifyMonitoringReportRequestReceivedDelegate>().
-                                  Select(filterDelegate => filterDelegate.Invoke(
-                                                               Timestamp.Now,
-                                                               parentNetworkingNode,
-                                                               Connection,
-                                                               request
-                                                           )).
-                                  ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnNotifyMonitoringReportRequestReceived),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnNotifyMonitoringReportRequestReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
 
             #region Send OnNotifyMonitoringReportRequestFilter event
 
-            var requestFilter = OnNotifyMonitoringReportRequestFilter;
-            if (requestFilter is not null)
-            {
-                try
-                {
-
-                    var results = await Task.WhenAll(
-                                            requestFilter.GetInvocationList().
-                                                OfType<OnNotifyMonitoringReportRequestFilterDelegate>().
-                                                Select(filterDelegate => filterDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             parentNetworkingNode,
-                                                                             Connection,
-                                                                             request,
-                                                                             CancellationToken
-                                                                         )).
-                                                ToArray()
-                                        );
-
-                    //ToDo: Find a good result!
-                    forwardingDecision = results.First();
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnNotifyMonitoringReportRequestFilter),
-                              e
-                          );
-                }
-
-            }
+            var forwardingDecision = await CallFilter(
+                                               OnNotifyMonitoringReportRequestFilter,
+                                               filter => filter.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             WebSocketConnection,
+                                                             request,
+                                                             CancellationToken
+                                                         )
+                                           );
 
             #endregion
 
@@ -230,36 +192,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnNotifyMonitoringReportRequestFiltered event
 
-            var logger = OnNotifyMonitoringReportRequestFiltered;
-            if (logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              logger.GetInvocationList().
-                                  OfType<OnNotifyMonitoringReportRequestFilteredDelegate>().
-                                  Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                Timestamp.Now,
-                                                                parentNetworkingNode,
-                                                                Connection,
-                                                                request,
-                                                                forwardingDecision
-                                                            )).
-                                  ToArray()
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(NetworkingNode),
-                              nameof(OnNotifyMonitoringReportRequestFiltered),
-                              e
-                          );
-                }
-
-            }
+            await LogEvent(
+                      OnNotifyMonitoringReportRequestFiltered,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          request,
+                          forwardingDecision,
+                          CancellationToken
+                      )
+                  );
 
             #endregion
 
@@ -271,35 +214,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sentLogging = OnNotifyMonitoringReportRequestSent;
                 if (sentLogging is not null)
-                    forwardingDecision.SentMessageLogger = async (sentMessageResult) => {
-
-                        try
-                        {
-
-                            await Task.WhenAll(
-                                      sentLogging.GetInvocationList().
-                                          OfType<OnNotifyMonitoringReportRequestSentDelegate>().
-                                          Select(filterDelegate => filterDelegate.Invoke(
-                                                                       Timestamp.Now,
-                                                                       parentNetworkingNode,
-                                                                       sentMessageResult.Connection,
-                                                                       request,
-                                                                       sentMessageResult.Result
-                                                                   )).
-                                          ToArray()
-                                  );
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(NetworkingNode),
-                                      nameof(OnNotifyMonitoringReportRequestSent),
-                                      e
-                                  );
-                        }
-
-                    };
+                    forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
+                        await LogEvent(
+                                  OnNotifyMonitoringReportRequestSent,
+                                  loggingDelegate => loggingDelegate.Invoke(
+                                      Timestamp.Now,
+                                      parentNetworkingNode,
+                                      sentMessageResult.Connection,
+                                      request,
+                                      sentMessageResult.Result,
+                                      CancellationToken
+                                  )
+                              );
 
             }
 

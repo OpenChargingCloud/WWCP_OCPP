@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SendMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNotifyReportRequestSentDelegate(DateTime               Timestamp,
-                                                           IEventSender           Sender,
+                                                           IEventSender?          Sender,
                                                            IWebSocketConnection   Connection,
                                                            NotifyReportRequest    Request,
                                                            SentMessageResults     SendMessageResult,
