@@ -39,14 +39,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The request.</param>
-    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnRemoveDefaultChargingTariffRequestSentDelegate(DateTime                             Timestamp,
                                                                           IEventSender                         Sender,
                                                                           IWebSocketConnection?                Connection,
                                                                           RemoveDefaultChargingTariffRequest   Request,
-                                                                          SentMessageResults                   SendMessageResult,
-                                                                          CancellationToken                    CancellationToken = default);
+                                                                          SentMessageResults                   SentMessageResult,
+                                                                          CancellationToken                    CancellationToken);
 
 
     /// <summary>
@@ -58,18 +58,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request, when available.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
-    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
         OnRemoveDefaultChargingTariffResponseSentDelegate(DateTime                              Timestamp,
                                                           IEventSender                          Sender,
-                                                          IWebSocketConnection                  Connection,
+                                                          IWebSocketConnection?                 Connection,
                                                           RemoveDefaultChargingTariffRequest?   Request,
                                                           RemoveDefaultChargingTariffResponse   Response,
                                                           TimeSpan                              Runtime,
-                                                          SentMessageResults                    SendMessageResult,
-                                                          CancellationToken                     CancellationToken = default);
+                                                          SentMessageResults                    SentMessageResult,
+                                                          CancellationToken                     CancellationToken);
 
 
     /// <summary>
@@ -81,18 +81,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request, when available.</param>
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The optional runtime of the request/request error message pair.</param>
-    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
         OnRemoveDefaultChargingTariffRequestErrorSentDelegate(DateTime                              Timestamp,
                                                               IEventSender                          Sender,
-                                                              IWebSocketConnection                  Connection,
+                                                              IWebSocketConnection?                 Connection,
                                                               RemoveDefaultChargingTariffRequest?   Request,
                                                               OCPP_JSONRequestErrorMessage          RequestErrorMessage,
                                                               TimeSpan?                             Runtime,
-                                                              SentMessageResults                    SendMessageResult,
-                                                              CancellationToken                     CancellationToken = default);
+                                                              SentMessageResults                    SentMessageResult,
+                                                              CancellationToken                     CancellationToken);
 
 
     /// <summary>
@@ -105,19 +105,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response, when available.</param>
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
-    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
         OnRemoveDefaultChargingTariffResponseErrorSentDelegate(DateTime                               Timestamp,
                                                                IEventSender                           Sender,
-                                                               IWebSocketConnection                   Connection,
+                                                               IWebSocketConnection?                  Connection,
                                                                RemoveDefaultChargingTariffRequest?    Request,
                                                                RemoveDefaultChargingTariffResponse?   Response,
                                                                OCPP_JSONResponseErrorMessage          ResponseErrorMessage,
                                                                TimeSpan?                              Runtime,
-                                                               SentMessageResults                     SendMessageResult,
-                                                               CancellationToken                      CancellationToken = default);
+                                                               SentMessageResults                     SentMessageResult,
+                                                               CancellationToken                      CancellationToken);
 
     #endregion
 
@@ -173,27 +173,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     var sendRequestState = await SendJSONRequestAndWait(
 
-                                               OCPP_JSONRequestMessage.FromRequest(
-                                                   Request,
-                                                   Request.ToJSON(
-                                                       parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffRequestSerializer,
-                                                       parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                       parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                   )
-                                               ),
+                                                     OCPP_JSONRequestMessage.FromRequest(
+                                                         Request,
+                                                         Request.ToJSON(
+                                                             parentNetworkingNode.OCPP.CustomRemoveDefaultChargingTariffRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                         )
+                                                     ),
 
-                                               sendMessageResult => LogEvent(
-                                                   OnRemoveDefaultChargingTariffRequestSent,
-                                                   loggingDelegate => loggingDelegate.Invoke(
-                                                       Timestamp.Now,
-                                                       parentNetworkingNode,
-                                                       sendMessageResult.Connection,
-                                                       Request,
-                                                       sendMessageResult.Result
-                                                   )
-                                               )
+                                                     sendMessageResult => LogEvent(
+                                                         OnRemoveDefaultChargingTariffRequestSent,
+                                                         loggingDelegate => loggingDelegate.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             sendMessageResult.Connection,
+                                                             Request,
+                                                             sendMessageResult.Result,
+                                                             Request.CancellationToken
+                                                         )
+                                                     )
 
-                                           );
+                                                 );
 
                     #endregion
 
@@ -260,11 +261,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnRemoveDefaultChargingTariffResponseSent(DateTime                             Timestamp,
                                                                   IEventSender                         Sender,
-                                                                  IWebSocketConnection                 Connection,
+                                                                  IWebSocketConnection?                Connection,
                                                                   RemoveDefaultChargingTariffRequest   Request,
                                                                   RemoveDefaultChargingTariffResponse  Response,
                                                                   TimeSpan                             Runtime,
-                                                                  SentMessageResults                   SendMessageResult,
+                                                                  SentMessageResults                   SentMessageResult,
                                                                   CancellationToken                    CancellationToken = default)
 
             => LogEvent(
@@ -276,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Request,
                        Response,
                        Runtime,
-                       SendMessageResult,
+                       SentMessageResult,
                        CancellationToken
                    )
                );
@@ -293,11 +294,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnRemoveDefaultChargingTariffRequestErrorSent(DateTime                             Timestamp,
                                                                       IEventSender                         Sender,
-                                                                      IWebSocketConnection                 Connection,
+                                                                      IWebSocketConnection?                Connection,
                                                                       RemoveDefaultChargingTariffRequest?  Request,
                                                                       OCPP_JSONRequestErrorMessage         RequestErrorMessage,
                                                                       TimeSpan                             Runtime,
-                                                                      SentMessageResults                   SendMessageResult,
+                                                                      SentMessageResults                   SentMessageResult,
                                                                       CancellationToken                    CancellationToken = default)
 
             => LogEvent(
@@ -309,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Request,
                        RequestErrorMessage,
                        Runtime,
-                       SendMessageResult,
+                       SentMessageResult,
                        CancellationToken
                    )
                );
@@ -326,12 +327,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnRemoveDefaultChargingTariffResponseErrorSent(DateTime                              Timestamp,
                                                                        IEventSender                          Sender,
-                                                                       IWebSocketConnection                  Connection,
+                                                                       IWebSocketConnection?                 Connection,
                                                                        RemoveDefaultChargingTariffRequest?   Request,
                                                                        RemoveDefaultChargingTariffResponse?  Response,
                                                                        OCPP_JSONResponseErrorMessage         ResponseErrorMessage,
                                                                        TimeSpan                              Runtime,
-                                                                       SentMessageResults                    SendMessageResult,
+                                                                       SentMessageResults                    SentMessageResult,
                                                                        CancellationToken                     CancellationToken = default)
 
             => LogEvent(
@@ -344,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Response,
                        ResponseErrorMessage,
                        Runtime,
-                       SendMessageResult,
+                       SentMessageResult,
                        CancellationToken
                    )
                );

@@ -42,11 +42,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecureDataTransferRequestReceivedDelegate(DateTime                 Timestamp,
-                                                                  IEventSender             Sender,
-                                                                  IWebSocketConnection     Connection,
-                                                                  SecureDataTransferRequest   Request,
-                                                                  CancellationToken        CancellationToken = default);
+    public delegate Task OnSecureDataTransferRequestReceivedDelegate(DateTime                    Timestamp,
+                                                                     IEventSender                Sender,
+                                                                     IWebSocketConnection        Connection,
+                                                                     SecureDataTransferRequest   Request,
+                                                                     CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -59,13 +59,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecureDataTransferResponseReceivedDelegate(DateTime                  Timestamp,
-                                                                   IEventSender              Sender,
-                                                                   IWebSocketConnection      Connection,
-                                                                   SecureDataTransferRequest?   Request,
-                                                                   SecureDataTransferResponse   Response,
-                                                                   TimeSpan?                 Runtime,
-                                                                   CancellationToken         CancellationToken = default);
+    public delegate Task OnSecureDataTransferResponseReceivedDelegate(DateTime                     Timestamp,
+                                                                      IEventSender                 Sender,
+                                                                      IWebSocketConnection         Connection,
+                                                                      SecureDataTransferRequest?   Request,
+                                                                      SecureDataTransferResponse   Response,
+                                                                      TimeSpan?                    Runtime,
+                                                                      CancellationToken            CancellationToken);
 
 
     /// <summary>
@@ -79,12 +79,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSecureDataTransferRequestErrorReceivedDelegate(DateTime                       Timestamp,
-                                                                       IEventSender                   Sender,
-                                                                       IWebSocketConnection           Connection,
-                                                                       SecureDataTransferRequest?        Request,
-                                                                       OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                                       TimeSpan?                      Runtime,
-                                                                       CancellationToken              CancellationToken = default);
+                                                                          IEventSender                   Sender,
+                                                                          IWebSocketConnection           Connection,
+                                                                          SecureDataTransferRequest?     Request,
+                                                                          OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                                          TimeSpan?                      Runtime,
+                                                                          CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -99,13 +99,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSecureDataTransferResponseErrorReceivedDelegate(DateTime                        Timestamp,
-                                                                        IEventSender                    Sender,
-                                                                        IWebSocketConnection            Connection,
-                                                                        SecureDataTransferRequest?         Request,
-                                                                        SecureDataTransferResponse?        Response,
-                                                                        OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                                        TimeSpan?                       Runtime,
-                                                                        CancellationToken               CancellationToken = default);
+                                                                           IEventSender                    Sender,
+                                                                           IWebSocketConnection            Connection,
+                                                                           SecureDataTransferRequest?      Request,
+                                                                           SecureDataTransferResponse?     Response,
+                                                                           OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                                           TimeSpan?                       Runtime,
+                                                                           CancellationToken               CancellationToken);
 
     #endregion
 
@@ -122,10 +122,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public delegate Task<SecureDataTransferResponse>
 
         OnSecureDataTransferDelegate(DateTime                 Timestamp,
-                                  IEventSender             Sender,
-                                  IWebSocketConnection     Connection,
+                                  IEventSender                Sender,
+                                  IWebSocketConnection        Connection,
                                   SecureDataTransferRequest   Request,
-                                  CancellationToken        CancellationToken = default);
+                                  CancellationToken           CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -269,21 +269,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-
-                    #region Send OnSecureDataTransferResponse event
-
-                    await parentNetworkingNode.OCPP.OUT.SendOnSecureDataTransferResponseSent(
-                              Timestamp.Now,
-                              parentNetworkingNode,
-                              WebSocketConnection,
-                              request,
-                              response,
-                              response.Runtime,
-                              SentMessageResults.Unknown
-                          );
-
-                    #endregion
-
                     ocppResponse = OCPP_Response.BinaryResponse(
                                        EventTrackingId,
                                        NetworkPath.Source,
@@ -294,6 +279,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                                            IncludeSignatures: true
                                        ),
+                                       async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnSecureDataTransferResponseSent(
+                                                                            Timestamp.Now,
+                                                                            parentNetworkingNode,
+                                                                            sentMessageResult.Connection,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime,
+                                                                            sentMessageResult.Result,
+                                                                            CancellationToken
+                                                                        ),
                                        CancellationToken
                                    );
 

@@ -42,11 +42,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnCertificateSignedRequestReceivedDelegate(DateTime               Timestamp,
-                                                        IEventSender           Sender,
-                                                        IWebSocketConnection   Connection,
-                                                        CertificateSignedRequest           Request,
-                                                        CancellationToken      CancellationToken = default);
+    public delegate Task OnCertificateSignedRequestReceivedDelegate(DateTime                   Timestamp,
+                                                                    IEventSender               Sender,
+                                                                    IWebSocketConnection       Connection,
+                                                                    CertificateSignedRequest   Request,
+                                                                    CancellationToken          CancellationToken);
 
 
     /// <summary>
@@ -59,13 +59,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnCertificateSignedResponseReceivedDelegate(DateTime               Timestamp,
-                                                         IEventSender           Sender,
-                                                         IWebSocketConnection   Connection,
-                                                         CertificateSignedRequest?          Request,
-                                                         CertificateSignedResponse          Response,
-                                                         TimeSpan?              Runtime,
-                                                         CancellationToken      CancellationToken = default);
+    public delegate Task OnCertificateSignedResponseReceivedDelegate(DateTime                    Timestamp,
+                                                                     IEventSender                Sender,
+                                                                     IWebSocketConnection        Connection,
+                                                                     CertificateSignedRequest?   Request,
+                                                                     CertificateSignedResponse   Response,
+                                                                     TimeSpan?                   Runtime,
+                                                                     CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -79,12 +79,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnCertificateSignedRequestErrorReceivedDelegate(DateTime                       Timestamp,
-                                                             IEventSender                   Sender,
-                                                             IWebSocketConnection           Connection,
-                                                             CertificateSignedRequest?                  Request,
-                                                             OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                             TimeSpan?                      Runtime,
-                                                             CancellationToken              CancellationToken = default);
+                                                                         IEventSender                   Sender,
+                                                                         IWebSocketConnection           Connection,
+                                                                         CertificateSignedRequest?      Request,
+                                                                         OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                                         TimeSpan?                      Runtime,
+                                                                         CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -99,13 +99,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnCertificateSignedResponseErrorReceivedDelegate(DateTime                        Timestamp,
-                                                              IEventSender                    Sender,
-                                                              IWebSocketConnection            Connection,
-                                                              CertificateSignedRequest?                   Request,
-                                                              CertificateSignedResponse?                  Response,
-                                                              OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                              TimeSpan?                       Runtime,
-                                                              CancellationToken               CancellationToken = default);
+                                                                          IEventSender                    Sender,
+                                                                          IWebSocketConnection            Connection,
+                                                                          CertificateSignedRequest?       Request,
+                                                                          CertificateSignedResponse?      Response,
+                                                                          OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                                          TimeSpan?                       Runtime,
+                                                                          CancellationToken               CancellationToken);
 
     #endregion
 
@@ -121,11 +121,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<CertificateSignedResponse>
 
-        OnCertificateSignedDelegate(DateTime               Timestamp,
-                        IEventSender           Sender,
-                        IWebSocketConnection   Connection,
-                        CertificateSignedRequest           Request,
-                        CancellationToken      CancellationToken = default);
+        OnCertificateSignedDelegate(DateTime                   Timestamp,
+                                    IEventSender               Sender,
+                                    IWebSocketConnection       Connection,
+                                    CertificateSignedRequest   Request,
+                                    CancellationToken          CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -149,13 +149,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_CertificateSigned(DateTime              RequestTimestamp,
-                          IWebSocketConnection  WebSocketConnection,
-                          NetworkingNode_Id     DestinationId,
-                          NetworkPath           NetworkPath,
-                          EventTracking_Id      EventTrackingId,
-                          Request_Id            RequestId,
-                          JObject               JSONRequest,
-                          CancellationToken     CancellationToken)
+                                      IWebSocketConnection  WebSocketConnection,
+                                      NetworkingNode_Id     DestinationId,
+                                      NetworkPath           NetworkPath,
+                                      EventTracking_Id      EventTrackingId,
+                                      Request_Id            RequestId,
+                                      JObject               JSONRequest,
+                                      CancellationToken     CancellationToken)
 
         {
 
@@ -165,15 +165,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 if (CertificateSignedRequest.TryParse(JSONRequest,
-                                          RequestId,
-                                          DestinationId,
-                                          NetworkPath,
-                                          out var request,
-                                          out var errorResponse,
-                                          RequestTimestamp,
-                                          parentNetworkingNode.OCPP.DefaultRequestTimeout,
-                                          EventTrackingId,
-                                          parentNetworkingNode.OCPP.CustomCertificateSignedRequestParser)) {
+                                                      RequestId,
+                                                      DestinationId,
+                                                      NetworkPath,
+                                                      out var request,
+                                                      out var errorResponse,
+                                                      RequestTimestamp,
+                                                      parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                      EventTrackingId,
+                                                      parentNetworkingNode.OCPP.CustomCertificateSignedRequestParser)) {
 
                     CertificateSignedResponse? response = null;
 
@@ -269,21 +269,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-
-                    #region Send OnCertificateSignedResponse event
-
-                    await parentNetworkingNode.OCPP.OUT.SendOnCertificateSignedResponseSent(
-                              Timestamp.Now,
-                              parentNetworkingNode,
-                              WebSocketConnection,
-                              request,
-                              response,
-                              response.Runtime,
-                              SentMessageResults.Unknown
-                          );
-
-                    #endregion
-
                     ocppResponse = OCPP_Response.JSONResponse(
                                        EventTrackingId,
                                        NetworkPath.Source,
@@ -295,6 +280,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
+                                       async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnCertificateSignedResponseSent(
+                                                                            Timestamp.Now,
+                                                                            parentNetworkingNode,
+                                                                            sentMessageResult.Connection,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime,
+                                                                            sentMessageResult.Result,
+                                                                            CancellationToken
+                                                                        ),
                                        CancellationToken
                                    );
 
@@ -339,15 +334,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<CertificateSignedResponse>
 
-            Receive_CertificateSignedResponse(CertificateSignedRequest          Request,
-                                  JObject               ResponseJSON,
-                                  IWebSocketConnection  WebSocketConnection,
-                                  NetworkingNode_Id     DestinationId,
-                                  NetworkPath           NetworkPath,
-                                  EventTracking_Id      EventTrackingId,
-                                  Request_Id            RequestId,
-                                  DateTime?             ResponseTimestamp   = null,
-                                  CancellationToken     CancellationToken   = default)
+            Receive_CertificateSignedResponse(CertificateSignedRequest  Request,
+                                              JObject                   ResponseJSON,
+                                              IWebSocketConnection      WebSocketConnection,
+                                              NetworkingNode_Id         DestinationId,
+                                              NetworkPath               NetworkPath,
+                                              EventTracking_Id          EventTrackingId,
+                                              Request_Id                RequestId,
+                                              DateTime?                 ResponseTimestamp   = null,
+                                              CancellationToken         CancellationToken   = default)
 
         {
 
@@ -357,16 +352,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 if (CertificateSignedResponse.TryParse(Request,
-                                           ResponseJSON,
-                                           DestinationId,
-                                           NetworkPath,
-                                           out response,
-                                           out var errorResponse,
-                                           ResponseTimestamp,
-                                           parentNetworkingNode.OCPP.CustomCertificateSignedResponseParser,
-                                           parentNetworkingNode.OCPP.CustomStatusInfoParser,
-                                           parentNetworkingNode.OCPP.CustomSignatureParser,
-                                           parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+                                                       ResponseJSON,
+                                                       DestinationId,
+                                                       NetworkPath,
+                                                       out response,
+                                                       out var errorResponse,
+                                                       ResponseTimestamp,
+                                                       parentNetworkingNode.OCPP.CustomCertificateSignedResponseParser,
+                                                       parentNetworkingNode.OCPP.CustomStatusInfoParser,
+                                                       parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                       parentNetworkingNode.OCPP.CustomCustomDataParser)) {
 
                     #region Verify response signature(s)
 

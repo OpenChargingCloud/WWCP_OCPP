@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                IEventSender           Sender,
                                                                IWebSocketConnection   Connection,
                                                                NotifyReportRequest    Request,
-                                                               CancellationToken      CancellationToken = default);
+                                                               CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                 NotifyReportRequest?   Request,
                                                                 NotifyReportResponse   Response,
                                                                 TimeSpan?              Runtime,
-                                                                CancellationToken      CancellationToken = default);
+                                                                CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                     NotifyReportRequest?           Request,
                                                                     OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                     TimeSpan?                      Runtime,
-                                                                    CancellationToken              CancellationToken = default);
+                                                                    CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                      NotifyReportResponse?           Response,
                                                                      OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
                                                                      TimeSpan?                       Runtime,
-                                                                     CancellationToken               CancellationToken = default);
+                                                                     CancellationToken               CancellationToken);
 
     #endregion
 
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                IEventSender           Sender,
                                IWebSocketConnection   Connection,
                                NotifyReportRequest    Request,
-                               CancellationToken      CancellationToken = default);
+                               CancellationToken      CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -260,35 +260,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    #region Sign response message
-
-                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
-                        response,
-                        response.ToJSON(
-                            parentNetworkingNode.OCPP.CustomNotifyReportResponseSerializer,
-                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse2
-                    );
-
-                    #endregion
-
-
-                    #region Send OnNotifyReportResponse event
-
-                    await parentNetworkingNode.OCPP.OUT.SendOnNotifyReportResponseSent(
-                              Timestamp.Now,
-                              parentNetworkingNode,
-                              WebSocketConnection,
-                              request,
-                              response,
-                              response.Runtime,
-                              SentMessageResults.Unknown
-                          );
-
-                    #endregion
-
                     ocppResponse = OCPP_Response.JSONResponse(
                                        EventTrackingId,
                                        NetworkPath.Source,
@@ -299,6 +270,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
+                                       async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnNotifyReportResponseSent(
+                                                                            Timestamp.Now,
+                                                                            parentNetworkingNode,
+                                                                            sentMessageResult.Connection,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime,
+                                                                            sentMessageResult.Result,
+                                                                            CancellationToken
+                                                                        ),
                                        CancellationToken
                                    );
 

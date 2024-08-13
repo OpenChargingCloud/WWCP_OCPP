@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        IEventSender              Sender,
                                        IWebSocketConnection      Connection,
                                        OCPP_JSONRequestMessage   Request,
-                                       CancellationToken         CancellationToken = default);
+                                       CancellationToken         CancellationToken);
 
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          IWebSocketConnection      Connection,
                                          OCPP_JSONRequestMessage   Request,
                                          ForwardingDecision        ForwardingDecision,
-                                         CancellationToken         CancellationToken = default);
+                                         CancellationToken         CancellationToken);
 
 
     /// <summary>
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          IEventSender                Sender,
                                          IWebSocketConnection        Connection,
                                          OCPP_BinaryRequestMessage   Request,
-                                         CancellationToken           CancellationToken = default);
+                                         CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            IWebSocketConnection        Connection,
                                            OCPP_BinaryRequestMessage   Request,
                                            ForwardingDecision          ForwardingDecision,
-                                           CancellationToken           CancellationToken = default);
+                                           CancellationToken           CancellationToken);
 
     #endregion
 
@@ -1091,19 +1091,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                );
 
         #endregion
-
-
-
-        [Obsolete]
-        private Task HandleErrors(String     Module,
-                                  String     Caller,
-                                  Exception  ExceptionOccured)
-
-            => parentNetworkingNode.HandleErrors(
-                   nameof(OCPPWebSocketAdapterFORWARD),
-                   Caller,
-                   ExceptionOccured
-               );
 
 
     }

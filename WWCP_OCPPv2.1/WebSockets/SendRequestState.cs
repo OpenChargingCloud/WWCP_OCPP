@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                                   OCPP_JSONRequestMessage?          JSONRequest                  = null,
                                   OCPP_BinaryRequestMessage?        BinaryRequest                = null,
-                                  SentMessageResult?                SendMessageResult            = null,
+                                  SentMessageResult?                SentMessageResult            = null,
 
                                   DateTime?                         ResponseTimestamp            = null,
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// The (optional) SendMessage result.
         /// Will only be null while (still) waiting for a response!
         /// </summary>
-        public SentMessageResult?                SendMessageResult             { get; }      = SendMessageResult;
+        public SentMessageResult?                SentMessageResult             { get; }      = SentMessageResult;
 
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                        DateTime                       Timeout,
 
                                                        OCPP_JSONRequestMessage        JSONRequest,
-                                                       SentMessageResult?             SendMessageResult         = null,
+                                                       SentMessageResult?             SentMessageResult         = null,
 
                                                        DateTime?                      ResponseTimestamp         = null,
 
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     JSONRequest,
                     null,
-                    SendMessageResult,
+                    SentMessageResult,
 
                     ResponseTimestamp,
 
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                          DateTime                       Timeout,
 
                                                          OCPP_BinaryRequestMessage      BinaryRequest,
-                                                         SentMessageResult?             SendMessageResult         = null,
+                                                         SentMessageResult?             SentMessageResult         = null,
 
                                                          DateTime?                      ResponseTimestamp         = null,
 
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     null,
                     BinaryRequest,
-                    SendMessageResult,
+                    SentMessageResult,
 
                     ResponseTimestamp,
 

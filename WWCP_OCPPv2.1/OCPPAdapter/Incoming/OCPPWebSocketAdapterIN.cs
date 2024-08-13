@@ -40,31 +40,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONRequestMessage          JSONRequestMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
     public delegate Task OnJSONResponseMessageReceivedDelegate        (DateTime                         Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONResponseMessage         JSONResponseMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
     public delegate Task OnJSONRequestErrorMessageReceivedDelegate    (DateTime                         Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
     public delegate Task OnJSONResponseErrorMessageReceivedDelegate   (DateTime                         Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
     public delegate Task OnJSONSendMessageReceivedDelegate            (DateTime                         Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONSendMessage             JSONSendMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
 
 
@@ -72,31 +72,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinaryRequestMessage        BinaryRequestMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
     public delegate Task OnBinaryResponseMessageReceivedDelegate      (DateTime                         Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinaryResponseMessage       BinaryResponseMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
     public delegate Task OnBinaryRequestErrorMessageReceivedDelegate  (DateTime                         Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
     public delegate Task OnBinaryResponseErrorMessageReceivedDelegate (DateTime                         Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
     public delegate Task OnBinarySendMessageReceivedDelegate          (DateTime                         Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinarySendMessage           BinarySendMessage,
-                                                                       CancellationToken                CancellationToken = default);
+                                                                       CancellationToken                CancellationToken);
 
     #endregion
 
@@ -282,7 +282,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   Timestamp.Now,
                                   this,
                                   WebSocketConnection,
-                                  jsonRequestMessage
+                                  jsonRequestMessage,
+                                  CancellationToken
                               )
                           );
 
@@ -320,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             OCPP_JSONResponseMessage?     JSONResponseMessage       = null;
                             OCPP_BinaryResponseMessage?   BinaryResponseMessage     = null;
 
-
+                            // Obsolete!
                             if      (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>> textProcessor) {
                                 (JSONResponseMessage, JSONRequestErrorMessage) = await textProcessor;
 
@@ -332,6 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             }
 
+                            // Obsolete!
                             else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>> binaryProcessor) {
 
                                 (BinaryResponseMessage, JSONRequestErrorMessage) = await binaryProcessor;
@@ -347,20 +349,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             else if (result is Task<OCPP_Response> ocppProcessor)
                             {
 
-                                var ocppReply        = await ocppProcessor;
+                                var ocppResponse        = await ocppProcessor;
 
-                                JSONResponseMessage     = ocppReply.JSONResponseMessage;
-                                JSONRequestErrorMessage = ocppReply.JSONRequestErrorMessage;
-                                BinaryResponseMessage   = ocppReply.BinaryResponseMessage;
+                                JSONResponseMessage     = ocppResponse.JSONResponseMessage;
+                                JSONRequestErrorMessage = ocppResponse.JSONRequestErrorMessage;
+                                BinaryResponseMessage   = ocppResponse.BinaryResponseMessage;
 
-                                if (ocppReply.JSONRequestErrorMessage is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(ocppReply.JSONRequestErrorMessage);
+                                if (ocppResponse.JSONRequestErrorMessage   is not null)
+                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (ocppResponse.JSONRequestErrorMessage);
 
-                                if (ocppReply.JSONResponseMessage     is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse    (ocppReply.JSONResponseMessage);
+                                if (ocppResponse.JSONResponseMessage       is not null)
+                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse      (ocppResponse.JSONResponseMessage);
 
-                                if (ocppReply.BinaryResponseMessage   is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse  (ocppReply.BinaryResponseMessage);
+                                if (ocppResponse.BinaryRequestErrorMessage is not null)
+                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(ocppResponse.BinaryRequestErrorMessage);
+
+                                if (ocppResponse.BinaryResponseMessage     is not null)
+                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage);
+
+                                if (ocppResponse.SentMessageLogger         is not null)
+                                    await ocppResponse.SentMessageLogger.Invoke(sendMessageResult ?? SentMessageResult.Unknown());
 
                             }
 
@@ -453,7 +461,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   Timestamp.Now,
                                   this,
                                   WebSocketConnection,
-                                  jsonResponseMessage
+                                  jsonResponseMessage,
+                                  CancellationToken
                               )
                           );
 
@@ -491,7 +500,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   WebSocketConnection,
-                                                                                  jsonRequestErrorMessage
+                                                                                  jsonRequestErrorMessage,
+                                                                                  CancellationToken
                                                                               )).
                                                    ToArray());
 
@@ -527,7 +537,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   WebSocketConnection,
-                                                                                  jsonResponseErrorMessage
+                                                                                  jsonResponseErrorMessage,
+                                                                                  CancellationToken
                                                                               )).
                                                    ToArray());
 
@@ -586,7 +597,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   Timestamp.Now,
                                   this,
                                   WebSocketConnection,
-                                  jsonSendMessage
+                                  jsonSendMessage,
+                                  CancellationToken
                               )
                           );
 
@@ -790,7 +802,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   WebSocketConnection,
-                                                                                  binaryRequestMessage
+                                                                                  binaryRequestMessage,
+                                                                                  CancellationToken
                                                                               )).
                                                    ToArray());
 
@@ -803,7 +816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    var sendMessageResult  = SentMessageResult.UnknownClient();
+                    SentMessageResult? sendMessageResult = null;
                     var acceptAsAnycast    = parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryRequestMessage.DestinationId);
 
                     // When not for this node, send it to the FORWARD processor...
@@ -834,7 +847,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             OCPP_BinaryResponseMessage?   OCPPBinaryResponse   = null;
                             OCPP_JSONRequestErrorMessage? OCPPErrorResponse    = null;
 
-                                 if (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>> textProcessor) {
+                            // Obsolete!
+                            if      (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>> textProcessor) {
                                 (OCPPResponse, OCPPErrorResponse) = await textProcessor;
 
                                 if (OCPPResponse is not null)
@@ -845,6 +859,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             }
 
+                            // Obsolete!
                             else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>> binaryProcessor) {
 
                                 (OCPPBinaryResponse, OCPPErrorResponse) = await binaryProcessor;
@@ -860,20 +875,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             else if (result is Task<OCPP_Response> ocppProcessor)
                             {
 
-                                var ocppReply = await ocppProcessor;
+                                var ocppResponse = await ocppProcessor;
 
-                                OCPPErrorResponse    = ocppReply.JSONRequestErrorMessage;
-                                OCPPResponse         = ocppReply.JSONResponseMessage;
-                                OCPPBinaryResponse   = ocppReply.BinaryResponseMessage;
+                                OCPPErrorResponse    = ocppResponse.JSONRequestErrorMessage;
+                                OCPPResponse         = ocppResponse.JSONResponseMessage;
+                                OCPPBinaryResponse   = ocppResponse.BinaryResponseMessage;
 
-                                if (ocppReply.JSONRequestErrorMessage is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(ocppReply.JSONRequestErrorMessage);
+                                if (ocppResponse.JSONRequestErrorMessage   is not null)
+                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (ocppResponse.JSONRequestErrorMessage);
 
-                                if (ocppReply.JSONResponseMessage is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse    (ocppReply.JSONResponseMessage);
+                                if (ocppResponse.JSONResponseMessage       is not null)
+                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse      (ocppResponse.JSONResponseMessage);
 
-                                if (ocppReply.BinaryResponseMessage is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse  (ocppReply.BinaryResponseMessage);
+                                if (ocppResponse.BinaryRequestErrorMessage is not null)
+                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(ocppResponse.BinaryRequestErrorMessage);
+
+                                if (ocppResponse.BinaryResponseMessage     is not null)
+                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage);
+
+                                if (ocppResponse.SentMessageLogger         is not null)
+                                    await ocppResponse.SentMessageLogger.Invoke(sendMessageResult ?? SentMessageResult.Unknown());
 
                             }
 
@@ -973,7 +994,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   WebSocketConnection,
-                                                                                  binaryResponseMessage
+                                                                                  binaryResponseMessage,
+                                                                                  CancellationToken
                                                                               )).
                                                    ToArray());
 
@@ -1018,7 +1040,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   WebSocketConnection,
-                                                                                  binaryRequestErrorMessage
+                                                                                  binaryRequestErrorMessage,
+                                                                                  CancellationToken
                                                                               )).
                                                    ToArray());
 
@@ -1054,7 +1077,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   WebSocketConnection,
-                                                                                  binaryResponseErrorMessage
+                                                                                  binaryResponseErrorMessage,
+                                                                                  CancellationToken
                                                                               )).
                                                    ToArray());
 
@@ -1121,7 +1145,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   WebSocketConnection,
-                                                                                  binarySendMessage
+                                                                                  binarySendMessage,
+                                                                                  CancellationToken
                                                                               )).
                                                    ToArray());
 

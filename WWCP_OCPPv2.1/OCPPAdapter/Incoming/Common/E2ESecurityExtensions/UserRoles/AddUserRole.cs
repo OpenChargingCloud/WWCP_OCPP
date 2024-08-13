@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                               IEventSender           Sender,
                                                               IWebSocketConnection   Connection,
                                                               AddUserRoleRequest     Request,
-                                                              CancellationToken      CancellationToken = default);
+                                                              CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                AddUserRoleRequest?    Request,
                                                                AddUserRoleResponse    Response,
                                                                TimeSpan?              Runtime,
-                                                               CancellationToken      CancellationToken = default);
+                                                               CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                    AddUserRoleRequest?            Request,
                                                                    OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                    TimeSpan?                      Runtime,
-                                                                   CancellationToken              CancellationToken = default);
+                                                                   CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                     AddUserRoleResponse?            Response,
                                                                     OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
                                                                     TimeSpan?                       Runtime,
-                                                                    CancellationToken               CancellationToken = default);
+                                                                    CancellationToken               CancellationToken);
 
     #endregion
 
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                               IEventSender           Sender,
                               IWebSocketConnection   Connection,
                               AddUserRoleRequest     Request,
-                              CancellationToken      CancellationToken = default);
+                              CancellationToken      CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -268,21 +268,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-
-                    #region Send OnAddUserRoleResponse event
-
-                    await parentNetworkingNode.OCPP.OUT.SendOnAddUserRoleResponseSent(
-                              Timestamp.Now,
-                              parentNetworkingNode,
-                              WebSocketConnection,
-                              request,
-                              response,
-                              response.Runtime,
-                              SentMessageResults.Unknown
-                          );
-
-                    #endregion
-
                     ocppResponse = OCPP_Response.JSONResponse(
                                        EventTrackingId,
                                        NetworkPath.Source,
@@ -294,6 +279,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
+                                       async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnAddUserRoleResponseSent(
+                                                                            Timestamp.Now,
+                                                                            parentNetworkingNode,
+                                                                            sentMessageResult.Connection,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime,
+                                                                            sentMessageResult.Result,
+                                                                            CancellationToken
+                                                                        ),
                                        CancellationToken
                                    );
 

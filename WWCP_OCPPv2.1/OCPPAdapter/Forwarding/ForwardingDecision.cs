@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public String                      LogMessage              { get; }
 
         /// <summary>
-        /// A delegate for logging the result of a forwarded message sending.
+        /// A delegate for logging the result of the forwarded message sending.
         /// </summary>
         public Action<SentMessageResult>?  SentMessageLogger       { get; set; }
 

@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     IEventSender                Sender,
                                                     IWebSocketConnection        Connection,
                                                     BinaryDataTransferRequest   Request,
-                                                    CancellationToken           CancellationToken = default);
+                                                    CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                       BinaryDataTransferRequest?   Request,
                                                                       BinaryDataTransferResponse   Response,
                                                                       TimeSpan?                    Runtime,
-                                                                      CancellationToken            CancellationToken = default);
+                                                                      CancellationToken            CancellationToken);
 
 
     /// <summary>
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                           BinaryDataTransferRequest?       Request,
                                                                           OCPP_BinaryRequestErrorMessage   RequestErrorMessage,
                                                                           TimeSpan?                        Runtime,
-                                                                          CancellationToken                CancellationToken = default);
+                                                                          CancellationToken                CancellationToken);
 
 
     /// <summary>
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                            BinaryDataTransferResponse?       Response,
                                                                            OCPP_BinaryResponseErrorMessage   ResponseErrorMessage,
                                                                            TimeSpan?                         Runtime,
-                                                                           CancellationToken                 CancellationToken = default);
+                                                                           CancellationToken                 CancellationToken);
 
     #endregion
 
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      IEventSender                Sender,
                                      IWebSocketConnection        Connection,
                                      BinaryDataTransferRequest   Request,
-                                     CancellationToken           CancellationToken = default);
+                                     CancellationToken           CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -267,21 +267,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-
-                    #region Send OnBinaryDataTransferResponse event
-
-                    await parentNetworkingNode.OCPP.OUT.SendOnBinaryDataTransferResponseSent(
-                              Timestamp.Now,
-                              parentNetworkingNode,
-                              WebSocketConnection,
-                              request,
-                              response,
-                              response.Runtime,
-                              SentMessageResults.Unknown
-                          );
-
-                    #endregion
-
                     ocppResponse = OCPP_Response.BinaryResponse(
                                        EventTrackingId,
                                        NetworkPath.Source,
@@ -293,6 +278,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                                            IncludeSignatures: true
                                        ),
+                                       async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnBinaryDataTransferResponseSent(
+                                                                            Timestamp.Now,
+                                                                            parentNetworkingNode,
+                                                                            sentMessageResult.Connection,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime,
+                                                                            sentMessageResult.Result,
+                                                                            CancellationToken
+                                                                        ),
                                        CancellationToken
                                    );
 

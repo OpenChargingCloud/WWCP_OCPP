@@ -35,18 +35,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <param name="JSONRequestErrorMessage">A optional JSON request error message.</param>
     /// <param name="BinaryResponseMessage">A optional binary response message.</param>
     /// <param name="BinaryRequestErrorMessage">A optional binary request error message.</param>
+    /// <param name="SentMessageLogger">A delegate for logging the result of the message sending.</param>
     public class OCPP_Response(OCPP_JSONResponseMessage?        JSONResponseMessage,
                                OCPP_JSONRequestErrorMessage?    JSONRequestErrorMessage,
                                OCPP_BinaryResponseMessage?      BinaryResponseMessage,
-                               OCPP_BinaryRequestErrorMessage?  BinaryRequestErrorMessage) : IEquatable<OCPP_Response>
+                               OCPP_BinaryRequestErrorMessage?  BinaryRequestErrorMessage,
+                               Func<SentMessageResult, Task>?   SentMessageLogger = null) : IEquatable<OCPP_Response>
     {
 
         #region Properties
 
+        /// <summary>
+        /// The JSON response message.
+        /// </summary>
         public OCPP_JSONResponseMessage?        JSONResponseMessage          { get; } = JSONResponseMessage;
+
+        /// <summary>
+        /// The JSON request error message.
+        /// </summary>
         public OCPP_JSONRequestErrorMessage?    JSONRequestErrorMessage      { get; } = JSONRequestErrorMessage;
+
+        /// <summary>
+        /// The binary response message.
+        /// </summary>
         public OCPP_BinaryResponseMessage?      BinaryResponseMessage        { get; } = BinaryResponseMessage;
+
+        /// <summary>
+        /// The binary request error message.
+        /// </summary>
         public OCPP_BinaryRequestErrorMessage?  BinaryRequestErrorMessage    { get; } = BinaryRequestErrorMessage;
+
+        /// <summary>
+        /// The delegate for logging the result of the message sending.
+        /// </summary>
+        public Func<SentMessageResult, Task>?   SentMessageLogger            { get; } = SentMessageLogger;
 
         #endregion
 
@@ -83,39 +105,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         #region JSONResponse(...)
 
-        public static OCPP_Response JSONResponse(EventTracking_Id   EventTrackingId,
-                                                 NetworkingNode_Id  DestinationId,
-                                                 NetworkPath        NetworkPath,
-                                                 Request_Id         RequestId,
-                                                 JObject            Payload,
-                                                 CancellationToken  CancellationToken = default)
+        public static OCPP_Response JSONResponse(EventTracking_Id                EventTrackingId,
+                                                 NetworkingNode_Id               DestinationId,
+                                                 NetworkPath                     NetworkPath,
+                                                 Request_Id                      RequestId,
+                                                 JObject                         Payload,
+                                                 Func<SentMessageResult, Task>?  SentMessageLogger,
+                                                 CancellationToken               CancellationToken = default)
 
-            => new (new OCPP_JSONResponseMessage(
-                        Timestamp.Now,
-                        EventTrackingId,
-                        NetworkingMode.Unknown,
-                        DestinationId,
-                        NetworkPath,
-                        RequestId,
-                        Payload,
-                        CancellationToken
-                    ),
-                    null,
-                    null,
-                    null);
+            => new (
+                   new OCPP_JSONResponseMessage(
+                       Timestamp.Now,
+                       EventTrackingId,
+                       NetworkingMode.Unknown,
+                       DestinationId,
+                       NetworkPath,
+                       RequestId,
+                       Payload,
+                       CancellationToken
+                   ),
+                   null,
+                   null,
+                   null,
+                   SentMessageLogger
+               );
 
         #endregion
 
         #region JSONRequestError(...)
 
-        public static OCPP_Response JSONRequestError(EventTracking_Id   EventTrackingId,
-                                                     NetworkingNode_Id  DestinationId,
-                                                     NetworkPath        NetworkPath,
-                                                     Request_Id         RequestId,
-                                                     ResultCode         ErrorCode,
-                                                     String?            ErrorDescription    = null,
-                                                     JObject?           ErrorDetails        = null,
-                                                     CancellationToken  CancellationToken   = default)
+        public static OCPP_Response JSONRequestError(EventTracking_Id                EventTrackingId,
+                                                     NetworkingNode_Id               DestinationId,
+                                                     NetworkPath                     NetworkPath,
+                                                     Request_Id                      RequestId,
+                                                     Func<SentMessageResult, Task>?  SentMessageLogger,
+                                                     ResultCode                      ErrorCode,
+                                                     String?                         ErrorDescription    = null,
+                                                     JObject?                        ErrorDetails        = null,
+                                                     CancellationToken               CancellationToken   = default)
 
             => new (null,
                     new OCPP_JSONRequestErrorMessage(
@@ -131,18 +158,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         CancellationToken
                     ),
                     null,
-                    null);
+                    null,
+                    SentMessageLogger);
 
         #endregion
 
         #region BinaryResponse(...)
 
-        public static OCPP_Response BinaryResponse(EventTracking_Id   EventTrackingId,
-                                                   NetworkingNode_Id  DestinationId,
-                                                   NetworkPath        NetworkPath,
-                                                   Request_Id         RequestId,
-                                                   Byte[]             Payload,
-                                                   CancellationToken  CancellationToken = default)
+        public static OCPP_Response BinaryResponse(EventTracking_Id                EventTrackingId,
+                                                   NetworkingNode_Id               DestinationId,
+                                                   NetworkPath                     NetworkPath,
+                                                   Request_Id                      RequestId,
+                                                   Byte[]                          Payload,
+                                                   Func<SentMessageResult, Task>?  SentMessageLogger,
+                                                   CancellationToken               CancellationToken = default)
 
             => new (null,
                     null,
@@ -156,20 +185,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         Payload,
                         CancellationToken
                     ),
-                    null);
+                    null,
+                    SentMessageLogger);
 
         #endregion
 
         #region BinaryRequestError(...)
 
-        public static OCPP_Response BinaryRequestError(EventTracking_Id   EventTrackingId,
-                                                       NetworkingNode_Id  DestinationId,
-                                                       NetworkPath        NetworkPath,
-                                                       Request_Id         RequestId,
-                                                       ResultCode         ErrorCode,
-                                                       String?            ErrorDescription    = null,
-                                                       JObject?           ErrorDetails        = null,
-                                                       CancellationToken  CancellationToken   = default)
+        public static OCPP_Response BinaryRequestError(EventTracking_Id                EventTrackingId,
+                                                       NetworkingNode_Id               DestinationId,
+                                                       NetworkPath                     NetworkPath,
+                                                       Request_Id                      RequestId,
+                                                       Func<SentMessageResult, Task>?  SentMessageLogger,
+                                                       ResultCode                      ErrorCode,
+                                                       String?                         ErrorDescription    = null,
+                                                       JObject?                        ErrorDetails        = null,
+                                                       CancellationToken               CancellationToken   = default)
 
             => new (null,
                     null,
@@ -185,7 +216,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         ErrorDescription,
                         ErrorDetails,
                         CancellationToken
-                    ));
+                    ),
+                    SentMessageLogger);
 
         #endregion
 

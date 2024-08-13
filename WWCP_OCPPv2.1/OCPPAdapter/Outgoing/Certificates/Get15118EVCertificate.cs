@@ -39,14 +39,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The request.</param>
-    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGet15118EVCertificateRequestSentDelegate(DateTime                       Timestamp,
                                                                     IEventSender                   Sender,
                                                                     IWebSocketConnection?          Connection,
                                                                     Get15118EVCertificateRequest   Request,
-                                                                    SentMessageResults             SendMessageResult,
-                                                                    CancellationToken              CancellationToken = default);
+                                                                    SentMessageResults             SentMessageResult,
+                                                                    CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -58,18 +58,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The reserve now request.</param>
     /// <param name="Response">The reserve now response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
-    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
         OnGet15118EVCertificateResponseSentDelegate(DateTime                        Timestamp,
                                                     IEventSender                    Sender,
-                                                    IWebSocketConnection            Connection,
+                                                    IWebSocketConnection?           Connection,
                                                     Get15118EVCertificateRequest    Request,
                                                     Get15118EVCertificateResponse   Response,
                                                     TimeSpan                        Runtime,
-                                                    SentMessageResults              SendMessageResult,
-                                                    CancellationToken               CancellationToken = default);
+                                                    SentMessageResults              SentMessageResult,
+                                                    CancellationToken               CancellationToken);
 
 
     /// <summary>
@@ -81,18 +81,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The optional request (when parsable).</param>
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The optional runtime of the request error message.</param>
-    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
         OnGet15118EVCertificateRequestErrorSentDelegate(DateTime                        Timestamp,
                                                         IEventSender                    Sender,
-                                                        IWebSocketConnection            Connection,
+                                                        IWebSocketConnection?           Connection,
                                                         Get15118EVCertificateRequest?   Request,
                                                         OCPP_JSONRequestErrorMessage    RequestErrorMessage,
                                                         TimeSpan?                       Runtime,
-                                                        SentMessageResults              SendMessageResult,
-                                                        CancellationToken               CancellationToken = default);
+                                                        SentMessageResults              SentMessageResult,
+                                                        CancellationToken               CancellationToken);
 
 
     /// <summary>
@@ -105,19 +105,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The optional response.</param>
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response error message.</param>
-    /// <param name="SendMessageResult">The result of the send message process.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
         OnGet15118EVCertificateResponseErrorSentDelegate(DateTime                         Timestamp,
                                                          IEventSender                     Sender,
-                                                         IWebSocketConnection             Connection,
+                                                         IWebSocketConnection?            Connection,
                                                          Get15118EVCertificateRequest?    Request,
                                                          Get15118EVCertificateResponse?   Response,
                                                          OCPP_JSONResponseErrorMessage    ResponseErrorMessage,
                                                          TimeSpan?                        Runtime,
-                                                         SentMessageResults               SendMessageResult,
-                                                         CancellationToken                CancellationToken = default);
+                                                         SentMessageResults               SentMessageResult,
+                                                         CancellationToken                CancellationToken);
 
     #endregion
 
@@ -193,7 +193,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              parentNetworkingNode,
                                                              sendMessageResult.Connection,
                                                              Request,
-                                                             sendMessageResult.Result
+                                                             sendMessageResult.Result,
+                                                             Request.CancellationToken
                                                          )
                                                      )
 
@@ -263,11 +264,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGet15118EVCertificateResponseSent(DateTime                       Timestamp,
                                                             IEventSender                   Sender,
-                                                            IWebSocketConnection           Connection,
+                                                            IWebSocketConnection?          Connection,
                                                             Get15118EVCertificateRequest   Request,
                                                             Get15118EVCertificateResponse  Response,
                                                             TimeSpan                       Runtime,
-                                                            SentMessageResults             SendMessageResult,
+                                                            SentMessageResults             SentMessageResult,
                                                             CancellationToken              CancellationToken = default)
 
             => LogEvent(
@@ -279,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Request,
                        Response,
                        Runtime,
-                       SendMessageResult,
+                       SentMessageResult,
                        CancellationToken
                    )
                );
@@ -296,11 +297,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGet15118EVCertificateRequestErrorSent(DateTime                       Timestamp,
                                                                 IEventSender                   Sender,
-                                                                IWebSocketConnection           Connection,
+                                                                IWebSocketConnection?          Connection,
                                                                 Get15118EVCertificateRequest?  Request,
                                                                 OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                 TimeSpan                       Runtime,
-                                                                SentMessageResults             SendMessageResult,
+                                                                SentMessageResults             SentMessageResult,
                                                                 CancellationToken              CancellationToken = default)
 
             => LogEvent(
@@ -312,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Request,
                        RequestErrorMessage,
                        Runtime,
-                       SendMessageResult,
+                       SentMessageResult,
                        CancellationToken
                    )
                );
@@ -329,12 +330,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGet15118EVCertificateResponseErrorSent(DateTime                        Timestamp,
                                                                  IEventSender                    Sender,
-                                                                 IWebSocketConnection            Connection,
+                                                                 IWebSocketConnection?           Connection,
                                                                  Get15118EVCertificateRequest?   Request,
                                                                  Get15118EVCertificateResponse?  Response,
                                                                  OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
                                                                  TimeSpan                        Runtime,
-                                                                 SentMessageResults              SendMessageResult,
+                                                                 SentMessageResults              SentMessageResult,
                                                                  CancellationToken               CancellationToken = default)
 
             => LogEvent(
@@ -347,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Response,
                        ResponseErrorMessage,
                        Runtime,
-                       SendMessageResult,
+                       SentMessageResult,
                        CancellationToken
                    )
                );

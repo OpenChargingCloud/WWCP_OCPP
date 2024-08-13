@@ -32,21 +32,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         public Exception?             Exception     { get; }
 
 
-        private SentMessageResult(SentMessageResults     SendMessageResult,
+        private SentMessageResult(SentMessageResults     SentMessageResult,
                                   IWebSocketConnection?  WebSocketConnection   = null,
                                   Exception?             Exception             = null)
         {
 
-            this.Result      = SendMessageResult;
+            this.Result      = SentMessageResult;
             this.Connection  = WebSocketConnection;
             this.Exception   = Exception;
 
         }
 
 
-        public static SentMessageResult UnknownClient      ()
+        public static SentMessageResult Unknown()
 
-            => new (SentMessageResults.UnknownClient);
+            => new (SentMessageResults.Unknown);
+
+        public static SentMessageResult UnknownClient()
+
+            => new(SentMessageResults.UnknownClient);
 
         public static SentMessageResult TransmissionFailed (Exception              Exception)
 

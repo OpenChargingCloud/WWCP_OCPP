@@ -863,16 +863,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (internal) SendJSONRequestAndWait   (JSONRequestMessage, SendMessageResultDelegate = null)
+        #region (internal) SendJSONRequestAndWait   (JSONRequestMessage, SentMessageResultDelegate = null)
 
         internal async Task<SendRequestState> SendJSONRequestAndWait(OCPP_JSONRequestMessage     JSONRequestMessage,
-                                                                     Action<SentMessageResult>?  SendMessageResultDelegate   = null)
+                                                                     Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
             var sendMessageResult = await SendJSONRequest(JSONRequestMessage);
 
-            if (SendMessageResultDelegate is not null)
-                SendMessageResultDelegate(sendMessageResult);
+            if (SentMessageResultDelegate is not null)
+                SentMessageResultDelegate(sendMessageResult);
 
 
             if (sendMessageResult.Result == SentMessageResults.Success)
@@ -959,7 +959,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        DestinationId:            JSONRequestMessage.DestinationId,
                        Timeout:                  JSONRequestMessage.RequestTimeout,
                        JSONRequest:              JSONRequestMessage,
-                       SendMessageResult:        sendMessageResult,
+                       SentMessageResult:        sendMessageResult,
                        ResponseTimestamp:        Timestamp.Now,
 
                        JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
@@ -1105,16 +1105,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (internal) SendBinaryRequestAndWait (BinaryRequestMessage, SendMessageResultDelegate = null)
+        #region (internal) SendBinaryRequestAndWait (BinaryRequestMessage, SentMessageResultDelegate = null)
 
         internal async Task<SendRequestState> SendBinaryRequestAndWait(OCPP_BinaryRequestMessage   BinaryRequestMessage,
-                                                                       Action<SentMessageResult>?  SendMessageResultDelegate   = null)
+                                                                       Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
             var sendMessageResult = await SendBinaryRequest(BinaryRequestMessage);
 
-            if (SendMessageResultDelegate is not null)
-                SendMessageResultDelegate(sendMessageResult);
+            if (SentMessageResultDelegate is not null)
+                SentMessageResultDelegate(sendMessageResult);
 
             if (sendMessageResult.Result == SentMessageResults.Success)
             {
@@ -1200,7 +1200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        DestinationId:            BinaryRequestMessage.DestinationId,
                        Timeout:                  BinaryRequestMessage.RequestTimeout,
                        BinaryRequest:            BinaryRequestMessage,
-                       SendMessageResult:        sendMessageResult,
+                       SentMessageResult:        sendMessageResult,
                        ResponseTimestamp:        Timestamp.Now,
 
                        JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(

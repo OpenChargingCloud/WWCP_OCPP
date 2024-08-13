@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     IWebSocketConnection                                                        Connection,
                                                     BinaryDataTransferRequest                                                   Request,
                                                     ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>   ForwardingDecision,
-                                                    CancellationToken                                                           CancellationToken = default);
+                                                    CancellationToken                                                           CancellationToken);
 
     #endregion
 

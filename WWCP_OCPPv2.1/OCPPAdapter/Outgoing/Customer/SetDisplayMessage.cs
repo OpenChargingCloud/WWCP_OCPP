@@ -17,8 +17,6 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
@@ -35,323 +33,113 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Logging Delegates
 
     /// <summary>
-    /// A logging delegate called whenever a SetDisplayMessage request was received.
+    /// A delegate called whenever a SetDisplayMessage request was sent.
     /// </summary>
-    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDisplayMessageRequestReceivedDelegate(DateTime                   Timestamp,
-                                                                    IEventSender               Sender,
-                                                                    IWebSocketConnection       Connection,
-                                                                    SetDisplayMessageRequest   Request,
-                                                                    CancellationToken          CancellationToken = default);
-
-
-    /// <summary>
-    /// A logging delegate called whenever a SetDisplayMessage response was received.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the response logging.</param>
-    /// <param name="Sender">The sender of the request/response.</param>
     /// <param name="Connection">The connection of the request.</param>
-    /// <param name="Request">The request, when available.</param>
-    /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDisplayMessageResponseReceivedDelegate(DateTime                    Timestamp,
-                                                                     IEventSender                Sender,
-                                                                     IWebSocketConnection        Connection,
-                                                                     SetDisplayMessageRequest?   Request,
-                                                                     SetDisplayMessageResponse   Response,
-                                                                     TimeSpan?                   Runtime,
-                                                                     CancellationToken           CancellationToken = default);
+    public delegate Task OnSetDisplayMessageRequestSentDelegate(DateTime                   Timestamp,
+                                                                IEventSender               Sender,
+                                                                IWebSocketConnection?      Connection,
+                                                                SetDisplayMessageRequest   Request,
+                                                                SentMessageResults         SentMessageResult,
+                                                                CancellationToken          CancellationToken);
 
 
     /// <summary>
-    /// A logging delegate called whenever a SetDisplayMessage request error was received.
+    /// A SetDisplayMessage response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnSetDisplayMessageResponseSentDelegate(DateTime                    Timestamp,
+                                                IEventSender                Sender,
+                                                IWebSocketConnection?       Connection,
+                                                SetDisplayMessageRequest    Request,
+                                                SetDisplayMessageResponse   Response,
+                                                TimeSpan                    Runtime,
+                                                SentMessageResults          SentMessageResult,
+                                                CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A logging delegate called whenever a SetDisplayMessage request error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The connection of the request.</param>
-    /// <param name="Request">The request, when available.</param>
+    /// <param name="Sender">The sender of the request error.</param>
+    /// <param name="Connection">The connection of the request error.</param>
+    /// <param name="Request">The optional request (when parsable).</param>
     /// <param name="RequestErrorMessage">The request error message.</param>
-    /// <param name="Runtime">The runtime of the request/request error pair.</param>
+    /// <param name="Runtime">The optional runtime of the request error message.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDisplayMessageRequestErrorReceivedDelegate(DateTime                       Timestamp,
-                                                                         IEventSender                   Sender,
-                                                                         IWebSocketConnection           Connection,
-                                                                         SetDisplayMessageRequest?      Request,
-                                                                         OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                                         TimeSpan?                      Runtime,
-                                                                         CancellationToken              CancellationToken = default);
+    public delegate Task
+
+        OnSetDisplayMessageRequestErrorSentDelegate(DateTime                       Timestamp,
+                                                    IEventSender                   Sender,
+                                                    IWebSocketConnection?          Connection,
+                                                    SetDisplayMessageRequest?      Request,
+                                                    OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                    TimeSpan?                      Runtime,
+                                                    SentMessageResults             SentMessageResult,
+                                                    CancellationToken              CancellationToken);
 
 
     /// <summary>
-    /// A logging delegate called whenever a SetDisplayMessage response error was received.
+    /// A logging delegate called whenever a SetDisplayMessage response error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the response error.</param>
     /// <param name="Connection">The connection of the response error.</param>
-    /// <param name="Request">The request, when available.</param>
-    /// <param name="Response">The response, when available.</param>
+    /// <param name="Request">The optional request.</param>
+    /// <param name="Response">The optional response.</param>
     /// <param name="ResponseErrorMessage">The response error message.</param>
-    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
+    /// <param name="Runtime">The optional runtime of the response error message.</param>
+    /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDisplayMessageResponseErrorReceivedDelegate(DateTime                        Timestamp,
-                                                                          IEventSender                    Sender,
-                                                                          IWebSocketConnection            Connection,
-                                                                          SetDisplayMessageRequest?       Request,
-                                                                          SetDisplayMessageResponse?      Response,
-                                                                          OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                                          TimeSpan?                       Runtime,
-                                                                          CancellationToken               CancellationToken = default);
+    public delegate Task
+
+        OnSetDisplayMessageResponseErrorSentDelegate(DateTime                        Timestamp,
+                                                     IEventSender                    Sender,
+                                                     IWebSocketConnection?           Connection,
+                                                     SetDisplayMessageRequest?       Request,
+                                                     SetDisplayMessageResponse?      Response,
+                                                     OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                     TimeSpan?                       Runtime,
+                                                     SentMessageResults              SentMessageResult,
+                                                     CancellationToken               CancellationToken);
 
     #endregion
 
 
-    /// <summary>
-    /// A delegate called whenever a SetDisplayMessage response is expected
-    /// for a received SetDisplayMessage request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<SetDisplayMessageResponse>
-
-        OnSetDisplayMessageDelegate(DateTime                   Timestamp,
-                                    IEventSender               Sender,
-                                    IWebSocketConnection       Connection,
-                                    SetDisplayMessageRequest   Request,
-                                    CancellationToken          CancellationToken = default);
-
-
-    public partial class OCPPWebSocketAdapterIN
+    public partial class OCPPWebSocketAdapterOUT
     {
 
-        // Wired via reflection!
-
-        #region Receive SetDisplayMessage request
+        #region Send SetDisplayMessage request
 
         /// <summary>
-        /// An event sent whenever a SetDisplayMessage request was received.
+        /// An event fired whenever a SetDisplayMessage request was sent.
         /// </summary>
-        public event OnSetDisplayMessageRequestReceivedDelegate?  OnSetDisplayMessageRequestReceived;
+        public event OnSetDisplayMessageRequestSentDelegate?  OnSetDisplayMessageRequestSent;
+
 
         /// <summary>
-        /// An event sent whenever a SetDisplayMessage request was received for processing.
+        /// Send a SetDisplayMessage request.
         /// </summary>
-        public event OnSetDisplayMessageDelegate?                 OnSetDisplayMessage;
-
-
-        public async Task<OCPP_Response>
-
-            Receive_SetDisplayMessage(DateTime              RequestTimestamp,
-                                      IWebSocketConnection  WebSocketConnection,
-                                      NetworkingNode_Id     DestinationId,
-                                      NetworkPath           NetworkPath,
-                                      EventTracking_Id      EventTrackingId,
-                                      Request_Id            RequestId,
-                                      JObject               JSONRequest,
-                                      CancellationToken     CancellationToken)
-
-        {
-
-            OCPP_Response? ocppResponse = null;
-
-            try
-            {
-
-                if (SetDisplayMessageRequest.TryParse(JSONRequest,
-                                                      RequestId,
-                                                      DestinationId,
-                                                      NetworkPath,
-                                                      out var request,
-                                                      out var errorResponse,
-                                                      RequestTimestamp,
-                                                      parentNetworkingNode.OCPP.DefaultRequestTimeout,
-                                                      EventTrackingId,
-                                                      parentNetworkingNode.OCPP.CustomSetDisplayMessageRequestParser)) {
-
-                    SetDisplayMessageResponse? response = null;
-
-                    #region Verify request signature(s)
-
-                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToJSON(
-                            parentNetworkingNode.OCPP.CustomSetDisplayMessageRequestSerializer,
-                            parentNetworkingNode.OCPP.CustomMessageInfoSerializer,
-                            parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-                            parentNetworkingNode.OCPP.CustomComponentSerializer,
-                            parentNetworkingNode.OCPP.CustomEVSESerializer,
-                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                        ),
-                        out errorResponse))
-                    {
-
-                        response = SetDisplayMessageResponse.SignatureError(
-                                       request,
-                                       errorResponse
-                                   );
-
-                    }
-
-                    #endregion
-
-                    #region Send OnSetDisplayMessageRequestReceived event
-
-                    await LogEvent(
-                              OnSetDisplayMessageRequestReceived,
-                              loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
-                                  parentNetworkingNode,
-                                  WebSocketConnection,
-                                  request,
-                                  CancellationToken
-                              )
-                          );
-
-                    #endregion
-
-
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnSetDisplayMessage?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnSetDisplayMessageDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : SetDisplayMessageResponse.Failed(request, $"Undefined {nameof(OnSetDisplayMessage)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = SetDisplayMessageResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnSetDisplayMessage),
-                                      e
-                                  );
-
-                        }
-                    }
-
-                    response ??= SetDisplayMessageResponse.Failed(request);
-
-                    #endregion
-
-                    #region Sign response message
-
-                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
-                        response,
-                        response.ToJSON(
-                            parentNetworkingNode.OCPP.CustomSetDisplayMessageResponseSerializer,
-                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse2
-                    );
-
-                    #endregion
-
-
-                    #region Send OnSetDisplayMessageResponse event
-
-                    await parentNetworkingNode.OCPP.OUT.SendOnSetDisplayMessageResponseSent(
-                              Timestamp.Now,
-                              parentNetworkingNode,
-                              WebSocketConnection,
-                              request,
-                              response,
-                              response.Runtime,
-                              SentMessageResults.Unknown
-                          );
-
-                    #endregion
-
-                    ocppResponse = OCPP_Response.JSONResponse(
-                                       EventTrackingId,
-                                       NetworkPath.Source,
-                                       NetworkPath.From(parentNetworkingNode.Id),
-                                       RequestId,
-                                       response.ToJSON(
-                                           parentNetworkingNode.OCPP.CustomSetDisplayMessageResponseSerializer,
-                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                                           parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                           parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       ),
-                                       CancellationToken
-                                   );
-
-                }
-
-                else
-                    ocppResponse = OCPP_Response.CouldNotParse(
-                                       EventTrackingId,
-                                       RequestId,
-                                       nameof(Receive_SetDisplayMessage)[8..],
-                                       JSONRequest,
-                                       errorResponse
-                                   );
-
-            }
-            catch (Exception e)
-            {
-
-                ocppResponse = OCPP_Response.ExceptionOccurred(
-                                   EventTrackingId,
-                                   RequestId,
-                                   nameof(Receive_SetDisplayMessage)[8..],
-                                   JSONRequest,
-                                   e
-                               );
-
-            }
-
-            return ocppResponse;
-
-        }
-
-        #endregion
-
-        #region Receive SetDisplayMessage response
-
-        /// <summary>
-        /// An event fired whenever a SetDisplayMessage response was received.
-        /// </summary>
-        public event OnSetDisplayMessageResponseReceivedDelegate? OnSetDisplayMessageResponseReceived;
-
-
+        /// <param name="Request">A SetDisplayMessage request.</param>
         public async Task<SetDisplayMessageResponse>
 
-            Receive_SetDisplayMessageResponse(SetDisplayMessageRequest  Request,
-                                              JObject                   ResponseJSON,
-                                              IWebSocketConnection      WebSocketConnection,
-                                              NetworkingNode_Id         DestinationId,
-                                              NetworkPath               NetworkPath,
-                                              EventTracking_Id          EventTrackingId,
-                                              Request_Id                RequestId,
-                                              DateTime?                 ResponseTimestamp   = null,
-                                              CancellationToken         CancellationToken   = default)
+            SetDisplayMessage(SetDisplayMessageRequest Request)
 
         {
 
@@ -360,48 +148,101 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                if (SetDisplayMessageResponse.TryParse(Request,
-                                                       ResponseJSON,
-                                                       DestinationId,
-                                                       NetworkPath,
-                                                       out response,
-                                                       out var errorResponse,
-                                                       ResponseTimestamp,
-                                                       parentNetworkingNode.OCPP.CustomSetDisplayMessageResponseParser,
-                                                       parentNetworkingNode.OCPP.CustomStatusInfoParser,
-                                                       parentNetworkingNode.OCPP.CustomSignatureParser,
-                                                       parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+                #region Sign request message
 
-                    #region Verify response signature(s)
+                if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.OCPP.CustomSetDisplayMessageRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomMessageInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                            parentNetworkingNode.OCPP.CustomComponentSerializer,
+                            parentNetworkingNode.OCPP.CustomEVSESerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var signingErrors
+                    ))
+                {
 
-                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-                            response,
-                            response.ToJSON(
-                                parentNetworkingNode.OCPP.CustomSetDisplayMessageResponseSerializer,
-                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                            ),
-                            out errorResponse
-                        ))
-                    {
-
-                        response = SetDisplayMessageResponse.SignatureError(
-                                       Request,
-                                       errorResponse
-                                   );
-
-                    }
-
-                    #endregion
+                    response = SetDisplayMessageResponse.SignatureError(
+                                   Request,
+                                   signingErrors
+                               );
 
                 }
 
+                #endregion
+
                 else
-                    response = SetDisplayMessageResponse.FormationViolation(
-                                   Request,
-                                   errorResponse
-                               );
+                {
+
+                    #region Send request message
+
+                    var sendRequestState = await SendJSONRequestAndWait(
+
+                                                     OCPP_JSONRequestMessage.FromRequest(
+                                                         Request,
+                                                         Request.ToJSON(
+                                                             parentNetworkingNode.OCPP.CustomSetDisplayMessageRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomMessageInfoSerializer,
+                                                             parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                                                             parentNetworkingNode.OCPP.CustomComponentSerializer,
+                                                             parentNetworkingNode.OCPP.CustomEVSESerializer,
+                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                         )
+                                                     ),
+
+                                                     sendMessageResult => LogEvent(
+                                                         OnSetDisplayMessageRequestSent,
+                                                         loggingDelegate => loggingDelegate.Invoke(
+                                                             Timestamp.Now,
+                                                             parentNetworkingNode,
+                                                             sendMessageResult.Connection,
+                                                             Request,
+                                                             sendMessageResult.Result,
+                                                             Request.CancellationToken
+                                                         )
+                                                     )
+
+                                                 );
+
+                    #endregion
+
+                    if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_SetDisplayMessageResponse(
+                                             Request,
+                                             jsonResponse,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.         EventTrackingId,
+                                             Request.         RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.         CancellationToken
+                                         );
+
+                    if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
+                        response = await parentNetworkingNode.OCPP.IN.Receive_SetDisplayMessageRequestError(
+                                             Request,
+                                             jsonRequestError,
+                                             sendRequestState.WebSocketConnectionReceived,
+                                             sendRequestState.DestinationIdReceived,
+                                             sendRequestState.NetworkPathReceived,
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             sendRequestState.ResponseTimestamp,
+                                             Request.CancellationToken
+                                         );
+
+                    response ??= new SetDisplayMessageResponse(
+                                     Request,
+                                     DisplayMessageStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
+                                 );
+
+                }
 
             }
             catch (Exception e)
@@ -414,178 +255,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-
-            #region Send OnSetDisplayMessageResponseReceived event
-
-            await LogEvent(
-                      OnSetDisplayMessageResponseReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          WebSocketConnection,
-                          Request,
-                          response,
-                          response.Runtime,
-                          CancellationToken
-                      )
-                  );
-
-            #endregion
-
             return response;
 
         }
 
         #endregion
 
-        #region Receive SetDisplayMessage request error
+
+        #region Send OnSetDisplayMessageResponseSent event
 
         /// <summary>
-        /// An event fired whenever a SetDisplayMessage request error was received.
+        /// An event sent whenever a SetDisplayMessage response was sent.
         /// </summary>
-        public event OnSetDisplayMessageRequestErrorReceivedDelegate? SetDisplayMessageRequestErrorReceived;
+        public event OnSetDisplayMessageResponseSentDelegate?  OnSetDisplayMessageResponseSent;
 
+        public Task SendOnSetDisplayMessageResponseSent(DateTime                   Timestamp,
+                                                        IEventSender               Sender,
+                                                        IWebSocketConnection?      Connection,
+                                                        SetDisplayMessageRequest   Request,
+                                                        SetDisplayMessageResponse  Response,
+                                                        TimeSpan                   Runtime,
+                                                        SentMessageResults         SentMessageResult,
+                                                        CancellationToken          CancellationToken = default)
 
-        public async Task<SetDisplayMessageResponse>
-
-            Receive_SetDisplayMessageRequestError(SetDisplayMessageRequest      Request,
-                                                  OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                  IWebSocketConnection          Connection,
-                                                  NetworkingNode_Id             DestinationId,
-                                                  NetworkPath                   NetworkPath,
-                                                  EventTracking_Id              EventTrackingId,
-                                                  Request_Id                    RequestId,
-                                                  DateTime?                     ResponseTimestamp   = null,
-                                                  CancellationToken             CancellationToken   = default)
-        {
-
-            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-            //    response,
-            //    response.ToJSON(
-            //        parentNetworkingNode.OCPP.CustomSetDisplayMessageResponseSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
-            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-            //    ),
-            //    out errorResponse
-            //);
-
-            #region Send SetDisplayMessageRequestErrorReceived event
-
-            await LogEvent(
-                      SetDisplayMessageRequestErrorReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          Connection,
-                          Request,
-                          RequestErrorMessage,
-                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
-                          CancellationToken
-                      )
-                  );
-
-            #endregion
-
-
-            var response = SetDisplayMessageResponse.RequestError(
-                               Request,
-                               RequestErrorMessage.EventTrackingId,
-                               RequestErrorMessage.ErrorCode,
-                               RequestErrorMessage.ErrorDescription,
-                               RequestErrorMessage.ErrorDetails,
-                               RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
-                               RequestErrorMessage.NetworkPath
-                           );
-
-            #region Send OnSetDisplayMessageResponseReceived event
-
-            await LogEvent(
-                      OnSetDisplayMessageResponseReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          Connection,
-                          Request,
-                          response,
-                          response.Runtime,
-                          CancellationToken
-                      )
-                  );
-
-            #endregion
-
-            return response;
-
-        }
+            => LogEvent(
+                   OnSetDisplayMessageResponseSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       Runtime,
+                       SentMessageResult,
+                       CancellationToken
+                   )
+               );
 
         #endregion
 
-        #region Receive SetDisplayMessage response error
+        #region Send OnSetDisplayMessageRequestErrorSent event
 
         /// <summary>
-        /// An event fired whenever a SetDisplayMessage response error was received.
+        /// An event sent whenever a SetDisplayMessage request error was sent.
         /// </summary>
-        public event OnSetDisplayMessageResponseErrorReceivedDelegate? SetDisplayMessageResponseErrorReceived;
+        public event OnSetDisplayMessageRequestErrorSentDelegate? OnSetDisplayMessageRequestErrorSent;
 
 
-        public async Task
+        public Task SendOnSetDisplayMessageRequestErrorSent(DateTime                      Timestamp,
+                                                            IEventSender                  Sender,
+                                                            IWebSocketConnection?         Connection,
+                                                            SetDisplayMessageRequest?     Request,
+                                                            OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                            TimeSpan                      Runtime,
+                                                            SentMessageResults            SentMessageResult,
+                                                            CancellationToken             CancellationToken = default)
 
-            Receive_SetDisplayMessageResponseError(SetDisplayMessageRequest?      Request,
-                                                   SetDisplayMessageResponse?     Response,
-                                                   OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                   IWebSocketConnection           Connection,
-                                                   NetworkingNode_Id              DestinationId,
-                                                   NetworkPath                    NetworkPath,
-                                                   EventTracking_Id               EventTrackingId,
-                                                   Request_Id                     RequestId,
-                                                   DateTime?                      ResponseTimestamp   = null,
-                                                   CancellationToken              CancellationToken   = default)
+            => LogEvent(
+                   OnSetDisplayMessageRequestErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       RequestErrorMessage,
+                       Runtime,
+                       SentMessageResult,
+                       CancellationToken
+                   )
+               );
 
-        {
+        #endregion
 
-            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-            //    response,
-            //    response.ToJSON(
-            //        parentNetworkingNode.OCPP.CustomSetDisplayMessageResponseSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
-            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-            //    ),
-            //    out errorResponse
-            //);
+        #region Send OnSetDisplayMessageResponseErrorSent event
 
-            #region Send SetDisplayMessageResponseErrorReceived event
-
-            await LogEvent(
-                      SetDisplayMessageResponseErrorReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          Connection,
-                          Request,
-                          Response,
-                          ResponseErrorMessage,
-                          Response is not null
-                              ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
-                              : null,
-                          CancellationToken
-                      )
-                  );
-
-            #endregion
+        /// <summary>
+        /// An event sent whenever a SetDisplayMessage response error was sent.
+        /// </summary>
+        public event OnSetDisplayMessageResponseErrorSentDelegate? OnSetDisplayMessageResponseErrorSent;
 
 
-        }
+        public Task SendOnSetDisplayMessageResponseErrorSent(DateTime                       Timestamp,
+                                                             IEventSender                   Sender,
+                                                             IWebSocketConnection?          Connection,
+                                                             SetDisplayMessageRequest?      Request,
+                                                             SetDisplayMessageResponse?     Response,
+                                                             OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                             TimeSpan                       Runtime,
+                                                             SentMessageResults             SentMessageResult,
+                                                             CancellationToken              CancellationToken = default)
+
+            => LogEvent(
+                   OnSetDisplayMessageResponseErrorSent,
+                   loggingDelegate => loggingDelegate.Invoke(
+                       Timestamp,
+                       Sender,
+                       Connection,
+                       Request,
+                       Response,
+                       ResponseErrorMessage,
+                       Runtime,
+                       SentMessageResult,
+                       CancellationToken
+                   )
+               );
 
         #endregion
 
