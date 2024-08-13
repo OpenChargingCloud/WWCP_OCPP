@@ -65,12 +65,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                        SignaturePolicy?   SignaturePolicy             = null,
                                        SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
+                                       Boolean            DisableHTTPAPI              = false,
+                                       IPPort?            HTTPAPIPort                 = null,
+
                                        IPPort?            HTTPUploadPort              = null,
                                        IPPort?            HTTPDownloadPort            = null,
 
+                                       TimeSpan?          DefaultRequestTimeout       = null,
+
                                        Boolean            DisableSendHeartbeats       = false,
                                        TimeSpan?          SendHeartbeatsEvery         = null,
-                                       TimeSpan?          DefaultRequestTimeout       = null,
 
                                        Boolean            DisableMaintenanceTasks     = false,
                                        TimeSpan?          MaintenanceEvery            = null,
@@ -88,12 +92,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
-                   DisableSendHeartbeats,
-                   SendHeartbeatsEvery,
-                   DefaultRequestTimeout,
+                   DisableHTTPAPI,
+                   HTTPAPIPort,
 
                    HTTPUploadPort,
                    HTTPDownloadPort,
+
+                   DefaultRequestTimeout,
+
+                   DisableSendHeartbeats,
+                   SendHeartbeatsEvery,
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,

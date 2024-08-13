@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The OCPP Networking Node QRCodeAPI.
     /// </summary>
-    public class QRCodeAPI : HTTPAPI
+    public class QRCodeAPI : org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI
     {
 
         #region Data
@@ -50,17 +50,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP URL prefix.
         /// </summary>
-        public new readonly HTTPPath  DefaultURLPathPrefix   = HTTPPath.Parse("webapi");
+        public new static readonly  HTTPPath  DefaultURLPathPrefix    = HTTPPath.Parse("qr");
 
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const    String    DefaultHTTPServerName  = $"Open Charging Cloud OCPP {Version.String} CSMS QRCodeAPI";
+        public new const            String    DefaultHTTPServerName  = $"Open Charging Cloud OCPP {Version.String} CSMS QRCodeAPI";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public new const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.QRCodeAPI.HTTPRoot.";
+        public new const            String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.QRCodeAPI.HTTPRoot.";
 
         #endregion
 
@@ -74,28 +74,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Attach the given OCPP charging station management system QRCodeAPI to the given HTTP API.
         /// </summary>
-        /// <param name="NetworkingNode">An OCPP charging station management system.</param>
+        /// <param name="CSMSNode">An OCPP charging station management system.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public QRCodeAPI(ACSMSNode                             NetworkingNode,
-                      HTTPExtAPI                                  HTTPAPI,
-                      String?                                     HTTPServerName   = null,
-                      HTTPPath?                                   URLPathPrefix    = null,
-                      HTTPPath?                                   BasePath         = null,
-                      String                                      HTTPRealm        = DefaultHTTPRealm,
-                      IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                      String?                                     HTMLTemplate     = null)
+        public QRCodeAPI(ACSMSNode   CSMSNode,
+                         HTTPServer  HTTPServer,
 
-            : base(NetworkingNode,
-                   HTTPAPI,
-                   HTTPServerName ?? DefaultHTTPServerName,
-                   URLPathPrefix,
+                         HTTPPath?   BasePath        = null,
+                         HTTPPath?   URLPathPrefix   = null)
+
+            : base(HTTPServer,
+                   null,
+                   null, // ExternalDNSName,
+                   null, // HTTPServiceName,
                    BasePath,
-                   HTTPRealm,
-                   HTTPLogins,
-                   HTMLTemplate)
+
+                   URLPathPrefix ?? DefaultURLPathPrefix,
+                   null, // HTMLTemplate,
+                   null, // APIVersionHashes,
+
+                   null, // DisableMaintenanceTasks,
+                   null, // MaintenanceInitialDelay,
+                   null, // MaintenanceEvery,
+
+                   null, // DisableWardenTasks,
+                   null, // WardenInitialDelay,
+                   null, // WardenCheckEvery,
+
+                   null, // IsDevelopment,
+                   null, // DevelopmentServers,
+                   null, // DisableLogging,
+                   null, // LoggingPath,
+                   null, // LogfileName,
+                   null, // LogfileCreator,
+                   true) // AutoStart
 
         {
 
@@ -248,41 +262,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             // --------------------------------------------------------------------
             // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
             // --------------------------------------------------------------------
-            HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "events",
-                                      HTTPContentType.Text.HTML_UTF8,
-                                      HTTPDelegate: Request => {
+            AddMethodCallback(HTTPHostname.Any,
+                              HTTPMethod.GET,
+                              URLPathPrefix + "events",
+                              HTTPContentType.Text.HTML_UTF8,
+                              HTTPDelegate: Request => {
 
-                                          #region Get HTTP user and its organizations
+                                  #region Get HTTP user and its organizations
 
-                                          //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                          //if (!TryGetHTTPUser(Request,
-                                          //                    out User                   HTTPUser,
-                                          //                    out HashSet<Organization>  HTTPOrganizations,
-                                          //                    out HTTPResponse.Builder   Response,
-                                          //                    Recursive:                 true))
-                                          //{
-                                          //    return Task.FromResult(Response.AsImmutable);
-                                          //}
+                                  //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                                  //if (!TryGetHTTPUser(Request,
+                                  //                    out User                   HTTPUser,
+                                  //                    out HashSet<Organization>  HTTPOrganizations,
+                                  //                    out HTTPResponse.Builder   Response,
+                                  //                    Recursive:                 true))
+                                  //{
+                                  //    return Task.FromResult(Response.AsImmutable);
+                                  //}
 
-                                          #endregion
+                                  #endregion
 
-                                          return Task.FromResult(
-                                                     new HTTPResponse.Builder(Request) {
-                                                         HTTPStatusCode             = HTTPStatusCode.OK,
-                                                         Server                     = HTTPServiceName,
-                                                         Date                       = Timestamp.Now,
-                                                         AccessControlAllowOrigin   = "*",
-                                                         AccessControlAllowMethods  = [ "GET" ],
-                                                         AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
-                                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
-                                                         Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-                                                         Connection                 = "close",
-                                                         Vary                       = "Accept"
-                                                     }.AsImmutable);
+                                  return Task.FromResult(
+                                             new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.OK,
+                                                 Server                     = HTTPServiceName,
+                                                 Date                       = Timestamp.Now,
+                                                 AccessControlAllowOrigin   = "*",
+                                                 AccessControlAllowMethods  = [ "GET" ],
+                                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                                 ContentType                = HTTPContentType.Text.HTML_UTF8,
+                                                 Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
+                                                 Connection                 = "close",
+                                                 Vary                       = "Accept"
+                                             }.AsImmutable);
 
-                                      });
+                              });
 
             #endregion
 

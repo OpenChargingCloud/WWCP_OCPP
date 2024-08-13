@@ -80,8 +80,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
             var testCSMS01               = new TestCSMSNode(
                                                Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
                                                VendorName:              "GraphDefined",
-                                               Model:                   "OCPPTest01",
-                                               HTTPUploadPort:          IPPort.Parse(3416)
+                                               Model:                   "OCPPTest01"
+                                               //HTTPUploadPort:          IPPort.Parse(3416)
                                            );
 
             var testBackendWebSockets01  = testCSMS01.AttachWebSocketServer(

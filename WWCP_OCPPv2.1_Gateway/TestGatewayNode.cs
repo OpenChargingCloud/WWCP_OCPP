@@ -22,6 +22,7 @@ using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -60,6 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                SignaturePolicy?   SignaturePolicy             = null,
                                SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
+                               Boolean            DisableHTTPAPI              = false,
+                               IPPort?            HTTPAPIPort                 = null,
+
                                Boolean            DisableSendHeartbeats       = false,
                                TimeSpan?          SendHeartbeatsEvery         = null,
                                TimeSpan?          DefaultRequestTimeout       = null,
@@ -78,6 +82,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
+
+                   DisableHTTPAPI,
+                   HTTPAPIPort,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,

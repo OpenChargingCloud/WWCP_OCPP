@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Remove="HTTPAPI\DownloadAPI\HTTPRoot\LICENSE.txt" />
+    <None Remove="HTTPAPI\QRCodeAPI\HTTPRoot\LICENSE.txt" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
@@ -27,6 +28,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="HTTPAPI\DownloadAPI\HTTPRoot\LICENSE.txt" />
+    <EmbeddedResource Include="HTTPAPI\QRCodeAPI\HTTPRoot\LICENSE.txt" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
@@ -54,10 +56,6 @@
     <ProjectReference Include="..\..\WWCP_Core\WWCP_Core\WWCP_Core.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="HTTPAPI\QRCodeAPI\HTTPRoot\" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

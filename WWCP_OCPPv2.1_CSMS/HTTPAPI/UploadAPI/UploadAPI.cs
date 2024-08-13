@@ -38,17 +38,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const           String                              DefaultHTTPServerName   = $"Open Charging Cloud OCPP {Version.String} Networking Node Upload API";
+        public new const           String                                        DefaultHTTPServerName   = $"Open Charging Cloud OCPP {Version.String} CSMS Node Upload API";
 
         /// <summary>
         /// The default HTTP URL prefix.
         /// </summary>
-        public new static readonly HTTPPath                            DefaultURLPathPrefix    = HTTPPath.Parse("upload");
+        public new static readonly HTTPPath                                      DefaultURLPathPrefix    = HTTPPath.Parse("upload");
 
         /// <summary>
         /// The default HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public     const           String                              DefaultHTTPRealm        = "Open Charging Cloud OCPP Networking Node Upload API";
+        public     const           String                                        DefaultHTTPRealm        = "Open Charging Cloud OCPP CSMS Node Upload API";
 
         private           readonly Dictionary<String, FileUploadAuthentication>  validFileUploadAuths    = [];
 
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The parent networking node.
         /// </summary>
-        public ACSMSNode                            NetworkingNode    { get; }
+        public ACSMSNode                                  CSMSNode          { get; }
 
         /// <summary>
         /// The location to store the received files within the file system.
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public UploadAPI(ACSMSNode                             NetworkingNode,
+        public UploadAPI(ACSMSNode                                   CSMSNode,
                          HTTPServer                                  HTTPServer,
                          String                                      FileSystemPath,
 
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.NetworkingNode  = NetworkingNode;
+            this.CSMSNode        = CSMSNode;
             this.FileSystemPath  = FileSystemPath;
 
             this.HTTPRealm       = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;

@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
         #region Data
 
-        private readonly HTTPExtAPI?  HTTPAPI;
+        //private readonly HTTPExtAPI?  HTTPAPI;
 
         #endregion
 
@@ -86,69 +86,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
 
 
-        public WebAPI                      WebAPI                     { get; }
+        public WebAPI?                     WebAPI                     { get; }
 
-        private readonly HashSet<WebAPI> webAPIs = [];
+        //private readonly HashSet<WebAPI> webAPIs = [];
 
-        /// <summary>
-        /// An enumeration of all WebAPIs.
-        /// </summary>
-        public IEnumerable<WebAPI> WebAPIs
-            => webAPIs;
+        ///// <summary>
+        ///// An enumeration of all WebAPIs.
+        ///// </summary>
+        //public IEnumerable<WebAPI> WebAPIs
+        //    => webAPIs;
 
         #endregion
 
         #region Events
 
-        #region Generic JSON Messages
-
-        /// <summary>
-        /// An event sent whenever a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a JSON message was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a JSON message request was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
-
-        #endregion
-
-        #region Generic Binary Messages
-
-        /// <summary>
-        /// An event sent whenever a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
-
-        #endregion
 
         #endregion
 
@@ -188,6 +139,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
+                   !DisableHTTPAPI
+                       ? new HTTPExtAPI(
+                             HTTPServerPort:          HTTPAPIPort ?? IPPort.Auto,
+                             HTTPServerName:          "GraphDefined OCPP Test Energy Meter",
+                             HTTPServiceName:         "GraphDefined OCPP Test Energy Meter Service",
+                             APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Energy Meter Robot <robot@charging.cloud>"),
+                             APIRobotGPGPassphrase:   "test123",
+                             SMTPClient:              new NullMailer(),
+                             DNSClient:               DNSClient,
+                             AutoStart:               true
+                         )
+                       : null,
+
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
 
@@ -214,21 +178,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
             #region Setup generic HTTP API
 
-            this.HTTPAPI  = !DisableHTTPAPI
-
-                                ? new HTTPExtAPI(
-                                      HTTPServerPort:         HTTPAPIPort ?? IPPort.Auto,
-                                      HTTPServerName:         "GraphDefined OCPP Test Energy Meter",
-                                      HTTPServiceName:        "GraphDefined OCPP Test Energy Meter Service",
-                                      APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Energy Meter Robot <robot@charging.cloud>"),
-                                      APIRobotGPGPassphrase:  "test123",
-                                      SMTPClient:             new NullMailer(),
-                                      DNSClient:              DNSClient,
-                                      AutoStart:              true
-                                  )
-
-                                : null;
-
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
             #endregion
@@ -237,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
             var webAPIPrefix = "webapi";
 
-            this.HTTPAPI.HTTPServer.AddAuth(request => {
+            this.HTTPAPI?.HTTPServer.AddAuth(request => {
 
                 // Allow some URLs for anonymous access...
                 if (request.Path.StartsWith(HTTPAPI.URLPathPrefix + webAPIPrefix))
@@ -253,11 +202,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
             #region Setup WebAPIs
 
-            this.WebAPI             = new WebAPI(
-                                          this,
-                                          HTTPAPI,
-                                          URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
-                                      );
+            this.WebAPI                 = HTTPAPI is not null
+                                              ? new WebAPI(
+                                                    this,
+                                                    HTTPAPI,
+
+                                                    URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
+
+                                                )
+                                              : null;
 
             #endregion
 

@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The parent networking node.
         /// </summary>
-        public ACSMSNode                            NetworkingNode    { get; }
+        public ACSMSNode                                  CSMSNode          { get; }
 
         /// <summary>
         /// The optional location of the served files within the file system.
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Attach an OCPP Download API to the given HTTP server.
         /// </summary>
-        /// <param name="NetworkingNode">A networking node.</param>
+        /// <param name="CSMSNode">A networking node.</param>
         /// <param name="HTTPServer">A HTTP server.</param>
         /// 
         /// <param name="BasePath">When the API is served from an optional subdirectory path.</param>
@@ -114,15 +114,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// 
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public DownloadAPI(ACSMSNode                             NetworkingNode,
+        public DownloadAPI(ACSMSNode                                   CSMSNode,
                            HTTPServer                                  HTTPServer,
 
-                           HTTPPath?                                   BasePath        = null,
-                           HTTPPath?                                   URLPathPrefix   = null,
-                           String?                                     FileSystemPath  = null,
+                           HTTPPath?                                   BasePath         = null,
+                           HTTPPath?                                   URLPathPrefix    = null,
+                           String?                                     FileSystemPath   = null,
 
-                           String                                      HTTPRealm       = DefaultHTTPRealm,
-                           IEnumerable<KeyValuePair<String, String>>?  HTTPLogins      = null)
+                           String                                      HTTPRealm        = DefaultHTTPRealm,
+                           IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null)
 
             : base(HTTPServer,
                    null,
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.NetworkingNode  = NetworkingNode;
+            this.CSMSNode        = CSMSNode;
 
             this.FileSystemPath  = FileSystemPath;
 

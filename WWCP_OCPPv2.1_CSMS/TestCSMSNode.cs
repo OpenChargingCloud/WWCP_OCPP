@@ -21,8 +21,8 @@ using System.Security.Cryptography;
 
 using Newtonsoft.Json.Linq;
 
-using Org.BouncyCastle.X509;
 using BCx509 = Org.BouncyCastle.X509;
+using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
@@ -35,9 +35,11 @@ using Org.BouncyCastle.Utilities;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using org.GraphDefined.Vanaheimr.Hermod.SMTP;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-
 
 #endregion
 
@@ -60,31 +62,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public TestCSMSNode(NetworkingNode_Id         Id,
                             String                    VendorName,
                             String                    Model,
-                            String?                   SerialNumber                = null,
-                            String?                   SoftwareVersion             = null,
-                            I18NString?               Description                 = null,
-                            CustomData?               CustomData                  = null,
+                            String?                   SerialNumber                     = null,
+                            String?                   SoftwareVersion                  = null,
+                            I18NString?               Description                      = null,
+                            CustomData?               CustomData                       = null,
 
-                            AsymmetricCipherKeyPair?  ClientCAKeyPair             = null,
-                            BCx509.X509Certificate?   ClientCACertificate         = null,
+                            AsymmetricCipherKeyPair?  ClientCAKeyPair                  = null,
+                            BCx509.X509Certificate?   ClientCACertificate              = null,
 
-                            SignaturePolicy?          SignaturePolicy             = null,
-                            SignaturePolicy?          ForwardingSignaturePolicy   = null,
+                            SignaturePolicy?          SignaturePolicy                  = null,
+                            SignaturePolicy?          ForwardingSignaturePolicy        = null,
 
-                            Boolean                   DisableHTTPAPI              = false,
-                            IPPort?                   HTTPAPIPort                 = null,
-                            IPPort?                   HTTPUploadPort              = null,
-                            IPPort?                   HTTPDownloadPort            = null,
+                            Boolean                   HTTPAPI_Disabled                 = false,
+                            IPPort?                   HTTPAPI_Port                     = null,
+                            String?                   HTTPAPI_ServerName               = null,
+                            String?                   HTTPAPI_ServiceName              = null,
+                            EMailAddress?             HTTPAPI_RobotEMailAddress        = null,
+                            String?                   HTTPAPI_RobotGPGPassphrase       = null,
 
-                            TimeSpan?                 DefaultRequestTimeout       = null,
+                            DownloadAPI?              HTTPDownloadAPI                  = null,
+                            Boolean                   HTTPDownloadAPI_Disabled         = false,
+                            HTTPPath?                 HTTPDownloadAPI_Path             = null,
+                            String?                   HTTPDownloadAPI_FileSystemPath   = null,
 
-                            Boolean                   DisableSendHeartbeats       = false,
-                            TimeSpan?                 SendHeartbeatsEvery         = null,
+                            UploadAPI?                HTTPUploadAPI                    = null,
+                            Boolean                   HTTPUploadAPI_Disabled           = false,
+                            HTTPPath?                 HTTPUploadAPI_Path               = null,
+                            String?                   HTTPUploadAPI_FileSystemPath     = null,
 
-                            Boolean                   DisableMaintenanceTasks     = false,
-                            TimeSpan?                 MaintenanceEvery            = null,
+                            //HTTPPath?                 FirmwareDownloadAPIPath          = null,
+                            //HTTPPath?                 LogfilesUploadAPIPath            = null,
+                            //HTTPPath?                 DiagnosticsUploadAPIPath         = null,
 
-                            DNSClient?                DNSClient                   = null)
+                            QRCodeAPI?                QRCodeAPI                        = null,
+                            Boolean                   QRCodeAPI_Disabled               = false,
+                            HTTPPath?                 QRCodeAPI_Path                   = null,
+
+                            Boolean                   WebAPI_Disabled                  = false,
+                            HTTPPath?                 WebAPI_Path                      = null,
+
+                            TimeSpan?                 DefaultRequestTimeout            = null,
+
+                            Boolean                   DisableSendHeartbeats            = false,
+                            TimeSpan?                 SendHeartbeatsEvery              = null,
+
+                            Boolean                   DisableMaintenanceTasks          = false,
+                            TimeSpan?                 MaintenanceEvery                 = null,
+
+                            ISMTPClient?              SMTPClient                       = null,
+                            DNSClient?                DNSClient                        = null)
 
             : base(Id,
                    VendorName,
@@ -100,10 +126,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
-                   DisableHTTPAPI,
-                   HTTPAPIPort,
-                   HTTPUploadPort,
-                   HTTPDownloadPort,
+                   HTTPAPI_Disabled,
+                   HTTPAPI_Port,
+                   HTTPAPI_ServerName,
+                   HTTPAPI_ServiceName,
+                   HTTPAPI_RobotEMailAddress,
+                   HTTPAPI_RobotGPGPassphrase,
+
+                   HTTPDownloadAPI,
+                   HTTPDownloadAPI_Disabled,
+                   HTTPDownloadAPI_Path,
+                   HTTPDownloadAPI_FileSystemPath,
+
+                   HTTPUploadAPI,
+                   HTTPUploadAPI_Disabled,
+                   HTTPUploadAPI_Path,
+                   HTTPUploadAPI_FileSystemPath,
+
+                   //FirmwareDownloadAPIPath,
+                   //LogfilesUploadAPIPath,
+                   //DiagnosticsUploadAPIPath,
+
+                   QRCodeAPI,
+                   QRCodeAPI_Disabled,
+                   QRCodeAPI_Path,
+
+                   WebAPI_Disabled,
+                   WebAPI_Path,
 
                    DefaultRequestTimeout,
 
@@ -113,6 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
+                   SMTPClient,
                    DNSClient)
 
         {

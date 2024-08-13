@@ -179,8 +179,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #region Data
 
-        private readonly HTTPExtAPI  HTTPAPI;
-
         #endregion
 
         #region Properties
@@ -225,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
 
-        public WebAPI                      WebAPI                     { get; }
+        public WebAPI?                     WebAPI                     { get; }
 
         public UploadAPI                   HTTPUploadAPI              { get; }
 
@@ -233,85 +231,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
 
-        private readonly HashSet<WebAPI> webAPIs = [];
+        //private readonly HashSet<WebAPI> webAPIs = [];
 
-        /// <summary>
-        /// An enumeration of all WebAPIs.
-        /// </summary>
-        public IEnumerable<WebAPI> WebAPIs
-            => webAPIs;
-
-
-        private readonly HashSet<UploadAPI> uploadAPIs = [];
-
-        /// <summary>
-        /// An enumeration of all UploadAPIs.
-        /// </summary>
-        public IEnumerable<UploadAPI> UploadAPIs
-            => uploadAPIs;
+        ///// <summary>
+        ///// An enumeration of all WebAPIs.
+        ///// </summary>
+        //public IEnumerable<WebAPI> WebAPIs
+        //    => webAPIs;
 
 
-        private readonly HashSet<DownloadAPI> downloadAPIs = [];
+        //private readonly HashSet<UploadAPI> uploadAPIs = [];
 
-        /// <summary>
-        /// An enumeration of all DownloadAPIs.
-        /// </summary>
-        public IEnumerable<DownloadAPI> DownloadAPIs
-            => downloadAPIs;
+        ///// <summary>
+        ///// An enumeration of all UploadAPIs.
+        ///// </summary>
+        //public IEnumerable<UploadAPI> UploadAPIs
+        //    => uploadAPIs;
+
+
+        //private readonly HashSet<DownloadAPI> downloadAPIs = [];
+
+        ///// <summary>
+        ///// An enumeration of all DownloadAPIs.
+        ///// </summary>
+        //public IEnumerable<DownloadAPI> DownloadAPIs
+        //    => downloadAPIs;
 
         #endregion
 
         #region Events
-
-        #region Generic JSON Messages
-
-        /// <summary>
-        /// An event sent whenever a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a JSON message was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a JSON message request was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
-
-        #endregion
-
-        #region Generic Binary Messages
-
-        /// <summary>
-        /// An event sent whenever a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
-
-        #endregion
 
         #endregion
 
@@ -333,15 +281,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                     SignaturePolicy?   SignaturePolicy             = null,
                                     SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
-                                    Boolean            DisableSendHeartbeats       = false,
-                                    TimeSpan?          SendHeartbeatsEvery         = null,
-                                    TimeSpan?          DefaultRequestTimeout       = null,
-
+                                    Boolean            DisableHTTPAPI              = false,
+                                    IPPort?            HTTPAPIPort                 = null,
                                     IPPort?            HTTPUploadPort              = null,
                                     IPPort?            HTTPDownloadPort            = null,
 
+                                    TimeSpan?          DefaultRequestTimeout       = null,
+
+                                    Boolean            DisableSendHeartbeats       = false,
+                                    TimeSpan?          SendHeartbeatsEvery         = null,
+
                                     Boolean            DisableMaintenanceTasks     = false,
                                     TimeSpan?          MaintenanceEvery            = null,
+
                                     DNSClient?         DNSClient                   = null)
 
             : base(Id,
@@ -350,6 +302,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
+
+                   !DisableHTTPAPI
+                       ? new HTTPExtAPI(
+                             HTTPServerPort:          HTTPAPIPort ?? IPPort.Auto,
+                             HTTPServerName:          "GraphDefined OCPP Test Local Controller",
+                             HTTPServiceName:         "GraphDefined OCPP Test Local Controller Service",
+                             APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Local Controller Robot <robot@charging.cloud>"),
+                             APIRobotGPGPassphrase:   "test123",
+                             SMTPClient:              new NullMailer(),
+                             DNSClient:               DNSClient,
+                             AutoStart:               true
+                         )
+                       : null,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
@@ -377,17 +342,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #region Setup generic HTTP API
 
-            this.HTTPAPI  = new HTTPExtAPI(
-                                HTTPServerPort:         IPPort.Auto,
-                                HTTPServerName:         "GraphDefined OCPP Test Local Controller",
-                                HTTPServiceName:        "GraphDefined OCPP Test Local Controller Service",
-                                APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Local Controller Robot <robot@charging.cloud>"),
-                                APIRobotGPGPassphrase:  "test123",
-                                SMTPClient:             new NullMailer(),
-                                DNSClient:              DNSClient,
-                                AutoStart:              true
-                            );
-
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
             #endregion
@@ -398,7 +352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             var uploadAPIPrefix     = "uploads";
             var downloadAPIPrefix   = "downloads";
 
-            this.HTTPAPI.HTTPServer.AddAuth(request => {
+            this.HTTPAPI?.HTTPServer.AddAuth(request => {
 
                 // Allow some URLs for anonymous access...
                 if (request.Path.StartsWith(HTTPAPI.URLPathPrefix + webAPIPrefix)    ||
@@ -416,13 +370,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #region Setup Web-/Upload-/DownloadAPIs
 
-            this.WebAPI             = new WebAPI(
-                                          this,
-                                          HTTPAPI,
+            this.WebAPI             = HTTPAPI is not null
+                                          ? new WebAPI(
+                                                this,
+                                                HTTPAPI,
 
-                                          URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
+                                                URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
 
-                                      );
+                                            )
+                                          : null;
 
             Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "UploadAPI"));
 

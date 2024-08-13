@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                        Id:                      NetworkingNode_Id.Parse("csms01"),
                        VendorName:              "GraphDefined",
                        Model:                   "CSMS M.1",
-                       HTTPUploadPort:          IPPort.Parse(9100),
+                       //HTTPUploadPort:          IPPort.Parse(9100),
                        DNSClient:               dnsClient
                    );
 

@@ -202,73 +202,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Charging Station Management System vendor identification.
         /// </summary>
         [Mandatory]
-        public String                      VendorName                 { get; }      = "";
+        public String                      VendorName                        { get; }      = "";
 
         /// <summary>
         ///  The Charging Station Management System model identification.
         /// </summary>
         [Mandatory]
-        public String                      Model                      { get; }      = "";
+        public String                      Model                             { get; }      = "";
 
         /// <summary>
         /// The optional serial number of the Charging Station Management System.
         /// </summary>
         [Optional]
-        public String?                     SerialNumber               { get; }
+        public String?                     SerialNumber                      { get; }
 
         /// <summary>
         /// The optional firmware version of the Charging Station Management System.
         /// </summary>
         [Optional]
-        public String?                     SoftwareVersion            { get; }
+        public String?                     SoftwareVersion                   { get; }
 
 
-        public AsymmetricCipherKeyPair?  ClientCAKeyPair        { get; }
-        public BCx509.X509Certificate?   ClientCACertificate    { get; }
+        public AsymmetricCipherKeyPair?    ClientCAKeyPair                   { get; }
+        public BCx509.X509Certificate?     ClientCACertificate               { get; }
 
 
 
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
+        public DateTime?                   CSMSTime                          { get; set; } = Timestamp.Now;
 
+        public DownloadAPI?                HTTPDownloadAPI                   { get; }
+        public HTTPPath?                   HTTPDownloadAPI_Path              { get; }
+        public String?                     HTTPDownloadAPI_FileSystemPath    { get; }
 
-        public HTTPExtAPI?                 HTTPAPI                    { get; }
+        public UploadAPI?                  HTTPUploadAPI                     { get; }
+        public HTTPPath?                   HTTPUploadAPI_Path                { get; }
+        public String?                     HTTPUploadAPI_FileSystemPath      { get; }
 
-        public WebAPI?                     WebAPI                     { get; }
+        public QRCodeAPI?                  QRCodeAPI                         { get; }
+        public HTTPPath?                   QRCodeAPI_Path                    { get; }
 
-        public UploadAPI?                  HTTPUploadAPI              { get; }
-
-        public DownloadAPI?                HTTPDownloadAPI            { get; }
-
-
-
-        private readonly HashSet<WebAPI> webAPIs = [];
-
-        /// <summary>
-        /// An enumeration of all WebAPIs.
-        /// </summary>
-        public IEnumerable<WebAPI> WebAPIs
-            => webAPIs;
-
-
-        private readonly HashSet<UploadAPI> uploadAPIs = [];
-
-        /// <summary>
-        /// An enumeration of all UploadAPIs.
-        /// </summary>
-        public IEnumerable<UploadAPI> UploadAPIs
-            => uploadAPIs;
-
-
-        private readonly HashSet<DownloadAPI> downloadAPIs = [];
-
-        /// <summary>
-        /// An enumeration of all DownloadAPIs.
-        /// </summary>
-        public IEnumerable<DownloadAPI> DownloadAPIs
-            => downloadAPIs;
+        public WebAPI?                     WebAPI                            { get; }
+        public HTTPPath?                   WebAPI_Path                       { get; }
 
         #endregion
 
@@ -336,31 +313,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public ACSMSNode(NetworkingNode_Id         Id,
                          String                    VendorName,
                          String                    Model,
-                         String?                   SerialNumber                = null,
-                         String?                   SoftwareVersion             = null,
-                         I18NString?               Description                 = null,
-                         CustomData?               CustomData                  = null,
+                         String?                   SerialNumber                     = null,
+                         String?                   SoftwareVersion                  = null,
+                         I18NString?               Description                      = null,
+                         CustomData?               CustomData                       = null,
 
-                         AsymmetricCipherKeyPair?  ClientCAKeyPair             = null,
-                         BCx509.X509Certificate?   ClientCACertificate         = null,
+                         AsymmetricCipherKeyPair?  ClientCAKeyPair                  = null,
+                         BCx509.X509Certificate?   ClientCACertificate              = null,
 
-                         SignaturePolicy?          SignaturePolicy             = null,
-                         SignaturePolicy?          ForwardingSignaturePolicy   = null,
+                         SignaturePolicy?          SignaturePolicy                  = null,
+                         SignaturePolicy?          ForwardingSignaturePolicy        = null,
 
-                         Boolean                   DisableHTTPAPI              = false,
-                         IPPort?                   HTTPAPIPort                 = null,
-                         IPPort?                   HTTPUploadPort              = null,
-                         IPPort?                   HTTPDownloadPort            = null,
+                         Boolean                   HTTPAPI_Disabled                 = false,
+                         IPPort?                   HTTPAPI_Port                     = null,
+                         String?                   HTTPAPI_ServerName               = null,
+                         String?                   HTTPAPI_ServiceName              = null,
+                         EMailAddress?             HTTPAPI_RobotEMailAddress        = null,
+                         String?                   HTTPAPI_RobotGPGPassphrase       = null,
 
-                         TimeSpan?                 DefaultRequestTimeout       = null,
+                         DownloadAPI?              HTTPDownloadAPI                  = null,
+                         Boolean                   HTTPDownloadAPI_Disabled         = false,
+                         HTTPPath?                 HTTPDownloadAPI_Path             = null,
+                         String?                   HTTPDownloadAPI_FileSystemPath   = null,
 
-                         Boolean                   DisableSendHeartbeats       = false,
-                         TimeSpan?                 SendHeartbeatsEvery         = null,
+                         UploadAPI?                HTTPUploadAPI                    = null,
+                         Boolean                   HTTPUploadAPI_Disabled           = false,
+                         HTTPPath?                 HTTPUploadAPI_Path               = null,
+                         String?                   HTTPUploadAPI_FileSystemPath     = null,
 
-                         Boolean                   DisableMaintenanceTasks     = false,
-                         TimeSpan?                 MaintenanceEvery            = null,
+                         //HTTPPath?                 FirmwareDownloadAPIPath          = null,
+                         //HTTPPath?                 LogfilesUploadAPIPath            = null,
+                         //HTTPPath?                 DiagnosticsUploadAPIPath         = null,
 
-                         DNSClient?                DNSClient                   = null)
+                         QRCodeAPI?                QRCodeAPI                        = null,
+                         Boolean                   QRCodeAPI_Disabled               = false,
+                         HTTPPath?                 QRCodeAPI_Path                   = null,
+
+                         Boolean                   WebAPI_Disabled                  = false,
+                         HTTPPath?                 WebAPI_Path                      = null,
+
+                         TimeSpan?                 DefaultRequestTimeout            = null,
+
+                         Boolean                   DisableSendHeartbeats            = false,
+                         TimeSpan?                 SendHeartbeatsEvery              = null,
+
+                         Boolean                   DisableMaintenanceTasks          = false,
+                         TimeSpan?                 MaintenanceEvery                 = null,
+
+                         ISMTPClient?              SMTPClient                       = null,
+                         DNSClient?                DNSClient                        = null)
 
             : base(Id,
                    Description,
@@ -368,6 +369,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
+
+                   !HTTPAPI_Disabled
+                       ? new HTTPExtAPI(
+                             HTTPServerPort:         HTTPAPI_Port               ?? IPPort.Auto,
+                             HTTPServerName:         HTTPAPI_ServerName         ?? "GraphDefined OCPP Test Central System",
+                             HTTPServiceName:        HTTPAPI_ServiceName        ?? "GraphDefined OCPP Test Central System Service",
+                             APIRobotEMailAddress:   HTTPAPI_RobotEMailAddress  ?? EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+                             APIRobotGPGPassphrase:  HTTPAPI_RobotGPGPassphrase ?? "test123",
+                             SMTPClient:             SMTPClient                 ?? new NullMailer(),
+                             DNSClient:              DNSClient,
+                             AutoStart:              true
+                         )
+                       : null,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
@@ -387,100 +401,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             if (Model.     IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Model),       "The given model must not be null or empty!");
 
-            this.VendorName           = VendorName;
-            this.Model                = Model;
-            this.SerialNumber         = SerialNumber;
-            this.SoftwareVersion      = SoftwareVersion;
+            this.VendorName                      = VendorName;
+            this.Model                           = Model;
+            this.SerialNumber                    = SerialNumber;
+            this.SoftwareVersion                 = SoftwareVersion;
 
-            this.ClientCAKeyPair      = ClientCAKeyPair;
-            this.ClientCACertificate  = ClientCACertificate;
+            this.ClientCAKeyPair                 = ClientCAKeyPair;
+            this.ClientCACertificate             = ClientCACertificate;
 
             OCPP.IN.AnycastIds.Add(NetworkingNode_Id.CSMS);
 
-            #region Setup HTTP API
-
-            this.HTTPAPI  = !DisableHTTPAPI
-
-                                ? new HTTPExtAPI(
-                                      HTTPServerPort:         HTTPAPIPort ?? IPPort.Auto,
-                                      HTTPServerName:         "GraphDefined OCPP Test Central System",
-                                      HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
-                                      APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                      APIRobotGPGPassphrase:  "test123",
-                                      SMTPClient:             new NullMailer(),
-                                      DNSClient:              DNSClient,
-                                      AutoStart:              true
-                                  )
-
-                                : null;
-
-            //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
-
-            #endregion
-
-            #region HTTP API Security Settings
-
-            var webAPIPrefix        = "webapi";
-            var uploadAPIPrefix     = "uploads";
-            var downloadAPIPrefix   = "downloads";
-
-            this.HTTPAPI.HTTPServer.AddAuth(request => {
-
-                // Allow some URLs for anonymous access...
-                if (request.Path.StartsWith(HTTPAPI.URLPathPrefix + webAPIPrefix)    ||
-                    request.Path.StartsWith(HTTPAPI.URLPathPrefix + uploadAPIPrefix) ||
-                    request.Path.StartsWith(HTTPAPI.URLPathPrefix + downloadAPIPrefix))
-                {
-                    return HTTPExtAPI.Anonymous;
-                }
-
-                return null;
-
-            });
-
-            #endregion
-
             #region Setup Web-/Upload-/DownloadAPIs
 
-            this.WebAPI             = new WebAPI(
-                                          this,
-                                          HTTPAPI,
+            this.HTTPUploadAPI_Path              = HTTPUploadAPI_Path             ?? HTTPPath.Parse("uploads");
+            this.HTTPDownloadAPI_Path            = HTTPDownloadAPI_Path           ?? HTTPPath.Parse("downloads");
+            this.QRCodeAPI_Path                  = QRCodeAPI_Path                 ?? HTTPPath.Parse("qr");
+            this.WebAPI_Path                     = WebAPI_Path                    ?? HTTPPath.Parse("webapi");
 
-                                          URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
+            this.HTTPUploadAPI_FileSystemPath    = HTTPUploadAPI_FileSystemPath   ?? Path.Combine(AppContext.BaseDirectory, "UploadAPI");
+            this.HTTPDownloadAPI_FileSystemPath  = HTTPDownloadAPI_FileSystemPath ?? Path.Combine(AppContext.BaseDirectory, "DownloadAPI");
 
-                                      );
+            if (HTTPAPI is not null)
+            {
 
-            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "UploadAPI"));
+                #region HTTP API Security Settings
 
-            this.HTTPUploadAPI      = new UploadAPI(
-                                          this,
-                                          HTTPUploadPort.HasValue
-                                              ? new HTTPServer(
-                                                    HTTPUploadPort.Value,
-                                                    UploadAPI.DefaultHTTPServerName,
-                                                    UploadAPI.DefaultHTTPServiceName
-                                                )
-                                              : HTTPAPI.HTTPServer,
+                this.HTTPAPI.HTTPServer.AddAuth(request => {
 
-                                          URLPathPrefix:   HTTPPath.Parse(uploadAPIPrefix),
-                                          FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "UploadAPI")
+                    // Allow some URLs for anonymous access...
+                    if (request.Path.StartsWith(HTTPAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
+                        request.Path.StartsWith(HTTPAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
+                        request.Path.StartsWith(HTTPAPI.URLPathPrefix + this.WebAPI_Path))
+                    {
+                        return HTTPExtAPI.Anonymous;
+                    }
 
-                                      );
+                    return null;
 
-            this.HTTPDownloadAPI    = new DownloadAPI(
-                                          this,
-                                          HTTPDownloadPort.HasValue
-                                              ? new HTTPServer(
-                                                    HTTPDownloadPort.Value,
-                                                    DownloadAPI.DefaultHTTPServerName,
-                                                    DownloadAPI.DefaultHTTPServiceName
-                                                )
-                                              : HTTPAPI.HTTPServer,
+                });
 
-                                          URLPathPrefix:   HTTPPath.Parse(downloadAPIPrefix),
-                                          FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "DownloadAPI")
+                #endregion
 
-                                      );
+                if (!HTTPUploadAPI_Disabled)
+                {
+
+                    Directory.CreateDirectory(this.HTTPUploadAPI_FileSystemPath);
+                    this.HTTPUploadAPI              = HTTPUploadAPI   ?? new UploadAPI(
+                                                                             this,
+                                                                             HTTPAPI.HTTPServer,
+                                                                             URLPathPrefix:   this.HTTPUploadAPI_Path,
+                                                                             FileSystemPath:  this.HTTPUploadAPI_FileSystemPath
+                                                                         );
+
+                }
+
+                if (!HTTPDownloadAPI_Disabled)
+                {
+
+                    Directory.CreateDirectory(this.HTTPDownloadAPI_FileSystemPath);
+                    this.HTTPDownloadAPI            = HTTPDownloadAPI ?? new DownloadAPI(
+                                                                             this,
+                                                                             HTTPAPI.HTTPServer,
+                                                                             URLPathPrefix:   this.HTTPDownloadAPI_Path,
+                                                                             FileSystemPath:  this.HTTPDownloadAPI_FileSystemPath
+                                                                         );
+
+                }
+
+                if (!QRCodeAPI_Disabled)
+                {
+
+                    this.QRCodeAPI                  = QRCodeAPI       ?? new QRCodeAPI(
+                                                                             this,
+                                                                             HTTPAPI.HTTPServer,
+                                                                             URLPathPrefix:   this.QRCodeAPI_Path
+                                                                         );
+
+                }
+
+                if (!WebAPI_Disabled)
+                {
+
+                    this.WebAPI                     = !WebAPI_Disabled
+                                                          ? new WebAPI(
+                                                                this,
+                                                                HTTPAPI,
+                                                                URLPathPrefix: this.WebAPI_Path
+                                                            )
+                                                          : null;
+
+                }
+
+            }
 
             #endregion
 

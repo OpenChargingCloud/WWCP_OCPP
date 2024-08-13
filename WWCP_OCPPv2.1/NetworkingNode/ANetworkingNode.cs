@@ -31,6 +31,8 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 
 #endregion
 
@@ -49,19 +51,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         private          readonly  HashSet<SignaturePolicy>                                    signaturePolicies            = [];
 
-        //private                  readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   connectedNetworkingNodes     = [];
         protected        readonly  ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>  reachableViaNetworkingHubs   = [];
 
         private                    Int64                                                       internalRequestId            = 900000;
 
-        private readonly           List<EnqueuedRequest>                                       EnqueuedRequests             = [];
+        private          readonly  List<EnqueuedRequest>                                       EnqueuedRequests             = [];
+
+
+        /// <summary>
+        /// The default time span between heartbeat requests.
+        /// </summary>
+        public           readonly  TimeSpan                                                    DefaultSendHeartbeatsEvery   = TimeSpan.FromSeconds(30);
+
+        protected        readonly  Timer                                                       SendHeartbeatsTimer;
+
 
         /// <summary>
         /// The default maintenance interval.
         /// </summary>
-        public  readonly           TimeSpan                                                    DefaultMaintenanceEvery      = TimeSpan.FromSeconds(1);
-        private static readonly    SemaphoreSlim                                               MaintenanceSemaphore         = new (1, 1);
-        private readonly           Timer                                                       MaintenanceTimer;
+        public           readonly  TimeSpan                                                    DefaultMaintenanceEvery      = TimeSpan.FromSeconds(1);
+        private   static readonly  SemaphoreSlim                                               MaintenanceSemaphore         = new (1, 1);
+        private          readonly  Timer                                                       MaintenanceTimer;
+
+        public ConcurrentDictionary<String, List<ComponentConfig>>                             ComponentConfigs             = [];
+
+        public List<UserRole>                                                                  UserRoles                    = [];
 
         #endregion
 
@@ -89,6 +103,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomData                  CustomData                 { get; }
 
 
+
+
+
+
+
+        /// <summary>
+        /// Disable all heartbeats.
+        /// </summary>
+        public Boolean                  DisableSendHeartbeats       { get; set; }
+
+        /// <summary>
+        /// The time span between heartbeat requests.
+        /// </summary>
+        public TimeSpan                 SendHeartbeatsEvery         { get; set; }
+
+
+
+
+
+
         /// <summary>
         /// Disable all maintenance tasks.
         /// </summary>
@@ -103,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public DNSClient                   DNSClient                  { get; }
         public OCPPAdapter                 OCPP                       { get; }
 
-
+        public HTTPExtAPI?                 HTTPAPI                    { get; }
 
 
         ///// <summary>
@@ -188,6 +222,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region Generic JSON Messages
+
+        /// <summary>
+        /// An event sent whenever a JSON message request was received.
+        /// </summary>
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a JSON message was sent.
+        /// </summary>
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a JSON message request was sent.
+        /// </summary>
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a JSON message request was received.
+        /// </summary>
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+
+        #endregion
+
+        #region Generic Binary Messages
+
+        /// <summary>
+        /// An event sent whenever a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -202,6 +286,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                SignaturePolicy?   SignaturePolicy             = null,
                                SignaturePolicy?   ForwardingSignaturePolicy   = null,
+
+                               HTTPExtAPI?        HTTPAPI                     = null,
 
                                Boolean            DisableSendHeartbeats       = false,
                                TimeSpan?          SendHeartbeatsEvery         = null,
@@ -238,6 +324,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 DefaultRequestTimeout,
                                                 SignaturePolicy,
                                                 ForwardingSignaturePolicy
+                                            );
+
+            this.HTTPAPI                  = HTTPAPI;
+
+            this.DisableSendHeartbeats    = DisableSendHeartbeats;
+            this.SendHeartbeatsEvery      = SendHeartbeatsEvery   ?? DefaultSendHeartbeatsEvery;
+            this.SendHeartbeatsTimer      = new Timer(
+                                                DoSendHeartbeatsSync,
+                                                null,
+                                                this.SendHeartbeatsEvery,
+                                                this.SendHeartbeatsEvery
                                             );
 
         }
@@ -414,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          TimeSpan?                                                       ConnectionTimeout            = null,
                                                          UInt32?                                                         MaxClientConnections         = null,
 
-                                                         Boolean                                                         AutoStart                    = false)
+                                                         Boolean                                                         AutoStart                    = true)
         {
 
             var ocppWebSocketServer = new OCPPWebSocketServer(
@@ -447,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           MaxClientConnections,
 
                                           DNSClient,
-                                          AutoStart: false
+                                          AutoStart: true
 
                                       );
 
@@ -848,6 +945,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
             return 1;
         }
+
+
+
+        #region (Timer) DoSendHeartbeatSync(State)
+
+        protected virtual void DoSendHeartbeatsSync(Object? State)
+        { }
+
+        #endregion
+
 
 
         #region (Timer) DoMaintenance(State)

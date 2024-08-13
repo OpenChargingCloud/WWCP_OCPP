@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
         #region Data
 
-        private readonly HTTPExtAPI  HTTPAPI;
+      //  private readonly HTTPExtAPI  HTTPAPI;
 
         #endregion
 
@@ -216,15 +216,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
 
 
-        public WebAPI                      WebAPI                     { get; }
+        public WebAPI?                     WebAPI                     { get; }
 
-        private readonly HashSet<WebAPI> webAPIs = [];
+        //private readonly HashSet<WebAPI> webAPIs = [];
 
-        /// <summary>
-        /// An enumeration of all WebAPIs.
-        /// </summary>
-        public IEnumerable<WebAPI> WebAPIs
-            => webAPIs;
+        ///// <summary>
+        ///// An enumeration of all WebAPIs.
+        ///// </summary>
+        //public IEnumerable<WebAPI> WebAPIs
+        //    => webAPIs;
 
         #endregion
 
@@ -299,6 +299,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                             SignaturePolicy?   SignaturePolicy             = null,
                             SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
+                            Boolean            DisableHTTPAPI              = false,
+                            IPPort?            HTTPAPIPort                 = null,
+
                             Boolean            DisableSendHeartbeats       = false,
                             TimeSpan?          SendHeartbeatsEvery         = null,
                             TimeSpan?          DefaultRequestTimeout       = null,
@@ -313,6 +316,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
+
+                   !DisableHTTPAPI
+                       ? new HTTPExtAPI(
+                             HTTPServerPort:          HTTPAPIPort ?? IPPort.Auto,
+                             HTTPServerName:          "GraphDefined OCPP Test Gateway",
+                             HTTPServiceName:         "GraphDefined OCPP Test Gateway Service",
+                             APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Gateway Robot <robot@charging.cloud>"),
+                             APIRobotGPGPassphrase:   "test123",
+                             SMTPClient:              new NullMailer(),
+                             DNSClient:               DNSClient,
+                             AutoStart:               true
+                         )
+                       : null,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
@@ -339,17 +355,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region Setup generic HTTP API
 
-            this.HTTPAPI  = new HTTPExtAPI(
-                                HTTPServerPort:         IPPort.Parse(3532),
-                                HTTPServerName:         "GraphDefined OCPP Test Gateway",
-                                HTTPServiceName:        "GraphDefined OCPP Test Gateway Service",
-                                APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Gateway Robot <robot@charging.cloud>"),
-                                APIRobotGPGPassphrase:  "test123",
-                                SMTPClient:             new NullMailer(),
-                                DNSClient:              DNSClient,
-                                AutoStart:              true
-                            );
-
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
             #endregion
@@ -358,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             var webAPIPrefix = "webapi";
 
-            this.HTTPAPI.HTTPServer.AddAuth(request => {
+            this.HTTPAPI?.HTTPServer.AddAuth(request => {
 
                 // Allow some URLs for anonymous access...
                 if (request.Path.StartsWith(HTTPAPI.URLPathPrefix + webAPIPrefix))
@@ -374,13 +379,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region Setup WebAPIs
 
-            this.WebAPI             = new WebAPI(
-                                          this,
-                                          HTTPAPI,
+            this.WebAPI             = HTTPAPI is not null
+                                          ? new WebAPI(
+                                                this,
+                                                HTTPAPI,
 
-                                          URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
+                                                URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
 
-                                      );
+                                            )
+                                          : null;
 
             #endregion
 

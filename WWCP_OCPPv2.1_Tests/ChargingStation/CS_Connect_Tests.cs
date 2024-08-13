@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                   Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
                                   VendorName:              "GraphDefined",
                                   Model:                   "OCPP-CSMS-Test-Server",
-                                  HTTPUploadPort:          IPPort.Parse(9100),
+                                  //HTTPUploadPort:          IPPort.Parse(9100),
                                   DNSClient:               new DNSClient(
                                                                SearchForIPv6DNSServers: false,
                                                                SearchForIPv4DNSServers: false

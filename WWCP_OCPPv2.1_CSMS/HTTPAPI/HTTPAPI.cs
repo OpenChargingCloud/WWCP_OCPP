@@ -26,6 +26,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
@@ -220,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<ACSMSNode>                                      networkingNodes   = [];
+        protected readonly  List<ACSMSNode>                                            networkingNodes   = [];
 
         protected readonly  ConcurrentDictionary<ChargingStation_Id, ChargingStation>  chargingStations  = [];
 
@@ -231,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An enumeration of registered networking nodes.
         /// </summary>
-        public              IEnumerable<ACSMSNode>                               NetworkingNodes
+        public              IEnumerable<ANetworkingNode>                               NetworkingNodes
             => networkingNodes;
 
         /// <summary>
@@ -309,12 +311,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="NetworkingNode">An OCPP charging station management system.</param>
+        /// <param name="CSMSNode">An OCPP charging station management system.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(ACSMSNode                             NetworkingNode,
+        public HTTPAPI(ACSMSNode                                   CSMSNode,
                        HTTPExtAPI                                  HTTPAPI,
                        String?                                     HTTPServerName   = null,
                        HTTPPath?                                   URLPathPrefix    = null,
@@ -333,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            AttachCSMS(NetworkingNode);
+            AttachCSMS(CSMSNode);
 
         }
 

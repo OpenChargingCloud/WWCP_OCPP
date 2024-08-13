@@ -75,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        SignaturePolicy?                   SignaturePolicy             = null,
                                        SignaturePolicy?                   ForwardingSignaturePolicy   = null,
 
+                                       Boolean                            DisableHTTPAPI              = false,
+                                       IPPort?                            HTTPAPIPort                 = null,
+
                                        Boolean                            DisableSendHeartbeats       = false,
                                        TimeSpan?                          SendHeartbeatsEvery         = null,
 
@@ -99,6 +102,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
+
+                   DisableHTTPAPI,
+                   HTTPAPIPort,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
