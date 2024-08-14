@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using Org.BouncyCastle.Math;
@@ -230,8 +232,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomKeyPairParser">An optional delegate to parse custom cryptographic key pairs.</param>
-        public static KeyPair Parse(JObject                                  JSON,
-                                      CustomJObjectParserDelegate<KeyPair>?  CustomKeyPairParser   = null)
+        public static KeyPair Parse(JObject                                JSON,
+                                    CustomJObjectParserDelegate<KeyPair>?  CustomKeyPairParser   = null)
         {
 
             if (TryParse(JSON,
@@ -260,9 +262,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="KeyPair">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject       JSON,
-                                       out KeyPair?  KeyPair,
-                                       out String?   ErrorResponse)
+        public static Boolean TryParse(JObject                            JSON,
+                                       [NotNullWhen(true)]  out KeyPair?  KeyPair,
+                                       [NotNullWhen(false)] out String?   ErrorResponse)
 
             => TryParse(JSON,
                         out KeyPair,
@@ -278,8 +280,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomKeyPairParser">An optional delegate to parse custom key pairs.</param>
         public static Boolean TryParse(JObject                                JSON,
-                                       out KeyPair?                           KeyPair,
-                                       out String?                            ErrorResponse,
+                                       [NotNullWhen(true)]  out KeyPair?      KeyPair,
+                                       [NotNullWhen(false)] out String?       ErrorResponse,
                                        CustomJObjectParserDelegate<KeyPair>?  CustomKeyPairParser   = null)
         {
 
@@ -420,8 +422,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            Serialization.HasValue && Serialization.Value != CryptoSerialization.raw
-                               ? null
-                               : new JProperty("serialization",   Serialization),
+                               ? new JProperty("serialization",   Serialization)
+                               : null,
 
                            Encoding.     HasValue && Encoding.     Value != CryptoEncoding.BASE64
                                ? new JProperty("encoding",        Encoding. Value.ToString())
@@ -460,6 +462,105 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    CustomData
 
                );
+
+        #endregion
+
+
+        #region (static) ParsePrivateKey    (PrivateKey,              Serialization = "base64", Algorithm = "secp256r1")
+
+        /// <summary>
+        /// Parse the given private key and calculate its public key.
+        /// </summary>
+        /// <param name="PrivateKey">A text representation of a private key.</param>
+        /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
+        /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
+        public static KeyPair? ParsePrivateKey(String   PrivateKey,
+                                               String?  Serialization   = "base64",
+                                               String?  Algorithm       = "secp256r1")
+        {
+
+            if (TryParsePrivateKey(PrivateKey,
+                                   out var keyPair,
+                                   Serialization,
+                                   Algorithm))
+            {
+                return keyPair;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParsePrivateKey (PrivateKey, out KeyPair, Serialization = "base64", Algorithm = "secp256r1")
+
+        /// <summary>
+        /// Try to parse the given private key and calculate its public key.
+        /// </summary>
+        /// <param name="PrivateKey">A text representation of a private key.</param>
+        /// <param name="KeyPair">The parsed key pair.</param>
+        /// <param name="Serialization">The optional serialization of the cryptographic keys. [default: base64]</param>
+        /// <param name="Algorithm">The optional cryptographic algorithm of the private key. [default: secp256r1]</param>
+        public static Boolean TryParsePrivateKey(String        PrivateKey,
+                                                 out KeyPair?  KeyPair,
+                                                 String?       Serialization   = "base64",
+                                                 String?       Algorithm       = "secp256r1")
+        {
+
+            KeyPair = null;
+
+            Byte[]? privateKeyBytes;
+            try
+            {
+
+                switch (Serialization)
+                {
+
+                    case "base64":
+                        privateKeyBytes = PrivateKey.FromBase64();
+                        break;
+
+                    default:
+                        return false;
+
+                }
+
+            }
+            catch
+            {
+                return false;
+            }
+
+            var ecParameters      = ECNamedCurveTable.GetByName(Algorithm ?? "secp256r1")
+                                      ?? throw new ArgumentException($"Invalid algorithm: {Algorithm}", nameof(Algorithm));
+
+            var d                 = new BigInteger(
+                                        1,
+                                        privateKeyBytes
+                                    );
+
+            var privateKeyParams  = new ECPrivateKeyParameters(
+                                        d,
+                                        new ECDomainParameters(
+                                            ecParameters.Curve,
+                                            ecParameters.G,
+                                            ecParameters.N,
+                                            ecParameters.H,
+                                            ecParameters.GetSeed()
+                                        )
+                                    );
+
+            var q                 = ecParameters.G.Multiply(privateKeyParams.D);
+
+            KeyPair = new KeyPair(
+                          q.GetEncoded(false),
+                          privateKeyParams.D.ToByteArray()
+                      );
+
+            return true;
+
+        }
 
         #endregion
 
@@ -571,7 +672,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Private} / {Public}";
+            => String.Concat(
+
+                   Private is not null
+                       ? $"private: {Private.ToBase64()}, "
+                       : "",
+
+                   $"public: {Public.ToBase64()}"
+
+               );
 
         #endregion
 

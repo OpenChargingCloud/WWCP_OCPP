@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                                    URL                                                             RemoteURL,
                                    HTTPHostname?                                                   VirtualHostname              = null,
-                                   String?                                                         Description                  = null,
+                                   I18NString?                                                     Description                  = null,
                                    Boolean?                                                        PreferIPv4                   = null,
                                    RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
                                    LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
