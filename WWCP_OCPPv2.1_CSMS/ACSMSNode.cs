@@ -233,6 +233,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public DateTime?                   CSMSTime                          { get; set; } = Timestamp.Now;
 
+
+        public HTTPAPI?                    HTTPAPI                           { get; }
+
         public DownloadAPI?                HTTPDownloadAPI                   { get; }
         public HTTPPath?                   HTTPDownloadAPI_Path              { get; }
         public String?                     HTTPDownloadAPI_FileSystemPath    { get; }
@@ -324,12 +327,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          SignaturePolicy?          SignaturePolicy                  = null,
                          SignaturePolicy?          ForwardingSignaturePolicy        = null,
 
+                         HTTPAPI?                  HTTPAPI                          = null,
                          Boolean                   HTTPAPI_Disabled                 = false,
                          IPPort?                   HTTPAPI_Port                     = null,
                          String?                   HTTPAPI_ServerName               = null,
                          String?                   HTTPAPI_ServiceName              = null,
                          EMailAddress?             HTTPAPI_RobotEMailAddress        = null,
                          String?                   HTTPAPI_RobotGPGPassphrase       = null,
+                         Boolean                   HTTPAPI_EventLoggingDisabled     = false,
 
                          DownloadAPI?              HTTPDownloadAPI                  = null,
                          Boolean                   HTTPDownloadAPI_Disabled         = false,
@@ -349,6 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          Boolean                   QRCodeAPI_Disabled               = false,
                          HTTPPath?                 QRCodeAPI_Path                   = null,
 
+                         WebAPI?                   WebAPI                           = null,
                          Boolean                   WebAPI_Disabled                  = false,
                          HTTPPath?                 WebAPI_Path                      = null,
 
@@ -421,17 +427,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.HTTPUploadAPI_FileSystemPath    = HTTPUploadAPI_FileSystemPath   ?? Path.Combine(AppContext.BaseDirectory, "UploadAPI");
             this.HTTPDownloadAPI_FileSystemPath  = HTTPDownloadAPI_FileSystemPath ?? Path.Combine(AppContext.BaseDirectory, "DownloadAPI");
 
-            if (HTTPAPI is not null)
+            if (HTTPExtAPI is not null)
             {
+
+                this.HTTPAPI                     = HTTPAPI ?? new HTTPAPI(
+                                                                  this,
+                                                                  HTTPExtAPI,
+                                                                  EventLoggingDisabled: HTTPAPI_EventLoggingDisabled
+                                                              );
 
                 #region HTTP API Security Settings
 
-                this.HTTPAPI.HTTPServer.AddAuth(request => {
+                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
 
                     // Allow some URLs for anonymous access...
-                    if (request.Path.StartsWith(HTTPAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
-                        request.Path.StartsWith(HTTPAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
-                        request.Path.StartsWith(HTTPAPI.URLPathPrefix + this.WebAPI_Path))
+                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
+                        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
+                        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
                     {
                         return HTTPExtAPI.Anonymous;
                     }
@@ -442,13 +454,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+
                 if (!HTTPUploadAPI_Disabled)
                 {
 
                     Directory.CreateDirectory(this.HTTPUploadAPI_FileSystemPath);
                     this.HTTPUploadAPI              = HTTPUploadAPI   ?? new UploadAPI(
                                                                              this,
-                                                                             HTTPAPI.HTTPServer,
+                                                                             HTTPExtAPI.HTTPServer,
                                                                              URLPathPrefix:   this.HTTPUploadAPI_Path,
                                                                              FileSystemPath:  this.HTTPUploadAPI_FileSystemPath
                                                                          );
@@ -461,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     Directory.CreateDirectory(this.HTTPDownloadAPI_FileSystemPath);
                     this.HTTPDownloadAPI            = HTTPDownloadAPI ?? new DownloadAPI(
                                                                              this,
-                                                                             HTTPAPI.HTTPServer,
+                                                                             HTTPExtAPI.HTTPServer,
                                                                              URLPathPrefix:   this.HTTPDownloadAPI_Path,
                                                                              FileSystemPath:  this.HTTPDownloadAPI_FileSystemPath
                                                                          );
@@ -473,7 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     this.QRCodeAPI                  = QRCodeAPI       ?? new QRCodeAPI(
                                                                              this,
-                                                                             HTTPAPI.HTTPServer,
+                                                                             HTTPExtAPI.HTTPServer,
                                                                              URLPathPrefix:   this.QRCodeAPI_Path
                                                                          );
 
@@ -482,13 +495,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (!WebAPI_Disabled)
                 {
 
-                    this.WebAPI                     = !WebAPI_Disabled
-                                                          ? new WebAPI(
-                                                                this,
-                                                                HTTPAPI,
-                                                                URLPathPrefix: this.WebAPI_Path
-                                                            )
-                                                          : null;
+                    this.WebAPI                     = WebAPI          ?? new WebAPI(
+                                                                             this,
+                                                                             HTTPExtAPI.HTTPServer,
+                                                                             URLPathPrefix:   this.WebAPI_Path
+                                                                         );
 
                 }
 
@@ -2472,70 +2483,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-
-
-        #region AttachWebAPI(...)
-
-        /// <summary>
-        /// Create a new central system for testing using HTTP/WebSocket.
-        /// </summary>
-        /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
-        /// <param name="AutoStart">Start the server immediately.</param>
-        public WebAPI AttachWebAPI(HTTPHostname?                               HTTPHostname            = null,
-                                   String?                                     ExternalDNSName         = null,
-                                   IPPort?                                     HTTPServerPort          = null,
-                                   HTTPPath?                                   BasePath                = null,
-                                   String?                                     HTTPServerName          = null,
-
-                                   HTTPPath?                                   URLPathPrefix           = null,
-                                   String?                                     HTTPServiceName         = null,
-
-                                   String                                      HTTPRealm               = "...",
-                                   Boolean                                     RequireAuthentication   = true,
-                                   IEnumerable<KeyValuePair<String, String>>?  HTTPLogins              = null,
-
-                                   String?                                     HTMLTemplate            = null,
-                                   Boolean                                     AutoStart               = false)
-        {
-
-            var httpAPI  = new HTTPExtAPI(
-
-                               HTTPHostname,
-                               ExternalDNSName,
-                               HTTPServerPort,
-                               BasePath,
-                               HTTPServerName,
-
-                               URLPathPrefix,
-                               HTTPServiceName,
-
-                               DNSClient: DNSClient,
-                               AutoStart: false
-
-                           );
-
-            var webAPI   = new WebAPI(
-
-                               this,
-                               httpAPI,
-
-                               HTTPServerName,
-                               URLPathPrefix,
-                               BasePath,
-                               HTTPRealm,
-                               HTTPLogins,
-                               HTMLTemplate
-
-                           );
-
-            if (AutoStart)
-                httpAPI.Start();
-
-            return webAPI;
-
-        }
-
-        #endregion
 
 
         #region (override) HandleErrors(Module, Caller, ErrorResponse)

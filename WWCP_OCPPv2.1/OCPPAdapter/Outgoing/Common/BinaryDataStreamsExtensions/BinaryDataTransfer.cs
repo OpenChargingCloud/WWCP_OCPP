@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         Request.ToBinary(
                             parentNetworkingNode.OCPP.CustomBinaryDataTransferRequestSerializer,
                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
-                            IncludeSignatures: true
+                            IncludeSignatures: false
                         ),
                         out var signingErrors
                     ))
@@ -172,7 +172,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          Request,
                                                          Request.ToBinary(
                                                              parentNetworkingNode.OCPP.CustomBinaryDataTransferRequestSerializer,
-                                                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer
+                                                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
+                                                             IncludeSignatures: true
                                                          )
                                                      ),
 

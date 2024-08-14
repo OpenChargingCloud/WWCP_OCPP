@@ -24,7 +24,7 @@ using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 {
 
     /// <summary>
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS
         /// <summary>
         /// Attach an OCPP Download API to the given HTTP server.
         /// </summary>
-        /// <param name="NetworkingNode">A networking node.</param>
+        /// <param name="LocalController">A networking node.</param>
         /// <param name="HTTPServer">A HTTP server.</param>
         /// 
         /// <param name="BasePath">When the API is served from an optional subdirectory path.</param>
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS
         /// 
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public DownloadAPI(ALocalControllerNode                        NetworkingNode,
+        public DownloadAPI(ALocalControllerNode                        LocalController,
                            HTTPServer                                  HTTPServer,
 
                            HTTPPath?                                   BasePath        = null,
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS
 
         {
 
-            this.NetworkingNode  = NetworkingNode;
+            this.NetworkingNode  = LocalController;
 
             this.FileSystemPath  = FileSystemPath;
 

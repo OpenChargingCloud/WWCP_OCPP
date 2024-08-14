@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            #region Parse the Authorize request
+            #region Parse the BinaryDataTransfer request
 
             if (!BinaryDataTransferRequest.TryParse(BinaryRequestMessage.Payload,
                                                     BinaryRequestMessage.RequestId,

@@ -222,19 +222,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<ACSMSNode>                                            networkingNodes   = [];
-
         protected readonly  ConcurrentDictionary<ChargingStation_Id, ChargingStation>  chargingStations  = [];
+
+        protected readonly ACSMSNode csms;
 
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// An enumeration of registered networking nodes.
-        /// </summary>
-        public              IEnumerable<ANetworkingNode>                               NetworkingNodes
-            => networkingNodes;
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -255,23 +249,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region HTTPAPI(...)
-
         /// <summary>
         /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="NetworkingNode">An OCPP charging station management system.</param>
+        /// <param name="CSMS">An OCPP charging station management system.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
+        public HTTPAPI(ACSMSNode                                   CSMS,
+                       HTTPExtAPI                                  HTTPAPI,
+                       String?                                     HTTPServerName         = null,
+                       HTTPPath?                                   URLPathPrefix          = null,
+                       HTTPPath?                                   BasePath               = null,
+
+                       Boolean                                     EventLoggingDisabled   = true,
+
+                       String                                      HTTPRealm              = DefaultHTTPRealm,
+                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins             = null,
+                       String?                                     HTMLTemplate           = null)
 
             : base(HTTPAPI,
                    HTTPServerName ?? DefaultHTTPServerName,
@@ -281,6 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
+            this.csms                = CSMS;
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins ?? [];
 
@@ -296,61 +293,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            URLTemplate:              this.URLPathPrefix + "/events",
                                            MaxNumberOfCachedEvents:  10000,
                                            RetryIntervall:           TimeSpan.FromSeconds(5),
-                                           EnableLogging:            true,
+                                           EnableLogging:            !EventLoggingDisabled,
                                            LogfilePrefix:            LogfilePrefix
                                        );
 
             RegisterURITemplates();
+            AttachCSMS(csms);
 
         }
 
         #endregion
 
-        #region HTTPAPI(CSMS, ...)
 
-        /// <summary>
-        /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
-        /// </summary>
-        /// <param name="CSMSNode">An OCPP charging station management system.</param>
-        /// <param name="HTTPAPI">A HTTP API.</param>
-        /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
-        /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
-        /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(ACSMSNode                                   CSMSNode,
-                       HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
+        #region AttachCSMS(CSMS)
 
-            : this(HTTPAPI,
-                   HTTPServerName,
-                   URLPathPrefix,
-                   BasePath,
-                   HTTPRealm,
-                   HTTPLogins,
-                   HTMLTemplate)
-
+        public void AttachCSMS(ACSMSNode CSMS)
         {
-
-            AttachCSMS(CSMSNode);
-
-        }
-
-        #endregion
-
-        #endregion
-
-
-        #region AttachCSMS(NetworkingNode)
-
-        public void AttachCSMS(ACSMSNode NetworkingNode)
-        {
-
-            networkingNodes.Add(NetworkingNode);
-
 
             // Wire HTTP Server Sent Events
 
@@ -358,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnJSONMessageRequestReceived
 
-            NetworkingNode.OnJSONMessageRequestReceived += (timestamp,
+            CSMS.OnJSONMessageRequestReceived += (timestamp,
                                                             webSocketServer,
                                                             webSocketConnection,
                                                             networkingNodeId,
@@ -368,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                             requestMessage,
                                                             cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONMessageRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -379,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnJSONMessageResponseSent
 
-            NetworkingNode.OnJSONMessageResponseSent += (timestamp,
+            CSMS.OnJSONMessageResponseSent += (timestamp,
                                                          webSocketServer,
                                                          webSocketConnection,
                                                          networkingNodeId,
@@ -392,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                          responseMessage,
                                                          cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONMessageResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -426,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnJSONMessageRequestSent
 
-            NetworkingNode.OnJSONMessageRequestSent += (timestamp,
+            CSMS.OnJSONMessageRequestSent += (timestamp,
                                                         webSocketServer,
                                                         webSocketConnection,
                                                         networkingNodeId,
@@ -436,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         requestMessage,
                                                         cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONMessageRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -447,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnJSONMessageResponseReceived
 
-            NetworkingNode.OnJSONMessageResponseReceived += (timestamp,
+            CSMS.OnJSONMessageResponseReceived += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
                                                              networkingNodeId,
@@ -460,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                              responseMessage,
                                                              cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONMessageResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -497,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnBinaryMessageRequestReceived
 
-            NetworkingNode.OnBinaryMessageRequestReceived += (timestamp,
+            CSMS.OnBinaryMessageRequestReceived += (timestamp,
                                                               webSocketServer,
                                                               webSocketConnection,
                                                               networkingNodeId,
@@ -507,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                               requestMessage,
                                                               cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryMessageRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -518,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnBinaryMessageResponseSent
 
-            NetworkingNode.OnBinaryMessageResponseSent += (timestamp,
+            CSMS.OnBinaryMessageResponseSent += (timestamp,
                                                            webSocketServer,
                                                            webSocketConnection,
                                                            networkingNodeId,
@@ -531,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                            responseMessage,
                                                            cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryMessageResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -564,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnBinaryMessageRequestSent
 
-            NetworkingNode.OnBinaryMessageRequestSent += (timestamp,
+            CSMS.OnBinaryMessageRequestSent += (timestamp,
                                                                webSocketServer,
                                                                webSocketConnection,
                                                                networkingNodeId,
@@ -574,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                requestMessage,
                                                                cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryMessageRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -585,7 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnBinaryMessageResponseReceived
 
-            NetworkingNode.OnBinaryMessageResponseReceived += (timestamp,
+            CSMS.OnBinaryMessageResponseReceived += (timestamp,
                                                                     webSocketServer,
                                                                     webSocketConnection,
                                                                     networkingNodeId,
@@ -598,7 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     responseMessage,
                                                                     cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryMessageResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -637,13 +595,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGet15118EVCertificate
 
-            NetworkingNode.OCPP.IN.OnGet15118EVCertificateRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGet15118EVCertificateRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGet15118EVCertificateRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGet15118EVCertificateRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -652,14 +610,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGet15118EVCertificateRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGet15118EVCertificateRequestSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGet15118EVCertificateRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGet15118EVCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -668,7 +626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGet15118EVCertificateResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGet15118EVCertificateResponseReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
@@ -676,7 +634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                runtime,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGet15118EVCertificateResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGet15118EVCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -687,7 +645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGet15118EVCertificateResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGet15118EVCertificateResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -696,7 +654,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             sentMessageResult,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGet15118EVCertificateResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGet15118EVCertificateResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -710,13 +668,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetCertificateStatus
 
-            NetworkingNode.OCPP.IN.OnGetCertificateStatusRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetCertificateStatusRequestReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCertificateStatusRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetCertificateStatusRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -725,14 +683,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetCertificateStatusRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetCertificateStatusRequestSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCertificateStatusRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetCertificateStatusRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -741,7 +699,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetCertificateStatusResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetCertificateStatusResponseReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -749,7 +707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                               runtime,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCertificateStatusResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetCertificateStatusResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -760,7 +718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetCertificateStatusResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetCertificateStatusResponseSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -769,7 +727,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCertificateStatusResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetCertificateStatusResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -783,13 +741,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetCRL
 
-            NetworkingNode.OCPP.IN.OnGetCRLRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetCRLRequestReceived += (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCRLRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetCRLRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -798,14 +756,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
                                                             sender,
                                                             connection,
                                                             request,
                                                             sentMessageResult,
                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCRLRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetCRLRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -814,7 +772,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetCRLResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetCRLResponseReceived += (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
@@ -822,7 +780,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 runtime,
                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCRLResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetCRLResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -833,7 +791,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetCRLResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetCRLResponseSent += (timestamp,
                                                              sender,
                                                              connection,
                                                              request,
@@ -842,7 +800,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                              sentMessageResult,
                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCRLResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetCRLResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -856,13 +814,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSignCertificate
 
-            NetworkingNode.OCPP.IN.OnSignCertificateRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSignCertificateRequestReceived += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSignCertificateRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSignCertificateRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -871,14 +829,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSignCertificateRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSignCertificateRequestSent += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
                                                                      sentMessageResult,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSignCertificateRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSignCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -887,7 +845,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSignCertificateResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSignCertificateResponseReceived += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -895,7 +853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          runtime,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSignCertificateResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSignCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -906,7 +864,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSignCertificateResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSignCertificateResponseSent += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
@@ -915,7 +873,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       sentMessageResult,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSignCertificateResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSignCertificateResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -933,13 +891,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnAuthorize
 
-            NetworkingNode.OCPP.IN.OnAuthorizeRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnAuthorizeRequestReceived += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnAuthorizeRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnAuthorizeRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -948,14 +906,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
                                                                sentMessageResult,
                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnAuthorizeRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnAuthorizeRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -964,7 +922,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnAuthorizeResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnAuthorizeResponseReceived += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -972,7 +930,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    runtime,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnAuthorizeResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnAuthorizeResponseReceived),
                                      JSONObject.Create(
                                                new JProperty("timestamp",   timestamp. ToIso8601()),
                                                new JProperty("sender",      sender.Id),
@@ -985,7 +943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnAuthorizeResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnAuthorizeResponseSent += (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
@@ -994,7 +952,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 sentMessageResult,
                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnAuthorizeResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnAuthorizeResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1008,13 +966,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnClearedChargingLimit
 
-            NetworkingNode.OCPP.IN.OnClearedChargingLimitRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearedChargingLimitRequestReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearedChargingLimitRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearedChargingLimitRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1023,14 +981,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearedChargingLimitRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearedChargingLimitRequestSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearedChargingLimitRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearedChargingLimitRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1039,7 +997,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnClearedChargingLimitResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearedChargingLimitResponseReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -1047,7 +1005,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                               runtime,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearedChargingLimitResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearedChargingLimitResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1058,7 +1016,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearedChargingLimitResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearedChargingLimitResponseSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -1067,7 +1025,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearedChargingLimitResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearedChargingLimitResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1081,13 +1039,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnMeterValues
 
-            NetworkingNode.OCPP.IN.OnMeterValuesRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnMeterValuesRequestReceived += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnMeterValuesRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnMeterValuesRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1096,14 +1054,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnMeterValuesRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnMeterValuesRequestSent += (timestamp,
                                                                  sender,
                                                                  connection,
                                                                  request,
                                                                  sentMessageResult,
                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnMeterValuesRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnMeterValuesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1112,7 +1070,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnMeterValuesResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnMeterValuesResponseReceived += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
@@ -1120,7 +1078,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      runtime,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnMeterValuesResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnMeterValuesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1131,7 +1089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnMeterValuesResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnMeterValuesResponseSent += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
@@ -1140,7 +1098,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   sentMessageResult,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnMeterValuesResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnMeterValuesResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1154,13 +1112,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyChargingLimit
 
-            NetworkingNode.OCPP.IN.OnNotifyChargingLimitRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyChargingLimitRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyChargingLimitRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyChargingLimitRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1169,14 +1127,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyChargingLimitRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyChargingLimitRequestSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyChargingLimitRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyChargingLimitRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1185,7 +1143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyChargingLimitResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyChargingLimitResponseReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -1193,7 +1151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              runtime,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyChargingLimitResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyChargingLimitResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1204,7 +1162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyChargingLimitResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyChargingLimitResponseSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -1213,7 +1171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyChargingLimitResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyChargingLimitResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1227,13 +1185,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyEVChargingNeeds
 
-            NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1242,14 +1200,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            sentMessageResul,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1258,7 +1216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyEVChargingNeedsResponseReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
@@ -1266,7 +1224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                runtime,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyEVChargingNeedsResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1277,7 +1235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyEVChargingNeedsResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -1286,7 +1244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             sentMessageResul,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyEVChargingNeedsResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1300,13 +1258,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyEVChargingSchedule
 
-            NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
                                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1315,14 +1273,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
                                                                               sentMessageResult,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1331,7 +1289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyEVChargingScheduleResponseReceived += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request,
@@ -1339,7 +1297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                   runtime,
                                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyEVChargingScheduleResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1350,7 +1308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyEVChargingScheduleResponseSent += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
@@ -1359,7 +1317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                sentMessageResult,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyEVChargingScheduleResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1373,13 +1331,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyPriorityCharging
 
-            NetworkingNode.OCPP.IN.OnNotifyPriorityChargingRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyPriorityChargingRequestReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyPriorityChargingRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyPriorityChargingRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1388,14 +1346,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyPriorityChargingRequestSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             sentMessageResult,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyPriorityChargingRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1404,7 +1362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyPriorityChargingResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyPriorityChargingResponseReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -1412,7 +1370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                 runtime,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyPriorityChargingResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyPriorityChargingResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1423,7 +1381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyPriorityChargingResponseSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -1432,7 +1390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              sentMessageResult,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyPriorityChargingResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1446,13 +1404,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifySettlement
 
-            NetworkingNode.OCPP.IN.OnNotifySettlementRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifySettlementRequestReceived += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifySettlementRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifySettlementRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1461,14 +1419,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifySettlementRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifySettlementRequestSent += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
                                                                       sentMessageResult,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifySettlementRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifySettlementRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1477,7 +1435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifySettlementResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifySettlementResponseReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -1485,7 +1443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           runtime,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifySettlementResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifySettlementResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1496,7 +1454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifySettlementResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifySettlementResponseSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
@@ -1505,7 +1463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifySettlementResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifySettlementResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1519,13 +1477,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnPullDynamicScheduleUpdate
 
-            NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request,
                                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1534,14 +1492,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
                                                                                sentMessageResult,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1550,7 +1508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnPullDynamicScheduleUpdateResponseReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request,
@@ -1558,7 +1516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                    runtime,
                                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnPullDynamicScheduleUpdateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1569,7 +1527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnPullDynamicScheduleUpdateResponseSent += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -1578,7 +1536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                 sentMessageResult,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnPullDynamicScheduleUpdateResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1592,13 +1550,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnReportChargingProfiles
 
-            NetworkingNode.OCPP.IN.OnReportChargingProfilesRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnReportChargingProfilesRequestReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReportChargingProfilesRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnReportChargingProfilesRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1607,14 +1565,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnReportChargingProfilesRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnReportChargingProfilesRequestSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             sentMessageResult,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReportChargingProfilesRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnReportChargingProfilesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1623,7 +1581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnReportChargingProfilesResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnReportChargingProfilesResponseReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -1631,7 +1589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                 runtime,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReportChargingProfilesResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnReportChargingProfilesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1642,7 +1600,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnReportChargingProfilesResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnReportChargingProfilesResponseSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -1651,7 +1609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              sentMessageResult,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReportChargingProfilesResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnReportChargingProfilesResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1665,13 +1623,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnReservationStatusUpdate
 
-            NetworkingNode.OCPP.IN.OnReservationStatusUpdateRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnReservationStatusUpdateRequestReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReservationStatusUpdateRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnReservationStatusUpdateRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1680,14 +1638,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnReservationStatusUpdateRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnReservationStatusUpdateRequestSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
                                                                              sentMessageResult,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReservationStatusUpdateRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnReservationStatusUpdateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1696,7 +1654,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnReservationStatusUpdateResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnReservationStatusUpdateResponseReceived += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
@@ -1704,7 +1662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                  runtime,
                                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReservationStatusUpdateResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnReservationStatusUpdateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1715,7 +1673,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnReservationStatusUpdateResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnReservationStatusUpdateResponseSent += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -1724,7 +1682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                               sentMessageResult,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReservationStatusUpdateResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnReservationStatusUpdateResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1738,13 +1696,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnStatusNotification
 
-            NetworkingNode.OCPP.IN.OnStatusNotificationRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnStatusNotificationRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnStatusNotificationRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnStatusNotificationRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1753,14 +1711,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnStatusNotificationRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnStatusNotificationRequestSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnStatusNotificationRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnStatusNotificationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1769,7 +1727,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnStatusNotificationResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnStatusNotificationResponseReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -1777,7 +1735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             runtime,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnStatusNotificationResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnStatusNotificationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1788,7 +1746,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnStatusNotificationResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnStatusNotificationResponseSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -1797,7 +1755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnStatusNotificationResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnStatusNotificationResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1811,13 +1769,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnTransactionEvent
 
-            NetworkingNode.OCPP.IN.OnTransactionEventRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnTransactionEventRequestReceived += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTransactionEventRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnTransactionEventRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1826,14 +1784,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnTransactionEventRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnTransactionEventRequestSent += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
                                                                       sentMessageResult,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTransactionEventRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnTransactionEventRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1842,7 +1800,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnTransactionEventResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnTransactionEventResponseReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -1850,7 +1808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           runtime,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTransactionEventResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnTransactionEventResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1861,7 +1819,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnTransactionEventResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnTransactionEventResponseSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
@@ -1870,7 +1828,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTransactionEventResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnTransactionEventResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1888,13 +1846,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyCustomerInformation
 
-            NetworkingNode.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request,
                                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCustomerInformationRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyCustomerInformationRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1903,14 +1861,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyCustomerInformationRequestSent += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
                                                                                sentMessageResult,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyCustomerInformationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1919,7 +1877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyCustomerInformationResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyCustomerInformationResponseReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request,
@@ -1927,7 +1885,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                    runtime,
                                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCustomerInformationResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyCustomerInformationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1938,7 +1896,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyCustomerInformationResponseSent += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -1947,7 +1905,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                 sentMessageResult,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyCustomerInformationResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1961,13 +1919,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyDisplayMessages
 
-            NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyDisplayMessagesRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1976,14 +1934,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyDisplayMessagesRequestSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyDisplayMessagesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -1992,7 +1950,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyDisplayMessagesResponseReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
@@ -2000,7 +1958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                runtime,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyDisplayMessagesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2011,7 +1969,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyDisplayMessagesResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -2020,7 +1978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             sentMessageResult,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyDisplayMessagesResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2038,13 +1996,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnLogStatusNotification
 
-            NetworkingNode.OCPP.IN.OnLogStatusNotificationRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnLogStatusNotificationRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnLogStatusNotificationRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnLogStatusNotificationRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2053,14 +2011,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnLogStatusNotificationRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnLogStatusNotificationRequestSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnLogStatusNotificationRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnLogStatusNotificationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2069,7 +2027,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnLogStatusNotificationResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnLogStatusNotificationResponseReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
@@ -2077,7 +2035,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                runtime,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnLogStatusNotificationResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnLogStatusNotificationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2088,7 +2046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnLogStatusNotificationResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnLogStatusNotificationResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -2097,7 +2055,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             sentMessageResult,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnLogStatusNotificationResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnLogStatusNotificationResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2111,13 +2069,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyEvent
 
-            NetworkingNode.OCPP.IN.OnNotifyEventRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyEventRequestReceived += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEventRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyEventRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2126,14 +2084,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyEventRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyEventRequestSent += (timestamp,
                                                                  sender,
                                                                  connection,
                                                                  request,
                                                                  sentMessageResult,
                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEventRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyEventRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2142,7 +2100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyEventResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyEventResponseReceived += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
@@ -2150,7 +2108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      runtime,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEventResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyEventResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2161,7 +2119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyEventResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyEventResponseSent += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
@@ -2170,7 +2128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   sentMessageResult,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEventResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyEventResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2184,13 +2142,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyMonitoringReport
 
-            NetworkingNode.OCPP.IN.OnNotifyMonitoringReportRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyMonitoringReportRequestReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyMonitoringReportRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyMonitoringReportRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2199,14 +2157,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyMonitoringReportRequestSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             sentMessageResult,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyMonitoringReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2215,7 +2173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyMonitoringReportResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyMonitoringReportResponseReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -2223,7 +2181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                 runtime,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyMonitoringReportResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyMonitoringReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2234,7 +2192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyMonitoringReportResponseSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -2243,7 +2201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              sentMessageResult,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyMonitoringReportResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2257,13 +2215,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyReport
 
-            NetworkingNode.OCPP.IN.OnNotifyReportRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyReportRequestReceived += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyReportRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyReportRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2272,14 +2230,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyReportRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyReportRequestSent += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
                                                                   sentMessageResult,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyReportRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2288,7 +2246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyReportResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyReportResponseReceived += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
@@ -2296,7 +2254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       runtime,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyReportResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2307,7 +2265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyReportResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyReportResponseSent += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -2316,7 +2274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    sentMessageResult,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyReportResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyReportResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2330,13 +2288,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSecurityEventNotification
 
-            NetworkingNode.OCPP.IN.OnSecurityEventNotificationRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSecurityEventNotificationRequestReceived += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request,
                                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSecurityEventNotificationRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSecurityEventNotificationRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2345,14 +2303,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSecurityEventNotificationRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSecurityEventNotificationRequestSent += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
                                                                                sentMessageResult,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSecurityEventNotificationRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSecurityEventNotificationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2361,7 +2319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSecurityEventNotificationResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSecurityEventNotificationResponseReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request,
@@ -2369,7 +2327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                    runtime,
                                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSecurityEventNotificationResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSecurityEventNotificationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2380,7 +2338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSecurityEventNotificationResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSecurityEventNotificationResponseSent += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -2389,7 +2347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                 sentMessageResult,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSecurityEventNotificationResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSecurityEventNotificationResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2407,13 +2365,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnBootNotification
 
-            NetworkingNode.OCPP.IN.OnBootNotificationRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnBootNotificationRequestReceived += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnBootNotificationRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnBootNotificationRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2422,14 +2380,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
                                                                       sentMessageResult,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBootNotificationRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnBootNotificationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2438,7 +2396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnBootNotificationResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnBootNotificationResponseReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -2446,7 +2404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           runtime,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnBootNotificationResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnBootNotificationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2459,7 +2417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnBootNotificationResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnBootNotificationResponseSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
@@ -2468,7 +2426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBootNotificationResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnBootNotificationResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2482,13 +2440,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnFirmwareStatusNotification
 
-            NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request,
                                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnFirmwareStatusNotificationRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2497,14 +2455,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
                                                                                 sentMessageResult,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnFirmwareStatusNotificationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2513,7 +2471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnFirmwareStatusNotificationResponseReceived += (timestamp,
                                                                                     sender,
                                                                                     connection,
                                                                                     request,
@@ -2521,7 +2479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                     runtime,
                                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnFirmwareStatusNotificationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2532,7 +2490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnFirmwareStatusNotificationResponseSent += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
@@ -2541,7 +2499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                  sentMessageResult,
                                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnFirmwareStatusNotificationResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2555,13 +2513,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnHeartbeat
 
-            NetworkingNode.OCPP.IN.OnHeartbeatRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnHeartbeatRequestReceived += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnHeartbeatRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnHeartbeatRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2570,14 +2528,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnHeartbeatRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnHeartbeatRequestSent += (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
                                                                sentMessageResult,
                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnHeartbeatRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnHeartbeatRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2586,7 +2544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnHeartbeatResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnHeartbeatResponseReceived += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -2594,7 +2552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    runtime,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnHeartbeatResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnHeartbeatResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2605,7 +2563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnHeartbeatResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnHeartbeatResponseSent += (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
@@ -2614,7 +2572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 sentMessageResult,
                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnHeartbeatResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnHeartbeatResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2628,13 +2586,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnPublishFirmwareStatusNotification
 
-            NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp,
                                                                                           sender,
                                                                                           connection,
                                                                                           request,
                                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2643,14 +2601,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                        sender,
                                                                                        connection,
                                                                                        request,
                                                                                        sentMessageResult,
                                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2659,7 +2617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnPublishFirmwareStatusNotificationResponseReceived += (timestamp,
                                                                                            sender,
                                                                                            connection,
                                                                                            request,
@@ -2667,7 +2625,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                            runtime,
                                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnPublishFirmwareStatusNotificationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2678,7 +2636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnPublishFirmwareStatusNotificationResponseSent += (timestamp,
                                                                                         sender,
                                                                                         connection,
                                                                                         request,
@@ -2687,7 +2645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                         sentMessageResult,
                                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnPublishFirmwareStatusNotificationResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2709,13 +2667,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnCertificateSigned
 
-            NetworkingNode.OCPP.IN.OnCertificateSignedRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnCertificateSignedRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCertificateSignedRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnCertificateSignedRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2724,14 +2682,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnCertificateSignedRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnCertificateSignedRequestSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCertificateSignedRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnCertificateSignedRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2740,7 +2698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnCertificateSignedResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnCertificateSignedResponseReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -2748,7 +2706,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            runtime,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCertificateSignedResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnCertificateSignedResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2759,7 +2717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnCertificateSignedResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnCertificateSignedResponseSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -2768,7 +2726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCertificateSignedResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnCertificateSignedResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2782,13 +2740,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnDeleteCertificate
 
-            NetworkingNode.OCPP.IN.OnDeleteCertificateRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnDeleteCertificateRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDeleteCertificateRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnDeleteCertificateRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2797,14 +2755,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnDeleteCertificateRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnDeleteCertificateRequestSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDeleteCertificateRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnDeleteCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2813,7 +2771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnDeleteCertificateResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnDeleteCertificateResponseReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -2821,7 +2779,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            runtime,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDeleteCertificateResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnDeleteCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2832,7 +2790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnDeleteCertificateResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnDeleteCertificateResponseSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -2841,7 +2799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDeleteCertificateResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnDeleteCertificateResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2855,13 +2813,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetInstalledCertificateIds
 
-            NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request,
                                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2870,14 +2828,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
                                                                                 sentMessageResult,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2886,7 +2844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived += (timestamp,
                                                                                     sender,
                                                                                     connection,
                                                                                     request,
@@ -2894,7 +2852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                     runtime,
                                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2905,7 +2863,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
@@ -2914,7 +2872,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                  sentMessageResult,
                                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2928,13 +2886,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnInstallCertificate
 
-            NetworkingNode.OCPP.IN.OnInstallCertificateRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnInstallCertificateRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnInstallCertificateRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnInstallCertificateRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2943,14 +2901,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnInstallCertificateRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnInstallCertificateRequestSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnInstallCertificateRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnInstallCertificateRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2959,7 +2917,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnInstallCertificateResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnInstallCertificateResponseReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -2967,7 +2925,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             runtime,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnInstallCertificateResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnInstallCertificateResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -2978,7 +2936,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnInstallCertificateResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnInstallCertificateResponseSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -2987,7 +2945,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnInstallCertificateResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnInstallCertificateResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3001,13 +2959,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyCRL
 
-            NetworkingNode.OCPP.IN.OnNotifyCRLRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyCRLRequestReceived += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCRLRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyCRLRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3016,14 +2974,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyCRLRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyCRLRequestSent += (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
                                                                sentMessageResult,
                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCRLRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyCRLRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3032,7 +2990,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyCRLResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyCRLResponseReceived += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -3040,7 +2998,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    runtime,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCRLResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyCRLResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3051,7 +3009,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyCRLResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyCRLResponseSent += (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
@@ -3060,7 +3018,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 sentMessageResult,
                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCRLResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyCRLResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3078,13 +3036,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnCancelReservation
 
-            NetworkingNode.OCPP.IN.OnCancelReservationRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnCancelReservationRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCancelReservationRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnCancelReservationRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3093,14 +3051,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnCancelReservationRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnCancelReservationRequestSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCancelReservationRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnCancelReservationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3109,7 +3067,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnCancelReservationResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnCancelReservationResponseReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -3117,7 +3075,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            runtime,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCancelReservationResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnCancelReservationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3128,7 +3086,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnCancelReservationResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnCancelReservationResponseSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -3137,7 +3095,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCancelReservationResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnCancelReservationResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3151,13 +3109,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnClearChargingProfile
 
-            NetworkingNode.OCPP.IN.OnClearChargingProfileRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearChargingProfileRequestReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearChargingProfileRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearChargingProfileRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3166,14 +3124,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearChargingProfileRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearChargingProfileRequestSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearChargingProfileRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearChargingProfileRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3182,7 +3140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnClearChargingProfileResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearChargingProfileResponseReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -3190,7 +3148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                               runtime,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearChargingProfileResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearChargingProfileResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3201,7 +3159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearChargingProfileResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearChargingProfileResponseSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -3210,7 +3168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearChargingProfileResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearChargingProfileResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3224,13 +3182,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetChargingProfiles
 
-            NetworkingNode.OCPP.IN.OnGetChargingProfilesRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetChargingProfilesRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetChargingProfilesRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetChargingProfilesRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3239,14 +3197,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetChargingProfilesRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetChargingProfilesRequestSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetChargingProfilesRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetChargingProfilesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3255,7 +3213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetChargingProfilesResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetChargingProfilesResponseReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -3263,7 +3221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              runtime,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetChargingProfilesResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetChargingProfilesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3274,7 +3232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetChargingProfilesResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetChargingProfilesResponseSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -3283,7 +3241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetChargingProfilesResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetChargingProfilesResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3297,13 +3255,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetCompositeSchedule
 
-            NetworkingNode.OCPP.IN.OnGetCompositeScheduleRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetCompositeScheduleRequestReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCompositeScheduleRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetCompositeScheduleRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3312,14 +3270,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetCompositeScheduleRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetCompositeScheduleRequestSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCompositeScheduleRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetCompositeScheduleRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3328,7 +3286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetCompositeScheduleResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetCompositeScheduleResponseReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -3336,7 +3294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                               runtime,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCompositeScheduleResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetCompositeScheduleResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3347,7 +3305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetCompositeScheduleResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetCompositeScheduleResponseSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -3356,7 +3314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCompositeScheduleResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetCompositeScheduleResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3370,13 +3328,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetTransactionStatus
 
-            NetworkingNode.OCPP.IN.OnGetTransactionStatusRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetTransactionStatusRequestReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetTransactionStatusRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetTransactionStatusRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3385,14 +3343,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetTransactionStatusRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetTransactionStatusRequestSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetTransactionStatusRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetTransactionStatusRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3401,7 +3359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetTransactionStatusResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetTransactionStatusResponseReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -3409,7 +3367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                               runtime,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetTransactionStatusResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetTransactionStatusResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3420,7 +3378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetTransactionStatusResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetTransactionStatusResponseSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -3429,7 +3387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetTransactionStatusResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetTransactionStatusResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3443,13 +3401,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyAllowedEnergyTransfer
 
-            NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived += (timestamp,
                                                                                     sender,
                                                                                     connection,
                                                                                     request,
                                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3458,14 +3416,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
                                                                                  sentMessageResult,
                                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3474,7 +3432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived += (timestamp,
                                                                                      sender,
                                                                                      connection,
                                                                                      request,
@@ -3482,7 +3440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                      runtime,
                                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3493,7 +3451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request,
@@ -3502,7 +3460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                   sentMessageResult,
                                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3516,13 +3474,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnRequestStartTransaction
 
-            NetworkingNode.OCPP.IN.OnRequestStartTransactionRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnRequestStartTransactionRequestReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnRequestStartTransactionRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnRequestStartTransactionRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3531,14 +3489,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnRequestStartTransactionRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnRequestStartTransactionRequestSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
                                                                              sentMessageResult,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnRequestStartTransactionRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnRequestStartTransactionRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3547,7 +3505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnRequestStartTransactionResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnRequestStartTransactionResponseReceived += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
@@ -3555,7 +3513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                  runtime,
                                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnRequestStartTransactionResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnRequestStartTransactionResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3566,7 +3524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnRequestStartTransactionResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnRequestStartTransactionResponseSent += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -3575,7 +3533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                               sentMessageResult,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnRequestStartTransactionResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnRequestStartTransactionResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3589,13 +3547,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnRequestStopTransaction
 
-            NetworkingNode.OCPP.IN.OnRequestStopTransactionRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnRequestStopTransactionRequestReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnRequestStopTransactionRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnRequestStopTransactionRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3604,14 +3562,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnRequestStopTransactionRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnRequestStopTransactionRequestSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             sentMessageResult,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnRequestStopTransactionRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnRequestStopTransactionRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3620,7 +3578,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnRequestStopTransactionResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnRequestStopTransactionResponseReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -3628,7 +3586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                 runtime,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnRequestStopTransactionResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnRequestStopTransactionResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3639,7 +3597,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnRequestStopTransactionResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnRequestStopTransactionResponseSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -3648,7 +3606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              sentMessageResult,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnRequestStopTransactionResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnRequestStopTransactionResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3662,13 +3620,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnReserveNow
 
-            NetworkingNode.OCPP.IN.OnReserveNowRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnReserveNowRequestReceived += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReserveNowRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnReserveNowRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3677,14 +3635,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnReserveNowRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnReserveNowRequestSent += (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
                                                                 sentMessageResult,
                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReserveNowRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnReserveNowRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3693,7 +3651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnReserveNowResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnReserveNowResponseReceived += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
@@ -3701,7 +3659,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     runtime,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReserveNowResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnReserveNowResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3712,7 +3670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnReserveNowResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnReserveNowResponseSent += (timestamp,
                                                                  sender,
                                                                  connection,
                                                                  request,
@@ -3721,7 +3679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                  sentMessageResult,
                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReserveNowResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnReserveNowResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3735,13 +3693,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetChargingProfile
 
-            NetworkingNode.OCPP.IN.OnSetChargingProfileRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetChargingProfileRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetChargingProfileRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetChargingProfileRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3750,14 +3708,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetChargingProfileRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetChargingProfileRequestSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetChargingProfileRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetChargingProfileRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3766,7 +3724,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSetChargingProfileResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetChargingProfileResponseReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3774,7 +3732,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             runtime,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetChargingProfileResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetChargingProfileResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3785,7 +3743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetChargingProfileResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetChargingProfileResponseSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -3794,7 +3752,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetChargingProfileResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetChargingProfileResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3808,13 +3766,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUnlockConnector
 
-            NetworkingNode.OCPP.IN.OnUnlockConnectorRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnUnlockConnectorRequestReceived += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnlockConnectorRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUnlockConnectorRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3823,14 +3781,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUnlockConnectorRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnUnlockConnectorRequestSent += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
                                                                      sentMessageResult,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnlockConnectorRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUnlockConnectorRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3839,7 +3797,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnUnlockConnectorResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnUnlockConnectorResponseReceived += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -3847,7 +3805,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          runtime,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnlockConnectorResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUnlockConnectorResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3858,7 +3816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUnlockConnectorResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnUnlockConnectorResponseSent += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
@@ -3867,7 +3825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       sentMessageResult,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnlockConnectorResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUnlockConnectorResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3881,13 +3839,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUpdateDynamicSchedule
 
-            NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnUpdateDynamicScheduleRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUpdateDynamicScheduleRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3896,14 +3854,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnUpdateDynamicScheduleRequestSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUpdateDynamicScheduleRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3912,7 +3870,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnUpdateDynamicScheduleResponseReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
@@ -3920,7 +3878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                runtime,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUpdateDynamicScheduleResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3931,7 +3889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnUpdateDynamicScheduleResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3940,7 +3898,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             sentMessageResult,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUpdateDynamicScheduleResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3954,13 +3912,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUsePriorityCharging
 
-            NetworkingNode.OCPP.IN.OnUsePriorityChargingRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnUsePriorityChargingRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUsePriorityChargingRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUsePriorityChargingRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3969,14 +3927,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUsePriorityChargingRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnUsePriorityChargingRequestSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUsePriorityChargingRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUsePriorityChargingRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -3985,7 +3943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnUsePriorityChargingResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnUsePriorityChargingResponseReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -3993,7 +3951,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              runtime,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUsePriorityChargingResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUsePriorityChargingResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4004,7 +3962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUsePriorityChargingResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnUsePriorityChargingResponseSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -4013,7 +3971,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUsePriorityChargingResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUsePriorityChargingResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4031,13 +3989,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnClearDisplayMessage
 
-            NetworkingNode.OCPP.IN.OnClearDisplayMessageRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearDisplayMessageRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearDisplayMessageRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearDisplayMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4046,14 +4004,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearDisplayMessageRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearDisplayMessageRequestSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearDisplayMessageRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearDisplayMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4062,7 +4020,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnClearDisplayMessageResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearDisplayMessageResponseReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -4070,7 +4028,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              runtime,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearDisplayMessageResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearDisplayMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4081,7 +4039,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearDisplayMessageResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearDisplayMessageResponseSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -4090,7 +4048,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearDisplayMessageResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearDisplayMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4104,13 +4062,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnCostUpdated
 
-            NetworkingNode.OCPP.IN.OnCostUpdatedRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnCostUpdatedRequestReceived += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCostUpdatedRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnCostUpdatedRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4119,14 +4077,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnCostUpdatedRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnCostUpdatedRequestSent += (timestamp,
                                                                  sender,
                                                                  connection,
                                                                  request,
                                                                  sentMessageResult,
                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCostUpdatedRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnCostUpdatedRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4135,7 +4093,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnCostUpdatedResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnCostUpdatedResponseReceived += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
@@ -4143,7 +4101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      runtime,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCostUpdatedResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnCostUpdatedResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4154,7 +4112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnCostUpdatedResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnCostUpdatedResponseSent += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
@@ -4163,7 +4121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   sentMessageResult,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCostUpdatedResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnCostUpdatedResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4177,13 +4135,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnCustomerInformation
 
-            NetworkingNode.OCPP.IN.OnCustomerInformationRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnCustomerInformationRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCustomerInformationRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnCustomerInformationRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4192,14 +4150,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnCustomerInformationRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnCustomerInformationRequestSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCustomerInformationRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnCustomerInformationRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4208,7 +4166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnCustomerInformationResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnCustomerInformationResponseReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -4216,7 +4174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              runtime,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCustomerInformationResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnCustomerInformationResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4227,7 +4185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnCustomerInformationResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnCustomerInformationResponseSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -4236,7 +4194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCustomerInformationResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnCustomerInformationResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4250,13 +4208,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetDisplayMessages
 
-            NetworkingNode.OCPP.IN.OnGetDisplayMessagesRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetDisplayMessagesRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetDisplayMessagesRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetDisplayMessagesRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4265,14 +4223,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetDisplayMessagesRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetDisplayMessagesRequestSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetDisplayMessagesRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetDisplayMessagesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4281,7 +4239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetDisplayMessagesResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetDisplayMessagesResponseReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4289,7 +4247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             runtime,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetDisplayMessagesResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetDisplayMessagesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4300,7 +4258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetDisplayMessagesResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetDisplayMessagesResponseSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -4309,7 +4267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetDisplayMessagesResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetDisplayMessagesResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4323,13 +4281,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetDisplayMessage
 
-            NetworkingNode.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetDisplayMessageRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetDisplayMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4338,14 +4296,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetDisplayMessageRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetDisplayMessageRequestSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetDisplayMessageRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetDisplayMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4354,7 +4312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSetDisplayMessageResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetDisplayMessageResponseReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -4362,7 +4320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            runtime,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetDisplayMessageResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetDisplayMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4373,7 +4331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetDisplayMessageResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetDisplayMessageResponseSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -4382,7 +4340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetDisplayMessageResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetDisplayMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4400,13 +4358,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnChangeAvailability
 
-            NetworkingNode.OCPP.IN.OnChangeAvailabilityRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnChangeAvailabilityRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnChangeAvailabilityRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnChangeAvailabilityRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4415,14 +4373,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnChangeAvailabilityRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnChangeAvailabilityRequestSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         entMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnChangeAvailabilityRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnChangeAvailabilityRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4431,7 +4389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnChangeAvailabilityResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnChangeAvailabilityResponseReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4439,7 +4397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             runtime,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnChangeAvailabilityResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnChangeAvailabilityResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4450,7 +4408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnChangeAvailabilityResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnChangeAvailabilityResponseSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -4459,7 +4417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          entMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnChangeAvailabilityResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnChangeAvailabilityResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4473,13 +4431,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnClearVariableMonitoring
 
-            NetworkingNode.OCPP.IN.OnClearVariableMonitoringRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearVariableMonitoringRequestReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
                                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearVariableMonitoringRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearVariableMonitoringRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4488,14 +4446,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearVariableMonitoringRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearVariableMonitoringRequestSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
                                                                              sentMessageResult,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearVariableMonitoringRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearVariableMonitoringRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4504,7 +4462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnClearVariableMonitoringResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearVariableMonitoringResponseReceived += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
@@ -4512,7 +4470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                  runtime,
                                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearVariableMonitoringResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearVariableMonitoringResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4523,7 +4481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearVariableMonitoringResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearVariableMonitoringResponseSent += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -4532,7 +4490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                               sentMessageResult,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearVariableMonitoringResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearVariableMonitoringResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4546,13 +4504,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetBaseReport
 
-            NetworkingNode.OCPP.IN.OnGetBaseReportRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetBaseReportRequestReceived += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetBaseReportRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetBaseReportRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4561,14 +4519,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetBaseReportRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetBaseReportRequestSent += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
                                                                    sentMessageResult,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetBaseReportRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetBaseReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4577,7 +4535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetBaseReportResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetBaseReportResponseReceived += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
@@ -4585,7 +4543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        runtime,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetBaseReportResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetBaseReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4596,7 +4554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetBaseReportResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetBaseReportResponseSent += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
@@ -4605,7 +4563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     sentMessageResult,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetBaseReportResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetBaseReportResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4619,13 +4577,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetLog
 
-            NetworkingNode.OCPP.IN.OnGetLogRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetLogRequestReceived += (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLogRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetLogRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4634,14 +4592,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetLogRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetLogRequestSent += (timestamp,
                                                             sender,
                                                             connection,
                                                             request,
                                                             sentMessageResult,
                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLogRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetLogRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4650,7 +4608,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetLogResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetLogResponseReceived += (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
@@ -4658,7 +4616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 runtime,
                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLogResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetLogResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4669,7 +4627,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetLogResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetLogResponseSent += (timestamp,
                                                              sender,
                                                              connection,
                                                              request,
@@ -4678,7 +4636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                              sentMessageResult,
                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLogResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetLogResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4692,13 +4650,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetMonitoringReport
 
-            NetworkingNode.OCPP.IN.OnGetMonitoringReportRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetMonitoringReportRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetMonitoringReportRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetMonitoringReportRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4707,14 +4665,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetMonitoringReportRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetMonitoringReportRequestSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetMonitoringReportRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetMonitoringReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4723,7 +4681,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetMonitoringReportResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetMonitoringReportResponseReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -4731,7 +4689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              runtime,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetMonitoringReportResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetMonitoringReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4742,7 +4700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetMonitoringReportResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetMonitoringReportResponseSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -4751,7 +4709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetMonitoringReportResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetMonitoringReportResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4765,13 +4723,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetReport
 
-            NetworkingNode.OCPP.IN.OnGetReportRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetReportRequestReceived += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetReportRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetReportRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4780,14 +4738,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetReportRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetReportRequestSent += (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
                                                                sentMessageResult,
                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetReportRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetReportRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4796,7 +4754,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetReportResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetReportResponseReceived += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -4804,7 +4762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    runtime,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetReportResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetReportResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4815,7 +4773,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetReportResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetReportResponseSent += (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
@@ -4824,7 +4782,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 sentMessageResult,
                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetReportResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetReportResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4838,13 +4796,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetVariables
 
-            NetworkingNode.OCPP.IN.OnGetVariablesRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetVariablesRequestReceived += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetVariablesRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetVariablesRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4853,14 +4811,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetVariablesRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetVariablesRequestSent += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
                                                                   sentMessageResult,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetVariablesRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetVariablesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4869,7 +4827,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetVariablesResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetVariablesResponseReceived += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
@@ -4877,7 +4835,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       runtime,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetVariablesResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetVariablesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4888,7 +4846,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetVariablesResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetVariablesResponseSent += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -4897,7 +4855,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    sentMessageResult,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetVariablesResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetVariablesResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4911,13 +4869,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetMonitoringBase
 
-            NetworkingNode.OCPP.IN.OnSetMonitoringBaseRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetMonitoringBaseRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringBaseRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetMonitoringBaseRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4926,14 +4884,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetMonitoringBaseRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetMonitoringBaseRequestSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringBaseRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetMonitoringBaseRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4942,7 +4900,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSetMonitoringBaseResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetMonitoringBaseResponseReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -4950,7 +4908,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            runtime,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringBaseResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetMonitoringBaseResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4961,7 +4919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetMonitoringBaseResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetMonitoringBaseResponseSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -4970,7 +4928,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringBaseResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetMonitoringBaseResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4984,13 +4942,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetMonitoringLevel
 
-            NetworkingNode.OCPP.IN.OnSetMonitoringLevelRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetMonitoringLevelRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringLevelRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetMonitoringLevelRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -4999,14 +4957,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetMonitoringLevelRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetMonitoringLevelRequestSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringLevelRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetMonitoringLevelRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5015,7 +4973,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSetMonitoringLevelResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetMonitoringLevelResponseReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -5023,7 +4981,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             runtime,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringLevelResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetMonitoringLevelResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5034,7 +4992,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetMonitoringLevelResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetMonitoringLevelResponseSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -5043,7 +5001,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringLevelResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetMonitoringLevelResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5057,13 +5015,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetNetworkProfile
 
-            NetworkingNode.OCPP.IN.OnSetNetworkProfileRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetNetworkProfileRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetNetworkProfileRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetNetworkProfileRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5072,14 +5030,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetNetworkProfileRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetNetworkProfileRequestSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetNetworkProfileRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetNetworkProfileRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5088,7 +5046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSetNetworkProfileResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetNetworkProfileResponseReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -5096,7 +5054,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            runtime,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetNetworkProfileResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetNetworkProfileResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5107,7 +5065,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetNetworkProfileResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetNetworkProfileResponseSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -5116,7 +5074,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetNetworkProfileResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetNetworkProfileResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5130,13 +5088,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetVariableMonitoring
 
-            NetworkingNode.OCPP.IN.OnSetVariableMonitoringRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetVariableMonitoringRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
                                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariableMonitoringRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetVariableMonitoringRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5145,14 +5103,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetVariableMonitoringRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetVariableMonitoringRequestSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            sentMessageResult,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariableMonitoringRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetVariableMonitoringRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5161,7 +5119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSetVariableMonitoringResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetVariableMonitoringResponseReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
@@ -5169,7 +5127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                runtime,
                                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariableMonitoringResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetVariableMonitoringResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5180,7 +5138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetVariableMonitoringResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetVariableMonitoringResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -5189,7 +5147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             sentMessageResult,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariableMonitoringResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetVariableMonitoringResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5203,13 +5161,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetVariables
 
-            NetworkingNode.OCPP.IN.OnSetVariablesRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetVariablesRequestReceived += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariablesRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetVariablesRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5218,14 +5176,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetVariablesRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetVariablesRequestSent += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
                                                                   sentMessageResult,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariablesRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetVariablesRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5234,7 +5192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSetVariablesResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSetVariablesResponseReceived += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
@@ -5242,7 +5200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       runtime,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariablesResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSetVariablesResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5253,7 +5211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSetVariablesResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSetVariablesResponseSent += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -5262,7 +5220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    sentMessageResult,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariablesResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSetVariablesResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5276,13 +5234,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnTriggerMessage
 
-            NetworkingNode.OCPP.IN.OnTriggerMessageRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnTriggerMessageRequestReceived += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTriggerMessageRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnTriggerMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5291,14 +5249,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnTriggerMessageRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnTriggerMessageRequestSent += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
                                                                     sentMessageResult,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTriggerMessageRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnTriggerMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5307,7 +5265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnTriggerMessageResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnTriggerMessageResponseReceived += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -5315,7 +5273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         runtime,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTriggerMessageResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnTriggerMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5326,7 +5284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnTriggerMessageResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnTriggerMessageResponseSent += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
@@ -5335,7 +5293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      sentMessageResult,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTriggerMessageResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnTriggerMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5353,13 +5311,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnPublishFirmware
 
-            NetworkingNode.OCPP.IN.OnPublishFirmwareRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnPublishFirmwareRequestReceived += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnPublishFirmwareRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5368,14 +5326,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnPublishFirmwareRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnPublishFirmwareRequestSent += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
                                                                      sentMessageResult,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnPublishFirmwareRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5384,7 +5342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnPublishFirmwareResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnPublishFirmwareResponseReceived += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -5392,7 +5350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          runtime,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnPublishFirmwareResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5403,7 +5361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnPublishFirmwareResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnPublishFirmwareResponseSent += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
@@ -5412,7 +5370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       sentMessageResult,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnPublishFirmwareResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5426,13 +5384,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnReset
 
-            NetworkingNode.OCPP.IN.OnResetRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnResetRequestReceived += (timestamp,
                                                               sender,
                                                               connection,
                                                               request,
                                                               ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnResetRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnResetRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5441,14 +5399,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnResetRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnResetRequestSent += (timestamp,
                                                            sender,
                                                            connection,
                                                            request,
                                                            sentMessageResult,
                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnResetRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnResetRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5457,7 +5415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnResetResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnResetResponseReceived += (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
@@ -5465,7 +5423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                runtime,
                                                                ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnResetResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnResetResponseReceived),
                                      JSONObject.Create(
                                                new JProperty("timestamp",   timestamp. ToIso8601()),
                                                new JProperty("sender",      sender.Id),
@@ -5478,7 +5436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnResetResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnResetResponseSent += (timestamp,
                                                             sender,
                                                             connection,
                                                             request,
@@ -5487,7 +5445,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                             sentMessageResult,
                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnResetResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnResetResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5501,13 +5459,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUnpublishFirmware
 
-            NetworkingNode.OCPP.IN.OnUnpublishFirmwareRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnUnpublishFirmwareRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnpublishFirmwareRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUnpublishFirmwareRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5516,14 +5474,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUnpublishFirmwareRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnUnpublishFirmwareRequestSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        sentMessageResult,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnpublishFirmwareRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUnpublishFirmwareRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5532,7 +5490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnUnpublishFirmwareResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnUnpublishFirmwareResponseReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -5540,7 +5498,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            runtime,
                                                                            ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnpublishFirmwareResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUnpublishFirmwareResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5551,7 +5509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUnpublishFirmwareResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnUnpublishFirmwareResponseSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -5560,7 +5518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnpublishFirmwareResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUnpublishFirmwareResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5574,13 +5532,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUpdateFirmware
 
-            NetworkingNode.OCPP.IN.OnUpdateFirmwareRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnUpdateFirmwareRequestReceived += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateFirmwareRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUpdateFirmwareRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5589,14 +5547,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUpdateFirmwareRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnUpdateFirmwareRequestSent += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
                                                                     sentMessageResult,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateFirmwareRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUpdateFirmwareRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5605,7 +5563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnUpdateFirmwareResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnUpdateFirmwareResponseReceived += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -5613,7 +5571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         runtime,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateFirmwareResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnUpdateFirmwareResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5624,7 +5582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnUpdateFirmwareResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnUpdateFirmwareResponseSent += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
@@ -5633,7 +5591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      sentMessageResult,
                                                                      ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateFirmwareResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnUpdateFirmwareResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5651,13 +5609,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnAFRRSignal
 
-            NetworkingNode.OCPP.IN.OnAFRRSignalRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnAFRRSignalRequestReceived += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnAFRRSignalRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnAFRRSignalRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5666,14 +5624,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnAFRRSignalRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnAFRRSignalRequestSent += (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
                                                                 sentMessageResult,
                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnAFRRSignalRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnAFRRSignalRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5682,7 +5640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnAFRRSignalResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnAFRRSignalResponseReceived += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
@@ -5690,7 +5648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     runtime,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnAFRRSignalResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnAFRRSignalResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5701,7 +5659,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnAFRRSignalResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnAFRRSignalResponseSent += (timestamp,
                                                                  sender,
                                                                  connection,
                                                                  request,
@@ -5710,7 +5668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                  sentMessageResult,
                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnAFRRSignalResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnAFRRSignalResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5728,13 +5686,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnClearCache
 
-            NetworkingNode.OCPP.IN.OnClearCacheRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearCacheRequestReceived += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearCacheRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearCacheRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5743,14 +5701,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearCacheRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearCacheRequestSent += (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
                                                                 sentMessageResult,
                                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearCacheRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearCacheRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5759,7 +5717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnClearCacheResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnClearCacheResponseReceived += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
@@ -5767,7 +5725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     runtime,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearCacheResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnClearCacheResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5778,7 +5736,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnClearCacheResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnClearCacheResponseSent += (timestamp,
                                                                  sender,
                                                                  connection,
                                                                  request,
@@ -5787,7 +5745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                  sentMessageResult,
                                                                  ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearCacheResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnClearCacheResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5801,13 +5759,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetLocalListVersion
 
-            NetworkingNode.OCPP.IN.OnGetLocalListVersionRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetLocalListVersionRequestReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
                                                                             ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLocalListVersionRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetLocalListVersionRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5816,14 +5774,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetLocalListVersionRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetLocalListVersionRequestSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          sentMessageResult,
                                                                          ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLocalListVersionRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetLocalListVersionRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5832,7 +5790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnGetLocalListVersionResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnGetLocalListVersionResponseReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -5840,7 +5798,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                              runtime,
                                                                              ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLocalListVersionResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnGetLocalListVersionResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5851,7 +5809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnGetLocalListVersionResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnGetLocalListVersionResponseSent += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -5860,7 +5818,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                           sentMessageResult,
                                                                           ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLocalListVersionResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnGetLocalListVersionResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5874,13 +5832,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSendLocalList
 
-            NetworkingNode.OCPP.IN.OnSendLocalListRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnSendLocalListRequestReceived += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
                                                                       ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSendLocalListRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSendLocalListRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5889,14 +5847,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSendLocalListRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnSendLocalListRequestSent += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
                                                                    sentMessageResult,
                                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSendLocalListRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSendLocalListRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5905,7 +5863,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnSendLocalListResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnSendLocalListResponseReceived += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
@@ -5913,7 +5871,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        runtime,
                                                                        ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSendLocalListResponseReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnSendLocalListResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5924,7 +5882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnSendLocalListResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnSendLocalListResponseSent += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
@@ -5933,7 +5891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     sentMessageResult,
                                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSendLocalListResponseSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnSendLocalListResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5953,13 +5911,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnDataTransfer
 
-            NetworkingNode.OCPP.IN.OnDataTransferRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnDataTransferRequestReceived += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
                                                                      cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDataTransferRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnDataTransferRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5968,14 +5926,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnDataTransferRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnDataTransferRequestSent += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
                                                                   sentMessageResult,
                                                                   ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDataTransferRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnDataTransferRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -5984,7 +5942,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnDataTransferResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnDataTransferResponseReceived += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
@@ -5993,7 +5951,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       cancellationToken) =>
 
                 EventLog.SubmitEvent(
-                    nameof(NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived),
+                    nameof(CSMS.OCPP.IN.OnBinaryDataTransferResponseReceived),
                     JSONObject.Create(
                               new JProperty("timestamp",   timestamp. ToIso8601()),
                               new JProperty("sender",      sender.Id),
@@ -6009,7 +5967,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 );
 
 
-            NetworkingNode.OCPP.OUT.OnDataTransferResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnDataTransferResponseSent += (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -6019,7 +5977,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    ct) =>
 
                 EventLog.SubmitEvent(
-                    nameof(NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent),
+                    nameof(CSMS.OCPP.OUT.OnBinaryDataTransferResponseSent),
                     JSONObject.Create(
                               new JProperty("timestamp",   timestamp. ToIso8601()),
                               new JProperty("sender",      sender.Id),
@@ -6038,13 +5996,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnBinaryDataTransfer
 
-            NetworkingNode.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp,
+            CSMS.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
                                                                            cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnBinaryDataTransferRequestReceived),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.IN.OnBinaryDataTransferRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -6053,14 +6011,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.OUT.OnBinaryDataTransferRequestSent += (timestamp,
+            CSMS.OCPP.OUT.OnBinaryDataTransferRequestSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         sentMessageResult,
                                                                         ct) =>
 
-                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBinaryDataTransferRequestSent),
+                EventLog.SubmitEvent(nameof(CSMS.OCPP.OUT.OnBinaryDataTransferRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
@@ -6069,7 +6027,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ));
 
 
-            NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived += (timestamp,
+            CSMS.OCPP.IN.OnBinaryDataTransferResponseReceived += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -6078,7 +6036,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                             cancellationToken) =>
 
                 EventLog.SubmitEvent(
-                    nameof(NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived),
+                    nameof(CSMS.OCPP.IN.OnBinaryDataTransferResponseReceived),
                     JSONObject.Create(
                               new JProperty("timestamp",   timestamp. ToIso8601()),
                               new JProperty("sender",      sender.Id),
@@ -6094,7 +6052,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 );
 
 
-            NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent += (timestamp,
+            CSMS.OCPP.OUT.OnBinaryDataTransferResponseSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -6104,7 +6062,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          ct) =>
 
                 EventLog.SubmitEvent(
-                    nameof(NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent),
+                    nameof(CSMS.OCPP.OUT.OnBinaryDataTransferResponseSent),
                     JSONObject.Create(
                               new JProperty("timestamp",   timestamp. ToIso8601()),
                               new JProperty("sender",      sender.Id),

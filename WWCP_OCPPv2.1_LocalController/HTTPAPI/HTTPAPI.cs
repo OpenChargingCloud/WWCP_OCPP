@@ -220,19 +220,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<ALocalControllerNode>                                      localControllers   = [];
+        protected readonly ALocalControllerNode localController;
 
         protected readonly  ConcurrentDictionary<ChargingStation_Id, ChargingStation>  chargingStations  = [];
 
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// An enumeration of registered networking nodes.
-        /// </summary>
-        public              IEnumerable<ALocalControllerNode>                               NetworkingNodes
-            => localControllers;
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -253,8 +247,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #region Constructor(s)
 
-        #region HTTPAPI(...)
-
         /// <summary>
         /// Attach the given local controller WebAPI to the given HTTP API.
         /// </summary>
@@ -262,13 +254,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
+        public HTTPAPI(ALocalControllerNode                        LocalController,
+                       HTTPExtAPI                                  HTTPAPI,
+                       String?                                     HTTPServerName         = null,
+                       HTTPPath?                                   URLPathPrefix          = null,
+                       HTTPPath?                                   BasePath               = null,
+
+                       Boolean                                     EventLoggingDisabled   = true,
+
+                       String                                      HTTPRealm              = DefaultHTTPRealm,
+                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins             = null,
+                       String?                                     HTMLTemplate           = null)
 
             : base(HTTPAPI,
                    HTTPServerName ?? DefaultHTTPServerName,
@@ -278,6 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         {
 
+            this.localController     = LocalController;
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins ?? [];
 
@@ -293,50 +290,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                            URLTemplate:              this.URLPathPrefix + "/events",
                                            MaxNumberOfCachedEvents:  10000,
                                            RetryIntervall:           TimeSpan.FromSeconds(5),
-                                           EnableLogging:            true,
+                                           EnableLogging:            !EventLoggingDisabled,
                                            LogfilePrefix:            LogfilePrefix
                                        );
 
             RegisterURITemplates();
+            AttachLocalController(localController);
 
         }
-
-        #endregion
-
-        #region HTTPAPI(CSMS, ...)
-
-        /// <summary>
-        /// Attach the given local controller WebAPI to the given HTTP API.
-        /// </summary>
-        /// <param name="LocalController">A local controller.</param>
-        /// <param name="HTTPAPI">A HTTP API.</param>
-        /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
-        /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
-        /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(ALocalControllerNode                            LocalController,
-                       HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
-
-            : this(HTTPAPI,
-                   HTTPServerName,
-                   URLPathPrefix,
-                   BasePath,
-                   HTTPRealm,
-                   HTTPLogins,
-                   HTMLTemplate)
-
-        {
-
-            AttachLocalController(LocalController);
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -345,9 +306,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         public void AttachLocalController(ALocalControllerNode LocalController)
         {
-
-            localControllers.Add(LocalController);
-
 
             // Wire HTTP Server Sent Events
 

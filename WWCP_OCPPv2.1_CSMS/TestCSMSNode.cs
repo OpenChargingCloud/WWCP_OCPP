@@ -73,12 +73,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             SignaturePolicy?          SignaturePolicy                  = null,
                             SignaturePolicy?          ForwardingSignaturePolicy        = null,
 
+                            HTTPAPI?                  HTTPAPI                          = null,
                             Boolean                   HTTPAPI_Disabled                 = false,
                             IPPort?                   HTTPAPI_Port                     = null,
                             String?                   HTTPAPI_ServerName               = null,
                             String?                   HTTPAPI_ServiceName              = null,
                             EMailAddress?             HTTPAPI_RobotEMailAddress        = null,
                             String?                   HTTPAPI_RobotGPGPassphrase       = null,
+                            Boolean                   HTTPAPI_EventLoggingDisabled     = false,
 
                             DownloadAPI?              HTTPDownloadAPI                  = null,
                             Boolean                   HTTPDownloadAPI_Disabled         = false,
@@ -90,14 +92,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             HTTPPath?                 HTTPUploadAPI_Path               = null,
                             String?                   HTTPUploadAPI_FileSystemPath     = null,
 
-                            //HTTPPath?                 FirmwareDownloadAPIPath          = null,
-                            //HTTPPath?                 LogfilesUploadAPIPath            = null,
-                            //HTTPPath?                 DiagnosticsUploadAPIPath         = null,
-
                             QRCodeAPI?                QRCodeAPI                        = null,
                             Boolean                   QRCodeAPI_Disabled               = false,
                             HTTPPath?                 QRCodeAPI_Path                   = null,
 
+                            WebAPI?                   WebAPI                           = null,
                             Boolean                   WebAPI_Disabled                  = false,
                             HTTPPath?                 WebAPI_Path                      = null,
 
@@ -126,12 +125,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
+                   HTTPAPI,
                    HTTPAPI_Disabled,
                    HTTPAPI_Port,
                    HTTPAPI_ServerName,
                    HTTPAPI_ServiceName,
                    HTTPAPI_RobotEMailAddress,
                    HTTPAPI_RobotGPGPassphrase,
+                   HTTPAPI_EventLoggingDisabled,
 
                    HTTPDownloadAPI,
                    HTTPDownloadAPI_Disabled,
@@ -143,14 +144,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    HTTPUploadAPI_Path,
                    HTTPUploadAPI_FileSystemPath,
 
-                   //FirmwareDownloadAPIPath,
-                   //LogfilesUploadAPIPath,
-                   //DiagnosticsUploadAPIPath,
-
                    QRCodeAPI,
                    QRCodeAPI_Disabled,
                    QRCodeAPI_Path,
 
+                   WebAPI,
                    WebAPI_Disabled,
                    WebAPI_Path,
 

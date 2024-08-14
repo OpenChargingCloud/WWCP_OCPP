@@ -79,17 +79,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<AGatewayNode>                                             gateways   = [];
+        protected readonly AGatewayNode gateway;
 
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// An enumeration of registered networking nodes.
-        /// </summary>
-        public IEnumerable<AGatewayNode>                      Gateways
-            => gateways;
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -110,8 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
         #region Constructor(s)
 
-        #region HTTPAPI(...)
-
         /// <summary>
         /// Attach the given gateway WebAPI to the given HTTP API.
         /// </summary>
@@ -119,13 +111,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
+        public HTTPAPI(AGatewayNode                                Gateway,
+                       HTTPExtAPI                                  HTTPAPI,
+                       String?                                     HTTPServerName         = null,
+                       HTTPPath?                                   URLPathPrefix          = null,
+                       HTTPPath?                                   BasePath               = null,
+
+                       Boolean                                     EventLoggingDisabled   = true,
+
+                       String                                      HTTPRealm              = DefaultHTTPRealm,
+                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins             = null,
+                       String?                                     HTMLTemplate           = null)
 
             : base(HTTPAPI,
                    HTTPServerName ?? DefaultHTTPServerName,
@@ -135,6 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
         {
 
+            this.gateway             = Gateway;
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins ?? [];
 
@@ -150,50 +147,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                            URLTemplate:              this.URLPathPrefix + "/events",
                                            MaxNumberOfCachedEvents:  10000,
                                            RetryIntervall:           TimeSpan.FromSeconds(5),
-                                           EnableLogging:            true,
+                                           EnableLogging:            !EventLoggingDisabled,
                                            LogfilePrefix:            LogfilePrefix
                                        );
 
             RegisterURITemplates();
+            AttachGateway(gateway);
 
         }
-
-        #endregion
-
-        #region HTTPAPI(CSMS, ...)
-
-        /// <summary>
-        /// Attach the given gateway WebAPI to the given HTTP API.
-        /// </summary>
-        /// <param name="Gateway">A gateway.</param>
-        /// <param name="HTTPAPI">A HTTP API.</param>
-        /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
-        /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
-        /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(AGatewayNode                                    Gateway,
-                       HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
-
-            : this(HTTPAPI,
-                   HTTPServerName,
-                   URLPathPrefix,
-                   BasePath,
-                   HTTPRealm,
-                   HTTPLogins,
-                   HTMLTemplate)
-
-        {
-
-            AttachGateway(Gateway);
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -202,9 +163,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
         public void AttachGateway(AGatewayNode Gateway)
         {
-
-            gateways.Add(Gateway);
-
 
             // Wire HTTP Server Sent Events
 

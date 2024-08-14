@@ -18,6 +18,8 @@
 #region Usings
 
 using System.Security.Cryptography;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,11 +27,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
 
 #endregion
 
@@ -62,30 +62,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public TestChargingStationNode(NetworkingNode_Id                  Id,
                                        String                             VendorName,
                                        String                             Model,
-                                       I18NString?                        Description                 = null,
-                                       String?                            SerialNumber                = null,
-                                       String?                            FirmwareVersion             = null,
-                                       Modem?                             Modem                       = null,
+                                       I18NString?                        Description                    = null,
+                                       String?                            SerialNumber                   = null,
+                                       String?                            FirmwareVersion                = null,
+                                       Modem?                             Modem                          = null,
 
-                                       IEnumerable<ChargingStationEVSE>?  EVSEs                       = null,
-                                       IEnergyMeter?                      UplinkEnergyMeter           = null,
+                                       IEnumerable<ChargingStationEVSE>?  EVSEs                          = null,
+                                       IEnergyMeter?                      UplinkEnergyMeter              = null,
 
-                                       TimeSpan?                          DefaultRequestTimeout       = null,
+                                       TimeSpan?                          DefaultRequestTimeout          = null,
 
-                                       SignaturePolicy?                   SignaturePolicy             = null,
-                                       SignaturePolicy?                   ForwardingSignaturePolicy   = null,
+                                       SignaturePolicy?                   SignaturePolicy                = null,
+                                       SignaturePolicy?                   ForwardingSignaturePolicy      = null,
 
-                                       Boolean                            DisableHTTPAPI              = false,
-                                       IPPort?                            HTTPAPIPort                 = null,
+                                       Boolean                            HTTPAPI_Disabled               = false,
+                                       IPPort?                            HTTPAPI_Port                   = null,
+                                       String?                            HTTPAPI_ServerName             = null,
+                                       String?                            HTTPAPI_ServiceName            = null,
+                                       EMailAddress?                      HTTPAPI_RobotEMailAddress      = null,
+                                       String?                            HTTPAPI_RobotGPGPassphrase     = null,
+                                       Boolean                            HTTPAPI_EventLoggingDisabled   = false,
 
-                                       Boolean                            DisableSendHeartbeats       = false,
-                                       TimeSpan?                          SendHeartbeatsEvery         = null,
+                                       WebAPI?                            WebAPI                         = null,
+                                       Boolean                            WebAPI_Disabled                = false,
+                                       HTTPPath?                          WebAPI_Path                    = null,
 
-                                       Boolean                            DisableMaintenanceTasks     = false,
-                                       TimeSpan?                          MaintenanceEvery            = null,
+                                       Boolean                            DisableSendHeartbeats          = false,
+                                       TimeSpan?                          SendHeartbeatsEvery            = null,
 
-                                       CustomData?                        CustomData                  = null,
-                                       DNSClient?                         DNSClient                   = null)
+                                       Boolean                            DisableMaintenanceTasks        = false,
+                                       TimeSpan?                          MaintenanceEvery               = null,
+
+                                       CustomData?                        CustomData                     = null,
+                                       DNSClient?                         DNSClient                      = null)
 
             : base(Id,
                    VendorName,
@@ -103,8 +112,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
-                   DisableHTTPAPI,
-                   HTTPAPIPort,
+                   HTTPAPI_Disabled,
+                   HTTPAPI_Port,
+                   HTTPAPI_ServerName,
+                   HTTPAPI_ServiceName,
+                   HTTPAPI_RobotEMailAddress,
+                   HTTPAPI_RobotGPGPassphrase,
+                   HTTPAPI_EventLoggingDisabled,
+
+                   WebAPI,
+                   WebAPI_Disabled,
+                   WebAPI_Path,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,

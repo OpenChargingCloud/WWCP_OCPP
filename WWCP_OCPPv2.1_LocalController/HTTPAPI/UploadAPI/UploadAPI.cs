@@ -24,7 +24,7 @@ using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 {
 
     /// <summary>
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public UploadAPI(ALocalControllerNode                             NetworkingNode,
+        public UploadAPI(ALocalControllerNode                        LocalController,
                          HTTPServer                                  HTTPServer,
                          String                                      FileSystemPath,
 
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS
 
         {
 
-            this.NetworkingNode  = NetworkingNode;
+            this.NetworkingNode  = LocalController;
             this.FileSystemPath  = FileSystemPath;
 
             this.HTTPRealm       = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;

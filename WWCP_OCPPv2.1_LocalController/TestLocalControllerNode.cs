@@ -24,6 +24,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
 using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -56,29 +58,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         public TestLocalControllerNode(NetworkingNode_Id  Id,
                                        String             VendorName,
                                        String             Model,
-                                       String?            SerialNumber                = null,
-                                       String?            SoftwareVersion             = null,
-                                       Modem?             Modem                       = null,
-                                       I18NString?        Description                 = null,
-                                       CustomData?        CustomData                  = null,
+                                       String?            SerialNumber                     = null,
+                                       String?            SoftwareVersion                  = null,
+                                       Modem?             Modem                            = null,
+                                       I18NString?        Description                      = null,
+                                       CustomData?        CustomData                       = null,
 
-                                       SignaturePolicy?   SignaturePolicy             = null,
-                                       SignaturePolicy?   ForwardingSignaturePolicy   = null,
+                                       SignaturePolicy?   SignaturePolicy                  = null,
+                                       SignaturePolicy?   ForwardingSignaturePolicy        = null,
 
-                                       Boolean            DisableHTTPAPI              = false,
-                                       IPPort?            HTTPAPIPort                 = null,
+                                       Boolean            HTTPAPI_Disabled                 = false,
+                                       IPPort?            HTTPAPI_Port                     = null,
+                                       String?            HTTPAPI_ServerName               = null,
+                                       String?            HTTPAPI_ServiceName              = null,
+                                       EMailAddress?      HTTPAPI_RobotEMailAddress        = null,
+                                       String?            HTTPAPI_RobotGPGPassphrase       = null,
+                                       Boolean            HTTPAPI_EventLoggingDisabled     = false,
 
-                                       IPPort?            HTTPUploadPort              = null,
-                                       IPPort?            HTTPDownloadPort            = null,
+                                       DownloadAPI?       HTTPDownloadAPI                  = null,
+                                       Boolean            HTTPDownloadAPI_Disabled         = false,
+                                       HTTPPath?          HTTPDownloadAPI_Path             = null,
+                                       String?            HTTPDownloadAPI_FileSystemPath   = null,
 
-                                       TimeSpan?          DefaultRequestTimeout       = null,
+                                       UploadAPI?         HTTPUploadAPI                    = null,
+                                       Boolean            HTTPUploadAPI_Disabled           = false,
+                                       HTTPPath?          HTTPUploadAPI_Path               = null,
+                                       String?            HTTPUploadAPI_FileSystemPath     = null,
 
-                                       Boolean            DisableSendHeartbeats       = false,
-                                       TimeSpan?          SendHeartbeatsEvery         = null,
+                                       WebAPI?            WebAPI                           = null,
+                                       Boolean            WebAPI_Disabled                  = false,
+                                       HTTPPath?          WebAPI_Path                      = null,
 
-                                       Boolean            DisableMaintenanceTasks     = false,
-                                       TimeSpan?          MaintenanceEvery            = null,
-                                       DNSClient?         DNSClient                   = null)
+                                       TimeSpan?          DefaultRequestTimeout            = null,
+
+                                       Boolean            DisableSendHeartbeats            = false,
+                                       TimeSpan?          SendHeartbeatsEvery              = null,
+
+                                       Boolean            DisableMaintenanceTasks          = false,
+                                       TimeSpan?          MaintenanceEvery                 = null,
+                                       DNSClient?         DNSClient                        = null)
 
             : base(Id,
                    VendorName,
@@ -92,11 +110,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
-                   DisableHTTPAPI,
-                   HTTPAPIPort,
+                   HTTPAPI_Disabled,
+                   HTTPAPI_Port,
+                   HTTPAPI_ServerName,
+                   HTTPAPI_ServiceName,
+                   HTTPAPI_RobotEMailAddress,
+                   HTTPAPI_RobotGPGPassphrase,
+                   HTTPAPI_EventLoggingDisabled,
 
-                   HTTPUploadPort,
-                   HTTPDownloadPort,
+                   HTTPDownloadAPI,
+                   HTTPDownloadAPI_Disabled,
+                   HTTPDownloadAPI_Path,
+                   HTTPDownloadAPI_FileSystemPath,
+
+                   HTTPUploadAPI,
+                   HTTPUploadAPI_Disabled,
+                   HTTPUploadAPI_Path,
+                   HTTPUploadAPI_FileSystemPath,
+
+                   WebAPI,
+                   WebAPI_Disabled,
+                   WebAPI_Path,
 
                    DefaultRequestTimeout,
 

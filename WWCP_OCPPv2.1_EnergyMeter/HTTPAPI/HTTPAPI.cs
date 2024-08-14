@@ -79,17 +79,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<AEnergyMeterNode> energyMeters   = [];
+        protected readonly AEnergyMeterNode energyMeter;
 
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// An enumeration of registered networking nodes.
-        /// </summary>
-        public IEnumerable<AEnergyMeterNode>              EnergyMeters
-            => energyMeters;
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -110,24 +104,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
         #region Constructor(s)
 
-        #region HTTPAPI(...)
-
         /// <summary>
         /// Attach the given energy meter WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="HTTPAPI">A HTTP API.</param>
+        /// <param name="HTTPExtAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
+        public HTTPAPI(AEnergyMeterNode                            EnergyMeter,
+                       HTTPExtAPI                                  HTTPExtAPI,
+                       String?                                     HTTPServerName         = null,
+                       HTTPPath?                                   URLPathPrefix          = null,
+                       HTTPPath?                                   BasePath               = null,
 
-            : base(HTTPAPI,
+                       Boolean                                     EventLoggingDisabled   = true,
+
+                       String                                      HTTPRealm              = DefaultHTTPRealm,
+                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins             = null,
+                       String?                                     HTMLTemplate           = null)
+
+            : base(HTTPExtAPI,
                    HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
                    BasePath,
@@ -135,6 +131,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
         {
 
+
+            this.energyMeter         = EnergyMeter;
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins ?? [];
 
@@ -150,50 +148,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                            URLTemplate:              this.URLPathPrefix + "/events",
                                            MaxNumberOfCachedEvents:  10000,
                                            RetryIntervall:           TimeSpan.FromSeconds(5),
-                                           EnableLogging:            true,
+                                           EnableLogging:            !EventLoggingDisabled,
                                            LogfilePrefix:            LogfilePrefix
                                        );
 
             RegisterURITemplates();
+            AttachEnergyMeter(energyMeter);
 
         }
-
-        #endregion
-
-        #region HTTPAPI(CSMS, ...)
-
-        /// <summary>
-        /// Attach the given energy meter WebAPI to the given HTTP API.
-        /// </summary>
-        /// <param name="EnergyMeter">A energy meter.</param>
-        /// <param name="HTTPAPI">A HTTP API.</param>
-        /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
-        /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
-        /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(AEnergyMeterNode                                    EnergyMeter,
-                       HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
-
-            : this(HTTPAPI,
-                   HTTPServerName,
-                   URLPathPrefix,
-                   BasePath,
-                   HTTPRealm,
-                   HTTPLogins,
-                   HTMLTemplate)
-
-        {
-
-            AttachEnergyMeter(EnergyMeter);
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -202,9 +164,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
         public void AttachEnergyMeter(AEnergyMeterNode EnergyMeter)
         {
-
-            energyMeters.Add(EnergyMeter);
-
 
             // Wire HTTP Server Sent Events
 

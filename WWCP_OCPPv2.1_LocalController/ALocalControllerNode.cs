@@ -25,9 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.LocalController.CSMS;
 
 #endregion
 
@@ -220,42 +218,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
 
 
+        public HTTPAPI?                    HTTPAPI                           { get; }
 
+        public WebAPI?                     WebAPI                            { get; }
+        public HTTPPath?                   WebAPI_Path                       { get; }
 
+        public DownloadAPI?                HTTPDownloadAPI                   { get; }
+        public HTTPPath?                   HTTPDownloadAPI_Path              { get; }
+        public String?                     HTTPDownloadAPI_FileSystemPath    { get; }
 
-        public WebAPI?                     WebAPI                     { get; }
-
-        public UploadAPI                   HTTPUploadAPI              { get; }
-
-        public DownloadAPI                 HTTPDownloadAPI            { get; }
-
-
-
-        //private readonly HashSet<WebAPI> webAPIs = [];
-
-        ///// <summary>
-        ///// An enumeration of all WebAPIs.
-        ///// </summary>
-        //public IEnumerable<WebAPI> WebAPIs
-        //    => webAPIs;
-
-
-        //private readonly HashSet<UploadAPI> uploadAPIs = [];
-
-        ///// <summary>
-        ///// An enumeration of all UploadAPIs.
-        ///// </summary>
-        //public IEnumerable<UploadAPI> UploadAPIs
-        //    => uploadAPIs;
-
-
-        //private readonly HashSet<DownloadAPI> downloadAPIs = [];
-
-        ///// <summary>
-        ///// An enumeration of all DownloadAPIs.
-        ///// </summary>
-        //public IEnumerable<DownloadAPI> DownloadAPIs
-        //    => downloadAPIs;
+        public UploadAPI?                  HTTPUploadAPI                     { get; }
+        public HTTPPath?                   HTTPUploadAPI_Path                { get; }
+        public String?                     HTTPUploadAPI_FileSystemPath      { get; }
 
         #endregion
 
@@ -272,29 +246,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         public ALocalControllerNode(NetworkingNode_Id  Id,
                                     String             VendorName,
                                     String             Model,
-                                    String?            SerialNumber                = null,
-                                    String?            SoftwareVersion             = null,
-                                    Modem?             Modem                       = null,
-                                    I18NString?        Description                 = null,
-                                    CustomData?        CustomData                  = null,
+                                    String?            SerialNumber                     = null,
+                                    String?            SoftwareVersion                  = null,
+                                    Modem?             Modem                            = null,
+                                    I18NString?        Description                      = null,
+                                    CustomData?        CustomData                       = null,
 
-                                    SignaturePolicy?   SignaturePolicy             = null,
-                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
+                                    SignaturePolicy?   SignaturePolicy                  = null,
+                                    SignaturePolicy?   ForwardingSignaturePolicy        = null,
 
-                                    Boolean            DisableHTTPAPI              = false,
-                                    IPPort?            HTTPAPIPort                 = null,
-                                    IPPort?            HTTPUploadPort              = null,
-                                    IPPort?            HTTPDownloadPort            = null,
+                                    Boolean            HTTPAPI_Disabled                 = false,
+                                    IPPort?            HTTPAPI_Port                     = null,
+                                    String?            HTTPAPI_ServerName               = null,
+                                    String?            HTTPAPI_ServiceName              = null,
+                                    EMailAddress?      HTTPAPI_RobotEMailAddress        = null,
+                                    String?            HTTPAPI_RobotGPGPassphrase       = null,
+                                    Boolean            HTTPAPI_EventLoggingDisabled     = false,
 
-                                    TimeSpan?          DefaultRequestTimeout       = null,
+                                    DownloadAPI?       HTTPDownloadAPI                  = null,
+                                    Boolean            HTTPDownloadAPI_Disabled         = false,
+                                    HTTPPath?          HTTPDownloadAPI_Path             = null,
+                                    String?            HTTPDownloadAPI_FileSystemPath   = null,
 
-                                    Boolean            DisableSendHeartbeats       = false,
-                                    TimeSpan?          SendHeartbeatsEvery         = null,
+                                    UploadAPI?         HTTPUploadAPI                    = null,
+                                    Boolean            HTTPUploadAPI_Disabled           = false,
+                                    HTTPPath?          HTTPUploadAPI_Path               = null,
+                                    String?            HTTPUploadAPI_FileSystemPath     = null,
 
-                                    Boolean            DisableMaintenanceTasks     = false,
-                                    TimeSpan?          MaintenanceEvery            = null,
+                                    WebAPI?            WebAPI                           = null,
+                                    Boolean            WebAPI_Disabled                  = false,
+                                    HTTPPath?          WebAPI_Path                      = null,
 
-                                    DNSClient?         DNSClient                   = null)
+                                    TimeSpan?          DefaultRequestTimeout            = null,
+
+                                    Boolean            DisableSendHeartbeats            = false,
+                                    TimeSpan?          SendHeartbeatsEvery              = null,
+
+                                    Boolean            DisableMaintenanceTasks          = false,
+                                    TimeSpan?          MaintenanceEvery                 = null,
+
+                                    DNSClient?         DNSClient                        = null)
 
             : base(Id,
                    Description,
@@ -303,9 +294,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
-                   !DisableHTTPAPI
+                   !HTTPAPI_Disabled
                        ? new HTTPExtAPI(
-                             HTTPServerPort:          HTTPAPIPort ?? IPPort.Auto,
+                             HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
                              HTTPServerName:          "GraphDefined OCPP Test Local Controller",
                              HTTPServiceName:         "GraphDefined OCPP Test Local Controller Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Local Controller Robot <robot@charging.cloud>"),
@@ -334,149 +325,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             if (Model.     IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Model),       "The given model must not be null or empty!");
 
-            this.VendorName               = VendorName;
-            this.Model                    = Model;
-            this.SerialNumber             = SerialNumber;
-            this.SoftwareVersion          = SoftwareVersion;
-            this.Modem                    = Modem;
+            this.VendorName                      = VendorName;
+            this.Model                           = Model;
+            this.SerialNumber                    = SerialNumber;
+            this.SoftwareVersion                 = SoftwareVersion;
+            this.Modem                           = Modem;
 
-            #region Setup generic HTTP API
+            this.HTTPUploadAPI_Path              = HTTPUploadAPI_Path             ?? HTTPPath.Parse("uploads");
+            this.HTTPDownloadAPI_Path            = HTTPDownloadAPI_Path           ?? HTTPPath.Parse("downloads");
+            this.WebAPI_Path                     = WebAPI_Path                    ?? HTTPPath.Parse("webapi");
 
-            //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
-
-            #endregion
-
-            #region HTTP API Security Settings
-
-            var webAPIPrefix        = "webapi";
-            var uploadAPIPrefix     = "uploads";
-            var downloadAPIPrefix   = "downloads";
-
-            this.HTTPAPI?.HTTPServer.AddAuth(request => {
-
-                // Allow some URLs for anonymous access...
-                if (request.Path.StartsWith(HTTPAPI.URLPathPrefix + webAPIPrefix)    ||
-                    request.Path.StartsWith(HTTPAPI.URLPathPrefix + uploadAPIPrefix) ||
-                    request.Path.StartsWith(HTTPAPI.URLPathPrefix + downloadAPIPrefix))
-                {
-                    return HTTPExtAPI.Anonymous;
-                }
-
-                return null;
-
-            });
-
-            #endregion
+            this.HTTPUploadAPI_FileSystemPath    = HTTPUploadAPI_FileSystemPath   ?? Path.Combine(AppContext.BaseDirectory, "UploadAPI");
+            this.HTTPDownloadAPI_FileSystemPath  = HTTPDownloadAPI_FileSystemPath ?? Path.Combine(AppContext.BaseDirectory, "DownloadAPI");
 
             #region Setup Web-/Upload-/DownloadAPIs
 
-            this.WebAPI             = HTTPAPI is not null
-                                          ? new WebAPI(
-                                                this,
-                                                HTTPAPI,
+            if (HTTPExtAPI is not null)
+            {
 
-                                                URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
+                this.HTTPAPI                     = HTTPAPI         ?? new HTTPAPI(
+                                                                          this,
+                                                                          HTTPExtAPI,
+                                                                          EventLoggingDisabled: HTTPAPI_EventLoggingDisabled
+                                                                      );
 
-                                            )
-                                          : null;
+                #region HTTP API Security Settings
 
-            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "UploadAPI"));
+                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
 
-            this.HTTPUploadAPI      = new UploadAPI(
-                                          this,
-                                          HTTPUploadPort.HasValue
-                                              ? new HTTPServer(
-                                                    HTTPUploadPort.Value,
-                                                    UploadAPI.DefaultHTTPServerName,
-                                                    UploadAPI.DefaultHTTPServiceName
-                                                )
-                                              : HTTPAPI.HTTPServer,
+                    // Allow some URLs for anonymous access...
+                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
+                        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
+                        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
+                    {
+                        return HTTPExtAPI.Anonymous;
+                    }
 
-                                          URLPathPrefix:   HTTPPath.Parse(uploadAPIPrefix),
-                                          FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "UploadAPI")
+                    return null;
 
-                                      );
+                });
 
-            this.HTTPDownloadAPI    = new DownloadAPI(
-                                          this,
-                                          HTTPDownloadPort.HasValue
-                                              ? new HTTPServer(
-                                                    HTTPDownloadPort.Value,
-                                                    DownloadAPI.DefaultHTTPServerName,
-                                                    DownloadAPI.DefaultHTTPServiceName
-                                                )
-                                              : HTTPAPI.HTTPServer,
+                #endregion
 
-                                          URLPathPrefix:   HTTPPath.Parse(downloadAPIPrefix),
-                                          FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "DownloadAPI")
+                if (!HTTPUploadAPI_Disabled)
+                {
 
-                                      );
+                    Directory.CreateDirectory(this.HTTPUploadAPI_FileSystemPath);
+                    this.HTTPUploadAPI           = HTTPUploadAPI   ?? new UploadAPI(
+                                                                          this,
+                                                                          HTTPExtAPI.HTTPServer,
+                                                                          URLPathPrefix:   this.HTTPUploadAPI_Path,
+                                                                          FileSystemPath:  this.HTTPUploadAPI_FileSystemPath
+                                                                      );
+
+                }
+
+                if (!HTTPDownloadAPI_Disabled)
+                {
+
+                    Directory.CreateDirectory(this.HTTPDownloadAPI_FileSystemPath);
+                    this.HTTPDownloadAPI         = HTTPDownloadAPI ?? new DownloadAPI(
+                                                                          this,
+                                                                          HTTPExtAPI.HTTPServer,
+                                                                          URLPathPrefix:   this.HTTPDownloadAPI_Path,
+                                                                          FileSystemPath:  this.HTTPDownloadAPI_FileSystemPath
+                                                                      );
+
+                }
+
+                if (!WebAPI_Disabled)
+                {
+
+                    this.WebAPI                  = WebAPI          ?? new WebAPI(
+                                                                          this,
+                                                                          HTTPExtAPI.HTTPServer,
+                                                                          URLPathPrefix:   this.WebAPI_Path
+                                                                      );
+
+                }
+
+            }
 
             #endregion
-
-        }
-
-        #endregion
-
-
-        #region AttachWebAPI(...)
-
-        /// <summary>
-        /// Create a new central system for testing using HTTP/WebSocket.
-        /// </summary>
-        /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
-        /// <param name="AutoStart">Start the server immediately.</param>
-        public WebAPI AttachWebAPI(HTTPHostname?                               HTTPHostname            = null,
-                                                 String?                                     ExternalDNSName         = null,
-                                                 IPPort?                                     HTTPServerPort          = null,
-                                                 HTTPPath?                                   BasePath                = null,
-                                                 String?                                     HTTPServerName          = null,
-
-                                                 HTTPPath?                                   URLPathPrefix           = null,
-                                                 String?                                     HTTPServiceName         = null,
-
-                                                 String                                      HTTPRealm               = "...",
-                                                 Boolean                                     RequireAuthentication   = true,
-                                                 IEnumerable<KeyValuePair<String, String>>?  HTTPLogins              = null,
-
-                                                 String?                                     HTMLTemplate            = null,
-                                                 Boolean                                     AutoStart               = false)
-        {
-
-            var httpAPI  = new HTTPExtAPI(
-
-                               HTTPHostname,
-                               ExternalDNSName,
-                               HTTPServerPort,
-                               BasePath,
-                               HTTPServerName,
-
-                               URLPathPrefix,
-                               HTTPServiceName,
-
-                               DNSClient: DNSClient,
-                               AutoStart: false
-
-                           );
-
-            var webAPI   = new WebAPI(
-
-                               this,
-                               httpAPI,
-
-                               HTTPServerName,
-                               URLPathPrefix,
-                               BasePath,
-                               HTTPRealm,
-                               HTTPLogins,
-                               HTMLTemplate
-
-                           );
-
-            if (AutoStart)
-                httpAPI.Start();
-
-            return webAPI;
 
         }
 

@@ -749,8 +749,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                CancellationToken     CancellationToken)
         {
 
-            
-
             try
             {
 
@@ -817,15 +815,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
                     SentMessageResult? sendMessageResult = null;
-                    var acceptAsAnycast    = parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryRequestMessage.DestinationId);
+                    var acceptAsAnycast = parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryRequestMessage.DestinationId);
 
                     // When not for this node, send it to the FORWARD processor...
-                    if (binaryRequestMessage.DestinationId != parentNetworkingNode.Id)
+                    if (binaryRequestMessage.DestinationId != parentNetworkingNode.Id && !acceptAsAnycast)
                         await parentNetworkingNode.OCPP.FORWARD.ProcessBinaryRequestMessage(binaryRequestMessage, WebSocketConnection);
 
                     // Directly for this node OR an anycast message for this node...
-                    if (binaryRequestMessage.DestinationId == parentNetworkingNode.Id ||
-                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryRequestMessage.DestinationId))
+                    if (binaryRequestMessage.DestinationId == parentNetworkingNode.Id ||  acceptAsAnycast)
                     {
 
                         #region Try to call the matching 'incoming message processor'

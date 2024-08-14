@@ -86,15 +86,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
 
 
-        public WebAPI?                     WebAPI                     { get; }
+        public HTTPAPI?                    HTTPAPI                           { get; }
 
-        //private readonly HashSet<WebAPI> webAPIs = [];
-
-        ///// <summary>
-        ///// An enumeration of all WebAPIs.
-        ///// </summary>
-        //public IEnumerable<WebAPI> WebAPIs
-        //    => webAPIs;
+        public WebAPI?                     WebAPI                            { get; }
+        public HTTPPath?                   WebAPI_Path                       { get; }
 
         #endregion
 
@@ -112,25 +107,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
         public AEnergyMeterNode(NetworkingNode_Id  Id,
                                 String             VendorName,
                                 String             Model,
-                                String?            SerialNumber                = null,
-                                String?            FirmwareVersion             = null,
-                                Modem?             Modem                       = null,
-                                I18NString?        Description                 = null,
-                                CustomData?        CustomData                  = null,
+                                String?            SerialNumber                   = null,
+                                String?            FirmwareVersion                = null,
+                                Modem?             Modem                          = null,
+                                I18NString?        Description                    = null,
+                                CustomData?        CustomData                     = null,
 
-                                SignaturePolicy?   SignaturePolicy             = null,
-                                SignaturePolicy?   ForwardingSignaturePolicy   = null,
+                                SignaturePolicy?   SignaturePolicy                = null,
+                                SignaturePolicy?   ForwardingSignaturePolicy      = null,
 
-                                Boolean            DisableHTTPAPI              = false,
-                                IPPort?            HTTPAPIPort                 = null,
+                                HTTPAPI?           HTTPAPI                        = null,
+                                Boolean            HTTPAPI_Disabled               = false,
+                                IPPort?            HTTPAPI_Port                   = null,
+                                String?            HTTPAPI_ServerName             = null,
+                                String?            HTTPAPI_ServiceName            = null,
+                                EMailAddress?      HTTPAPI_RobotEMailAddress      = null,
+                                String?            HTTPAPI_RobotGPGPassphrase     = null,
+                                Boolean            HTTPAPI_EventLoggingDisabled   = false,
 
-                                Boolean            DisableSendHeartbeats       = false,
-                                TimeSpan?          SendHeartbeatsEvery         = null,
-                                TimeSpan?          DefaultRequestTimeout       = null,
+                                WebAPI?            WebAPI                         = null,
+                                Boolean            WebAPI_Disabled                = false,
+                                HTTPPath?          WebAPI_Path                    = null,
 
-                                Boolean            DisableMaintenanceTasks     = false,
-                                TimeSpan?          MaintenanceEvery            = null,
-                                DNSClient?         DNSClient                   = null)
+                                Boolean            DisableSendHeartbeats          = false,
+                                TimeSpan?          SendHeartbeatsEvery            = null,
+                                TimeSpan?          DefaultRequestTimeout          = null,
+
+                                Boolean            DisableMaintenanceTasks        = false,
+                                TimeSpan?          MaintenanceEvery               = null,
+                                DNSClient?         DNSClient                      = null)
 
             : base(Id,
                    Description,
@@ -139,9 +144,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
-                   !DisableHTTPAPI
+                   !HTTPAPI_Disabled
                        ? new HTTPExtAPI(
-                             HTTPServerPort:          HTTPAPIPort ?? IPPort.Auto,
+                             HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
                              HTTPServerName:          "GraphDefined OCPP Test Energy Meter",
                              HTTPServiceName:         "GraphDefined OCPP Test Energy Meter Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Energy Meter Robot <robot@charging.cloud>"),
@@ -176,107 +181,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
             this.FirmwareVersion          = FirmwareVersion;
             this.Modem                    = Modem;
 
-            #region Setup generic HTTP API
+            #region Setup Web-/Upload-/DownloadAPIs
 
-            //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
+            this.WebAPI_Path              = WebAPI_Path ?? HTTPPath.Parse("webapi");
 
-            #endregion
+            if (HTTPExtAPI is not null)
+            {
 
-            #region HTTP API Security Settings
+                this.HTTPAPI              = HTTPAPI ?? new HTTPAPI(
+                                                           this,
+                                                           HTTPExtAPI,
+                                                           EventLoggingDisabled: HTTPAPI_EventLoggingDisabled
+                                                       );
 
-            var webAPIPrefix = "webapi";
+                #region HTTP API Security Settings
 
-            this.HTTPAPI?.HTTPServer.AddAuth(request => {
+                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
 
-                // Allow some URLs for anonymous access...
-                if (request.Path.StartsWith(HTTPAPI.URLPathPrefix + webAPIPrefix))
+                    // Allow some URLs for anonymous access...
+                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
+                    {
+                        return HTTPExtAPI.Anonymous;
+                    }
+
+                    return null;
+
+                });
+
+                #endregion
+
+                if (!WebAPI_Disabled)
                 {
-                    return HTTPExtAPI.Anonymous;
+
+                    this.WebAPI                     = WebAPI          ?? new WebAPI(
+                                                                             this,
+                                                                             HTTPExtAPI.HTTPServer,
+                                                                             URLPathPrefix:   this.WebAPI_Path
+                                                                         );
+
                 }
 
-                return null;
-
-            });
+            }
 
             #endregion
-
-            #region Setup WebAPIs
-
-            this.WebAPI                 = HTTPAPI is not null
-                                              ? new WebAPI(
-                                                    this,
-                                                    HTTPAPI,
-
-                                                    URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
-
-                                                )
-                                              : null;
-
-            #endregion
-
-        }
-
-        #endregion
-
-
-        #region AttachWebAPI(...)
-
-        /// <summary>
-        /// Create a new central system for testing using HTTP/WebSocket.
-        /// </summary>
-        /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
-        /// <param name="AutoStart">Start the server immediately.</param>
-        public WebAPI AttachWebAPI(HTTPHostname?                               HTTPHostname            = null,
-                                   String?                                     ExternalDNSName         = null,
-                                   IPPort?                                     HTTPServerPort          = null,
-                                   HTTPPath?                                   BasePath                = null,
-                                   String?                                     HTTPServerName          = null,
-
-                                   HTTPPath?                                   URLPathPrefix           = null,
-                                   String?                                     HTTPServiceName         = null,
-
-                                   String                                      HTTPRealm               = "...",
-                                   Boolean                                     RequireAuthentication   = true,
-                                   IEnumerable<KeyValuePair<String, String>>?  HTTPLogins              = null,
-
-                                   String?                                     HTMLTemplate            = null,
-                                   Boolean                                     AutoStart               = false)
-        {
-
-            var httpAPI  = new HTTPExtAPI(
-
-                               HTTPHostname,
-                               ExternalDNSName,
-                               HTTPServerPort,
-                               BasePath,
-                               HTTPServerName,
-
-                               URLPathPrefix,
-                               HTTPServiceName,
-
-                               DNSClient: DNSClient,
-                               AutoStart: false
-
-                           );
-
-            var webAPI   = new WebAPI(
-
-                               this,
-                               httpAPI,
-
-                               HTTPServerName,
-                               URLPathPrefix,
-                               BasePath,
-                               HTTPRealm,
-                               HTTPLogins,
-                               HTMLTemplate
-
-                           );
-
-            if (AutoStart)
-                httpAPI.Start();
-
-            return webAPI;
 
         }
 

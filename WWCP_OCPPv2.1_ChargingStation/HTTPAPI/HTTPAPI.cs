@@ -79,54 +79,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly  List<AChargingStationNode>                                     networkingNodes   = [];
+        protected readonly AChargingStationNode chargingStation;
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// An enumeration of registered networking nodes.
-        /// </summary>
-        public              IEnumerable<AChargingStationNode>                              ChargingStations
-            => networkingNodes;
-
-        /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public              String?                                                    HTTPRealm         { get; }
+        public  String?                                    HTTPRealm         { get; }
 
         /// <summary>
         /// An enumeration of logins for an optional HTTP Basic Authentication.
         /// </summary>
-        public              IEnumerable<KeyValuePair<String, String>>                  HTTPLogins        { get; }
+        public  IEnumerable<KeyValuePair<String, String>>  HTTPLogins        { get; }
 
         /// <summary>
         /// Send debug information via HTTP Server Sent Events.
         /// </summary>
-        public              HTTPEventSource<JObject>                                   EventLog          { get; }
+        public  HTTPEventSource<JObject>                   EventLog          { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region HTTPAPI(...)
-
         /// <summary>
         /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="NetworkingNode">An OCPP charging station management system.</param>
+        /// <param name="ChargingStation">An OCPP charging station management system.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
+        public HTTPAPI(AChargingStationNode                        ChargingStation,
+                       HTTPExtAPI                                  HTTPAPI,
+                       String?                                     HTTPServerName         = null,
+                       HTTPPath?                                   URLPathPrefix          = null,
+                       HTTPPath?                                   BasePath               = null,
+
+                       Boolean                                     EventLoggingDisabled   = true,
+
+                       String                                      HTTPRealm              = DefaultHTTPRealm,
+                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins             = null,
+                       String?                                     HTMLTemplate           = null)
 
             : base(HTTPAPI,
                    HTTPServerName ?? DefaultHTTPServerName,
@@ -136,6 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
+            this.chargingStation     = ChargingStation;
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins ?? [];
 
@@ -151,50 +148,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            URLTemplate:              this.URLPathPrefix + "/events",
                                            MaxNumberOfCachedEvents:  10000,
                                            RetryIntervall:           TimeSpan.FromSeconds(5),
-                                           EnableLogging:            true,
+                                           EnableLogging:            !EventLoggingDisabled,
                                            LogfilePrefix:            LogfilePrefix
                                        );
 
             RegisterURITemplates();
+            AttachChargingStation(chargingStation);
 
         }
-
-        #endregion
-
-        #region HTTPAPI(CSMS, ...)
-
-        /// <summary>
-        /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
-        /// </summary>
-        /// <param name="ChargingStation">An OCPP charging station management system.</param>
-        /// <param name="HTTPAPI">A HTTP API.</param>
-        /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
-        /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
-        /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(AChargingStationNode                            ChargingStation,
-                       HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName   = null,
-                       HTTPPath?                                   URLPathPrefix    = null,
-                       HTTPPath?                                   BasePath         = null,
-                       String                                      HTTPRealm        = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                       String?                                     HTMLTemplate     = null)
-
-            : this(HTTPAPI,
-                   HTTPServerName,
-                   URLPathPrefix,
-                   BasePath,
-                   HTTPRealm,
-                   HTTPLogins,
-                   HTMLTemplate)
-
-        {
-
-            AttachChargingStation(ChargingStation);
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -203,9 +164,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         public void AttachChargingStation(AChargingStationNode ChargingStation)
         {
-
-            networkingNodes.Add(ChargingStation);
-
 
             // Wire HTTP Server Sent Events
 
@@ -629,48 +587,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region ~/events
 
-            #region HTML
+            //#region HTML
 
-            // --------------------------------------------------------------------
-            // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
-            // --------------------------------------------------------------------
-            HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "events",
-                                      HTTPContentType.Text.HTML_UTF8,
-                                      HTTPDelegate: Request => {
+            //// --------------------------------------------------------------------
+            //// curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
+            //// --------------------------------------------------------------------
+            //HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
+            //                          HTTPMethod.GET,
+            //                          URLPathPrefix + "events",
+            //                          HTTPContentType.Text.HTML_UTF8,
+            //                          HTTPDelegate: Request => {
 
-                                          #region Get HTTP user and its organizations
+            //                              #region Get HTTP user and its organizations
 
-                                          //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                          //if (!TryGetHTTPUser(Request,
-                                          //                    out User                   HTTPUser,
-                                          //                    out HashSet<Organization>  HTTPOrganizations,
-                                          //                    out HTTPResponse.Builder   Response,
-                                          //                    Recursive:                 true))
-                                          //{
-                                          //    return Task.FromResult(Response.AsImmutable);
-                                          //}
+            //                              //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+            //                              //if (!TryGetHTTPUser(Request,
+            //                              //                    out User                   HTTPUser,
+            //                              //                    out HashSet<Organization>  HTTPOrganizations,
+            //                              //                    out HTTPResponse.Builder   Response,
+            //                              //                    Recursive:                 true))
+            //                              //{
+            //                              //    return Task.FromResult(Response.AsImmutable);
+            //                              //}
 
-                                          #endregion
+            //                              #endregion
 
-                                          return Task.FromResult(
-                                                     new HTTPResponse.Builder(Request) {
-                                                         HTTPStatusCode             = HTTPStatusCode.OK,
-                                                         Server                     = HTTPServiceName,
-                                                         Date                       = Timestamp.Now,
-                                                         AccessControlAllowOrigin   = "*",
-                                                         AccessControlAllowMethods  = [ "GET" ],
-                                                         AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
-                                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
-                                                         Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-                                                         Connection                 = "close",
-                                                         Vary                       = "Accept"
-                                                     }.AsImmutable);
+            //                              return Task.FromResult(
+            //                                         new HTTPResponse.Builder(Request) {
+            //                                             HTTPStatusCode             = HTTPStatusCode.OK,
+            //                                             Server                     = HTTPServiceName,
+            //                                             Date                       = Timestamp.Now,
+            //                                             AccessControlAllowOrigin   = "*",
+            //                                             AccessControlAllowMethods  = [ "GET" ],
+            //                                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+            //                                             ContentType                = HTTPContentType.Text.HTML_UTF8,
+            //                                             Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
+            //                                             Connection                 = "close",
+            //                                             Vary                       = "Accept"
+            //                                         }.AsImmutable);
 
-                                      });
+            //                          });
 
-            #endregion
+            //#endregion
 
             #endregion
 
